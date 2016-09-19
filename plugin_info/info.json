@@ -1,0 +1,12 @@
+{
+	"id" : "teleinfo",
+	"name" : "Téléinfo",
+	"description" : "Plugin pour utiliser les modems téléinformation USB",
+	"licence" : "AGPL",
+	"author" : "Cédric GUINE",
+	"require" : "2.3",
+	"category" : "automation protocol",
+	"hasDependency" : true,
+	"hasOwnDeamon" : true,
+	"maxDependancyInstallTime" : 45
+}

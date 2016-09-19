@@ -1,0 +1,15 @@
+<div style="width:120px;min-height:20px" class="cmd #history# tooltips cmd-widget" data-type="info" data-subtype="string" data-cmd_id="#id#" title="#collectDate#">
+    <center>
+        <span style="font-weight: bold;font-size : 0.8em;">#name#</span>
+        <span id="ptec#id#" class='' style="font-size: 0.8em;"> #state#</span>
+		</center>
+    <script>
+	
+	if('#state#' == 'HP'){
+		$( "#ptec#id#" ).removeClass( "label label-success" ).addClass( "label label-warning" );
+	}else if ('#state#' == 'HC'){
+		$( "#ptec#id#" ).removeClass( "label label-warning" ).addClass( "label label-success" );
+	}
+	
+	</script>
+</div>

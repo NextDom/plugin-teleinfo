@@ -1,0 +1,41 @@
+<div style="width:120px;min-height:20px" class="cmd #history# tooltips cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#id#" title="#collectDate#">
+    <center>
+        <span style="font-weight: bold;font-size : 12px;" id="namecmd#id#"></span>
+        <span style="font-weight: bold;font-size : 0.8em;">#name#</span>
+        <span id="index#id#" class='label label-info' style="font-size: 0.8em;"></span>
+        <!--<span style="#displayHistory#" class="statistiques">
+            <span title='Min' class='tooltips'>#minHistoryValue#</span>|<span title='Moyenne' class='tooltips'>#averageHistoryValue#</span>|<span title='Max' class='tooltips'>#maxHistoryValue#</span> <i class="#tendance#"></i>
+        </span>-->
+    </center>
+  <script>
+    	/// Modifier la correspondance 'HP' et 'HC' en fonction du nom de votre commande dans l'objet Teleinfo
+        if ('#name#' == 'HP') {
+            $('#namecmd#id#').append('<i class="fa fa-bolt"></i>');
+        } else if('#name#' == 'HC') {
+            $('#namecmd#id#').append('<i class="fa fa-bolt"></i>');
+        } 
+		
+		var chaine = String(#state#),
+		longueur = chaine.length, // longueur du nombre
+		newChaine = '',
+		b = 0, // espacement
+		i = 0; // boucle
+ 
+		// permet de savoir quand faire l'espacement
+		if(longueur%3 != 0){
+		  b = 3 - longueur%3;
+		}
+		// boucle la nouvelle chaine
+		for(i=0; i < longueur; i++){
+		  // si atteint 3 nombre
+		  if(b == 3){
+		  newChaine += ' '; // espacement
+		  b = 0; // reset
+		  }
+		  b++;  // incrémente nombre
+		  newChaine += chaine[i]; // attribut le nombre à la new chaine
+		}
+		
+		$('#index#id#').html(newChaine + ' #unite#');	
+    </script>
+</div>

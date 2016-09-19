@@ -1,0 +1,31 @@
+<div style="min-height : 20px;min-width : 20px;" class="cmd #history# container-fluid tooltips cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#id#" title="Valeur du #valueDate#, collectée le #collectDate#">
+    <center>
+	  <span class='cmdName' style="font-weight: bold;font-size : 0.8em;">#name_display#</span>
+      <span id="index#id#" class='label label-info' style="font-size: 0.8em;"></span>
+    </center>
+</div>
+<script>
+	var chaine = String(#state#),
+	longueur = chaine.length, // longueur du nombre
+	newChaine = '',
+	b = 0, // espacement
+	i = 0; // boucle
+
+	// permet de savoir quand faire l'espacement
+	if(longueur%3 != 0){
+	  b = 3 - longueur%3;
+	}
+	// boucle la nouvelle chaine
+	for(i=0; i < longueur; i++){
+	  // si atteint 3 nombre
+	  if(b == 3){
+	  newChaine += ' '; // espacement
+	  b = 0; // reset
+	  }
+	  b++;  // incrémente nombre
+	  newChaine += chaine[i]; // attribut le nombre à la new chaine
+	}
+	
+	$('#index#id#').html(newChaine + ' #unite#');	
+</script>
+
