@@ -59,7 +59,7 @@ class teleinfo extends eqLogic {
 		$eqLogic->setIsEnable(1);
 		$eqLogic->setIsVisible(1);
 		$eqLogic->save();
-		$eqLogic->applyModuleConfiguration();
+		//$eqLogic->applyModuleConfiguration();
 		return $eqLogic;
 	}
 	
@@ -121,6 +121,7 @@ class teleinfo extends eqLogic {
         log::add('teleinfo', 'info', 'Démarrage du service en mode satellite');
         $teleinfo_path = realpath(dirname(__FILE__) . '/../../ressources');
 		$modem_serie_addr = config::byKey('port', 'teleinfo');
+		$_debug = config::byKey('debug', 'teleinfo');
 		$_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
 
 		if(config::byKey('modem_vitesse', 'teleinfo') == ""){
@@ -206,6 +207,7 @@ class teleinfo extends eqLogic {
         log::add('teleinfo', 'info', 'Mode local');
         $teleinfo_path = realpath(dirname(__FILE__) . '/../../ressources');
 		$modem_serie_addr = config::byKey('port', 'teleinfo');
+		$_debug = config::byKey('debug', 'teleinfo');
 		$_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
 				if(config::byKey('modem_vitesse', 'teleinfo') == ""){
 			$modem_vitesse = '1200';
@@ -345,6 +347,7 @@ class teleinfo extends eqLogic {
 	}
 	
 	public static function deamon_stop() {
+		log::add('teleinfo', 'info', '[deamon_stop] Arret du service');
 		$deamon_info = self::deamon_info();
 		if ($deamon_info['state'] == 'ok') {
 			$_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
@@ -356,7 +359,14 @@ class teleinfo extends eqLogic {
 				$pid_file = '/tmp/teleinfo.pid';
                 if (file_exists($pid_file)) {
                         $pid = intval(trim(file_get_contents($pid_file)));
-                        system::kill($pid);
+						$kill = posix_kill($pid, 15);
+						usleep(500);
+						if ($kill) {
+							return true;
+						}
+						else{
+							system::kill($pid);
+						}
                 }
                 system::kill('teleinfo.py');
                 $port = config::byKey('port', 'teleinfo');
