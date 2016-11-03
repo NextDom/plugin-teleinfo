@@ -84,6 +84,14 @@ $port = config::byKey('port', 'teleinfo');
 				<input id="mode_2_cpt" type="checkbox" class="configKey bootstrapSwitch" data-label-text="{{Actif}}" data-l1key="2cpt_cartelectronic" />
             </div>
         </div>
+		
+		<div class="form-group">
+            <label class="col-lg-4 control-label">Debug : </label>
+            <div id="div_debug" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
+				<input id="debug" type="checkbox" class="configKey bootstrapSwitch" data-label-text="{{On}}" data-l1key="debug" />
+            </div>
+        </div>
+		
     </fieldset>
 </form>
 
@@ -99,7 +107,7 @@ $port = config::byKey('port', 'teleinfo');
 				error: function (request, status, error) {
 					handleAjaxError(request, status, error);
 				},
-				success: function (data) { // si l'appel a bien fonctionnÃ©
+				success: function (data) { // si l'appel a bien fonctionné
 				if (data.state != 'ok') {
 					$('#div_alert').showAlert({message: data.result, level: 'danger'});
 					return;
