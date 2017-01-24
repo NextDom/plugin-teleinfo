@@ -43,21 +43,7 @@ if($controlerState === ''){
 				<i class="fa fa-heartbeat" style="font-size : 5em;color:#767676;"></i>
 			  </center>
 			  <span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Info Modem}}</center></span>
-			</div>
-			
-			<?php 
-				foreach (jeeNetwork::byPlugin('teleinfo') as $jeeNetwork) {
-					echo '
-					<div class="cursor bt_info_external_daemon" slave_id="' . $jeeNetwork->getId() . '" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-					<center>
-						<i class="fa fa-heartbeat" style="font-size : 5em;color:#767676;"></i>
-					</center>
-					<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Info Modem ' . $jeeNetwork->getName() . ' }}</center></span>
-					</div>				
-					';
-				}
-			?>
-			
+			</div>		
 			
 			<div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
 				<center>
