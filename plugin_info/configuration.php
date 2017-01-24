@@ -81,7 +81,7 @@ $port = config::byKey('port', 'teleinfo');
 		<div class="form-group div_local">
             <label class="col-lg-4 control-label">Mode 2 compteurs : </label>
             <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{En cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
-				<input id="mode_2_cpt" type="checkbox" class="configKey bootstrapSwitch" data-label-text="{{Actif}}" data-l1key="2cpt_cartelectronic" />
+		    <span><label class="checkbox-inline"><input type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic"/>{{Activer}}</label></span>
             </div>
         </div>
 		
