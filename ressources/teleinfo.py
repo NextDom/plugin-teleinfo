@@ -253,7 +253,7 @@ class Teleinfo:
 		def target():
 			self.process = None
 			#logger.debug("Thread started, timeout = " + str(timeout)+", command : "+str(self.cmd))
-			self.process = subprocess.Popen(self.cmd + _SendData, shell=True)
+			self.process = subprocess.Popen(self.cmd + _SendData_bak, shell=True)
 			#print self.cmd
 			self.process.communicate()
 			#logger.debug("Return code: " + str(self.process.returncode))
@@ -330,6 +330,7 @@ class Teleinfo:
 				if(self._externalip != ""):
 					try:
 						_SendData += "'"
+						_SendData_bak = _SendData
 						thread = threading.Thread(target=target)
 						self.timer = threading.Timer(int(5), timer_callback)
 						self.timer.start()
@@ -339,6 +340,7 @@ class Teleinfo:
 						errorCom = "Connection error '%s'" % e
 				else:
 					try:
+						_SendData_bak = _SendData
 						thread = threading.Thread(target=target)
 						self.timer = threading.Timer(int(5), timer_callback)
 						self.timer.start()
