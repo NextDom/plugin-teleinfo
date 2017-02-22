@@ -6,14 +6,14 @@ sendVarToJS('eqType', 'teleinfo');
 $eqLogics = eqLogic::byType('teleinfo');
 $controlerState = teleinfo::getTeleinfoInfo('');
 if($controlerState === ''){
-   echo '<div class="alert jqAlert alert-danger" style="margin : 0px 5px 15px 15px; padding : 7px 35px 7px 15px;">{{Impossible de contacter le serveur teleinfo. Avez vous bien renseigné l\'IP ?}}</div>'; 
+   echo '<div class="alert jqAlert alert-danger" style="margin : 0px 5px 15px 15px; padding : 7px 35px 7px 15px;">{{Impossible de contacter le serveur teleinfo. Avez vous bien renseigné l\'IP ?}}</div>';
 }
 //$deamonRunning = false;
 //$deamonRunning = teleinfo::deamonRunning();
 ?>
 
 <div class="row row-overflow">
-    	
+
 	<div class="col-lg-2 col-md-3 col-sm-4">
         <div class="bs-sidebar">
             <ul id="ul_eqLogic" class="nav nav-list bs-sidenav">
@@ -27,7 +27,7 @@ if($controlerState === ''){
             </ul>
         </div>
     </div>
-	
+
 	<div class="col-lg-10 col-md-9 col-sm-8 eqLogicThumbnailDisplay" style="border-left: solid 1px #EEE; padding-left: 25px;">
 		<legend>{{Gestion}}</legend>
 		<div class="eqLogicThumbnailContainer">
@@ -37,38 +37,24 @@ if($controlerState === ''){
 			  </center>
 			  <span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Coût}}</center></span>
 			</div>-->
-			
+
 			<div class="cursor" id="bt_info_daemon" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
 			  <center>
 				<i class="fa fa-heartbeat" style="font-size : 5em;color:#767676;"></i>
 			  </center>
 			  <span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Info Modem}}</center></span>
 			</div>
-			
-			<?php 
-				foreach (jeeNetwork::byPlugin('teleinfo') as $jeeNetwork) {
-					echo '
-					<div class="cursor bt_info_external_daemon" slave_id="' . $jeeNetwork->getId() . '" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-					<center>
-						<i class="fa fa-heartbeat" style="font-size : 5em;color:#767676;"></i>
-					</center>
-					<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Info Modem ' . $jeeNetwork->getName() . ' }}</center></span>
-					</div>				
-					';
-				}
-			?>
-			
-			
+
 			<div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
 				<center>
 					<i class="fa fa-wrench" style="font-size : 5em;color:#767676;"></i>
 				</center>
 			<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>Configuration</center></span>
 			</div>
-			
-			
+
+
 		</div>
-		
+
         <legend>{{Mes Modules de Téléinformation}}</legend>
         <?php
         /*if (count($eqLogics) == 0) {
@@ -76,14 +62,14 @@ if($controlerState === ''){
         } else {*/
             ?>
             <div class="eqLogicThumbnailContainer">
-			
+
 				<div class="cursor eqLogicAction" data-action="add" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
 					<center>
 						<i class="fa fa-plus-circle" style="font-size : 7em;color:#4F81BD;"></i>
 					</center>
 					<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#4F81BD"><center>Ajouter</center></span>
 				</div>
-			
+
                 <?php
                 foreach ($eqLogics as $eqLogic) {
                     echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
@@ -97,20 +83,20 @@ if($controlerState === ''){
             </div>
         <?php /*}*/ ?>
     </div>
-	
-	
-	
+
+
+
     <div class="col-lg-10 col-md-9 col-sm-8 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
 		<a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
 		<a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fa fa-minus-circle"></i> {{Supprimer}}</a>
-        
+
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> Equipement</a></li>
 			<li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> Commandes</a></li>
 		</ul>
-		
+
 		<div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
-			<div role="tabpanel" class="tab-pane active" id="eqlogictab">	
+			<div role="tabpanel" class="tab-pane active" id="eqlogictab">
 				<div class="row">
 					<div class="col-lg-6">
 						<form class="form-horizontal">
@@ -158,11 +144,11 @@ if($controlerState === ''){
 								<div class="form-group">
 									<label class="col-lg-4 control-label"></label>
 									<div class="col-lg-8">
-										<input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Activer}}" data-l1key="isEnable" checked/>
-										<input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Visible}}" data-l1key="isVisible" checked/>
-									</div>
+                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
+                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
+                                      </div>
 								</div>
-							</fieldset> 
+							</fieldset>
 						</form>
 					</div>
 					<div class="col-lg-6">
@@ -189,7 +175,7 @@ if($controlerState === ''){
 									</div>
 									<label class="col-md-2 control-label">{{Commandes :}}</label>
 									<div class="col-md-2 tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}">
-										<input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Auto}}" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>
+                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>{{Auto}}</label>
 									</div>
 									<!--<div class="col-md-2">
 										<input class="eqLogicAttr" style="display:none" type="checkbox"  data-l1key="configuration" data-l2key="AutoGenerateFields" id="checkbox-autocreate"/>
@@ -222,7 +208,7 @@ if($controlerState === ''){
 										</select>
 									</div>
 								</div>-->
-								
+
 							</fieldset>
 						</form>
 					</div>
@@ -252,7 +238,7 @@ if($controlerState === ''){
 				<form class="form-horizontal">
 					<fieldset>
 						<div class="form-actions">
-							
+
 						</div>
 					</fieldset>
 				</form>
