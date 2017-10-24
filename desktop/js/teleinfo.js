@@ -50,24 +50,12 @@ $('#bt_cout').on('click', function() {
     $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=cout').dialog('open');
 });
 
-$('#bt_info_daemon').on('click', function() {
-	$('#md_modal').dialog({title: "{{Informations du modem}}"});
-    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=info_daemon&plugin_id=teleinfo_deamon&slave_id=0').dialog('open');
-});
-
-$('.bt_info_external_daemon').on('click', function() {
-	var slave_id_tmp = $(this).attr('slave_id');
-	$('#md_modal').dialog({title: "{{Informations du modem}}"});
-    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=info_daemon&plugin_id=teleinfo_deamon&slave_id=' + slave_id_tmp).dialog('open');
-});
-
-
 $('#bt_config').on('click', function() {
 	$('#md_modal').dialog({title: "{{Configuration}}"});
     $('#md_modal').load('index.php?v=d&p=plugin&ajax=1&id=rfxcom').dialog('open');
 });
 
-$('#bt_teleinfoHealth').on('click', function() {	
+$('#bt_teleinfoHealth').on('click', function() {
 	$('#md_modal').dialog({title: "{{Santé Téléinformation}}"});
     $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=health').dialog('open');
 });
@@ -163,7 +151,7 @@ function addCmdToTable(_cmd) {
 	selRequestType += '<option value="DEMAIN">Couleur lendemain (TEMPO)</option>';
     selRequestType += '</select>';
 	}
-	
+
 	if(init(_cmd.configuration['type']) == 'panel'){
 		var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="display:none">';
 	}else if(init(_cmd.configuration['type']) == 'health'){
@@ -172,7 +160,7 @@ function addCmdToTable(_cmd) {
 	else{
 		var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
 	}
-    if(init(_cmd.configuration['type']) != 'health'){   
+    if(init(_cmd.configuration['type']) != 'health'){
 		tr += '<td>';
         tr += '<span class="cmdAttr expertModeVisible" data-l1key="id"></span>';
         tr += '</td>';
@@ -190,26 +178,25 @@ function addCmdToTable(_cmd) {
         tr += '</td>';
         tr += '<td>';
         tr += '<span><input class="cmdAttr" style="display:none" data-l1key="configuration" data-l2key="type" value="' + init(_cmd.configuration['type']) +'"/></span>';
-        tr += '<span><input type="checkbox" class="cmdAttr bootstrapSwitch" data-size="mini" data-label-text="{{Historiser}}" data-l1key="isHistorized"/></span> ';
-        tr += '<span><input type="checkbox" class="cmdAttr bootstrapSwitch" data-size="mini" data-label-text="{{Afficher}}" data-l1key="isVisible" checked/></span> ';
-        tr += '<span><input type="checkbox" class="cmdAttr bootstrapSwitch" style="display:none" data-size="mini" data-label-text="{{Evénement}}" data-l1key="eventOnly" checked disabled/></span>';
-        
+        tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" isHistorized/>{{Historiser}}</label></span> ';
+        tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';
+
 		if(init(_cmd.configuration['info_conso']) == 'TENDANCE_DAY'){
 			tr += '<span><input type="checkbox" class="cmdAttr tooltips" title="Spécifie si le calcul de la tendance se fait sur la journée entière ou sur la plage jusqu\'à l\'heure actuelle." data-l1key="configuration" data-l2key="type_calcul_tendance"/> {{Journée entière}}<br/></span>';
-		}		
-		
+		}
+
 		tr += '<input class="cmdAttr form-control tooltips input-sm" data-l1key="unite" style="width : 100px;" placeholder="Unité" title="{{Unité de la donnée (Wh, A, kWh...) pour plus d\'informations aller voir le wiki}}">';
-				
+
 		tr += '<input style="width : 150px;" class="tooltips cmdAttr form-control expertModeVisible input-sm" data-l1key="cache" data-l2key="lifetime" placeholder="{{Lifetime cache}}">';
         tr += '<input class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="minValue" placeholder="{{Min}}" title="{{Borne minimum de la valeur}}" style="width : 40%;display : inline-block;"> ';
         tr += '<input class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="maxValue" placeholder="{{Max}}" title="{{Borne maximum de la valeur}}" style="width : 40%;display : inline-block;">';
-		
+
 		if(init(_cmd.configuration['info_conso']) == 'ADPS' || init(_cmd.configuration['info_conso']) == 'ADIR1' || init(_cmd.configuration['info_conso']) == 'ADIR2' || init(_cmd.configuration['info_conso']) == 'ADIR3'){
 			//tr += '<input class="cmdAttr form-control input-sm" data-l1key="logicalId" value="0">';
 			tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="returnStateValue" placeholder="{{Valeur retour d\'état}}" style="margin-top : 5px;">';
 			tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="returnStateTime" placeholder="{{Durée avant retour d\'état (min)}}" style="margin-top : 5px;">';
 		}
-		
+
         tr += '</td>';
         tr += '<td>';
 		if (is_numeric(_cmd.id)) {
@@ -218,24 +205,24 @@ function addCmdToTable(_cmd) {
 		}
         tr += '<i class="fa fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i></td>';
         tr += '</tr>';
-		
+
 		if (isset(_cmd.configuration.info_conso)) {
         //$('#table_cmd tbody tr:last .cmdAttr[data-l1key=configuration][data-l2key=info_conso]').value(init(_cmd.configuration.info_conso));
         //$('#table_cmd tbody tr:last .cmdAttr[data-l1key=configuration][data-l2key=info_conso]').trigger('change');
 		}
-	
+
 	    $('#table_cmd tbody').append(tr);
         $('#table_cmd tbody tr:last').setValues(_cmd, '.cmdAttr');
 		var tr = $('#table_cmd tbody tr:last');
 		if(init(_cmd.unite) == ''){
 			if(init(_cmd.configuration['info_conso']) == 'ADPS'){
-				tr.find('.cmdAttr[data-l1key=unite]').append("A"); 
+				tr.find('.cmdAttr[data-l1key=unite]').append("A");
 				tr.setValues(_cmd, '.cmdAttr');
 			}
 		}
 		else{
 
-		}	
+		}
 	}
 }
 

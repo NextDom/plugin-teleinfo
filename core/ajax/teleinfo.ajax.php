@@ -23,51 +23,6 @@ try {
     if (!isConnect('admin')) {
         throw new Exception('401 Unauthorized');
     }
-
-    if (init('action') == 'stopDeamon') {
-        teleinfo::stopDeamon();
-        ajax::success();
-    }
-	
-	if (init('action') == 'restartDeamon') {
-		$port = config::byKey('port', 'teleinfo', 'none');
-		$_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
-		if($_2cpt_cartelectronic == 1){
-			
-		}
-		if ($port == 'none') {
-			ajax::success();
-		}
-		teleinfo::stopDeamon();
-		if (teleinfo::deamonRunning()) {
-			throw new Exception(__('Impossible d\'arrêter le démon', __FILE__));
-		}
-		log::clear('teleinfocmd');
-		teleinfo::cron();
-		ajax::success();
-	}
-	
-	if (init('action') == 'restartSlaveDeamon') {
-		if (config::byKey('jeeNetwork::mode') == 'master') {
-			$jeeNetwork = jeeNetwork::byId(init('id'));
-			if (!is_object($jeeNetwork)) {
-				throw new Exception(__('Impossible de trouver l\'esclave : ', __FILE__) . init('id'));
-			}
-			$jeeNetwork->sendRawRequest('restartDeamon', array('plugin' => 'teleinfo'));
-		}
-		ajax::success();
-	}
-
-	if (init('action') == 'stopSlaveDeamon') {
-		if (config::byKey('jeeNetwork::mode') == 'master') {
-			$jeeNetwork = jeeNetwork::byId(init('id'));
-			if (!is_object($jeeNetwork)) {
-				throw new Exception(__('Impossible de trouver l\'esclave : ', __FILE__) . init('id'));
-			}
-			$jeeNetwork->sendRawRequest('stopDeamon', array('plugin' => 'teleinfo'));
-		}
-		ajax::success();
-	}
 	
 	if (init('action') == 'getTeleinfo') {
         if (init('object_id') == '') {
@@ -78,7 +33,7 @@ try {
             $object = object::rootObject();
         }
         if (!is_object($object)) {
-            throw new Exception('{{Aucun objet racine trouvé}}');
+            throw new Exception('{{Aucun objet racine trouvÃ©}}');
         }
         $return = array('object' => utils::o2a($object));
 
@@ -150,52 +105,7 @@ try {
 		
 		ajax::error("", "");
 	}
-	if (init('action') == 'getInfoDaemon') {
 	
-		$return = array();
-		$_nbLines = 1000;
-		$replace = array(
-			'&gt;' => '>',
-			'&apos;' => '',
-		);
-		$page = array();
-		
-		$path = realpath(dirname(__FILE__) . '/../../ressources/teleinfo.log');
-		//log::add('teleinfo', 'info', $path);
-		if (!file_exists($path)) {
-			$return['result'] = array('Deamon non lancé');
-			ajax::success($return);
-		}else{
-			$log = new SplFileObject($path);
-			if ($log) {
-				$log->seek(0); //Seek to the begening of lines
-				$linesRead = 0;
-				while ($log->valid() && $linesRead != $_nbLines) {
-					$line = trim($log->current()); //get current line
-					if ($line != '') {
-						array_unshift($page, $line);
-					}
-					$log->next(); //go to next line
-					$linesRead++;
-				}
-			}
-			//return $page;
-			$return['result'] = $page;
-			ajax::success($return);
-		}
-	}
-	
-	if (init('action') == 'getInfoExternalDaemon') {
-		$jeeNetwork = jeeNetwork::byPlugin('enocean');
-		
-		$return['result'] = $jeeNetwork;
-		ajax::success($return);
-		//$jeeNetwork = jeeNetwork::byId(init('id'));
-		//	//if (!is_object($jeeNetwork)) {
-		//		throw new Exception(__('Impossible de trouver l\'esclave : ', __FILE__) . init('id'));
-		//	}
-		//	$jeeNetwork->sendRawRequest('getInfoDaemon', array('plugin' => 'teleinfo'));
-	}
 	if (init('action') == 'getHistory') {
 		$return = array();
 		/*$data = array();

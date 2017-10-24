@@ -16,6 +16,7 @@ from datetime import datetime
 import subprocess
 import urllib2
 import threading
+import signal 
  
 # Default log level
 gLogLevel = logging.DEBUG
@@ -60,6 +61,16 @@ class MyLogger:
 			#gMessageTemp += str(text) + "**"
 			#print text
 			self._logger.info(text)
+		except NameError:
+			pass
+
+	def warning(self, text):
+		try:
+			#global gMessageTemp
+			text = text.replace("'", "")
+			#gMessageTemp += str(text) + "**"
+			#print text
+			self._logger.warn(text)
 		except NameError:
 			pass
  
@@ -139,7 +150,7 @@ class Teleinfo:
 			self._log.info("Teleinfo modem successfully closed")
  
 	def terminate(self):
-		#print "Terminating..."
+		print "Terminating..."
 		self.close()
 		#sys.close(gOutput)
 		sys.exit()
@@ -242,7 +253,7 @@ class Teleinfo:
 		def target():
 			self.process = None
 			#logger.debug("Thread started, timeout = " + str(timeout)+", command : "+str(self.cmd))
-			self.process = subprocess.Popen(self.cmd + _SendData, shell=True)
+			self.process = subprocess.Popen(self.cmd + _SendData_bak, shell=True)
 			#print self.cmd
 			self.process.communicate()
 			#logger.debug("Return code: " + str(self.process.returncode))
@@ -257,9 +268,9 @@ class Teleinfo:
 				except OSError as error:
 					#logger.error("Error: %s " % error)
 					self._log.error("Error: %s " % error)
-				self._log.error("Thread terminated")
+				self._log.warning("Thread terminated")
 			else:
-				self._log.error("Thread not alive")
+				self._log.warning("Thread not alive")
 				
 		# Open Teleinfo modem
 		try:
@@ -319,6 +330,7 @@ class Teleinfo:
 				if(self._externalip != ""):
 					try:
 						_SendData += "'"
+						_SendData_bak = _SendData
 						thread = threading.Thread(target=target)
 						self.timer = threading.Timer(int(5), timer_callback)
 						self.timer.start()
@@ -328,6 +340,7 @@ class Teleinfo:
 						errorCom = "Connection error '%s'" % e
 				else:
 					try:
+						_SendData_bak = _SendData
 						thread = threading.Thread(target=target)
 						self.timer = threading.Timer(int(5), timer_callback)
 						self.timer.start()
@@ -338,7 +351,10 @@ class Teleinfo:
 						errorCom = "Connection error '%s'" % e
 		# This is the End!
 		self.terminate()
- 
+	def exit_handler(self, *args):
+		self.terminate()
+		self._log.info("[exit_handler]")
+
 #------------------------------------------------------------------------------
 # MAIN
 #------------------------------------------------------------------------------
@@ -393,5 +409,6 @@ if __name__ == "__main__":
 	pid = str(os.getpid())
 	file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
 	teleinfo = Teleinfo(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath, gVitesse)
+	signal.signal(signal.SIGTERM, teleinfo.exit_handler)
 	teleinfo.run()
 	sys.exit()
