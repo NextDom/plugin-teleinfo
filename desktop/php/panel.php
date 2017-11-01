@@ -41,7 +41,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 							</span>
 						</div>
 						<div class="text-center">
-						<label class="text-center control-label" style="center;font-size: 1.3em;">{{Journée}}</label>
+						<label class="text-center;control-label" style="center;font-size: 1.3em;">{{Journée}}</label>
 						</div>
 					</div>
 					<div class="form-group col-md-4">
@@ -53,7 +53,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 							</span>
 						</div>
 						<div class="text-center">
-						<label class="text-center control-label" style="center;font-size: 1.3em;">{{Mois}}</label>
+						<label class="text-center;control-label" style="center;font-size: 1.3em;">{{Mois}}</label>
 						</div>
 					</div>
 					<div class="form-group col-md-4">
@@ -65,7 +65,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 							</span>
 						</div>
 						<div class="text-center">
-						<label class="text-center control-label" style="center;font-size: 1.3em;">{{Année}}</label>
+						<label class="text-center;control-label" style="center;font-size: 1.3em;">{{Année}}</label>
 						</div>
 					</div>
 				</fieldset>
