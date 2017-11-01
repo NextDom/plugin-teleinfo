@@ -1,0 +1,112 @@
+{
+    "plugins\/teleinfo\/plugin_info\/info.xml": {
+        "Plugin pour utiliser les modems téléinformation USB": "Plugin pour utiliser les modems téléinformation USB"
+    },
+    "plugins\/teleinfo\/plugin_info\/configuration.php": {
+        "Service local": "Service local",
+        "Par défaut": "Par défaut",
+        "En cas d'utilisation de 2 compteurs simultanés (Cartelectronic)": "En cas d'utilisation de 2 compteurs simultanés (Cartelectronic)",
+        "Actif": "Actif",
+        "(Re) démarrer": "(Re) démarrer",
+        "Arrêter": "Arrêter",
+        "Le démon a été correctement (re)démaré": "Le démon a été correctement (re)démaré",
+        "Le démon a été correctement (re)demarré": "Le démon a été correctement (re)demarré",
+        "Le démon a été correctement arreté": "Le démon a été correctement arreté",
+        "Démon": "Démon",
+        " Afficher les traces ERDF ": " Afficher les traces ERDF ",
+        "On": "On",
+        " Forcer le lancement ": " Forcer le lancement ",
+        "Versions": "Versions"
+    },
+    "plugins\/teleinfo\/desktop\/php\/teleinfo.php": {
+        "Ajouter": "Ajouter",
+        "Rechercher": "Rechercher",
+        "Gestion": "Gestion",
+        "Coût": "Coût",
+        "Info Modem": "Info Modem",
+        "Mes Modules de Téléinformation": "Mes Modules de Téléinformation",
+        "Supprimer": "Supprimer",
+        "Sauvegarder": "Sauvegarder",
+        "Général": "Général",
+        "Nom de l'équipement": "Nom de l'équipement",
+        "Objet parent": "Objet parent",
+        "Aucun": "Aucun",
+        "Identifiant Compteur": "Identifiant Compteur",
+        "Identifiant du compteur aussi connu sous le nom ADCO.": "Identifiant du compteur aussi connu sous le nom ADCO.",
+        "ADCO du compteur": "ADCO du compteur",
+        "Catégorie": "Catégorie",
+        "Activer": "Activer",
+        "Visible": "Visible",
+        "Paramètres": "Paramètres",
+        "Attention, il est nécessaire d'activer l'historisation des index pour utiliser les statistiques": "Attention, il est nécessaire d'activer l'historisation des index pour utiliser les statistiques",
+        "Votre abonnement :": "Votre abonnement :",
+        "Abonnement présent sur le compteur": "Abonnement présent sur le compteur",
+        "Commandes :": "Commandes :",
+        "Créer automatiquement les commandes envoyées par le compteur": "Créer automatiquement les commandes envoyées par le compteur",
+        "Auto": "Auto",
+        "Permet de créer automatiquement les commandes nécessaires.": "Permet de créer automatiquement les commandes nécessaires.",
+        "Créer": "Créer",
+        "Choix du template :": "Choix du template :",
+        "FONCTION BETA - Modèle à utiliser pour l'affichage": "FONCTION BETA - Modèle à utiliser pour l'affichage",
+        "Informations sur les données": "Informations sur les données",
+        " Santé": " Santé",
+        "Applique le template": "Applique le template",
+        "Appliquer": "Appliquer",
+        "Unités d'affichage :": "Unités d'affichage :",
+        "FONCTION BETA - NE FONCTIONNE PAS ACTUELLEMENT": "FONCTION BETA - NE FONCTIONNE PAS ACTUELLEMENT",
+        "Ajouter une donnée": "Ajouter une donnée",
+        "Ajouter une statistique": "Ajouter une statistique",
+        "Nom": "Nom",
+        "Sous-Type": "Sous-Type",
+        "Donnée": "Donnée"
+    },
+    "plugins\/teleinfo\/desktop\/js\/teleinfo.js": {
+        "Gestion des coûts": "Gestion des coûts",
+        "Informations du modem": "Informations du modem",
+        "Configuration": "Configuration",
+        "Santé Téléinformation": "Santé Téléinformation",
+        "Nom": "Nom",
+        "Numérique pour les indexs et nombres, Autre pour les chaines de caractères (Tranche tarifaire par exemple.": "Numérique pour les indexs et nombres, Autre pour les chaines de caractères (Tranche tarifaire par exemple.",
+        "Valeur retour d\\'état": "Valeur retour d\\'état",
+        "Durée avant retour d\\'état (min)": "Durée avant retour d\\'état (min)",
+        "Historiser": "Historiser",
+        "Afficher": "Afficher",
+        "Evénement": "Evénement",
+        "Journée entière": "Journée entière",
+        "Unité de la donnée (Wh, A, kWh...) pour plus d\\'informations aller voir le wiki": "Unité de la donnée (Wh, A, kWh...) pour plus d\\'informations aller voir le wiki",
+        "Lifetime cache": "Lifetime cache",
+        "Min": "Min",
+        "Borne minimum de la valeur": "Borne minimum de la valeur",
+        "Max": "Max",
+        "Borne maximum de la valeur": "Borne maximum de la valeur",
+        "Tester": "Tester"
+    },
+    "plugins\/teleinfo\/desktop\/modal\/info_daemon.php": {
+        "Pause": "Pause",
+        "Rechercher": "Rechercher"
+    },
+    "plugins\/teleinfo\/desktop\/modal\/health.php": {
+        "Compteur": "Compteur",
+        "Donnée": "Donnée",
+        "Valeur": "Valeur",
+        "Statut": "Statut",
+        "Dernière communication": "Dernière communication"
+    },
+    "plugins\/teleinfo\/plugin_info\/info.json": {
+        "Plugin pour utiliser les modems téléinformation USB": "Plugin pour utiliser les modems téléinformation USB"
+    },
+    "plugins\/teleinfo\/desktop\/php\/panel.php": {
+        "Attention une trop grande plage de dates peut mettre très longtemps à être calculée ou même ne pas s'afficher": "Attention une trop grande plage de dates peut mettre très longtemps à être calculée ou même ne pas s'afficher",
+        "Ok": "Ok",
+        "Vérifier l'intégrité des données": "Vérifier l'intégrité des données",
+        " Vérifier ": " Vérifier ",
+        "Ma consommation": "Ma consommation",
+        "Journée": "Journée",
+        "Mois": "Mois",
+        "Année": "Année"
+    },
+    "plugins\/teleinfo\/desktop\/js\/panel.js": {
+        "Santé": "Santé",
+        "'+object.name+'": "'+object.name+'"
+    }
+}

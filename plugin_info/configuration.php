@@ -81,9 +81,85 @@ $port = config::byKey('port', 'teleinfo');
 		<div class="form-group div_local">
             <label class="col-lg-4 control-label">Mode 2 compteurs : </label>
             <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{En cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
-		    <span><label class="checkbox-inline"><input type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic"/>{{Activer}}</label></span>
+				<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>
             </div>
         </div>
 		
+		<div class="form-group">
+            <label class="col-lg-4 control-label">Debug : </label>
+            <div id="div_debug" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
+				<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{On}}</label>
+            </div>
+        </div>
+		
+		<div class="form-group">
+            <label class="col-lg-4 control-label">Force : </label>
+            <div id="div_debug" class="col-lg-4 tooltips" title="{{ Forcer le lancement }}">
+				<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="force" />{{On}}</label>
+            </div>
+        </div>
+	</fieldset>
+	<fieldset>
+	<legend><i class="icon loisir-pacman1"></i> {{Versions}}</legend>
+		<div class="form-group">
+			<label class="col-lg-1 control-label">Core Teleinfo </label>
+			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_core_version','teleinfo'); ?></span>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-1 control-label">Desktop Teleinfo </label>
+			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_desktop_version','teleinfo'); ?></span>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-1 control-label">Mobile Teleinfo </label>
+			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_mobile_version','teleinfo'); ?></span>
+		</div>
     </fieldset>
 </form>
+
+<script>
+		$('#bt_stopTeleinfoDeamon').on('click', function () {
+			$.ajax({// fonction permettant de faire de l'ajax
+				type: "POST", // methode de transmission des données au fichier php
+				url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
+				data: {
+					action: "stopDeamon",
+				},
+				dataType: 'json',
+				error: function (request, status, error) {
+					handleAjaxError(request, status, error);
+				},
+				success: function (data) { // si l'appel a bien fonctionné
+				if (data.state != 'ok') {
+					$('#div_alert').showAlert({message: data.result, level: 'danger'});
+					return;
+				}
+				$('#div_alert').showAlert({message: 'Le daemon a été correctement arrêté : il se relancera automatiquement dans 1 minute', level: 'success'});
+				$('#ul_plugin .li_plugin[data-plugin_id=teleinfo]').click();
+			}
+			});
+		});
+		
+		$('#bt_restartTeleinfoDeamon').on('click', function () {
+        $.ajax({// fonction permettant de faire de l'ajax
+            type: "POST", // methode de transmission des données au fichier php
+            url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
+            data: {
+                action: "restartDeamon",
+            },
+            dataType: 'json',
+            error: function (request, status, error) {
+                handleAjaxError(request, status, error);
+            },
+            success: function (data) { // si l'appel a bien fonctionné
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+            $('#div_alert').showAlert({message: '{{Le démon a été correctement (re)démaré}}', level: 'success'});
+            $('#ul_plugin .li_plugin[data-plugin_id=teleinfo]').click();
+			}
+		});
+		});
+		
+		
+</script>

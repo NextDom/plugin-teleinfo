@@ -1,0 +1,9 @@
+Il est possible de vérifier la réception des données avant traitement. 
+
+Pour cela rendez vous sur l'objet téléinfo puis cliquez sur Santé
+
+image::../images/teleinformation_btsante.png[]
+
+La fenêtre qui s'ouvre permet de vérifier la bonne reception des données :
+
+image::../images/teleinformation_sante.png[]

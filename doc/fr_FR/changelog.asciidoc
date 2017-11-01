@@ -1,1 +1,1 @@
-Présent sur le plugin Téléinfo du market 
+Changelog détaillé : https://github.com/jeedom/plugin-teleinfo/commits/stable
