@@ -81,9 +81,38 @@ $port = config::byKey('port', 'teleinfo');
 		<div class="form-group div_local">
             <label class="col-lg-4 control-label">Mode 2 compteurs : </label>
             <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{En cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
-				<input id="mode_2_cpt" type="checkbox" class="configKey bootstrapSwitch" data-label-text="{{Actif}}" data-l1key="2cpt_cartelectronic" />
+				<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>
             </div>
         </div>
+		
+		<div class="form-group">
+            <label class="col-lg-4 control-label">Debug : </label>
+            <div id="div_debug" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
+				<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{On}}</label>
+            </div>
+        </div>
+		
+		<div class="form-group">
+            <label class="col-lg-4 control-label">Force : </label>
+            <div id="div_debug" class="col-lg-4 tooltips" title="{{ Forcer le lancement }}">
+				<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="force" />{{On}}</label>
+            </div>
+        </div>
+	</fieldset>
+	<fieldset>
+	<legend><i class="icon loisir-pacman1"></i> {{Versions}}</legend>
+		<div class="form-group">
+			<label class="col-lg-1 control-label">Core Teleinfo </label>
+			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_core_version','teleinfo'); ?></span>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-1 control-label">Desktop Teleinfo </label>
+			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_desktop_version','teleinfo'); ?></span>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-1 control-label">Mobile Teleinfo </label>
+			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_mobile_version','teleinfo'); ?></span>
+		</div>
     </fieldset>
 </form>
 
@@ -99,7 +128,7 @@ $port = config::byKey('port', 'teleinfo');
 				error: function (request, status, error) {
 					handleAjaxError(request, status, error);
 				},
-				success: function (data) { // si l'appel a bien fonctionnÃ©
+				success: function (data) { // si l'appel a bien fonctionné
 				if (data.state != 'ok') {
 					$('#div_alert').showAlert({message: data.result, level: 'danger'});
 					return;

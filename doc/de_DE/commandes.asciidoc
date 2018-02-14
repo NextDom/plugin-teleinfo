@@ -1,0 +1,14 @@
+Les commandes (Ajouter une donnée) correspondent aux données envoyées par le modem.
+
+Celles-ci peuvent êtres les suivantes :
+
+- Index (Base / Heures Pleines / Heures Creuses)
+- Index (Heures Normales / Heures de pointe mobile / Heures Pleines Bleu / Heures Creuses Bleu / Heures Pleine Blanc / Heures Creuses Blanc / Heures Pleines Rouge / Heures Creuses Rouge)
+- Tranche tarifaire
+- Type d'abonnement
+- Puissance instantanée
+- Intensité instantanée (Pour triphasé également)
+- Alerte dépassement (Pour triphasé également)
+- Intensité souscrite
+- Préavis EJP (30 minutes avant)
+- Couleur EJP lendemin.

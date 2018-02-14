@@ -45,20 +45,6 @@ if($controlerState === ''){
 			  <span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Info Modem}}</center></span>
 			</div>
 			
-			<?php 
-				foreach (jeeNetwork::byPlugin('teleinfo') as $jeeNetwork) {
-					echo '
-					<div class="cursor bt_info_external_daemon" slave_id="' . $jeeNetwork->getId() . '" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-					<center>
-						<i class="fa fa-heartbeat" style="font-size : 5em;color:#767676;"></i>
-					</center>
-					<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Info Modem ' . $jeeNetwork->getName() . ' }}</center></span>
-					</div>				
-					';
-				}
-			?>
-			
-			
 			<div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
 				<center>
 					<i class="fa fa-wrench" style="font-size : 5em;color:#767676;"></i>
@@ -156,10 +142,10 @@ if($controlerState === ''){
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-lg-4 control-label"></label>
-									<div class="col-lg-8">
-										<input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Activer}}" data-l1key="isEnable" checked/>
-										<input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Visible}}" data-l1key="isVisible" checked/>
+									<label class="col-sm-3 control-label"></label>
+									<div class="col-sm-9">
+										<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
+										<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
 									</div>
 								</div>
 							</fieldset> 
@@ -189,7 +175,7 @@ if($controlerState === ''){
 									</div>
 									<label class="col-md-2 control-label">{{Commandes :}}</label>
 									<div class="col-md-2 tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}">
-										<input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Auto}}" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>
+										<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="AutoCreateFromCompteur" checked/>{{Auto}}</label>
 									</div>
 									<!--<div class="col-md-2">
 										<input class="eqLogicAttr" style="display:none" type="checkbox"  data-l1key="configuration" data-l2key="AutoGenerateFields" id="checkbox-autocreate"/>

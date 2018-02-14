@@ -24,6 +24,7 @@ if (isset($argv)) {
         }
     }
 }
+set_time_limit(15);
 
 if ((php_sapi_name() != 'cli' || isset($_SERVER['REQUEST_METHOD']) || !isset($_SERVER['argc'])) && (config::byKey('api') != init('api') && init('api') != '')) {
 	connection::failed();

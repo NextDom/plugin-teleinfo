@@ -50,6 +50,19 @@ function teleinfo_update() {
 	if (teleinfo::deamonRunning()) {
         teleinfo::stopDeamon();
     }
+	message::add('Téléinfo', 'Mise à jour en cours...', null, null);
+	log::add('teleinfo','info','*****************************************************');
+	log::add('teleinfo','info','*********** Mise à jour du plugin teleinfo **********');
+	log::add('teleinfo','info','*****************************************************');
+	log::add('teleinfo','info','*			Core version    : 2.510                 *');
+	log::add('teleinfo','info','*			Desktop version : 1.000                 *');
+	log::add('teleinfo','info','*			Mobile version  : 1.000                 *');
+	log::add('teleinfo','info','*****************************************************');
+	
+	config::save('teleinfo_core_version','2.510','teleinfo');
+	config::save('teleinfo_desktop_version','1.000','teleinfo');
+	config::save('teleinfo_mobile_version','1.000','teleinfo');
+		
 	$cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
     if (!is_object($cron)) {
         $cron = new cron();
@@ -82,6 +95,8 @@ function teleinfo_update() {
 	//log::add('teleinfo', 'message', 'Merci de valider à nouveau votre objet Téléinfo en re-sauvegardant.');
 	//cache::set('teleinfo::current_core','2.230', 0);
 	//cache::set('teleinfo::current_core',$thisplugin->getVersion(), 0);
+	message::removeAll('Téléinfo');		
+	message::add('Téléinfo', 'Mise à jour terminée', null, null);
 	teleinfo::cron();
 }
 

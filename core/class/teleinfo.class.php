@@ -59,7 +59,7 @@ class teleinfo extends eqLogic {
 		$eqLogic->setIsEnable(1);
 		$eqLogic->setIsVisible(1);
 		$eqLogic->save();
-		$eqLogic->applyModuleConfiguration();
+		//$eqLogic->applyModuleConfiguration();
 		return $eqLogic;
 	}
 	
@@ -121,6 +121,8 @@ class teleinfo extends eqLogic {
         log::add('teleinfo', 'info', 'Démarrage du service en mode satellite');
         $teleinfo_path = realpath(dirname(__FILE__) . '/../../ressources');
 		$modem_serie_addr = config::byKey('port', 'teleinfo');
+		$_debug = config::byKey('debug', 'teleinfo');
+		$_force = config::byKey('force', 'teleinfo');
 		$_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
 
 		if(config::byKey('modem_vitesse', 'teleinfo') == ""){
@@ -170,16 +172,19 @@ class teleinfo extends eqLogic {
 		else{
 			$_debug = "0";
 		}
+		if($_force != "1"){
+			$_force = "0";
+		}
 		if($_2cpt_cartelectronic == 1){
 			log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteurs');
 			//exec('sudo chmod 777 /dev/bus/usb/* > /dev/null 2>&1');
 			$teleinfo_path = $teleinfo_path . '/teleinfo_2_cpt.py';
-			$cmd = 'sudo nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d '.$_debug.' -p ' . $port . ' -v ' . $modem_vitesse . ' -e ' . $ip_externe . ' -c ' . config::byKey('jeeNetwork::master::apikey') . ' -r ' . realpath(dirname(__FILE__));
+			$cmd = 'sudo nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d '.$_debug.' -p ' . $port . ' -v ' . $modem_vitesse . ' -e ' . $ip_externe . ' -c ' . config::byKey('jeeNetwork::master::apikey') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
 		}
 		else{
 			log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
 			$teleinfo_path = $teleinfo_path . '/teleinfo.py';
-			$cmd = 'nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d '.$_debug.' -p ' . $port . ' -v ' . $modem_vitesse . ' -e ' . $ip_externe . ' -c ' . config::byKey('jeeNetwork::master::apikey') . ' -r ' . realpath(dirname(__FILE__));
+			$cmd = 'nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d '.$_debug.' -p ' . $port . ' -v ' . $modem_vitesse . ' -e ' . $ip_externe . ' -c ' . config::byKey('jeeNetwork::master::apikey') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
 		}	
 		
 		log::add('teleinfo', 'info', 'Exécution du service : ' . $cmd);
@@ -206,6 +211,8 @@ class teleinfo extends eqLogic {
         log::add('teleinfo', 'info', 'Mode local');
         $teleinfo_path = realpath(dirname(__FILE__) . '/../../ressources');
 		$modem_serie_addr = config::byKey('port', 'teleinfo');
+		$_debug = config::byKey('debug', 'teleinfo');
+		$_force = config::byKey('force', 'teleinfo');
 		$_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
 				if(config::byKey('modem_vitesse', 'teleinfo') == ""){
 			$modem_vitesse = '1200';
@@ -241,6 +248,7 @@ class teleinfo extends eqLogic {
 		$ip_interne =  $parsed_url['scheme'] . '://' . $parsed_url['host'] . ':' . $parsed_url['port'] . $parsed_url['path'];
 		log::add('teleinfo', 'info', 'Mise en forme pour le service : ' . $ip_interne);
 		log::add('teleinfo', 'info', 'Debug : ' . $_debug);
+		log::add('teleinfo', 'info', 'Force : ' . $_force);
 		log::add('teleinfo', 'info', 'Port modem : ' . $port);
 		
 		if($_debug){
@@ -249,19 +257,22 @@ class teleinfo extends eqLogic {
 		else{
 			$_debug = "0";
 		}
+		if($_force != "1"){
+			$_force = "0";
+		}
 		log::add('teleinfo', 'info', '---------------------------------------------');
 		
 		if($_2cpt_cartelectronic == 1){
 			log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteur');
 			//exec('sudo chmod 777 /dev/bus/usb/* > /dev/null 2>&1');
 			$teleinfo_path = $teleinfo_path . '/teleinfo_2_cpt.py';
-			$cmd = 'sudo nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d '.$_debug.' -p ' . $port . ' -v ' . $modem_vitesse .' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -r ' . realpath(dirname(__FILE__));
+			$cmd = 'sudo nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d '.$_debug.' -p ' . $port . ' -v ' . $modem_vitesse .' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
 		}
 		else{
 			log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
 			$teleinfo_path = $teleinfo_path . '/teleinfo.py';
 			// $cmd = 'sudo nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d 0 -p ' . $port . ' -v ' . $modem_vitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -r ' . realpath(dirname(__FILE__));
-			$cmd = 'nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d '.$_debug.' -p ' . $port . ' -v ' . $modem_vitesse . ' -c ' . config::byKey('api') . ' -r ' . realpath(dirname(__FILE__));
+			$cmd = 'nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d '.$_debug.' -p ' . $port . ' -v ' . $modem_vitesse . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
 		}
 		
 		log::add('teleinfo', 'info', 'Exécution du service : ' . $cmd);
@@ -345,6 +356,7 @@ class teleinfo extends eqLogic {
 	}
 	
 	public static function deamon_stop() {
+		log::add('teleinfo', 'info', '[deamon_stop] Arret du service');
 		$deamon_info = self::deamon_info();
 		if ($deamon_info['state'] == 'ok') {
 			$_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
@@ -356,7 +368,14 @@ class teleinfo extends eqLogic {
 				$pid_file = '/tmp/teleinfo.pid';
                 if (file_exists($pid_file)) {
                         $pid = intval(trim(file_get_contents($pid_file)));
-                        system::kill($pid);
+						$kill = posix_kill($pid, 15);
+						usleep(500);
+						if ($kill) {
+							return true;
+						}
+						else{
+							system::kill($pid);
+						}
                 }
                 system::kill('teleinfo.py');
                 $port = config::byKey('port', 'teleinfo');

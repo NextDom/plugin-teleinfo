@@ -130,8 +130,8 @@ function addCmdToTable(_cmd) {
 	else{
 	selRequestType = '<select style="width : 220px;" class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="info_conso">';
 	selRequestType += '<option value="BASE">Index (BASE)</option>';
-    selRequestType += '<option value="HCHP">Index heures pleines (BLEU)</option>';
-    selRequestType += '<option value="HCHC">Index heures creuses (BLEU)</option>';
+	selRequestType += '<option value="HCHP">Index heures pleines (BLEU)</option>';
+ 	selRequestType += '<option value="HCHC">Index heures creuses (BLEU)</option>';
 	selRequestType += '<option value="PTEC">Tranche tarifaire</option>';
 	selRequestType += '<option value="PAPP">Puissance apparente instantanée</option>';
 	selRequestType += '<option value="IINST">Intensité instantanée</option>';
@@ -161,7 +161,8 @@ function addCmdToTable(_cmd) {
 	selRequestType += '<option value="BBRHPJR">Index Heures Pleines Jour Rouge (EJP)</option>';
 	selRequestType += '<option value="PEJP">Préavis (30 min avant) (EJP)</option>';
 	selRequestType += '<option value="DEMAIN">Couleur lendemain (TEMPO)</option>';
-    selRequestType += '</select>';
+	selRequestType += '<option value="MOTDETAT">Mot d\'état du compteur</option>';
+ 	selRequestType += '</select>';
 	}
 	
 	if(init(_cmd.configuration['type']) == 'panel'){
@@ -190,9 +191,8 @@ function addCmdToTable(_cmd) {
         tr += '</td>';
         tr += '<td>';
         tr += '<span><input class="cmdAttr" style="display:none" data-l1key="configuration" data-l2key="type" value="' + init(_cmd.configuration['type']) +'"/></span>';
-        tr += '<span><input type="checkbox" class="cmdAttr bootstrapSwitch" data-size="mini" data-label-text="{{Historiser}}" data-l1key="isHistorized"/></span> ';
-        tr += '<span><input type="checkbox" class="cmdAttr bootstrapSwitch" data-size="mini" data-label-text="{{Afficher}}" data-l1key="isVisible" checked/></span> ';
-        tr += '<span><input type="checkbox" class="cmdAttr bootstrapSwitch" style="display:none" data-size="mini" data-label-text="{{Evénement}}" data-l1key="eventOnly" checked disabled/></span>';
+        tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';
+		tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isHistorized" checked/>{{Historiser}}</label></span> ';
         
 		if(init(_cmd.configuration['info_conso']) == 'TENDANCE_DAY'){
 			tr += '<span><input type="checkbox" class="cmdAttr tooltips" title="Spécifie si le calcul de la tendance se fait sur la journée entière ou sur la plage jusqu\'à l\'heure actuelle." data-l1key="configuration" data-l2key="type_calcul_tendance"/> {{Journée entière}}<br/></span>';

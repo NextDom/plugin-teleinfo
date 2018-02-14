@@ -1,0 +1,5 @@
+Le panel vous permet d'avoir une vision globale des informations téléinfo. 
+
+image::../images/teleinformation_panel.png[]
+
+Les coûts viendrons ultérieurement. 

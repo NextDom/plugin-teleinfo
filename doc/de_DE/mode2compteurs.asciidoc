@@ -1,0 +1,3 @@
+Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement de 2 compteurs électrique il est nécessaire d'activer le mode 2 compteurs. 
+
+image::../images/teleinformation_2compteurs.png[]

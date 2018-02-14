@@ -16,6 +16,7 @@ from datetime import datetime
 import subprocess
 import urllib2
 import threading
+import signal 
  
 # Default log level
 gLogLevel = logging.DEBUG
@@ -30,6 +31,7 @@ gDebug = ''
 gRealPath = ''
 gVitesse = ''
 gMessageTemp = ''
+gCanStart = 'true'
 # ----------------------------------------------------------------------------
 # LOGGING
 # ----------------------------------------------------------------------------
@@ -60,6 +62,16 @@ class MyLogger:
 			#gMessageTemp += str(text) + "**"
 			#print text
 			self._logger.info(text)
+		except NameError:
+			pass
+
+	def warning(self, text):
+		try:
+			#global gMessageTemp
+			text = text.replace("'", "")
+			#gMessageTemp += str(text) + "**"
+			#print text
+			self._logger.warn(text)
 		except NameError:
 			pass
  
@@ -139,7 +151,7 @@ class Teleinfo:
 			self._log.info("Teleinfo modem successfully closed")
  
 	def terminate(self):
-		#print "Terminating..."
+		print "Terminating..."
 		self.close()
 		#sys.close(gOutput)
 		sys.exit()
@@ -257,9 +269,9 @@ class Teleinfo:
 				except OSError as error:
 					#logger.error("Error: %s " % error)
 					self._log.error("Error: %s " % error)
-				self._log.error("Thread terminated")
+				self._log.warning("Thread terminated")
 			else:
-				self._log.error("Thread not alive")
+				self._log.warning("Thread not alive")
 				
 		# Open Teleinfo modem
 		try:
@@ -291,12 +303,12 @@ class Teleinfo:
 				else:
 					Donnees[cle] = valeur
 			if(self._externalip != ""):
-				self.cmd = "curl -L -s -G " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
+				self.cmd = "curl -L -s -G --max-time 15 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
 				#self.cmd = "curl -L -s " + "192.168.1.150" +'/plugins/teleinfo/core/php/jeeTeleinfo.php?api=' + self._cleAPI
 				_Separateur = "&"
 			else:
 				#self.cmd = "curl -L -s -G " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
-				self.cmd = 'nice -n 19 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
+				self.cmd = 'nice -n 19 timeout 15 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
 				_Separateur = " "
 			
 			for cle, valeur in Donnees.items():
@@ -338,7 +350,10 @@ class Teleinfo:
 						errorCom = "Connection error '%s'" % e
 		# This is the End!
 		self.terminate()
- 
+	def exit_handler(self, *args):
+		self.terminate()
+		self._log.info("[exit_handler]")
+
 #------------------------------------------------------------------------------
 # MAIN
 #------------------------------------------------------------------------------
@@ -352,6 +367,7 @@ if __name__ == "__main__":
 	parser.add_option("-d", "--debug", dest="debug", help="mode debug")
 	parser.add_option("-r", "--realpath", dest="realpath", help="path usr")
 	parser.add_option("-v", "--vitesse", dest="vitesse", help="vitesse du modem")
+	parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
 	(options, args) = parser.parse_args()
 	#print "opt: %s, arglen: %s" % (options, len(args))
 	if options.port:
@@ -390,8 +406,24 @@ if __name__ == "__main__":
 			except:
 				error = "Can not get vitesse %s" % options.vitesse
 				raise TeleinfoException(error)
-	pid = str(os.getpid())
-	file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
-	teleinfo = Teleinfo(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath, gVitesse)
-	teleinfo.run()
+	if options.force:
+			try:
+				if options.force == '0':
+					if os.path.isfile("/tmp/teleinfo.pid"):
+						filetmp = open("/tmp/teleinfo.pid", 'r')
+						filepid = filetmp.readline()
+						filetmp.close()
+						if filepid != "":
+							_log = MyLogger()
+							_log.warning('Deamon deja lance')
+							gCanStart = 'false'
+			except:
+				error = "Can not get file PID"
+				raise TeleinfoException(error)
+	if gCanStart == 'true':
+		pid = str(os.getpid())
+		file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
+		teleinfo = Teleinfo(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath, gVitesse)
+		signal.signal(signal.SIGTERM, teleinfo.exit_handler)
+		teleinfo.run()
 	sys.exit()
