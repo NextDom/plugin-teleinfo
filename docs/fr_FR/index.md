@@ -3,14 +3,17 @@ Le plugin Téléinformation permet de récupérer les informations de votre comp
 
 # Architecture
 Pour récupérer la Téléinformation il faut se connecter sur les bornes I1 et I2 du compteur :
+
 ![teleinfo1](../images/teleinfo_compteur.png)
 
 Plusieurs architectures peuvent être ensuite choisis :
+
 ![teleinfo2](../images/teleinfo_archi.png)
 
 
 # Cas d'utilisation de 2 compteurs
 Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement de 2 compteurs électrique il est nécessaire d'activer le mode 2 compteurs.
+
 ![teleinfo3](../images/teleinformation_2compteurs.png)
 
 
@@ -18,9 +21,11 @@ Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement 
 Commencer par installer le plugin depuis le market : https://www.jeedom.fr/doc/documentation/core/fr_FR/doc-core-plugin.html
 
 Après avoir activé le plugin vous devez choisir le port du modem :
+
 ![teleinfo4](../images/teleinformation_plugin.png)
 
 En cas d'utilisation d'un modem série il est nécessaire de renseigner son port et d'ajouter ce port au groupe dialout.
+
 ![teleinfo5](../images/teleinformation_serie.png)
 
 Enfin pensez à sauvegarder.
@@ -79,9 +84,11 @@ Ces statistiques correspondent aux informations suivantes :
 Il est possible de vérifier la réception des données avant traitement.
 
 Pour cela rendez vous sur l'objet téléinfo puis cliquez sur Santé
+
 ![teleinfo6](../images/teleinformation_btsante.png)
 
 La fenêtre qui s'ouvre permet de vérifier la bonne reception des données :
+
 ![teleinfo7](../images/teleinformation_sante.png)
 
 # API
@@ -94,6 +101,7 @@ URL = http://#IP_JEEDOM#:#PORT_JEEDOM#/jeedom/plugins/teleinfo/core/php/jeeTelei
  #IP_JEEDOM# correspond à l'adresse ip de votre Jeedom
  #PORT_JEEDOM# correspond au port d'accès à votre Jeedom
  #VOTRE_API_JEEDOM# est la clé API disponible depuis le menu Général / Administration / Configuration
+
  ![teleinfo8](../images/teleinformation_api_menu1.png)
 
  #IDENTIFIANT_DU_COMPTEUR# correspond à l'ADCO de celui-ci. Cette information est obligatoirement transmise par le compteur lorsque vous recevez une trame.
@@ -110,11 +118,11 @@ L'URL sera donc surchargée de toutes information utile.
 
 Par exemple :
 
-IP_JEEDOM : 192.168.1.15
-PORT_JEEDOM : 80
-VOTRE_API_JEEDOM : zertyuiolkjhgfdsxc
-IDENTIFIANT_DU_COMPTEUR : 0095123657
-Index BASE : 123456789
+    IP_JEEDOM : 192.168.1.15
+    PORT_JEEDOM : 80
+    VOTRE_API_JEEDOM : zertyuiolkjhgfdsxc
+    IDENTIFIANT_DU_COMPTEUR : 0095123657
+    Index BASE : 123456789
 
 Donnera l'URL : http://192.168.1.15:80/jeedom/plugins/teleinfo/core/php/jeeTeleinfo.php?api=zertyuiolkjhgfdsxc&ADCO=0095123657*&BASE=123456789*
 
@@ -215,3 +223,11 @@ Le lissage des historiques Jeedom peut induire des valeurs statistiques erronée
 - Aller sur l'onglet Configuration Avancée
 - Dans la zone historique choisir Aucun pour le mode de lissage.
 - Enregistrer
+
+
+
++ Bug
+
+En cas de bug avéré du plugin il est possible d'ouvrir une issue :
+
+[https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/issues](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/issues)
