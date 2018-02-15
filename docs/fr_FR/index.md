@@ -146,8 +146,8 @@ Pour le mettre à jour :
 
 ATTENTION ! Je vous conseille de lire le forum en premier afin d'être sûr d'effectuer les bonnes actions. Je ne pourrais être tenu responsable des opérations effectuées.
 
-Télécharger le programme et le firmware ici : http://www.cartelectronic.fr/logiciels/Modif%20teleinfo%201TIC.zip
-(Pour le modem 1 compteur : http://www.cartelectronic.fr/blog/?p=1125)
+Télécharger le programme et le firmware ici : [http://www.cartelectronic.fr/logiciels/Modif%20teleinfo%201TIC.zip](http://www.cartelectronic.fr/logiciels/Modif%20teleinfo%201TIC.zip)
+(Pour le modem 1 compteur : [http://www.cartelectronic.fr/blog/?p=1125](http://www.cartelectronic.fr/blog/?p=1125))
 
 - Installer le logiciel FT PROG
 - exécuter FT PROG
@@ -203,7 +203,9 @@ Depuis la version jessie le fichier inittab n'est plus présent. Il faut utilise
 
 Suivant l'architecture choisie les logs du plugin peuvent êtres séparés.
 
-En mode local tous les logs se trouvent sur l'interface log de Jeedom (En mode expert : Général / Administration / Logs ; cf doc jeedom https://jeedom.fr/doc/documentation/core/fr_FR/doc-core-log.html[Accès doc])
+En mode local tous les logs se trouvent sur l'interface log de Jeedom (En mode expert : Général / Administration / Logs ; cf doc jeedom
+
+[Accès doc](https://jeedom.fr/doc/documentation/core/fr_FR/doc-core-log.html)
 
 En mode satellite :
 - Sur le maitre : Les logs de récupération / traitement des données. Les calculs des statistiques
