@@ -4,12 +4,12 @@
 	"description" : "Plugin pour utiliser les modems téléinformation USB",
 	"licence" : "AGPL",
 	"author" : "Cédric GUINE",
-	"require" : "2.3",
+	"require" : "3.0",
 	"category" : "automation protocol",
 	"display" : "panel",
 	"hasDependency" : true,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 45,
-	"changelog" : "https://github.com/jeedom/plugin-teleinfo/blob/stable/doc/#language#/changelog.asciidoc",
-	"documentation" : "https://github.com/jeedom/plugin-teleinfo/blob/stable/doc/#language#/index.asciidoc"
+	"changelog" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/",
+	"documentation" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/"
 }

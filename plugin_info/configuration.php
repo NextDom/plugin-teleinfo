@@ -28,7 +28,7 @@ $port = config::byKey('port', 'teleinfo');
 <form class="form-horizontal">
     <fieldset>
 		<legend><i class="icon loisir-darth"></i> {{Démon}}</legend>
-		
+
 		<div class="form-group div_local">
             <label class="col-lg-4 control-label">Port du modem :</label>
             <div class="col-lg-4">
@@ -41,7 +41,7 @@ $port = config::byKey('port', 'teleinfo');
 					echo '<option value="serie">Modem Série</option>';
                     ?>
                 </select>
-				
+
 				<input id="port_serie" class="configKey form-control" data-l1key="modem_serie_addr" style="margin-top:5px;display:none" placeholder="Renseigner le port série (ex : /dev/ttyS0)"/>
 				<script>
 				$( "#select_port" ).change(function() {
@@ -53,13 +53,13 @@ $port = config::byKey('port', 'teleinfo');
 							$("#port_serie").hide();
 							}
 						});
-					
+
 				});
-				
+
 				</script>
             </div>
         </div>
-		
+
 		<div class="form-group div_local">
             <label class="col-lg-4 control-label">Vitesse : </label>
             <div class="col-lg-4">
@@ -77,40 +77,40 @@ $port = config::byKey('port', 'teleinfo');
 				</select>
             </div>
         </div>
-		
+
 		<div class="form-group div_local">
-            <label class="col-lg-4 control-label">Mode 2 compteurs : </label>
-            <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{En cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
+            <label class="col-lg-4 control-label">Mode 2 compteurs <sup><i class="fa fa-question-circle tooltips" title="{{Si vous utilisez le modem Cartelectronic en mode 2 compteurs}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{Seulement en cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
 				<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>
             </div>
         </div>
-		
+
 		<div class="form-group">
-            <label class="col-lg-4 control-label">Debug : </label>
+            <label class="col-lg-4 control-label">Activer les traces ERDF </label>
             <div id="div_debug" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
-				<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{On}}</label>
+				<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{Oui}}</label>
             </div>
         </div>
-		
+
 		<div class="form-group">
-            <label class="col-lg-4 control-label">Force : </label>
-            <div id="div_debug" class="col-lg-4 tooltips" title="{{ Forcer le lancement }}">
-				<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="force" />{{On}}</label>
+            <label class="col-lg-4 control-label">/!\ Forcer <sup><i class="fa fa-question-circle tooltips" title="{{Attention pas de vérification de conformité des paramètres}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <div id="div_debug" class="col-lg-4 tooltips">
+				<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="force" />{{Oui}}</label>
             </div>
         </div>
 	</fieldset>
 	<fieldset>
 	<legend><i class="icon loisir-pacman1"></i> {{Versions}}</legend>
 		<div class="form-group">
-			<label class="col-lg-1 control-label">Core Teleinfo </label>
+			<label class="col-lg-4 control-label">Core Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{C'est la version du programme de connexion au modem}}" style="font-size : 1em;color:grey;"></i></sup></label>
 			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_core_version','teleinfo'); ?></span>
 		</div>
 		<div class="form-group">
-			<label class="col-lg-1 control-label">Desktop Teleinfo </label>
+			<label class="col-lg-4 control-label">Desktop Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{Version de la partie graphique pour le desktop}}" style="font-size : 1em;color:grey;"></i></sup></label>
 			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_desktop_version','teleinfo'); ?></span>
 		</div>
 		<div class="form-group">
-			<label class="col-lg-1 control-label">Mobile Teleinfo </label>
+			<label class="col-lg-4 control-label">Mobile Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{Version de la partie graphique pour le site mobile}}" style="font-size : 1em;color:grey;"></i></sup></label>
 			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_mobile_version','teleinfo'); ?></span>
 		</div>
     </fieldset>
@@ -138,7 +138,7 @@ $port = config::byKey('port', 'teleinfo');
 			}
 			});
 		});
-		
+
 		$('#bt_restartTeleinfoDeamon').on('click', function () {
         $.ajax({// fonction permettant de faire de l'ajax
             type: "POST", // methode de transmission des données au fichier php
@@ -160,6 +160,6 @@ $port = config::byKey('port', 'teleinfo');
 			}
 		});
 		});
-		
-		
+
+
 </script>

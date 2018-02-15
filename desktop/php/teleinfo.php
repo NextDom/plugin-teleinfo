@@ -6,14 +6,14 @@ sendVarToJS('eqType', 'teleinfo');
 $eqLogics = eqLogic::byType('teleinfo');
 $controlerState = teleinfo::getTeleinfoInfo('');
 if($controlerState === ''){
-   echo '<div class="alert jqAlert alert-danger" style="margin : 0px 5px 15px 15px; padding : 7px 35px 7px 15px;">{{Impossible de contacter le serveur teleinfo. Avez vous bien renseigné l\'IP ?}}</div>'; 
+   echo '<div class="alert jqAlert alert-danger" style="margin : 0px 5px 15px 15px; padding : 7px 35px 7px 15px;">{{Impossible de contacter le serveur teleinfo. Avez vous bien renseigné l\'IP ?}}</div>';
 }
 //$deamonRunning = false;
 //$deamonRunning = teleinfo::deamonRunning();
 ?>
 
 <div class="row row-overflow">
-    	
+
 	<div class="col-lg-2 col-md-3 col-sm-4">
         <div class="bs-sidebar">
             <ul id="ul_eqLogic" class="nav nav-list bs-sidenav">
@@ -27,7 +27,7 @@ if($controlerState === ''){
             </ul>
         </div>
     </div>
-	
+
 	<div class="col-lg-10 col-md-9 col-sm-8 eqLogicThumbnailDisplay" style="border-left: solid 1px #EEE; padding-left: 25px;">
 		<legend>{{Gestion}}</legend>
 		<div class="eqLogicThumbnailContainer">
@@ -37,24 +37,24 @@ if($controlerState === ''){
 			  </center>
 			  <span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Coût}}</center></span>
 			</div>-->
-			
+
 			<div class="cursor" id="bt_info_daemon" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
 			  <center>
 				<i class="fa fa-heartbeat" style="font-size : 5em;color:#767676;"></i>
 			  </center>
 			  <span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Info Modem}}</center></span>
 			</div>
-			
+
 			<div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
 				<center>
 					<i class="fa fa-wrench" style="font-size : 5em;color:#767676;"></i>
 				</center>
 			<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>Configuration</center></span>
 			</div>
-			
-			
+
+
 		</div>
-		
+
         <legend>{{Mes Modules de Téléinformation}}</legend>
         <?php
         /*if (count($eqLogics) == 0) {
@@ -62,14 +62,14 @@ if($controlerState === ''){
         } else {*/
             ?>
             <div class="eqLogicThumbnailContainer">
-			
+
 				<div class="cursor eqLogicAction" data-action="add" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
 					<center>
 						<i class="fa fa-plus-circle" style="font-size : 7em;color:#4F81BD;"></i>
 					</center>
 					<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#4F81BD"><center>Ajouter</center></span>
 				</div>
-			
+
                 <?php
                 foreach ($eqLogics as $eqLogic) {
                     echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
@@ -83,36 +83,38 @@ if($controlerState === ''){
             </div>
         <?php /*}*/ ?>
     </div>
-	
-	
-	
+
+
+
     <div class="col-lg-10 col-md-9 col-sm-8 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
 		<a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
 		<a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fa fa-minus-circle"></i> {{Supprimer}}</a>
-        
+    <a class="btn btn-default eqLogicAction pull-right" data-action="configure"><i class="fa fa-cogs"></i> Configuration avancée</a>
+
 		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
+      <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
 			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> Equipement</a></li>
 			<li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> Commandes</a></li>
 		</ul>
-		
+
 		<div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
-			<div role="tabpanel" class="tab-pane active" id="eqlogictab">	
+			<div role="tabpanel" class="tab-pane active" id="eqlogictab">
+      </br>
 				<div class="row">
 					<div class="col-lg-6">
 						<form class="form-horizontal">
 							<fieldset>
-								<legend><i class="fa fa-arrow-circle-left eqLogicAction cursor" data-action="returnToThumbnailDisplay"></i> {{Général}}  <i class='fa fa-cogs eqLogicAction pull-right cursor expertModeVisible' data-action='configure'></i></legend>
 								<div class="form-group">
-									<label class="col-lg-4 control-label">{{Nom de l'équipement}}</label>
-									<div class="col-lg-8">
+									<label class="col-lg-4 control-label">{{Nom de l'équipement}} :</label>
+									<div class="col-lg-4">
 										<input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
 										<input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}"/>
 									</div>
+                  <div class="col-lg-4"/>
 								</div>
 								<div class="form-group">
-									<label class="col-lg-4 control-label" >{{Objet parent}}</label>
-									<div class="col-lg-8">
+									<label class="col-lg-4 control-label" >{{Objet parent :}}</label>
+									<div class="col-lg-4">
 										<select class="eqLogicAttr form-control" data-l1key="object_id">
 											<option value="">{{Aucun}}</option>
 											<?php
@@ -122,15 +124,17 @@ if($controlerState === ''){
 											?>
 										</select>
 									</div>
+                  <div class="col-lg-4"/>
 								</div>
 								<div class="form-group">
-									<label class="col-lg-4 control-label">{{Identifiant Compteur}}</label>
-									<div class="col-lg-8">
+									<label class="col-lg-4 control-label">{{Identifiant Compteur}} :</label>
+									<div class="col-lg-4">
 										<input type="text" class="eqLogicAttr form-control tooltips" title="{{Identifiant du compteur aussi connu sous le nom ADCO.}}" data-l1key="logicalId" placeholder="{{ADCO du compteur}}"/>
 									</div>
+                  <div class="col-lg-4"/>
 								</div>
 								<div class="form-group" style="display:none">
-									<label class="col-lg-4 control-label">{{Catégorie}}</label>
+									<label class="col-lg-4 control-label">{{Catégorie}} :</label>
 									<div class="col-lg-8">
 										<!--<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="energy" checked/>-->
 										<?php
@@ -143,27 +147,22 @@ if($controlerState === ''){
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-sm-4 control-label"></label>
+									<label class="col-sm-4 control-label">{{Etat de l'objet}} :</label>
 									<div class="col-sm-8">
 										<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
 										<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
 									</div>
 								</div>
-							</fieldset> 
+							</fieldset>
 						</form>
 					</div>
 					<div class="col-lg-6">
 						<form class="form-horizontal">
 							<fieldset>
-								<legend>{{Paramètres}}</legend>
-								<div class="form-group">
-									<div class="col-lg-12">
-										<p>{{Attention, il est nécessaire d'activer l'historisation des index pour utiliser les statistiques}}</p>
-									</div>
-								</div>
+								<!--<legend>{{Paramètres}}</legend>-->
 								<div class="form-group">
 									<label class="col-md-3 control-label pull-left">{{Votre abonnement :}}</label>
-									<div class="col-md-3">
+									<div class="col-md-4">
 										<select class="eqLogicAttr form-control tooltips" title="{{Abonnement présent sur le compteur}}" data-l1key="configuration" data-l2key="abonnement">
 										<option value="">Aucun</option>
 										<option value="base">Base (HP)</option>
@@ -174,9 +173,12 @@ if($controlerState === ''){
 										<option value="tempotri">Tempo triphasé</option>
 										</select>
 									</div>
-									<label class="col-md-2 control-label">{{Commandes :}}</label>
-									<div class="col-md-2 tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}">
-										<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="AutoCreateFromCompteur" checked/>{{Auto}}</label>
+                  <div class="col-lg-3"/>
+								</div>
+                <div class="form-group">
+									<label class="col-md-3 control-label pull-left">{{Création des commandes}} <sup><i class="fa fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
+									<div class="col-md-7 tooltips">
+										<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="AutoCreateFromCompteur" checked/>{{Automatique}}</label>
 									</div>
 									<!--<div class="col-md-2">
 										<input class="eqLogicAttr" style="display:none" type="checkbox"  data-l1key="configuration" data-l2key="AutoGenerateFields" id="checkbox-autocreate"/>
@@ -184,39 +186,26 @@ if($controlerState === ''){
 									</div>-->
 								</div>
 								<div class="form-group">
-									<!--<label class="col-md-3 control-label pull-left">{{Choix du template :}}</label>
+                  <label class="col-md-3 control-label pull-left">{{Vérifier}} <sup><i class="fa fa-question-circle tooltips" title="{{Obtenir des informations sur la réception des données}}" style="font-size : 1em;color:grey;"></i></sup></label>
 									<div class="col-md-3">
-										<select class="eqLogicAttr form-control tooltips" title="{{FONCTION BETA - Modèle à utiliser pour l'affichage}}" data-l1key="configuration" data-l2key="template">
-										<option value="">Aucun</option>
-										<option value="base">Base</option>
-										<option value="bleu">Bleu</option>
-										</select>
-									</div>-->
-									<div class="col-md-3 col-md-offset-3">
-										<a class="btn btn-info tooltips"  id="bt_teleinfoHealth" title="{{Informations sur les données}}"><i class="fa fa-medkit"></i>{{ Santé}}</a>
+										<a class="btn btn-info tooltips"  id="bt_teleinfoHealth"><i class="fa fa-medkit"></i>{{ Santé}}</a>
 									</div>
 									<!--<div class="col-md-2">
 										<a class="btn btn-info btn-sm eqLogicAction tooltips"  data-action="save" title="{{Applique le template}}"><i class="fa fa-plus-circle"></i> {{Appliquer}}</a><br/><br/>
 									</div>-->
 								</div>
-								<!--<div class="form-group">
-									<label class="col-md-3 control-label pull-left">{{Unités d'affichage :}}</label>
-									<div class="col-md-3">
-										<select class="eqLogicAttr form-control tooltips" title="{{FONCTION BETA - NE FONCTIONNE PAS ACTUELLEMENT}}" data-l1key="configuration" data-l2key="unites">
-										<option value="">Sans modifications</option>
-										<option value="wh">Wh</option>
-										<option value="kwh">kWh</option>
-										</select>
+                <div class="form-group">
+									<div class="col-lg-12">
+                    <div class="alert alert-info globalRemark" style="">{{Attention, il est nécessaire d'activer l'historisation des index pour utiliser les statistiques}}</div>
 									</div>
-								</div>-->
-								
+								</div>
 							</fieldset>
 						</form>
 					</div>
 				</div>
 			</div>
 			<div role="tabpanel" class="tab-pane" id="commandtab">
-				<legend>Commandes</legend>
+      </br>
 					<a class="btn btn-success btn-sm cmdAction" id="addDataToTable"><i class="fa fa-plus-circle"></i> {{Ajouter une donnée}}</a> &nbsp;
 					<a class="btn btn-success btn-sm cmdAction expertModeVisible" id="addStatToTable"><i class="fa fa-plus-circle"></i> {{Ajouter une statistique}}</a><br/><br/>
 
@@ -239,7 +228,7 @@ if($controlerState === ''){
 				<form class="form-horizontal">
 					<fieldset>
 						<div class="form-actions">
-							
+
 						</div>
 					</fieldset>
 				</form>
