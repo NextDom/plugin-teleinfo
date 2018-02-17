@@ -228,7 +228,7 @@ Le lissage des historiques Jeedom peut induire des valeurs statistiques erronée
 
 
 
-+ Bug
+# Bug
 
 En cas de bug avéré du plugin il est possible d'ouvrir une issue :
 
