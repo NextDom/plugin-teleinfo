@@ -55,7 +55,7 @@ function populate_table(){
 
 function check_state(name,  datetime){
 
-	var group1 = ["BASE","EJPHN ","HCHP","HCHC","IINST","PAPP"];
+	var group1 = ["BASE","EJPHN","HCHP","HCHC","IINST","PAPP"];
 	var group2 = ["PTEC","HHPHC","EJPHPM","DEMAIN"];
 	var group3 = ["IMAX","OPTARIF","ISOUSC", "PEJP"];
 

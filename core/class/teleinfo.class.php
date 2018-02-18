@@ -885,6 +885,7 @@ class teleinfo extends eqLogic {
 							case "BBRHPJB":
 							case "BBRHPJW":
 							case "BBRHPJR":
+							case "EJPHPM":
 							$ppap_hp += $cmd->execCmd();
 							log::add('teleinfo', 'debug', 'Cmd : ' . $cmd->getId() . ' / Value : ' . $cmd->execCmd());
 							break;
@@ -894,6 +895,7 @@ class teleinfo extends eqLogic {
 							case "BBRHCJB":
 							case "BBRHCJW":
 							case "BBRHCJR":
+							case "EJPHN":
 							$ppap_hc += $cmd->execCmd();
 							log::add('teleinfo', 'debug', 'Cmd : ' . $cmd->getId() . ' / Value : ' . $cmd->execCmd());
 							break;
@@ -945,6 +947,7 @@ class teleinfo extends eqLogic {
 							case "BBRHPJB":
 							case "BBRHPJW":
 							case "BBRHPJR":
+							case "EJPHPM":
 							$ppap_hp += $cmd->execCmd();
 							break;
 						}
@@ -953,6 +956,7 @@ class teleinfo extends eqLogic {
 							case "BBRHCJB":
 							case "BBRHCJW":
 							case "BBRHCJR":
+							case "EJPHN":
 							$ppap_hc += $cmd->execCmd();
 							break;
 						}
