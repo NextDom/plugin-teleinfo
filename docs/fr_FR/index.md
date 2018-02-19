@@ -9,15 +9,9 @@ Pour récupérer la Téléinformation il faut se connecter sur les bornes I1 et 
 ![teleinfo2](../images/teleinfo_archi.png)
 
 
-# Cas d'utilisation de plusieurs compteurs
+# Cas d'utilisation de 2 compteurs
 
 ## Utilisation du modem Cartelectronic 2 Compteurs
-Plusieurs architectures peuvent être ensuite choisis :
-
-![teleinfo2](../images/teleinfo_archi.png)
-
-
-# Cas d'utilisation de 2 compteurs
 Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement de 2 compteurs électrique il est nécessaire d'activer le mode 2 compteurs.
 
 ![teleinfo3](../images/teleinformation_2compteurs.png)
