@@ -19,9 +19,9 @@ $.ajax({
 			populate_table();
         }
     });
-	
+
 function populate_table(){
-	
+
 	var tbody = '';
     for(var i in nodes){
 		console.log(nodes[i]);
@@ -34,19 +34,19 @@ function populate_table(){
 			tbody += '<td>';
 			tbody += '<span  class="label label-primary" style="font-size : 1em;">'+nodes[i].name+'</span>';
 			tbody += '</td>';
-			
+
 			tbody += '<td>';
 			tbody += '<span class="" style="" title="'+nodes[i].value+'">'+nodes[i].value+'</span>';
 			tbody += '</td>';
-			
+
 			tbody += '<td>';
 			tbody += check_state(nodes[i].name,nodes[i].update_time);
 			tbody += '</td>';
-			
+
 			tbody += '<td>';
 			tbody += '<span class="" style="" title="'+nodes[i].update_time+'">'+nodes[i].update_time+'</span>';
 			tbody += '</td>';
-			
+
 			tbody += '</tr>';
 		}
 	}
@@ -54,11 +54,11 @@ function populate_table(){
 }
 
 function check_state(name,  datetime){
-	
-	var group1 = ["BASE","HCHP","HCHC","IINST","PAPP"];
-	var group2 = ["PTEC","HHPHC","PEJP","DEMAIN"];
-	var group3 = ["IMAX","OPTARIF","ISOUSC"];
-	
+
+	var group1 = ["BASE","EJPHN","HCHP","HCHC","IINST","PAPP"];
+	var group2 = ["PTEC","HHPHC","EJPHPM","DEMAIN"];
+	var group3 = ["IMAX","OPTARIF","ISOUSC", "PEJP"];
+
 	if(group1.indexOf(name) != -1){
 		if((new Date(datetime).getTime() - d.getTime()) < -1800000){
 			return '<span  class="label label-danger" style="font-size : 1em;">NOK</span>';
@@ -74,7 +74,7 @@ function check_state(name,  datetime){
 		else {
 			return '<span  class="label label-success" style="font-size : 1em;">OK</span>';
 		}
-		
+
 	}
 	else if (group3.indexOf(name) != -1){
 		if((new Date(datetime).getTime() - d.getTime()) < -86400000){
@@ -85,8 +85,8 @@ function check_state(name,  datetime){
 		}
 	}
 	else{
-		return '<span  class="label label-default" style="font-size : 1em;">--</span>';		
+		return '<span  class="label label-default" style="font-size : 1em;">--</span>';
 	}
-		
+
 	return result;
 }

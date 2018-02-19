@@ -430,7 +430,7 @@ def main():
     parser.add_option("-d", "--debug", dest="debug", help="mode debug")
     parser.add_option("-r", "--realpath", dest="realpath", help="path usr")
     parser.add_option("-v", "--vitesse", dest="vitesse", help="vitesse")
-	parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
+    parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
     (options, args) = parser.parse_args()
     # Create MySQL table options
     #groupeCreate = optparse.OptionGroup(parser, "Create")

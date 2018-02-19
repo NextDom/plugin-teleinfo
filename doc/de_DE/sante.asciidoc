@@ -1,9 +1,0 @@
-Es ist möglich, die Daten vor der Verarbeitung zu überprüfen.  
-
-Dazu gehen Sie auf das Teleinfo Objekt und klicken Sie auf Gesundheit.
-
-image::../images/teleinformation_btsante.png[]
-
-Das sich öffnende Fenster ermöglicht den Empfang der Daten zu überprüfen :
-
-image::../images/teleinformation_sante.png[]

@@ -6,16 +6,32 @@ Pour récupérer la Téléinformation il faut se connecter sur les bornes I1 et 
 
 ![teleinfo1](../images/teleinfo_compteur.png)
 
+<<<<<<< HEAD
+![teleinfo2](../images/teleinfo_archi.png)
+
+
+# Cas d'utilisation de plusieurs compteurs
+
+## Utilisation du modem Cartelectronic 2 Compteurs
+=======
 Plusieurs architectures peuvent être ensuite choisis :
 
 ![teleinfo2](../images/teleinfo_archi.png)
 
 
 # Cas d'utilisation de 2 compteurs
+>>>>>>> master
 Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement de 2 compteurs électrique il est nécessaire d'activer le mode 2 compteurs.
 
 ![teleinfo3](../images/teleinformation_2compteurs.png)
 
+<<<<<<< HEAD
+## Utilisation d'un second compteur pour de la production électrique
+Dans ce cas il faut activer le mode production du plugin :
+
+![teleinfo31](../images/teleinformation_production.png)
+=======
+>>>>>>> master
 
 # Installation
 Commencer par installer le plugin depuis le market : https://www.jeedom.fr/doc/documentation/core/fr_FR/doc-core-plugin.html
@@ -35,7 +51,20 @@ Un nouveau Protocole est disponible dans Plugins => Protocole domotique => Tél�
 # Configuration
 Le plugin offre la possibilité de créer automatiquement les commandes réceptionnées. Pour cela démarrez le daemon, attendez que les premières trames arrivent puis rendez vous sur Plugin / Protocoles Domotiques / Téléinfo.
 Vous devriez voir apparaitre un objet avec un ID.
+<<<<<<< HEAD
+
+>Il est possible de désactiver la création automatique des nouveaux compteurs.
+>
+>![teleinfo51](../images/teleinformation_blocage.png)
+
+Cliquez sur l'objet et sélectionnez "Création automatique des commandes" en haut à droite, enfin sauvegardez. A partir de ce moment toutes les commandes reçu et non reconnu seront ajoutée automatiquement.
+
+![teleinfo52](../images/teleinformation_objet.png)
+
+![teleinfo52](../images/teleinformation_commandes_auto.png)
+=======
 Cliquez dessus et sélectionnez "Création automatique des commandes" en haut à droite, enfin sauvegardez. A partir de ce moment toutes les commandes reçu et non reconnu seront ajoutée automatiquement.
+>>>>>>> master
 
 Vous pouvez également créer votre appareil manuellement :
 -   Créez votre nouvel appareil en cliquant sur Ajouter
@@ -228,7 +257,11 @@ Le lissage des historiques Jeedom peut induire des valeurs statistiques erronée
 
 
 
+<<<<<<< HEAD
+# Bug
+=======
 + Bug
+>>>>>>> master
 
 En cas de bug avéré du plugin il est possible d'ouvrir une issue :
 
