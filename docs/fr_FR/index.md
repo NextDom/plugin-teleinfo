@@ -72,7 +72,7 @@ Celles-ci peuvent êtres les suivantes :
 -   Alerte dépassement (Pour triphasé également)
 -   Intensité souscrite
 -   Préavis EJP (30 minutes avant)
--   Couleur EJP lendemin.
+-   Couleur EJP lendemain.
 
 # Les statistiques
 Afin d'obtenir des informations sur une durée plus longue des statistiques ont étés ajoutées.
