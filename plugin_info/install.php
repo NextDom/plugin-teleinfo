@@ -43,7 +43,7 @@ function teleinfo_install() {
         $crontoday->setSchedule('*/5 * * * *');
         $crontoday->save();
     }
-	cache::set('teleinfo::current_core','2.210', 0);
+	cache::set('teleinfo::current_core','2.520', 0);
 }
 
 function teleinfo_update() {
@@ -54,12 +54,12 @@ function teleinfo_update() {
 	log::add('teleinfo','info','*****************************************************');
 	log::add('teleinfo','info','*********** Mise à jour du plugin teleinfo **********');
 	log::add('teleinfo','info','*****************************************************');
-	log::add('teleinfo','info','*			Core version    : 2.511                 *');
-	log::add('teleinfo','info','*			Desktop version : 1.001                 *');
+	log::add('teleinfo','info','*			Core version    : 2.520                 *');
+	log::add('teleinfo','info','*			Desktop version : 1.002                 *');
 	log::add('teleinfo','info','*			Mobile version  : 1.001                 *');
 	log::add('teleinfo','info','*****************************************************');
 
-	config::save('teleinfo_core_version','2.511','teleinfo');
+	config::save('teleinfo_core_version','2.520','teleinfo');
 	config::save('teleinfo_desktop_version','1.001','teleinfo');
 	config::save('teleinfo_mobile_version','1.001','teleinfo');
 
