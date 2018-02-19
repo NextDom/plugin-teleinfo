@@ -45,22 +45,28 @@ class teleinfo extends eqLogic {
 
 
     public static function createFromDef($_def) {
-        if (!isset($_def['ADCO'])) {
-            log::add('teleinfo', 'info', 'Information manquante pour ajouter l\'équipement : ' . print_r($_def, true));
-            return false;
-        }
-        $teleinfo = teleinfo::byLogicalId($_def['ADCO'], 'teleinfo');
-        if (!is_object($teleinfo)) {
-            $eqLogic = new teleinfo();
-            $eqLogic->setName($_def['ADCO']);
-        }
-        $eqLogic->setLogicalId($_def['ADCO']);
-        $eqLogic->setEqType_name('teleinfo');
-        $eqLogic->setIsEnable(1);
-        $eqLogic->setIsVisible(1);
-        $eqLogic->save();
-        //$eqLogic->applyModuleConfiguration();
-        return $eqLogic;
+		$autorisationCreationObjet = config::byKey('createNewADCO', 'teleinfo');
+		if ($autorisationCreationObjet != 1){
+			if (!isset($_def['ADCO'])) {
+	            log::add('teleinfo', 'info', 'Information manquante pour ajouter l\'équipement : ' . print_r($_def, true));
+	            return false;
+	        }
+	        $teleinfo = teleinfo::byLogicalId($_def['ADCO'], 'teleinfo');
+	        if (!is_object($teleinfo)) {
+	            $eqLogic = new teleinfo();
+	            $eqLogic->setName($_def['ADCO']);
+	        }
+	        $eqLogic->setLogicalId($_def['ADCO']);
+	        $eqLogic->setEqType_name('teleinfo');
+	        $eqLogic->setIsEnable(1);
+	        $eqLogic->setIsVisible(1);
+	        $eqLogic->save();
+	        //$eqLogic->applyModuleConfiguration();
+	        return $eqLogic;
+		} else {
+			return null;
+		}
+
     }
 
     public static function createCmdFromDef($_oADCO, $_oKey, $_oValue) {

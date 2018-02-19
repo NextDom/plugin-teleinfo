@@ -77,7 +77,7 @@ $port = config::byKey('port', 'teleinfo');
             <label class="col-lg-4 control-label">Mode 2 compteurs <sup><i class="fa fa-question-circle tooltips" title="{{Si vous utilisez le modem Cartelectronic en mode 2 compteurs}}" style="font-size : 1em;color:grey;"></i></sup></label>
             <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{Seulement en cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
                 <input type="checkbox" id="mode_2_cpt" class="configKey" data-l1key="2cpt_cartelectronic" placeholder="{{Actif}}"/>
-                <label for="mode_2_cpt"> Actif </label>
+                <label for="mode_2_cpt">  </label>
                 <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
             </div>
         </div>
@@ -86,7 +86,7 @@ $port = config::byKey('port', 'teleinfo');
             <div id="div_debug" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
                 <!--<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{Oui}}</label>-->
                 <input type="checkbox" id="debug" class="configKey" data-l1key="debug" placeholder="{{}}"/>
-                <label for="debug"> Oui </label>
+                <label for="debug">  </label>
             </div>
         </div>
 
@@ -95,7 +95,15 @@ $port = config::byKey('port', 'teleinfo');
             <div id="div_debug" class="col-lg-4 tooltips"  title="{{Attention pas de vérification de conformité des paramètres}}">
                 <!--<label class="checkbox-inline"><input id="force" type="checkbox" class="configKey" data-l1key="force" />{{Oui}}</label>-->
                 <input type="checkbox" id="force" class="configKey" data-l1key="force" placeholder="{{Actif}}"/>
-                <label for="force"> Oui </label>
+                <label for="force">  </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Bloquer la création automatique des compteurs <sup><i class="fa fa-question-circle tooltips" title="{{Interdire la création automatique des nouveaux compteurs}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <div id="div_auth_new_object" class="col-lg-4 tooltips"  title="{{Interdire la création automatique des nouveaux compteurs}}">
+                <!--<label class="checkbox-inline"><input id="force" type="checkbox" class="configKey" data-l1key="force" />{{Oui}}</label>-->
+                <input type="checkbox" id="auth_new_object" class="configKey" data-l1key="createNewADCO" placeholder="{{Actif}}"/>
+                <label for="auth_new_object">  </label>
             </div>
         </div>
     </fieldset>
