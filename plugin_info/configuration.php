@@ -27,9 +27,8 @@ $port = config::byKey('port', 'teleinfo');
 
 <form class="form-horizontal">
     <fieldset>
-		<legend><i class="icon loisir-darth"></i> {{Démon}}</legend>
-
-		<div class="form-group div_local">
+        <legend><i class="icon fa fa-bolt"></i> {{Consommation électrique}}</legend>
+        <div class="form-group div_local">
             <label class="col-lg-4 control-label">Port du modem :</label>
             <div class="col-lg-4">
                 <select id="select_port" class="configKey form-control" data-l1key="port">
@@ -38,47 +37,43 @@ $port = config::byKey('port', 'teleinfo');
                     foreach (jeedom::getUsbMapping() as $name => $value) {
                         echo '<option value="' . $name . '">' . $name . ' (' . $value . ')</option>';
                     }
-					echo '<option value="serie">Modem Série</option>';
+                    echo '<option value="serie">Modem Série</option>';
                     ?>
                 </select>
-
-				<input id="port_serie" class="configKey form-control" data-l1key="modem_serie_addr" style="margin-top:5px;display:none" placeholder="Renseigner le port série (ex : /dev/ttyS0)"/>
-				<script>
-				$( "#select_port" ).change(function() {
-					$( "#select_port option:selected" ).each(function() {
-						if($( this ).val() == "serie"){
-						 $("#port_serie").show();
-						}
-						else{
-							$("#port_serie").hide();
-							}
-						});
-
-				});
-
-				</script>
+                <input id="port_serie" class="configKey form-control" data-l1key="modem_serie_addr" style="margin-top:5px;display:none" placeholder="Renseigner le port série (ex : /dev/ttyS0)"/>
+                <script>
+                $( "#select_port" ).change(function() {
+                    $( "#select_port option:selected" ).each(function() {
+                        if($( this ).val() == "serie"){
+                            $("#port_serie").show();
+                        }
+                        else{
+                            $("#port_serie").hide();
+                        }
+                    });
+                });
+                </script>
             </div>
         </div>
-
-		<div class="form-group div_local">
+        <div class="form-group div_local">
             <label class="col-lg-4 control-label">Vitesse : </label>
             <div class="col-lg-4">
-				<!--<input id="port_serie" class="configKey form-control" data-l1key="modem_vitesse" style="margin-top:5px;" placeholder="1200"/>-->
-				<select class="configKey form-control" id="port_serie" data-l1key="modem_vitesse">
-					<option value="">{{Par défaut}}</option>
-					<option value="1200">1200</option>
-					<option value="2400">2400</option>
-					<option value="4800">4800</option>
-					<option value="9600">9600</option>
-					<option value="19200">19200</option>
-					<option value="38400">38400</option>
-					<option value="56000">56000</option>
-					<option value="115200">115200</option>
-				</select>
+                <!--<input id="port_serie" class="configKey form-control" data-l1key="modem_vitesse" style="margin-top:5px;" placeholder="1200"/>-->
+                <select class="configKey form-control" id="port_serie" data-l1key="modem_vitesse">
+                    <option value="">{{Par défaut}}</option>
+                    <option value="1200">1200</option>
+                    <option value="2400">2400</option>
+                    <option value="4800">4800</option>
+                    <option value="9600">9600</option>
+                    <option value="19200">19200</option>
+                    <option value="38400">38400</option>
+                    <option value="56000">56000</option>
+                    <option value="115200">115200</option>
+                </select>
             </div>
         </div>
 
-		<div class="form-group div_local">
+        <div class="form-group div_local">
             <label class="col-lg-4 control-label">Mode 2 compteurs <sup><i class="fa fa-question-circle tooltips" title="{{Si vous utilisez le modem Cartelectronic en mode 2 compteurs}}" style="font-size : 1em;color:grey;"></i></sup></label>
             <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{Seulement en cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
                 <input type="checkbox" id="mode_2_cpt" class="configKey" data-l1key="2cpt_cartelectronic" placeholder="{{Actif}}"/>
@@ -86,8 +81,7 @@ $port = config::byKey('port', 'teleinfo');
                 <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
             </div>
         </div>
-
-		<div class="form-group">
+        <div class="form-group">
             <label class="col-lg-4 control-label">Activer les traces ERDF </label>
             <div id="div_debug" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
                 <!--<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{Oui}}</label>-->
@@ -96,7 +90,7 @@ $port = config::byKey('port', 'teleinfo');
             </div>
         </div>
 
-		<div class="form-group">
+        <div class="form-group">
             <label class="col-lg-4 control-label">/!\ Forcer <sup><i class="fa fa-question-circle tooltips" title="{{Attention pas de vérification de conformité des paramètres}}" style="font-size : 1em;color:grey;"></i></sup></label>
             <div id="div_debug" class="col-lg-4 tooltips"  title="{{Attention pas de vérification de conformité des paramètres}}">
                 <!--<label class="checkbox-inline"><input id="force" type="checkbox" class="configKey" data-l1key="force" />{{Oui}}</label>-->
@@ -104,48 +98,130 @@ $port = config::byKey('port', 'teleinfo');
                 <label for="force"> Oui </label>
             </div>
         </div>
-	</fieldset>
-	<fieldset>
-	<legend><i class="icon loisir-pacman1"></i> {{Versions}}</legend>
-		<div class="form-group">
-			<label class="col-lg-4 control-label">Core Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{C'est la version du programme de connexion au modem}}" style="font-size : 1em;color:grey;"></i></sup></label>
-			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_core_version','teleinfo'); ?></span>
-		</div>
-		<div class="form-group">
-			<label class="col-lg-4 control-label">Desktop Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{Version de la partie graphique pour le desktop}}" style="font-size : 1em;color:grey;"></i></sup></label>
-			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_desktop_version','teleinfo'); ?></span>
-		</div>
-		<div class="form-group">
-			<label class="col-lg-4 control-label">Mobile Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{Version de la partie graphique pour le site mobile}}" style="font-size : 1em;color:grey;"></i></sup></label>
-			<span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_mobile_version','teleinfo'); ?></span>
-		</div>
+    </fieldset>
+    <fieldset>
+        <legend><i class="icon fa fa-envira"></i> {{Production électrique}} <i class="fa fa-plus-circle" data-toggle="collapse" href="#ProductionCollapse" role="button" aria-expanded="false" aria-controls="ProductionCollapse"></i></legend>
+        <div class="collapse" id="ProductionCollapse">
+            <div class="form-group div_local">
+                <label class="col-lg-4 control-label">Activer le modem de production électrique <sup><i class="fa fa-question-circle tooltips" title="{{En cas d'utilisation d'un second modem téléinfo}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                <div id="div_activation_production" class="col-lg-4 tooltips" title="{{En cas d'utilisation d'un second modem téléinfo}}">
+                    <input type="checkbox" id="activation_production" class="configKey" data-l1key="activation_production" placeholder="{{Activer}}"/>
+                    <label for="activation_production"> Activer </label>
+                    <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
+                </div>
+            </div>
+            <div class="form-group div_local">
+                <label class="col-lg-4 control-label">Port du modem de production :</label>
+                <div class="col-lg-4">
+                    <select id="select_port_production" class="configKey form-control" data-l1key="port_production">
+                        <option value="">Aucun</option>
+                        <?php
+                        foreach (jeedom::getUsbMapping() as $name => $value) {
+                            echo '<option value="' . $name . '">' . $name . ' (' . $value . ')</option>';
+                        }
+                        echo '<option value="serie">Modem Série</option>';
+                        ?>
+                    </select>
+                    <input id="port_serie_production" class="configKey form-control" data-l1key="modem_serie_production_addr" style="margin-top:5px;display:none" placeholder="Renseigner le port série (ex : /dev/ttyS0)"/>
+                    <script>
+                    $( "#select_port_production" ).change(function() {
+                        $( "#select_port_production option:selected" ).each(function() {
+                            if($( this ).val() == "serie"){
+                                $("#port_serie_production").show();
+                            }
+                            else{
+                                $("#port_serie_production").hide();
+                            }
+                        });
+                    });
+                    </script>
+                </div>
+            </div>
+            <div class="form-group div_local">
+                <label class="col-lg-4 control-label">Vitesse : </label>
+                <div class="col-lg-4">
+                    <!--<input id="port_serie" class="configKey form-control" data-l1key="modem_vitesse" style="margin-top:5px;" placeholder="1200"/>-->
+                    <select class="configKey form-control" id="port_serie" data-l1key="modem_production_vitesse">
+                        <option value="">{{Par défaut}}</option>
+                        <option value="1200">1200</option>
+                        <option value="2400">2400</option>
+                        <option value="4800">4800</option>
+                        <option value="9600">9600</option>
+                        <option value="19200">19200</option>
+                        <option value="38400">38400</option>
+                        <option value="56000">56000</option>
+                        <option value="115200">115200</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group div_local" style="display:none">
+                <label class="col-lg-4 control-label">Mode 2 compteurs <sup><i class="fa fa-question-circle tooltips" title="{{Si vous utilisez le modem Cartelectronic en mode 2 compteurs}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                <div id="div_mode_2_cpt_production" class="col-lg-4 tooltips" title="{{Seulement en cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
+                    <input type="checkbox" id="mode_2_cpt_production" class="configKey" data-l1key="2cpt_cartelectronic_production" placeholder="{{Actif}}"/>
+                    <label for="mode_2_cpt_production"> Actif </label>
+                    <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-4 control-label">Activer les traces ERDF </label>
+                <div id="div_debug_production" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
+                    <!--<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{Oui}}</label>-->
+                    <input type="checkbox" id="debug_production" class="configKey" data-l1key="debug_production" placeholder="{{}}"/>
+                    <label for="debug_production"> Oui </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-4 control-label">/!\ Forcer <sup><i class="fa fa-question-circle tooltips" title="{{Attention pas de vérification de conformité des paramètres}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                <div id="div_force_production" class="col-lg-4 tooltips"  title="{{Attention pas de vérification de conformité des paramètres}}">
+                    <!--<label class="checkbox-inline"><input id="force" type="checkbox" class="configKey" data-l1key="force" />{{Oui}}</label>-->
+                    <input type="checkbox" id="force_production" class="configKey" data-l1key="force_production" placeholder="{{Actif}}"/>
+                    <label for="force_production"> Oui </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+    <legend><i class="icon loisir-pacman1"></i> {{Versions}}</legend>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Core Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{C'est la version du programme de connexion au modem}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_core_version','teleinfo'); ?></span>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Desktop Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{Version de la partie graphique pour le desktop}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_desktop_version','teleinfo'); ?></span>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Mobile Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{Version de la partie graphique pour le site mobile}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_mobile_version','teleinfo'); ?></span>
+        </div>
     </fieldset>
 </form>
 
 <script>
-		$('#bt_stopTeleinfoDeamon').on('click', function () {
-			$.ajax({// fonction permettant de faire de l'ajax
-				type: "POST", // methode de transmission des données au fichier php
-				url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
-				data: {
-					action: "stopDeamon",
-				},
-				dataType: 'json',
-				error: function (request, status, error) {
-					handleAjaxError(request, status, error);
-				},
-				success: function (data) { // si l'appel a bien fonctionné
-				if (data.state != 'ok') {
-					$('#div_alert').showAlert({message: data.result, level: 'danger'});
-					return;
-				}
-				$('#div_alert').showAlert({message: 'Le daemon a été correctement arrêté : il se relancera automatiquement dans 1 minute', level: 'success'});
-				$('#ul_plugin .li_plugin[data-plugin_id=teleinfo]').click();
-			}
-			});
-		});
+        $('#bt_stopTeleinfoDeamon').on('click', function () {
+            $.ajax({// fonction permettant de faire de l'ajax
+                type: "POST", // methode de transmission des données au fichier php
+                url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
+                data: {
+                    action: "stopDeamon",
+                },
+                dataType: 'json',
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { // si l'appel a bien fonctionné
+                if (data.state != 'ok') {
+                    $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                    return;
+                }
+                $('#div_alert').showAlert({message: 'Le daemon a été correctement arrêté : il se relancera automatiquement dans 1 minute', level: 'success'});
+                $('#ul_plugin .li_plugin[data-plugin_id=teleinfo]').click();
+            }
+            });
+        });
 
-		$('#bt_restartTeleinfoDeamon').on('click', function () {
+        $('#bt_restartTeleinfoDeamon').on('click', function () {
         $.ajax({// fonction permettant de faire de l'ajax
             type: "POST", // methode de transmission des données au fichier php
             url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
@@ -163,93 +239,93 @@ $port = config::byKey('port', 'teleinfo');
             }
             $('#div_alert').showAlert({message: '{{Le démon a été correctement (re)démaré}}', level: 'success'});
             $('#ul_plugin .li_plugin[data-plugin_id=teleinfo]').click();
-			}
-		});
-		});
+            }
+        });
+        });
 
 
 </script>
 
 <style type="text/css">
 [type="checkbox"][class="configKey"]:not(:checked),
-	[type="checkbox"][class="configKey"]:checked {
-		position: absolute;
-		left: -9999px;
-	}
-	[type="checkbox"][class="configKey"]:not(:checked) + label,
-	[type="checkbox"][class="configKey"]:checked + label {
-		position: relative;
-		padding-left: 75px;
-		cursor: pointer;
-	}
-	[type="checkbox"][class="configKey"]:not(:checked) + label:before,
-	[type="checkbox"][class="configKey"]:checked + label:before,
-	[type="checkbox"][class="configKey"]:not(:checked) + label:after,
-	[type="checkbox"][class="configKey"]:checked + label:after {
-		content: '';
-		position: absolute;
-	}
-	[type="checkbox"][class="configKey"]:not(:checked) + label:before,
-	[type="checkbox"][class="configKey"]:checked + label:before {
-		left:0; top: -3px;
-		width: 65px; height: 30px;
-		background: #DDDDDD;
-		border-radius: 15px;
-		-webkit-transition: background-color .2s;
-		-moz-transition: background-color .2s;
-		-ms-transition: background-color .2s;
-		transition: background-color .2s;
-	}
-	[type="checkbox"][class="configKey"]:not(:checked) + label:after,
-	[type="checkbox"][class="configKey"]:checked + label:after {
-		width: 20px; height: 20px;
-		-webkit-transition: all .2s;
-		-moz-transition: all .2s;
-		-ms-transition: all .2s;
-		transition: all .2s;
-		border-radius: 50%;
-		background: #d9534f;
-		top: 2px; left: 5px;
-	}
+    [type="checkbox"][class="configKey"]:checked {
+        position: absolute;
+        left: -9999px;
+    }
+    [type="checkbox"][class="configKey"]:not(:checked) + label,
+    [type="checkbox"][class="configKey"]:checked + label {
+        position: relative;
+        padding-left: 75px;
+        cursor: pointer;
+    }
+    [type="checkbox"][class="configKey"]:not(:checked) + label:before,
+    [type="checkbox"][class="configKey"]:checked + label:before,
+    [type="checkbox"][class="configKey"]:not(:checked) + label:after,
+    [type="checkbox"][class="configKey"]:checked + label:after {
+        content: '';
+        position: absolute;
+    }
+    [type="checkbox"][class="configKey"]:not(:checked) + label:before,
+    [type="checkbox"][class="configKey"]:checked + label:before {
+        left:0; top: -3px;
+        width: 65px; height: 30px;
+        background: #DDDDDD;
+        border-radius: 15px;
+        -webkit-transition: background-color .2s;
+        -moz-transition: background-color .2s;
+        -ms-transition: background-color .2s;
+        transition: background-color .2s;
+    }
+    [type="checkbox"][class="configKey"]:not(:checked) + label:after,
+    [type="checkbox"][class="configKey"]:checked + label:after {
+        width: 20px; height: 20px;
+        -webkit-transition: all .2s;
+        -moz-transition: all .2s;
+        -ms-transition: all .2s;
+        transition: all .2s;
+        border-radius: 50%;
+        background: #d9534f;
+        top: 2px; left: 5px;
+    }
 
-	/* on checked */
-	[type="checkbox"][class="configKey"]:checked + label:before {
-		background:#DDDDDD;
-	}
-	[type="checkbox"][class="configKey"]:checked + label:after {
-		background: #62c462;
-		top: 2px; left: 40px;
-	}
+    /* on checked */
+    [type="checkbox"][class="configKey"]:checked + label:before {
+        background:#DDDDDD;
+    }
+    [type="checkbox"][class="configKey"]:checked + label:after {
+        background: #62c462;
+        top: 2px; left: 40px;
+    }
 
-	[type="checkbox"][class="configKey"]:checked + label .ui,
-	[type="checkbox"][class="configKey"]:not(:checked) + label .ui:before,
-	[type="checkbox"][class="configKey"]:checked + label .ui:after {
-		position: absolute;
-		left: 6px;
-		width: 65px;
-		border-radius: 15px;
-		font-size: 14px;
-		font-weight: bold;
-		line-height: 22px;
-		-webkit-transition: all .2s;
-		-moz-transition: all .2s;
-		-ms-transition: all .2s;
-		transition: all .2s;
-	}
-	[type="checkbox"][class="configKey"]:not(:checked) + label .ui:before {
-		content: "no";
-		left: 32px
-	}
-	[type="checkbox"][class="configKey"]:checked + label .ui:after {
-		content: "yes";
-		color: #62c462;
-	}
-	[type="checkbox"][class="configKey"]:focus + label:before {
-		border: 1px dashed #777;
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		-ms-box-sizing: border-box;
-		box-sizing: border-box;
-		margin-top: -1px;
-	}
+    [type="checkbox"][class="configKey"]:checked + label .ui,
+    [type="checkbox"][class="configKey"]:not(:checked) + label .ui:before,
+    [type="checkbox"][class="configKey"]:checked + label .ui:after {
+        position: absolute;
+        left: 6px;
+        width: 65px;
+        border-radius: 15px;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 22px;
+        -webkit-transition: all .2s;
+        -moz-transition: all .2s;
+        -ms-transition: all .2s;
+        transition: all .2s;
+    }
+    [type="checkbox"][class="configKey"]:not(:checked) + label .ui:before {
+        content: "no";
+        left: 32px
+    }
+    [type="checkbox"][class="configKey"]:checked + label .ui:after {
+        content: "yes";
+        color: #62c462;
+    }
+    [type="checkbox"][class="configKey"]:focus + label:before {
+        border: 1px dashed #777;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+        box-sizing: border-box;
+        margin-top: -1px;
+    }
 </style>
