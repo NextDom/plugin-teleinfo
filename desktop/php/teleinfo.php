@@ -5,9 +5,29 @@ if (!isConnect('admin')) {
 $plugin = plugin::byId('teleinfo');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
-$controlerState = teleinfo::getTeleinfoInfo('');
-if($controlerState === ''){
-   echo '<div class="alert jqAlert alert-danger" style="margin : 0px 5px 15px 15px; padding : 7px 35px 7px 15px;">{{Impossible de contacter le serveur teleinfo. Avez vous bien renseigné l\'IP ?}}</div>';
+try {
+	$result = teleinfo::deamon_info();
+	if (isset($result['state'])) {
+		$controlerState = $result['state'];
+	}
+} catch (Exception $e) {
+	$controlerState = null;
+}
+switch ($controlerState) {
+	case 'ok':
+		// event::add('jeedom::alert', array(
+		// 	'level' => 'warning',
+		// 	'page' => 'teleinfo',
+		// 	'message' => __('Le réseau Z-Wave est en cours de démarrage sur le serveur', __FILE__),
+		// ));
+		break;
+	case 'nok':
+		event::add('jeedom::alert', array(
+			'level' => 'danger',
+			'page' => 'teleinfo',
+			'message' => __('Le deamon téléinfo ne semble pas démaré, vérifiez la configuration du port.', __FILE__),
+		));
+		break;
 }
 //$deamonRunning = false;
 //$deamonRunning = teleinfo::deamonRunning();

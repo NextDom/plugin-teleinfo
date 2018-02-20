@@ -23,7 +23,10 @@ class teleinfo extends eqLogic {
     /*     * *************************Attributs****************************** */
     /*     * ***********************Methode static*************************** */
     public static function getTeleinfoInfo($_url){
-        return 1;
+        $return = self::deamon_info();
+        if($return['state'] != 'ok'){
+            return "";
+        }
     }
 
     public static function cron() {
