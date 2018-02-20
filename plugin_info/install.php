@@ -19,10 +19,10 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 
 function teleinfo_install() {
-	if (teleinfo::deamonRunning()) {
+    if (teleinfo::deamonRunning()) {
         teleinfo::stopDeamon();
     }
-	$cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
+    $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
     if (!is_object($cron)) {
         $cron = new cron();
         $cron->setClass('teleinfo');
@@ -33,7 +33,7 @@ function teleinfo_install() {
         $cron->save();
     }
 
-	$crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
+    $crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
     if (!is_object($crontoday)) {
         $crontoday = new cron();
         $crontoday->setClass('teleinfo');
@@ -43,30 +43,30 @@ function teleinfo_install() {
         $crontoday->setSchedule('*/5 * * * *');
         $crontoday->save();
     }
-	cache::set('teleinfo::current_core','2.523', 0);
+    cache::set('teleinfo::current_core','2.523', 0);
 }
 
 function teleinfo_update() {
-	$core_version = '2.523';
-	$desktop_version = '1.010';
-	$mobile_version = '1.001';
+    $core_version = '2.523';
+    $desktop_version = '1.010';
+    $mobile_version = '1.001';
     if (teleinfo::deamonRunning()) {
         teleinfo::stopDeamon();
     }
-	message::add('Téléinfo', 'Mise à jour en cours...', null, null);
-	log::add('teleinfo','info','*****************************************************');
-	log::add('teleinfo','info','*********** Mise à jour du plugin teleinfo **********');
-	log::add('teleinfo','info','*****************************************************');
-	log::add('teleinfo','info','*        Core version    : '. $core_version. '                 *');
-	log::add('teleinfo','info','*        Desktop version : '. $desktop_version. '                 *');
-	log::add('teleinfo','info','*        Mobile version  : '. $mobile_version. '                 *');
-	log::add('teleinfo','info','*****************************************************');
+    message::add('Téléinfo', 'Mise à jour en cours...', null, null);
+    log::add('teleinfo','info','*****************************************************');
+    log::add('teleinfo','info','*********** Mise à jour du plugin teleinfo **********');
+    log::add('teleinfo','info','*****************************************************');
+    log::add('teleinfo','info','*        Core version    : '. $core_version. '                 *');
+    log::add('teleinfo','info','*        Desktop version : '. $desktop_version. '                 *');
+    log::add('teleinfo','info','*        Mobile version  : '. $mobile_version. '                 *');
+    log::add('teleinfo','info','*****************************************************');
 
-	config::save('teleinfo_core_version',$core_version,'teleinfo');
-	config::save('teleinfo_desktop_version',$desktop_version,'teleinfo');
-	config::save('teleinfo_mobile_version',$mobile_version,'teleinfo');
+    config::save('teleinfo_core_version',$core_version,'teleinfo');
+    config::save('teleinfo_desktop_version',$desktop_version,'teleinfo');
+    config::save('teleinfo_mobile_version',$mobile_version,'teleinfo');
 
-	$cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
+    $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
     if (!is_object($cron)) {
         $cron = new cron();
         $cron->setClass('teleinfo');
@@ -76,13 +76,13 @@ function teleinfo_update() {
         $cron->setSchedule('10 00 * * *');
         $cron->save();
     }
-	else{
-		$cron->setSchedule('10 00 * * *');
+    else{
+        $cron->setSchedule('10 00 * * *');
         $cron->save();
-	}
+    }
     $cron->stop();
 
-	$crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
+    $crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
     if (!is_object($crontoday)) {
         $crontoday = new cron();
         $crontoday->setClass('teleinfo');
@@ -93,25 +93,25 @@ function teleinfo_update() {
         $crontoday->save();
     }
     $crontoday->stop();
-	$thisplugin = plugin::byid('teleinfo');
-	//$current_core_version = cache::byKey('teleinfo::current_core', false,true);
-	//log::add('teleinfo', 'message', 'Merci de valider à nouveau votre objet Téléinfo en re-sauvegardant.');
-	//cache::set('teleinfo::current_core','2.230', 0);
-	//cache::set('teleinfo::current_core',$thisplugin->getVersion(), 0);
-	message::removeAll('Téléinfo');
-	message::add('Téléinfo', 'Mise à jour terminée, vous êtes en version ' . $core_version . '.', null, null);
-	teleinfo::cron();
+    $thisplugin = plugin::byid('teleinfo');
+    //$current_core_version = cache::byKey('teleinfo::current_core', false,true);
+    //log::add('teleinfo', 'message', 'Merci de valider à nouveau votre objet Téléinfo en re-sauvegardant.');
+    //cache::set('teleinfo::current_core','2.230', 0);
+    //cache::set('teleinfo::current_core',$thisplugin->getVersion(), 0);
+    message::removeAll('Téléinfo');
+    message::add('Téléinfo', 'Mise à jour terminée, vous êtes en version ' . $core_version . '.', null, null);
+    teleinfo::cron();
 }
 
 function teleinfo_remove() {
-	if (teleinfo::deamonRunning()) {
+    if (teleinfo::deamonRunning()) {
         teleinfo::stopDeamon();
     }
-	$cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
+    $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
     if (is_object($cron)) {
         $cron->remove();
     }
-	$crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
+    $crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
     if (is_object($crontoday)) {
         $crontoday->remove();
     }
