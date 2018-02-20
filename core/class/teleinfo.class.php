@@ -686,7 +686,7 @@ class teleinfo extends eqLogic {
     }
 
     public static function CalculateOtherStats(){
-        $STAT_YESTERDAY = 0;
+        //$STAT_YESTERDAY = 0;
         $STAT_YESTERDAY_HC = 0;
         $STAT_YESTERDAY_HP = 0;
         $STAT_LASTMONTH = 0;

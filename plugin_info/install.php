@@ -29,7 +29,7 @@ function teleinfo_install() {
         $cron->setFunction('CalculateOtherStats');
         $cron->setEnable(1);
         $cron->setDeamon(0);
-        $cron->setSchedule('05 00 * * *');
+        $cron->setSchedule('10 00 * * *');
         $cron->save();
     }
 
@@ -73,11 +73,11 @@ function teleinfo_update() {
         $cron->setFunction('CalculateOtherStats');
         $cron->setEnable(1);
         $cron->setDeamon(0);
-        $cron->setSchedule('05 00 * * *');
+        $cron->setSchedule('10 00 * * *');
         $cron->save();
     }
 	else{
-		$cron->setSchedule('05 00 * * *');
+		$cron->setSchedule('10 00 * * *');
         $cron->save();
 	}
     $cron->stop();
