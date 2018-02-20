@@ -25,29 +25,16 @@ $.ajax({
 					switch(data.result[eqLogic].cmd[cmd].logicalId)
 					{
 						case "PAPP":
+                        case "STAT_YEAR_LAST_YEAR":
+                        case "STAT_MONTH_LAST_YEAR":
+                        case "STAT_TODAY":
+                        case "STAT_MONTH":
+                        case "STAT_YEAR":
 							var result = $.grep(populate, function(e){ return e.id == data.result[eqLogic].cmd[cmd].logicalId; });
 							if (result.length == 1) {
 								result[0].found = 1;
 							}
 						break;
-						case "STAT_TODAY":
-							var result = $.grep(populate, function(e){ return e.id == data.result[eqLogic].cmd[cmd].logicalId; });
-							if (result.length == 1) {
-								result[0].found = 1;
-							}
-							break;
-						case "STAT_MONTH":
-							var result = $.grep(populate, function(e){ return e.id == data.result[eqLogic].cmd[cmd].logicalId; });
-							if (result.length == 1) {
-								result[0].found = 1;
-							}
-							break;
-						case "STAT_YEAR":
-							var result = $.grep(populate, function(e){ return e.id == data.result[eqLogic].cmd[cmd].logicalId; });
-							if (result.length == 1) {
-								result[0].found = 1;
-							}
-							break;
 					}
 				}
 			}
