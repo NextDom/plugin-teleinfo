@@ -182,7 +182,8 @@ if($controlerState === ''){
                       <div class="form-group">
                           <label class="col-lg-3 control-label pull-left">{{Création des commandes}} <sup><i class="fa fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
                           <div class="col-lg-7 tooltips">
-                              <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="AutoCreateFromCompteur" checked/>{{Automatique}}</label>
+                              <input type="checkbox" id="AutoCreateFromCompteur" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>
+                              <label for="AutoCreateFromCompteur">  </label>
                           </div>
                           <div class="col-lg-2">
                           </div>
@@ -242,4 +243,5 @@ if($controlerState === ''){
 </div>
 
 <?php include_file('desktop', 'teleinfo', 'js', 'teleinfo'); ?>
+<?php include_file('desktop', 'teleinfo', 'css', 'teleinfo'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>

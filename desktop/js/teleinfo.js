@@ -87,15 +87,17 @@ function addCmdToTable(_cmd) {
 	var type_of_data = init(_cmd.configuration['type']);
 	//alert(type_of_data);
 	if(init(_cmd.configuration['type']) == 'stat' || init(_cmd.configuration['type']) == 'panel'){
-		selRequestType = '<select style="width : 220px;" class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="info_conso">';
-		selRequestType += '<option value="AUCUN">Aucune</option>';
+        selRequestType = '<select style="width : 220px;" class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="info_conso">';
+        selRequestType += '<option value="AUCUN">Aucune</option>';
 		selRequestType += '<option value="STAT_YESTERDAY">Conso totale hier</option>';
 		selRequestType += '<option value="STAT_YESTERDAY_HP">Conso HP hier</option>';
 		selRequestType += '<option value="STAT_YESTERDAY_HC">Conso HC hier</option>';
 		selRequestType += '<option value="STAT_TODAY">Conso totale Aujourd\'hui</option>';
 		selRequestType += '<option value="STAT_TODAY_HP">Conso HP Aujourd\'hui</option>';
 		selRequestType += '<option value="STAT_TODAY_HC">Conso HC Aujourd\'hui</option>';
-		selRequestType += '<option value="STAT_MONTH">Conso Mois en cours</option>';
+        selRequestType += '<option value="STAT_MONTH">Conso Mois en cours</option>';
+        selRequestType += '<option value="STAT_MONTH_LAST_YEAR">Conso Mois en cours année précédente</option>';
+		selRequestType += '<option value="STAT_YEAR_LAST_YEAR">Conso Année précédente au même jour</option>';
 		selRequestType += '<option value="STAT_YEAR">Conso Année en cours</option>';
 		selRequestType += '<option value="STAT_LASTMONTH">Conso Mois dernier</option>';
 		selRequestType += '<option value="STAT_JAN_HP">Conso Janvier HP</option>';

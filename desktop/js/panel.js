@@ -35,7 +35,7 @@ $( "#eqlogic_select" ).change(function() {
 $('#bt_validChangeDate').on('click',function(){
 	//console.log($('#div_graphGlobalIndex').attr("cmd_id"));
 	getObjectHistory('div_graphGlobalPower', 'Simple', {'id': $('#div_graphGlobalPower').attr("cmd_id"), 'name': $('#div_graphGlobalPower').attr("cmd_name")});
-	
+
 });
 initHistoryTrigger();
 
@@ -81,6 +81,12 @@ $.ajax({
 						case "STAT_MONTH":
 							$('.teleinfoAttr[data-l1key=conso][data-l2key=month]').text((data.result[eqLogic].cmd[cmd].value)/1000);
 							break;
+                        case "STAT_MONTH_LAST_YEAR":
+    						$('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]').text((data.result[eqLogic].cmd[cmd].value)/1000);
+    						break;
+                        case "STAT_YEAR_LAST_YEAR":
+        						$('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]').text((data.result[eqLogic].cmd[cmd].value)/1000);
+        						break;
 						case "STAT_YEAR":
 							//console.log(data.result[eqLogic].cmd[cmd]);
 							$('.teleinfoAttr[data-l1key=conso][data-l2key=year]').text((data.result[eqLogic].cmd[cmd].value)/1000);
@@ -165,6 +171,12 @@ $.ajax({
         }
     });
 
+    /*var pourcentMonth = ($('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]').text() / $('.teleinfoAttr[data-l1key=conso][data-l2key=month]').text()) *100;
+    $('#prg_month').attr( "aria-valuenow", pourcentMonth);
+    $('#prg_month').attr( "style","width: "+ pourcentMonth +"%;");
+    $('#prg_month').text( pourcentMonth +"%");*/
+
+
 }
 
 function getTeleinfoCmdValue(cmd) {
@@ -185,8 +197,8 @@ function getTeleinfoCmdValue(cmd) {
         }
     });
 }
-	
-	
+
+
 function getTeleinfoObjectHistory(div, type, object) {
     $.ajax({
         type: 'POST',
@@ -234,7 +246,7 @@ function getTeleinfoObjectHistory(div, type, object) {
         }
     });
 }
-	
+
 function getObjectHistory(div, type, object) {
 	$('#div_graphGlobalPower').attr( "cmd_id", object.id );
 	$('#div_graphGlobalPower').attr( "cmd_name", object.name );
@@ -450,7 +462,7 @@ function drawStackGraph(_el, _data) {
 
 
 function drawStackColumnChart(_el, _data){
-	
+
 	new Highcharts.Chart({
         chart: {
 			renderTo: _el,
@@ -470,7 +482,7 @@ function drawStackColumnChart(_el, _data){
         },
         xAxis: {
             categories: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-			
+
         },
         yAxis: {
             min: 0,
@@ -659,7 +671,7 @@ function graphTeleinfo(_cmd_id) {
 	if (isset(jeedom.history.chart['div_graphGlobalPower'])) {
 		jeedom.history.chart['div_graphGlobalPower'].chart.get(parseInt(_cmd_id)).remove();
 	}
-		
+
 	jeedom.history.drawChart({
             cmd_id: _cmd_id,
             el: 'div_graphGlobalPower',
