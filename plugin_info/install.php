@@ -43,12 +43,12 @@ function teleinfo_install() {
         $crontoday->setSchedule('*/5 * * * *');
         $crontoday->save();
     }
-	cache::set('teleinfo::current_core','2.522', 0);
+	cache::set('teleinfo::current_core','2.523', 0);
 }
 
 function teleinfo_update() {
-	$core_version = '2.522';
-	$desktop_version = '1.002';
+	$core_version = '2.523';
+	$desktop_version = '1.010';
 	$mobile_version = '1.001';
     if (teleinfo::deamonRunning()) {
         teleinfo::stopDeamon();
