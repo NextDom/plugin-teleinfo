@@ -23,24 +23,18 @@ class teleinfo extends eqLogic {
     /*     * *************************Attributs****************************** */
     /*     * ***********************Methode static*************************** */
     public static function getTeleinfoInfo($_url){
-        return 1;
+        $return = self::deamon_info();
+        if($return['state'] != 'ok'){
+            return "";
+        }
     }
 
     public static function cron() {
-        if (config::byKey('jeeNetwork::mode') == 'slave') { //Je suis l'esclave
-            if (!self::deamonRunning()) {
-                self::runExternalDeamon();
-            }
-        }
-        else{    // Je suis le jeedom master
             self::Calculate_PAPP();
-        }
     }
 
     public static function cronHourly() {
-        if (config::byKey('jeeNetwork::mode') == 'master') {
             self::Moy_Last_Hour();
-        }
     }
 
 
@@ -61,7 +55,6 @@ class teleinfo extends eqLogic {
 	        $eqLogic->setIsEnable(1);
 	        $eqLogic->setIsVisible(1);
 	        $eqLogic->save();
-	        //$eqLogic->applyModuleConfiguration();
 	        return $eqLogic;
 		} else {
 			return null;
@@ -696,10 +689,17 @@ class teleinfo extends eqLogic {
     }
 
     public static function CalculateOtherStats(){
-        $STAT_YESTERDAY = 0;
+        //$STAT_YESTERDAY = 0;
         $STAT_YESTERDAY_HC = 0;
         $STAT_YESTERDAY_HP = 0;
         $STAT_LASTMONTH = 0;
+
+        $stat_month_last_year_hc = 0;
+        $stat_month_last_year_hp = 0;
+
+        $stat_year_last_year_hc = 0;
+        $stat_year_last_year_hp = 0;
+
         $STAT_MONTH = 0;
         $STAT_YEAR = 0;
         $STAT_JAN_HP = 0;
@@ -761,13 +761,18 @@ class teleinfo extends eqLogic {
 
         $startdateyear = date("Y-m-d H:i:s" ,mktime(0, 0, 0, 1, 1, date("Y")));
         $enddateyear = date("Y-m-d H:i:s" ,mktime(23, 59, 59, date("m"), date("d")-1, date("Y")));
-        /*$startdateyesterday = date("Y-m-d H:i:s" ,mktime(0, 0, 0, date("m"), date("d"), date("Y")));
-        $enddateyesterday = date("Y-m-d H:i:s" ,mktime(23, 59, 59, date("m"), date("d"), date("Y")));*/
+
         $startdatemonth = date("Y-m-d H:i:s" ,mktime(0, 0, 0, date("m")  , 1, date("Y")));
         $enddatemonth = date("Y-m-d H:i:s" ,mktime(23, 59, 59, date("m")  , date("d"), date("Y")));
+
         $startdatelastmonth = date("Y-m-d H:i:s" ,mktime(0, 0, 0, date("m")-1  , 1, date("Y")));
         $enddatelastmonth = date("Y-m-d H:i:s" ,mktime(23, 59, 59, date("m")-1  , date("t", mktime(0, 0, 0, date("m")-1  , date("d"), date("Y"))), date("Y")));
 
+        $startdatemonthlastyear = date("Y-m-d H:i:s" ,mktime(0, 0, 0, date("m")  , 1, date("Y")-1));
+        $enddatemonthlastyear = date("Y-m-d H:i:s" ,mktime(23, 59, 59, date("m")  , date("d"), date("Y")-1));
+
+        $startdateyearlastyear = date("Y-m-d H:i:s" ,mktime(0, 0, 0, 1, 1, date("Y")-1));
+        $enddateyearlastyear = date("Y-m-d H:i:s" ,mktime(23, 59, 59, date("m"), date("d")-1, date("Y")-1));
 
         $startdate_jan = date("Y-m-d H:i:s" ,mktime(0, 0, 0, 1, 1, date("Y")));    $enddate_jan = date("Y-m-d H:i:s" ,mktime(23, 59, 59, 1  , 31, date("Y")));
         $startdate_fev = date("Y-m-d H:i:s" ,mktime(0, 0, 0, 2, 1, date("Y")));    $enddate_fev = date("Y-m-d H:i:s" ,mktime(23, 59, 59, 2  , 28, date("Y")));
@@ -791,6 +796,10 @@ class teleinfo extends eqLogic {
             $STAT_MONTH += intval($cmd->getStatistique($startdatemonth,$enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth,$enddatemonth)['min']);
             $STAT_YEAR += intval($cmd->getStatistique($startdateyear,$enddateyear)['max']) - intval($cmd->getStatistique($startdateyear,$enddateyear)['min']);
             $STAT_LASTMONTH += intval($cmd->getStatistique($startdatelastmonth,$enddatelastmonth)['max']) - intval($cmd->getStatistique($startdatelastmonth,$enddatelastmonth)['min']);
+
+            $stat_month_last_year_hp += intval($cmd->getStatistique($startdatemonthlastyear,$enddatemonthlastyear)['max']) - intval($cmd->getStatistique($startdatemonthlastyear,$enddatemonthlastyear)['min']);
+            $stat_year_last_year_hp += intval($cmd->getStatistique($startdateyearlastyear,$enddateyearlastyear)['max']) - intval($cmd->getStatistique($startdateyearlastyear,$enddateyearlastyear)['min']);
+
             $STAT_JAN_HC += intval($cmd->getStatistique($startdate_jan,$enddate_jan)['max']) - intval($cmd->getStatistique($startdate_jan,$enddate_jan)['min']);
             $STAT_FEV_HC += intval($cmd->getStatistique($startdate_fev,$enddate_fev)['max']) - intval($cmd->getStatistique($startdate_fev,$enddate_fev)['min']);
             $STAT_MAR_HC += intval($cmd->getStatistique($startdate_mar,$enddate_mar)['max']) - intval($cmd->getStatistique($startdate_mar,$enddate_mar)['min']);
@@ -813,6 +822,9 @@ class teleinfo extends eqLogic {
             $STAT_MONTH += intval($cmd->getStatistique($startdatemonth,$enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth,$enddatemonth)['min']);
             $STAT_YEAR += intval($cmd->getStatistique($startdateyear,$enddateyear)['max']) - intval($cmd->getStatistique($startdateyear,$enddateyear)['min']);
             $STAT_LASTMONTH += intval($cmd->getStatistique($startdatelastmonth,$enddatelastmonth)['max']) - intval($cmd->getStatistique($startdatelastmonth,$enddatelastmonth)['min']);
+
+            $stat_month_last_year_hc += intval($cmd->getStatistique($startdatemonthlastyear,$enddatemonthlastyear)['max']) - intval($cmd->getStatistique($startdatemonthlastyear,$enddatemonthlastyear)['min']);
+            $stat_year_last_year_hp += intval($cmd->getStatistique($startdateyearlastyear,$enddateyearlastyear)['max']) - intval($cmd->getStatistique($startdateyearlastyear,$enddateyearlastyear)['min']);
 
             $STAT_JAN_HP += intval($cmd->getStatistique($startdate_jan,$enddate_jan)['max']) - intval($cmd->getStatistique($startdate_jan,$enddate_jan)['min']);
             $STAT_FEV_HP += intval($cmd->getStatistique($startdate_fev,$enddate_fev)['max']) - intval($cmd->getStatistique($startdate_fev,$enddate_fev)['min']);
@@ -848,6 +860,16 @@ class teleinfo extends eqLogic {
                         log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HC) ==> ' . intval($STAT_YESTERDAY_HC));
                         $cmd->setValue(intval($STAT_YESTERDAY_HC));
                         $cmd->event(intval($STAT_YESTERDAY_HC));
+                    }
+                    else if($cmd->getConfiguration('info_conso') == "STAT_MONTH_LAST_YEAR"){
+                        log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois an -1 ==> ' . intval($stat_month_last_year_hc) + intval($stat_month_last_year_hp));
+                        $cmd->setValue(intval($stat_month_last_year_hc) + intval($stat_month_last_year_hp));
+                        $cmd->event(intval($stat_month_last_year_hc) + intval($stat_month_last_year_hp));
+                    }
+                    else if($cmd->getConfiguration('info_conso') == "STAT_YEAR_LAST_YEAR"){
+                        log::add('teleinfo', 'debug', 'Mise à jour de la statistique an-1 ==> ' . intval($stat_year_last_year_hc) + intval($stat_year_last_year_hp));
+                        $cmd->setValue(intval($stat_year_last_year_hc) + intval($stat_year_last_year_hp));
+                        $cmd->event(intval($stat_year_last_year_hc) + intval($stat_year_last_year_hp));
                     }
                     else if($cmd->getConfiguration('info_conso') == "STAT_LASTMONTH"){
                         log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois dernier ==> ' . intval($STAT_LASTMONTH));
@@ -1247,8 +1269,8 @@ class teleinfo extends eqLogic {
     }
 
     public function CreatePanelStats(){
-        $array = array("STAT_JAN_HP","STAT_JAN_HC", "STAT_FEV_HP","STAT_FEV_HC", "STAT_MAR_HP","STAT_MAR_HC", "STAT_AVR_HP","STAT_AVR_HC", "STAT_MAI_HP","STAT_MAI_HC", "STAT_JUIN_HP","STAT_JUIN_HC", "STAT_JUI_HP","STAT_JUI_HC", "STAT_AOU_HP","STAT_AOU_HC", "STAT_SEP_HP","STAT_SEP_HC", "STAT_OCT_HP","STAT_OCT_HC", "STAT_NOV_HP","STAT_NOV_HC", "STAT_DEC_HP","STAT_DEC_HC");
-        for($ii = 0; $ii < 24; $ii++){
+        $array = array("STAT_JAN_HP","STAT_JAN_HC", "STAT_FEV_HP","STAT_FEV_HC", "STAT_MAR_HP","STAT_MAR_HC", "STAT_AVR_HP","STAT_AVR_HC", "STAT_MAI_HP","STAT_MAI_HC", "STAT_JUIN_HP","STAT_JUIN_HC", "STAT_JUI_HP","STAT_JUI_HC", "STAT_AOU_HP","STAT_AOU_HC", "STAT_SEP_HP","STAT_SEP_HC", "STAT_OCT_HP","STAT_OCT_HC", "STAT_NOV_HP","STAT_NOV_HC", "STAT_DEC_HP","STAT_DEC_HC","STAT_MONTH_LAST_YEAR","STAT_YEAR_LAST_YEAR");
+        for($ii = 0; $ii < 26; $ii++){
             $cmd = $this->getCmd('info',$array[$ii]);
             if ($cmd == null) {
                 $cmd = null;

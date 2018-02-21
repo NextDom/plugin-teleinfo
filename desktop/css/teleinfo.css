@@ -1,0 +1,90 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 29 nov. 2017, 09:30:59
+    Author     : ticed
+*/
+[type="checkbox"][data-l1key="configuration"]:not(:checked),
+	[type="checkbox"][data-l1key="configuration"]:checked {
+		position: absolute;
+		left: -9999px;
+	}
+	[type="checkbox"][data-l1key="configuration"]:not(:checked) + label,
+	[type="checkbox"][data-l1key="configuration"]:checked + label {
+		position: relative;
+		padding-left: 75px;
+		cursor: pointer;
+	}
+	[type="checkbox"][data-l1key="configuration"]:not(:checked) + label:before,
+	[type="checkbox"][data-l1key="configuration"]:checked + label:before,
+	[type="checkbox"][data-l1key="configuration"]:not(:checked) + label:after,
+	[type="checkbox"][data-l1key="configuration"]:checked + label:after {
+		content: '';
+		position: absolute;
+	}
+	[type="checkbox"][data-l1key="configuration"]:not(:checked) + label:before,
+	[type="checkbox"][data-l1key="configuration"]:checked + label:before {
+		left:0; top: -7px;
+		width: 65px; height: 30px;
+		background: #DDDDDD;
+		border-radius: 15px;
+		-webkit-transition: background-color .2s;
+		-moz-transition: background-color .2s;
+		-ms-transition: background-color .2s;
+		transition: background-color .2s;
+	}
+	[type="checkbox"][data-l1key="configuration"]:not(:checked) + label:after,
+	[type="checkbox"][data-l1key="configuration"]:checked + label:after {
+		width: 20px; height: 20px;
+		-webkit-transition: all .2s;
+		-moz-transition: all .2s;
+		-ms-transition: all .2s;
+		transition: all .2s;
+		border-radius: 50%;
+		background: #d9534f;
+		top: -2px; left: 5px;
+	}
+
+	/* on checked */
+	[type="checkbox"][data-l1key="configuration"]:checked + label:before {
+		background:#DDDDDD;
+	}
+	[type="checkbox"][data-l1key="configuration"]:checked + label:after {
+		background: #62c462;
+		top: -2px; left: 40px;
+	}
+
+	[type="checkbox"][data-l1key="configuration"]:checked + label .ui,
+	[type="checkbox"][data-l1key="configuration"]:not(:checked) + label .ui:before,
+	[type="checkbox"][data-l1key="configuration"]:checked + label .ui:after {
+		position: absolute;
+		left: 6px;
+		width: 65px;
+		border-radius: 15px;
+		font-size: 14px;
+		font-weight: bold;
+		line-height: 22px;
+		-webkit-transition: all .2s;
+		-moz-transition: all .2s;
+		-ms-transition: all .2s;
+		transition: all .2s;
+	}
+	[type="checkbox"][data-l1key="configuration"]:not(:checked) + label .ui:before {
+		content: "no";
+		left: 32px
+	}
+	[type="checkbox"][data-l1key="configuration"]:checked + label .ui:after {
+		content: "yes";
+		color: #62c462;
+	}
+	[type="checkbox"][data-l1key="configuration"]:focus + label:before {
+		border: 1px dashed #777;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+		box-sizing: border-box;
+		margin-top: -1px;
+	}

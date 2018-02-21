@@ -38,4 +38,5 @@ if (!isConnect('admin')) {
 		</tbody>
 	</table>
 </div>
+Si un statut est nok veuillez enregistrer votre objet de nouveau puis attendre 24h.
 <?php include_file('desktop', 'panel_sante', 'js', 'teleinfo');?>

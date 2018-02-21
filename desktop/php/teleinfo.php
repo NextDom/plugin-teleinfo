@@ -2,11 +2,32 @@
 if (!isConnect('admin')) {
     throw new Exception('Error 401 Unauthorized');
 }
-sendVarToJS('eqType', 'teleinfo');
-$eqLogics = eqLogic::byType('teleinfo');
-$controlerState = teleinfo::getTeleinfoInfo('');
-if($controlerState === ''){
-   echo '<div class="alert jqAlert alert-danger" style="margin : 0px 5px 15px 15px; padding : 7px 35px 7px 15px;">{{Impossible de contacter le serveur teleinfo. Avez vous bien renseigné l\'IP ?}}</div>';
+$plugin = plugin::byId('teleinfo');
+sendVarToJS('eqType', $plugin->getId());
+$eqLogics = eqLogic::byType($plugin->getId());
+try {
+	$result = teleinfo::deamon_info();
+	if (isset($result['state'])) {
+		$controlerState = $result['state'];
+	}
+} catch (Exception $e) {
+	$controlerState = null;
+}
+switch ($controlerState) {
+	case 'ok':
+		// event::add('jeedom::alert', array(
+		// 	'level' => 'warning',
+		// 	'page' => 'teleinfo',
+		// 	'message' => __('Le réseau Z-Wave est en cours de démarrage sur le serveur', __FILE__),
+		// ));
+		break;
+	case 'nok':
+		event::add('jeedom::alert', array(
+			'level' => 'danger',
+			'page' => 'teleinfo',
+			'message' => __('Le deamon téléinfo ne semble pas démaré, vérifiez la configuration du port.', __FILE__),
+		));
+		break;
 }
 //$deamonRunning = false;
 //$deamonRunning = teleinfo::deamonRunning();
@@ -71,13 +92,21 @@ if($controlerState === ''){
 				</div>
 
                 <?php
+                // foreach ($eqLogics as $eqLogic) {
+                //     echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
+                //     echo "<center>";
+                //     echo '<img src="plugins/teleinfo/docs/images/teleinfo_icon.png" height="105" width="95" />';
+                //     echo "</center>";
+                //     echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
+                //     echo '</div>';
+                // }
                 foreach ($eqLogics as $eqLogic) {
-                    echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
-                    echo "<center>";
-                    echo '<img src="plugins/teleinfo/doc/images/teleinfo_icon.png" height="105" width="95" />';
-                    echo "</center>";
-                    echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
-                    echo '</div>';
+                	$opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+                	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
+                	echo '<img src="' . $plugin->getPathImgIcon() . '" height="105" width="95" />';
+                	echo "<br>";
+                	echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">' . $eqLogic->getHumanName(true, true) . '</span>';
+                	echo '</div>';
                 }
                 ?>
             </div>
@@ -182,7 +211,8 @@ if($controlerState === ''){
                       <div class="form-group">
                           <label class="col-lg-3 control-label pull-left">{{Création des commandes}} <sup><i class="fa fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
                           <div class="col-lg-7 tooltips">
-                              <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="AutoCreateFromCompteur" checked/>{{Automatique}}</label>
+                              <input type="checkbox" id="AutoCreateFromCompteur" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>
+                              <label for="AutoCreateFromCompteur">  </label>
                           </div>
                           <div class="col-lg-2">
                           </div>
@@ -242,4 +272,5 @@ if($controlerState === ''){
 </div>
 
 <?php include_file('desktop', 'teleinfo', 'js', 'teleinfo'); ?>
+<?php include_file('desktop', 'teleinfo', 'css', 'teleinfo'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
