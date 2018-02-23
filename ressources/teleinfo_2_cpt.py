@@ -6,10 +6,11 @@
 License
 =======
 
-teleinfoftdiusb.py is Copyright:
-- (C) 2010-2012 Samuel <Buffet samuel DOT buffet AT gmail DOT com>
-- (C) 2012 Frédéric <fma38 AT gbiloba DOT org>
-
+teleinfo_2_cpt.py is Copyright:
+- (C) 2010-2012 Samuel <samuel DOT buffet AT gmail DOT com>
+- (C) 2012-2017 Frédéric <fma38 AT gbiloba DOT org>
+- (C) 2017 Samuel <samuel DOT buffet AT gmail DOT com>
+- (C) 2015-2018 Cédric Guiné <cedric DOT guine AT gmail DOT com>
 This software is governed by the CeCILL license under French law and
 abiding by the rules of distribution of free software.  You can  use,
 modify and/or redistribute the software under the terms of the CeCILL
@@ -39,7 +40,7 @@ knowledge of the CeCILL license and that you accept its terms.
 
 import time
 import optparse
-import ftdi
+import ftdi1 as ftdi
 import urllib2
 import sys
 import os
@@ -68,155 +69,49 @@ gCleAPI = ''
 gDebug = ''
 gRealPath = ''
 
+
 class MyLogger:
-	""" Our own logger """
- 
-	def __init__(self):
-		program_path = os.path.dirname(os.path.realpath(__file__))
-		self._logger = logging.getLogger('teleinfo')
-		hdlr = logging.FileHandler(program_path + '/../../../log/teleinfo_deamon')
-		formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-		hdlr.setFormatter(formatter)
-		self._logger.addHandler(hdlr) 
-		self._logger.setLevel(gLogLevel)
+    """ Our own logger """
+    def __init__(self):
+        program_path = os.path.dirname(os.path.realpath(__file__))
+        self._logger = logging.getLogger('teleinfo')
+        hdlr = logging.FileHandler(program_path + '/../../../log/teleinfo_deamon')
+        formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+        hdlr.setFormatter(formatter)
+        self._logger.addHandler(hdlr)
+        self._logger.setLevel(gLogLevel)
 
+    def debug(self, text):
+        try:
+            self._logger.debug(text)
+        except NameError:
+            pass
 
-	def debug(self, text):
-		try:
-			self._logger.debug(text)
-			#print text
-		except NameError:
-			pass
- 
-	def info(self, text):
-		try:
-			#global gMessageTemp
-			text = text.replace("'", "")
-			#gMessageTemp += str(text) + "**"
-			#print text
-			self._logger.info(text)
-		except NameError:
-			pass
- 
-	def error(self, text):
-		try:
-			#global gMessageTemp
-			text = text.replace("'", "")
-			#gMessageTemp += str(text) + "**"
-			#print text
-			self._logger.error(text)
-		except NameError:
-			pass
+    def info(self, text):
+        try:
+            text = text.replace("'", "")
+            self._logger.info(text)
+        except NameError:
+            pass
+
+    def warning(self, text):
+        try:
+            text = text.replace("'", "")
+            self._logger.warn(text)
+        except NameError:
+            pass
+
+    def error(self, text):
+        try:
+            text = text.replace("'", "")
+            self._logger.error(text)
+        except NameError:
+            pass
 
 
 class FtdiError(Exception):
     """ Ftdi related errors
     """
-
-
-class Ftdi(object):
-    """ Class for handling ftdi communication
-    """
-    def __init__(self):
-        """
-        """
-        self._log = MyLogger()
-        self._log.info("Try to open Teleinfo modem")
-        super(Ftdi, self).__init__()
-        self.__ftdic = None
-
-    def init(self):
-        """ Init ftdi com.
-        """
-
-        # Create ftdi context
-        self._log.info("Try to Create ftdi context")
-        self.__ftdic = ftdi.ftdi_context()
-        if self.__ftdic is None:
-            self._log.error("Can't create ftdi context")
-            raise FtdiError("Can't create ftdi context")
-
-        # Init ftdi context
-        err = ftdi.ftdi_init(self.__ftdic)
-        if err < 0:
-            self._log.error("Can't init ftdi context (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            raise FtdiError("Can't init ftdi context (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-
-        # Open port
-        self._log.info("Try to open ftdi port")
-        err = ftdi.ftdi_usb_open(self.__ftdic, USB_VENDOR, USB_PRODUCT)
-        if err < 0:
-            self._log.error("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            raise FtdiError("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-
-        err = ftdi.ftdi_set_baudrate(self.__ftdic, BAUD_RATE)
-        if err < 0:
-            self._log.error("Can't set baudrate (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            raise FtdiError("Can't set baudrate (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-
-        # Because of the usb interface, must use 8 bits transmission data, instead of 7 bits
-        err = ftdi.ftdi_set_line_property(self.__ftdic, ftdi.BITS_8, ftdi.EVEN, ftdi.STOP_BIT_1)
-        if err < 0:
-            self._log.error("Can't set line property (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            raise FtdiError("Can't set line property (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-
-    def shutdown(self):
-        """ Shutdown ftdi com.
-        """
-        self._log.info("Try to close ftdi port")
-        err = ftdi.ftdi_usb_close(self.__ftdic)
-        if err < 0:
-            self._log.error("Can't close ftdi com. (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            raise FtdiError("Can't close ftdi com. (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-
-        ftdi.ftdi_deinit(self.__ftdic)
-
-    def selectPort(self, port):
-        """ Select the giver port
-        """
-        err = ftdi.ftdi_set_bitmode(self.__ftdic, port, ftdi.BITMODE_CBUS)
-        if err < 0:
-            self._log.error("Can't set bitmode (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            raise FtdiError("Can't set bitmode (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-        time.sleep(0.1)
-
-    def purgeBuffers(self):
-        """ Purge ftdi buffers
-        """
-        err = ftdi.ftdi_usb_purge_buffers(self.__ftdic)
-        if err < 0:
-            self._log.error("Can't purge buffers (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            raise FtdiError("Can't purge buffers (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-
-    def readOne(self):
-        """ read 1 char from usb
-        """
-        buf = ' '
-        err = ftdi.ftdi_read_data(self.__ftdic, buf, 1)
-        if err < 0:
-            self._log.error("Can't read data (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            self.shutdown()
-            raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-        if err:
-            c = unichr(ord(buf) % 0x80)  # Clear bit 7
-            return c
-        else:
-            return None
-
-    def read(self, size):
-        """ read several chars
-        """
-
-        # Purge buffers
-        self.purgeBuffers()
-
-        raw = u""
-        while len(raw) < FRAME_LENGTH:
-            c = self.readOne()
-            if c is not None and c != '\x00':
-                raw += c
-
-        return raw
 
 
 class TeleinfoError(Exception):
@@ -227,39 +122,64 @@ class TeleinfoError(Exception):
 class Teleinfo(object):
     """ Class for handling teleinfo stuff
     """
-    def __init__(self, ftdi_):
-        """
-        """
+    def __init__(self):
         self._log = MyLogger()
         self._log.info("Initialisation de la teleinfo")
         super(Teleinfo, self).__init__()
+        self.context = ftdi.new()
+        ret = ftdi.usb_open(self.context, 0x0403, 0x6001)
+        ftdi.set_baudrate(self.context, 1200)
+        ftdi.set_line_property(self.context, ftdi.BITS_8, ftdi.EVEN, ftdi.STOP_BIT_1)
 
-        self.__ftdi = ftdi_
-
-    def __selectMeter(self, num):
+    def selectMeter(self, num):
         """ Select giver meter
         """
-        self.__ftdi.selectPort(USB_PORT[num])
+        err = ftdi.set_bitmode(self.context, USB_PORT[num], ftdi.BITMODE_CBUS)
+        if err < 0:
+            self._log.error("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+            raise FtdiError("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+        time.sleep(0.1)
 
+    def readOne(self):
+        """ read 1 char from usb
+        """
+        err, buf = ftdi.read_data(self.context, 0x1)
+        if err < 0:
+            self._log.error("Can't read data (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+            self.shutdown()
+            raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+        if err:
+            #c = unichr(ord(buf) % 0x80)  # Clear bit 7
+            c = chr(ord(buf) & 0x07f)
+            return err, c
+        else:
+            return err, None
     def __readRawFrame(self):
         """ Read raw frame
         """
 
         # As the data are sent asynchronously by the USB interface, we probably don't start
         # to read at the start of a frame. So, we read enough chars to retreive a complete frame
-        raw = self.__ftdi.read(FRAME_LENGTH)
 
+        err = ftdi.usb_purge_buffers(self.context)
+        if err < 0:
+            self._log.error("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+            raise FtdiError("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+
+        raw = u""
+        while len(raw) < FRAME_LENGTH:
+            err, c = self.readOne()
+            if c is not None and c != '\x00':
+                raw += c
         return raw
 
     def __frameToDatas(self, frame):
         """ Split frame in datas
         """
-        #essai indent
         Content = {}
         lines = frame.split('\r')
         for line in lines:
-	    #print line
-	    try:
+        try:
                 checksum = line[-1]
                 header, value = line[:-2].split()
                 data = {'header': header.encode(), 'value': value.encode(), 'checksum': checksum}
@@ -273,7 +193,6 @@ class Teleinfo(object):
     def __checkData(self, data):
         """ Check if data is ok (checksum)
         """
-
         # Check entry
         sum = 0x20  # Space between header and value
         for s in (data['header'], data['value']):
@@ -281,10 +200,9 @@ class Teleinfo(object):
                 sum += ord(c)
         sum %= 0x40  # Checksum on 6 bits
         sum += 0x20  # Ensure printable char
-
         if sum != ord(data['checksum']):
             data = null
-	    #raise TeleinfoError("Corrupted data found (%s)" % data)
+        #raise TeleinfoError("Corrupted data found (%s)" % data)
 
 
     def extractDatas(self, raw):
@@ -293,18 +211,14 @@ class Teleinfo(object):
         end = raw.rfind(chr(ETX)) + 1
         start = raw[:end].rfind(chr(ETX)+chr(STX))
         frame = raw[start+2:end-2]
-
         # Check if there is a EOT, cancel frame
         if frame.find(chr(EOT)) != -1:
             return {'Message':'EOT'}
             #raise TeleinfoError("EOT found")
-
         # Convert frame back to ERDF standard
         #frame = frame.replace('\n', '')     # Remove new line
-
         # Extract data
         datas = self.__frameToDatas(frame)
-
         return datas
 
     def readMeter(self, device, externalip, cleapi, debug, realpath):
@@ -315,7 +229,6 @@ class Teleinfo(object):
         self._cleAPI = cleapi
         self._debug = debug
         self._realpath = realpath
-
         _CompteurNum = 1
         Donnees_cpt1 = {}
         Donnees_cpt2 = {}
@@ -324,9 +237,6 @@ class Teleinfo(object):
         _RAZ = 3600
         _Separateur = " "
         _SendData = ""
-        #for cle, valeur in Donnees.items():
-        #            Donnees.pop(cle)
-        #            _Donnees.pop(cle)
         while(1):
             if(_RAZ > 1):
                 _RAZ = _RAZ - 1
@@ -339,12 +249,10 @@ class Teleinfo(object):
                     Donnees_cpt2.pop(cle)
                     _Donnees_cpt2.pop(cle)
             _SendData = ""
-            
-            self.__selectMeter(_CompteurNum)
+            self.selectMeter(_CompteurNum)
             raw = self.__readRawFrame()
-            self.__selectMeter(0)
+            self.selectMeter(0)
             datas = self.extractDatas(raw)
-            
             if(_CompteurNum == 1):
                 for cle, valeur in datas.items():
                     if(cle == 'PTEC'):
@@ -361,7 +269,6 @@ class Teleinfo(object):
                         Donnees_cpt2[cle] = valeur
                     else:
                         Donnees_cpt2[cle] = valeur
-                
             if(self._externalip != ""):
                 self.cmd = self._externalip +'/plugins/teleinfo/core/php/jeeTeleinfo.php?api=' + self._cleAPI
                 _Separateur = "&"
@@ -369,8 +276,6 @@ class Teleinfo(object):
                 self.cmd = 'nice -n 19 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
                 _Separateur = " "
             #_SendData += _Separateur + 'ADCO='+ ADCO
-            
-            
             if(_CompteurNum == 1):
                 for cle, valeur in Donnees_cpt1.items():
                     if(cle in _Donnees_cpt1):
@@ -389,8 +294,6 @@ class Teleinfo(object):
                     else:
                         _SendData += _Separateur + cle +'='+ valeur
                         _Donnees_cpt2[cle] = valeur
-            
-            #response = urllib2.urlopen(self.cmd)
             if (_SendData != ""):
                 if(_CompteurNum == 1):
                     if (_Donnees_cpt1.has_key("ADCO")):
@@ -400,7 +303,6 @@ class Teleinfo(object):
                         _SendData += _Separateur + "ADCO=" + _Donnees_cpt2["ADCO"]
                 self.cmd += _SendData
                 if (self._debug == '1'):
-                    #print self.cmd
                     self._log.debug(self.cmd)
                 if(self._externalip != ""):
                     try:
@@ -432,13 +334,8 @@ def main():
     parser.add_option("-v", "--vitesse", dest="vitesse", help="vitesse")
     parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
     (options, args) = parser.parse_args()
-    # Create MySQL table options
-    #groupeCreate = optparse.OptionGroup(parser, "Create")
-    #groupeCreate.add_option("-c", "--create", action="store_true", dest="create", default=False,
-    #                      help=optparse.SUPPRESS_HELP)
-    #parser.add_option_group(groupeCreate)
-    # Execute command
-    #teleinfoSQL = TeleinfoSQL()
+
+    gDeviceName = gExternalIP = gDebug = gCleAPI = gRealPath = ""
     if options.port:
             try:
                 gDeviceName = options.port
@@ -469,13 +366,10 @@ def main():
             except:
                 error = "Can not get realpath %s" % options.realpath
                 raise TeleinfoException(error)
-    
-    ftdi_ = Ftdi()
-    ftdi_.init()
-    teleinfo = Teleinfo(ftdi_)
+    teleinfo = Teleinfo()
     pid = str(os.getpid())
     file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
-    
+
     teleinfo.readMeter(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath)
     ftdi_.shutdown()
 

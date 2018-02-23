@@ -37,7 +37,6 @@ gCanStart = 'true'
 # ----------------------------------------------------------------------------
 class MyLogger:
     """ Our own logger """
-
     def __init__(self):
         program_path = os.path.dirname(os.path.realpath(__file__))
         self._logger = logging.getLogger('teleinfo')
@@ -47,40 +46,29 @@ class MyLogger:
         self._logger.addHandler(hdlr)
         self._logger.setLevel(gLogLevel)
 
-
     def debug(self, text):
         try:
             self._logger.debug(text)
-            #print text
         except NameError:
             pass
 
     def info(self, text):
         try:
-            #global gMessageTemp
             text = text.replace("'", "")
-            #gMessageTemp += str(text) + "**"
-            #print text
             self._logger.info(text)
         except NameError:
             pass
 
     def warning(self, text):
         try:
-            #global gMessageTemp
             text = text.replace("'", "")
-            #gMessageTemp += str(text) + "**"
-            #print text
             self._logger.warn(text)
         except NameError:
             pass
 
     def error(self, text):
         try:
-            #global gMessageTemp
             text = text.replace("'", "")
-            #gMessageTemp += str(text) + "**"
-            #print text
             self._logger.error(text)
         except NameError:
             pass

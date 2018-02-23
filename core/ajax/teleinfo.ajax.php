@@ -28,25 +28,25 @@ try {
         teleinfo::stopDeamon();
         ajax::success();
     }
-	
+
 	if (init('action') == 'restartDeamon') {
 		$port = config::byKey('port', 'teleinfo', 'none');
 		$_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
 		if($_2cpt_cartelectronic == 1){
-			
+
 		}
 		if ($port == 'none') {
 			ajax::success();
 		}
 		teleinfo::stopDeamon();
 		if (teleinfo::deamonRunning()) {
-			throw new Exception(__('Impossible d\'arrêter le démon', __FILE__));
+			throw new Exception(__('Impossible d\'arrï¿½ter le dï¿½mon', __FILE__));
 		}
 		log::clear('teleinfocmd');
 		teleinfo::cron();
 		ajax::success();
 	}
-	
+
 	if (init('action') == 'restartSlaveDeamon') {
 		if (config::byKey('jeeNetwork::mode') == 'master') {
 			$jeeNetwork = jeeNetwork::byId(init('id'));
@@ -68,7 +68,7 @@ try {
 		}
 		ajax::success();
 	}
-	
+
 	if (init('action') == 'getTeleinfo') {
         if (init('object_id') == '') {
             $_GET['object_id'] = $_SESSION['user']->getOptions('defaultDashboardObject');
@@ -78,7 +78,7 @@ try {
             $object = object::rootObject();
         }
         if (!is_object($object)) {
-            throw new Exception('{{Aucun objet racine trouvé}}');
+            throw new Exception('{{Aucun objet racine trouvï¿½}}');
         }
         $return = array('object' => utils::o2a($object));
 
@@ -86,7 +86,7 @@ try {
             'start' => init('dateStart'),
             'end' => init('dateEnd'),
         );
-        
+
         if ($date['start'] == '') {
             $date['start'] = date('Y-m-d', strtotime('-6 days' . date('Y-m-d')));
         }
@@ -101,7 +101,7 @@ try {
         }
         ajax::success($return);
     }
-    
+
 	if (init('action') == 'getInformation') {
 		if(init('eqLogic_id') != null){
 			$eqLogic = eqLogic::byId(init('eqLogic_id'));
@@ -112,7 +112,7 @@ try {
 					$cmd_info['value'] = $cmd->execCmd(null, 2);
 					$return[$eqLogic->getId()]['cmd'][] = $cmd_info;
 				}
-			ajax::success($return);			
+			ajax::success($return);
 		}else{
 			$eqLogics = eqLogic::byType('teleinfo');
 			foreach ($eqLogics as $eqLogic) {
@@ -144,14 +144,14 @@ try {
 				//$return[0] = $health_cmd;
 				$return = array('object' => utils::o2a($health_cmd));
 				$return["ADCO"] = $eqLogic->getLogicalId();
-				ajax::success($return);		
+				ajax::success($return);
 			}
 		}
-		
+
 		ajax::error("", "");
 	}
 	if (init('action') == 'getInfoDaemon') {
-	
+
 		$return = array();
 		$_nbLines = 1000;
 		$replace = array(
@@ -159,11 +159,11 @@ try {
 			'&apos;' => '',
 		);
 		$page = array();
-		
+
 		$path = realpath(dirname(__FILE__) . '/../../ressources/teleinfo.log');
 		//log::add('teleinfo', 'info', $path);
 		if (!file_exists($path)) {
-			$return['result'] = array('Deamon non lancé');
+			$return['result'] = array('Deamon non lancÃ©');
 			ajax::success($return);
 		}else{
 			$log = new SplFileObject($path);
@@ -184,10 +184,10 @@ try {
 			ajax::success($return);
 		}
 	}
-	
+
 	if (init('action') == 'getInfoExternalDaemon') {
 		$jeeNetwork = jeeNetwork::byPlugin('enocean');
-		
+
 		$return['result'] = $jeeNetwork;
 		ajax::success($return);
 		//$jeeNetwork = jeeNetwork::byId(init('id'));
@@ -217,8 +217,8 @@ try {
 		//$dateEnd = date('Y-m-d H:i:s');
         ajax::success($return);
     }
-	
-	
+
+
     throw new Exception('Aucune methode correspondante');
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {
