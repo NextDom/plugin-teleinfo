@@ -40,7 +40,10 @@ knowledge of the CeCILL license and that you accept its terms.
 
 import time
 import optparse
-import ftdi1 as ftdi
+try:
+    import ftdi1 as ftdi
+except ImportError:
+    raise ImportError('Erreur de librairie ftdi')
 import urllib2
 import sys
 import os
@@ -126,7 +129,10 @@ class Teleinfo(object):
         self._log = MyLogger()
         self._log.info("Initialisation de la teleinfo")
         super(Teleinfo, self).__init__()
-        self.context = ftdi.new()
+        try:
+            self.context = ftdi.new()
+        except:
+            pass
         ret = ftdi.usb_open(self.context, 0x0403, 0x6001)
         ftdi.set_baudrate(self.context, 1200)
         ftdi.set_line_property(self.context, ftdi.BITS_8, ftdi.EVEN, ftdi.STOP_BIT_1)
@@ -179,7 +185,7 @@ class Teleinfo(object):
         Content = {}
         lines = frame.split('\r')
         for line in lines:
-        try:
+            try:
                 checksum = line[-1]
                 header, value = line[:-2].split()
                 data = {'header': header.encode(), 'value': value.encode(), 'checksum': checksum}
@@ -187,7 +193,7 @@ class Teleinfo(object):
                 Content[header.encode()] = value.encode()
             except:
                 pass
-            #datas.append(data)
+                #datas.append(data)
         return Content
 
     def __checkData(self, data):
@@ -337,35 +343,35 @@ def main():
 
     gDeviceName = gExternalIP = gDebug = gCleAPI = gRealPath = ""
     if options.port:
-            try:
-                gDeviceName = options.port
-            except:
-                error = "Can not change port %s" % options.port
-                raise TeleinfoException(error)
+        try:
+            gDeviceName = options.port
+        except:
+            error = "Can not change port %s" % options.port
+            raise TeleinfoException(error)
     if options.externalip:
-            try:
-                gExternalIP = options.externalip
-            except:
-                error = "Can not change ip %s" % options.externalip
-                raise TeleinfoException(error)
+        try:
+            gExternalIP = options.externalip
+        except:
+            error = "Can not change ip %s" % options.externalip
+            raise TeleinfoException(error)
     if options.debug:
-            try:
-                gDebug = options.debug
-            except:
-                error = "Can not set debug mode %s" % options.debug
-                #raise TeleinfoException(error)
+        try:
+            gDebug = options.debug
+        except:
+            error = "Can not set debug mode %s" % options.debug
+            #raise TeleinfoException(error)
     if options.cleapi:
-            try:
-                gCleAPI = options.cleapi
-            except:
-                error = "Can not change ip %s" % options.cleapi
-                raise TeleinfoException(error)
+        try:
+            gCleAPI = options.cleapi
+        except:
+            error = "Can not change ip %s" % options.cleapi
+            raise TeleinfoException(error)
     if options.realpath:
-            try:
-                gRealPath = options.realpath
-            except:
-                error = "Can not get realpath %s" % options.realpath
-                raise TeleinfoException(error)
+        try:
+            gRealPath = options.realpath
+        except:
+            error = "Can not get realpath %s" % options.realpath
+            raise TeleinfoException(error)
     teleinfo = Teleinfo()
     pid = str(os.getpid())
     file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
