@@ -20,27 +20,26 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 global $jsonrpc;
 if (!is_object($jsonrpc)) {
-	throw new Exception(__('JSONRPC object not defined', __FILE__), -32699);
+    throw new \Exception(__('JSONRPC object not defined', __FILE__), -32699);
 }
 $params = $jsonrpc->getParams();
 
 if ($jsonrpc->getMethod() == 'deamonRunning') {
-	$jsonrpc->makeSuccess(teleinfo::deamonRunning());
+    $jsonrpc->makeSuccess(teleinfo::deamonRunning());
 }
 
 if ($jsonrpc->getMethod() == 'stopDeamon') {
-	$jsonrpc->makeSuccess(teleinfo::stopDeamon());
+    $jsonrpc->makeSuccess(teleinfo::stopDeamon());
 }
 
 if ($jsonrpc->getMethod() == 'restartDeamon') {
-	teleinfo::stopDeamon();
-	if (teleinfo::deamonRunning()) {
-		throw new Exception(__('Impossible d\'arrêter le démon', __FILE__));
-	}
-	log::clear('teleinfocmd');
-	teleinfo::cron();
-	$jsonrpc->makeSuccess();
+    teleinfo::stopDeamon();
+    if (teleinfo::deamonRunning()) {
+        throw new \Exception(__('Impossible d\'arrêter le démon', __FILE__));
+    }
+    log::clear('teleinfocmd');
+    teleinfo::cron();
+    $jsonrpc->makeSuccess();
 }
 
-throw new Exception(__('Aucune methode correspondante pour le plugin Teleinfo : ' . $jsonrpc->getMethod(), __FILE__));
-?>
+throw new \Exception(__('Aucune methode correspondante pour le plugin Teleinfo : ' . $jsonrpc->getMethod(), __FILE__));
