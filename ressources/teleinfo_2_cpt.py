@@ -46,6 +46,7 @@ import sys
 import os
 import traceback
 import logging
+import signal
 try:
     import ftdi
     FTDI_TYPE = 0
@@ -303,7 +304,7 @@ class Teleinfo(object):
         lines = frame.split('\r')
         for line in lines:
         #print line
-        try:
+            try:
                 checksum = line[-1]
                 header, value = line[:-2].split()
                 data = {'header': header.encode(), 'value': value.encode(), 'checksum': checksum}
@@ -530,9 +531,8 @@ def main():
 
     pid = str(os.getpid())
     file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
-
-    teleinfo.readMeter(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath)
     signal.signal(signal.SIGTERM, teleinfo.exit_handler)
+    teleinfo.readMeter(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath)
     if FTDI_TYPE == 0:
         ftdi_.shutdown()
     sys.exit()
