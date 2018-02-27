@@ -78,7 +78,6 @@ gRealPath = ''
 
 class MyLogger:
     """ Our own logger """
-
     def __init__(self):
         program_path = os.path.dirname(os.path.realpath(__file__))
         self._logger = logging.getLogger('teleinfo')
@@ -92,16 +91,12 @@ class MyLogger:
     def debug(self, text):
         try:
             self._logger.debug(text)
-            #print text
         except NameError:
             pass
 
     def info(self, text):
         try:
-            #global gMessageTemp
             text = text.replace("'", "")
-            #gMessageTemp += str(text) + "**"
-            #print text
             self._logger.info(text)
         except NameError:
             pass
@@ -115,10 +110,7 @@ class MyLogger:
 
     def error(self, text):
         try:
-            #global gMessageTemp
             text = text.replace("'", "")
-            #gMessageTemp += str(text) + "**"
-            #print text
             self._logger.error(text)
         except NameError:
             pass
@@ -274,7 +266,7 @@ class Teleinfo(object):
         err, buf = ftdi.read_data(self.context, 0x1)
         if err < 0:
             self._log.error("Can't read data (%d, %s)" % (err, ftdi.get_error_string(self.context)))
-            self.shutdown()
+            self.close()
             raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.get_error_string(self.context)))
         if err:
             #c = unichr(ord(buf) % 0x80)  # Clear bit 7
@@ -301,7 +293,6 @@ class Teleinfo(object):
                 err, c = self.__readOne()
                 if c is not None and c != '\x00':
                     raw += c
-
         return raw
 
     def __frameToDatas(self, frame):
@@ -338,7 +329,6 @@ class Teleinfo(object):
         if sum != ord(data['checksum']):
             data = null
         #raise TeleinfoError("Corrupted data found (%s)" % data)
-
 
     def extractDatas(self, raw):
         """ Extract datas from raw frame
@@ -419,10 +409,8 @@ class Teleinfo(object):
                 self.cmd = self._externalip +'/plugins/teleinfo/core/php/jeeTeleinfo.php?api=' + self._cleAPI
                 _Separateur = "&"
             else:
-                self.cmd = 'nice -n 19 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
+                self.cmd = 'nice -n 19 timeout 15 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
                 _Separateur = " "
-            #_SendData += _Separateur + 'ADCO='+ ADCO
-
 
             if(_CompteurNum == 1):
                 for cle, valeur in Donnees_cpt1.items():
@@ -470,7 +458,23 @@ class Teleinfo(object):
                 _CompteurNum = 2
             else:
                 _CompteurNum = 1
+		self.terminate()
 
+    def exit_handler(self, *args):
+        self.terminate()
+        self._log.info("[exit_handler]")
+
+    def close(self):
+		if FTDI_TYPE == 0:
+			self.__ftdi.shutdown()
+		else:
+			ftdi.close()
+
+    def terminate(self):
+		print "Terminating..."
+        self.close()
+        #sys.close(gOutput)
+        sys.exit()
 
 def main():
     usage  = "%prog -r [options] -> read meters\n"
@@ -528,7 +532,10 @@ def main():
     file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
 
     teleinfo.readMeter(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath)
-    ftdi_.shutdown()
+	signal.signal(signal.SIGTERM, teleinfo.exit_handler)
+	if FTDI_TYPE == 0:
+	    ftdi_.shutdown()
+	sys.exit()
 
 
 if __name__ == "__main__":
