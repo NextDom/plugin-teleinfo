@@ -1,7 +1,9 @@
-# Présentation
+Présentation
+===
 Le plugin Téléinformation permet de récupérer les informations de votre compteur EDF et de les afficher sur le Jeedom de votre choix. Pour cela 2 modes sont disponibles, le mode local et le mode réseau.
 
-# Architecture
+Architecture
+===
 Pour récupérer la Téléinformation il faut se connecter sur les bornes I1 et I2 du compteur :
 
 ![teleinfo1](../images/teleinfo_compteur.png)
@@ -9,7 +11,8 @@ Pour récupérer la Téléinformation il faut se connecter sur les bornes I1 et 
 ![teleinfo2](../images/teleinfo_archi.png)
 
 
-# Cas d'utilisation de 2 compteurs
+Cas d'utilisation de 2 compteurs
+===
 
 ## Utilisation du modem Cartelectronic 2 Compteurs
 Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement de 2 compteurs électrique il est nécessaire d'activer le mode 2 compteurs.
@@ -22,7 +25,8 @@ Dans ce cas il faut activer le mode production du plugin :
 ![teleinfo31](../images/teleinformation_production.png)
 
 
-# Installation
+Installation
+===
 Commencer par installer le plugin depuis le market : https://www.jeedom.fr/doc/documentation/core/fr_FR/doc-core-plugin.html
 
 Après avoir activé le plugin vous devez choisir le port du modem :
@@ -37,7 +41,8 @@ Enfin pensez à sauvegarder.
 
 Un nouveau Protocole est disponible dans Plugins => Protocole domotique => Téléinfo
 
-# Configuration
+Configuration
+===
 Le plugin offre la possibilité de créer automatiquement les commandes réceptionnées. Pour cela démarrez le daemon, attendez que les premières trames arrivent puis rendez vous sur Plugin / Protocoles Domotiques / Téléinfo.
 Vous devriez voir apparaitre un objet avec un ID.
 
@@ -58,7 +63,9 @@ Vous pouvez également créer votre appareil manuellement :
 -   Renseignez le nom affiché dans Jeedom, le Sous-Type en fonction de l'information qui sera récupérée, la donnée à récupérer et enfin les paramètres associés.
 -   Cliquez sur sauvegarder.
 
-# Les commandes
+Les commandes
+===
+
 Les commandes (Ajouter une donnée) correspondent aux données envoyées par le modem.
 
 Celles-ci peuvent êtres les suivantes :
@@ -74,7 +81,9 @@ Celles-ci peuvent êtres les suivantes :
 -   Préavis EJP (30 minutes avant)
 -   Couleur EJP lendemain.
 
-# Les statistiques
+Les statistiques
+===
+
 Afin d'obtenir des informations sur une durée plus longue des statistiques ont étés ajoutées.
 Ces statistiques correspondent aux informations suivantes :
 -   Consommation du jour en cours
@@ -84,7 +93,9 @@ Ces statistiques correspondent aux informations suivantes :
 -   Tendance journalière de la consommation (Pour être informé si l'on consomme plus ou moins par rapport au jour précédent à la même heure)
 -   Puissance apparente : Certains compteurs ne renvoie pas l'information PAPP. Pour cela un calcul à été implémenté afin d'obtenir une moyenne de consommation en W toutes les minutes.
 
-# Les unités
+Les unités
+===
+
 -   Les index : Watt-heure
 -   Tranche tarifaire : Chaîne de caractères.
 -   Puissance apparente instantanée : Volt-Ampère.
@@ -94,7 +105,8 @@ Ces statistiques correspondent aux informations suivantes :
 -   Le préavis EJP et la couleur du lendemn : Chaîne de caractères.
 -   La conso moyenne sur la dernière minute : Watt
 
-# Santé
+Santé
+===
 Il est possible de vérifier la réception des données avant traitement.
 
 Pour cela rendez vous sur l'objet téléinfo puis cliquez sur Santé
@@ -105,7 +117,8 @@ La fenêtre qui s'ouvre permet de vérifier la bonne reception des données :
 
 ![teleinfo7](../images/teleinformation_sante.png)
 
-# API
+API
+===
 Le plugin téléinfo met à disposition une api afin de mettre à jour les données depuis d'autres systèmes.
 Il s'agit d'une URL d'appel de type GET.
 Pour y accéder ces informations sont obligatoires :
@@ -151,7 +164,8 @@ Quelques unes (Les plus connues) :
 	* IINST
 	* ADPS
 
-# FAQ
+FAQ
+===
 
 >J'ai un modem Cartelectronic qui n'envoi aucune information
 
@@ -242,7 +256,8 @@ Le lissage des historiques Jeedom peut induire des valeurs statistiques erronée
 
 
 
-# Bug
+Bug
+===
 
 En cas de bug avéré du plugin il est possible d'ouvrir une issue :
 

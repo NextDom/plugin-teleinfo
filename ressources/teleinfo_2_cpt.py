@@ -303,7 +303,6 @@ class Teleinfo(object):
         Content = {}
         lines = frame.split('\r')
         for line in lines:
-        #print line
             try:
                 checksum = line[-1]
                 header, value = line[:-2].split()
@@ -312,7 +311,7 @@ class Teleinfo(object):
                 Content[header.encode()] = value.encode()
             except:
                 pass
-            #datas.append(data)
+                #datas.append(data)
         return Content
 
     def __checkData(self, data):
@@ -528,7 +527,6 @@ def main():
         teleinfo = Teleinfo(ftdi_)
     else:
         teleinfo = Teleinfo()
-
     pid = str(os.getpid())
     file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
     signal.signal(signal.SIGTERM, teleinfo.exit_handler)

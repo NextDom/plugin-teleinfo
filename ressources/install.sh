@@ -1,6 +1,7 @@
 #!/bin/bash
 touch /tmp/teleinfo_in_progress
 echo 0 > /tmp/teleinfo_in_progress
+sudo apt-get update
 echo "Lancement de l'installation des dépendances Téléinfo"
 echo 10 > /tmp/teleinfo_in_progress
 sudo apt-get -y install python-ftdi
