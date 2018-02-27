@@ -458,20 +458,20 @@ class Teleinfo(object):
                 _CompteurNum = 2
             else:
                 _CompteurNum = 1
-		self.terminate()
+        self.terminate()
 
     def exit_handler(self, *args):
         self.terminate()
         self._log.info("[exit_handler]")
 
     def close(self):
-		if FTDI_TYPE == 0:
-			self.__ftdi.shutdown()
-		else:
-			ftdi.close()
+        if FTDI_TYPE == 0:
+            self.__ftdi.shutdown()
+        else:
+            ftdi.close()
 
     def terminate(self):
-		print "Terminating..."
+        print "Terminating..."
         self.close()
         #sys.close(gOutput)
         sys.exit()
@@ -532,10 +532,10 @@ def main():
     file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
 
     teleinfo.readMeter(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath)
-	signal.signal(signal.SIGTERM, teleinfo.exit_handler)
-	if FTDI_TYPE == 0:
-	    ftdi_.shutdown()
-	sys.exit()
+    signal.signal(signal.SIGTERM, teleinfo.exit_handler)
+    if FTDI_TYPE == 0:
+        ftdi_.shutdown()
+    sys.exit()
 
 
 if __name__ == "__main__":
