@@ -11,5 +11,6 @@
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 45,
 	"changelog" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/",
-	"documentation" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/"
+	"documentation" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/",
+	"pluginVersion" : "2.6.1"
 }
