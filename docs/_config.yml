@@ -1,5 +1,5 @@
 ---
-langs: [fr_FR,en_US,de_DE,es_ES,id_ID] 
+langs: [fr_FR]
 baseurl: "/"
 sass:
   sass_dir: assets/css
