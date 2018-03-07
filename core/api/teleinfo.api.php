@@ -29,11 +29,11 @@ if ($jsonrpc->getMethod() == 'deamonRunning') {
 }
 
 if ($jsonrpc->getMethod() == 'stopDeamon') {
-    $jsonrpc->makeSuccess(teleinfo::stopDeamon());
+    $jsonrpc->makeSuccess(teleinfo::deamon_stop());
 }
 
 if ($jsonrpc->getMethod() == 'restartDeamon') {
-    teleinfo::stopDeamon();
+    teleinfo::deamon_stop();
     if (teleinfo::deamonRunning()) {
         throw new \Exception(__('Impossible d\'arrêter le démon', __FILE__));
     }

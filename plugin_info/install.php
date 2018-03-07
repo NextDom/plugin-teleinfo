@@ -36,24 +36,24 @@ function teleinfo_install() {
     }
     step2:
     if (teleinfo::deamonRunning()) {
-        teleinfo::stopDeamon();
+        teleinfo::deamon_stop();
     }
-    $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
+    $cron = cron::byClassAndFunction('teleinfo', 'calculateOtherStats');
     if (!is_object($cron)) {
         $cron = new cron();
         $cron->setClass('teleinfo');
-        $cron->setFunction('CalculateOtherStats');
+        $cron->setFunction('calculateOtherStats');
         $cron->setEnable(1);
         $cron->setDeamon(0);
         $cron->setSchedule('10 00 * * *');
         $cron->save();
     }
 
-    $crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
+    $crontoday = cron::byClassAndFunction('teleinfo', 'calculateTodayStats');
     if (!is_object($crontoday)) {
         $crontoday = new cron();
         $crontoday->setClass('teleinfo');
-        $crontoday->setFunction('CalculateTodayStats');
+        $crontoday->setFunction('calculateTodayStats');
         $crontoday->setEnable(1);
         $crontoday->setDeamon(0);
         $crontoday->setSchedule('*/5 * * * *');
@@ -63,6 +63,7 @@ function teleinfo_install() {
 }
 
 function teleinfo_update() {
+    log::add('teleinfo','debug','teleinfo_update');
     $core_version = '1.1.1';
     if (!file_exists(dirname(__FILE__) . '/info.json')) {
         log::add('teleinfo','warning','Pas de fichier info.json');
@@ -76,11 +77,11 @@ function teleinfo_update() {
     try {
         $core_version = $data['pluginVersion'];
     } catch (\Exception $e) {
-
+        log::add('teleinfo','warning','Pas de version de plugin');
     }
     step2:
     if (teleinfo::deamonRunning()) {
-        teleinfo::stopDeamon();
+        teleinfo::deamon_stop();
     }
     message::add('Téléinfo', 'Mise à jour en cours...', null, null);
     log::add('teleinfo','info','*****************************************************');
@@ -89,13 +90,20 @@ function teleinfo_update() {
     log::add('teleinfo','info','**        Core version    : '. $core_version. '                  **');
     log::add('teleinfo','info','*****************************************************');
 
-    //config::save('teleinfo_core_version',$core_version,'teleinfo');
-
     $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
+    if (is_object($cron)) {
+        $cron->remove();
+    }
+    $crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
+    if (is_object($crontoday)) {
+        $crontoday->remove();
+    }
+
+    $cron = cron::byClassAndFunction('teleinfo', 'calculateOtherStats');
     if (!is_object($cron)) {
         $cron = new cron();
         $cron->setClass('teleinfo');
-        $cron->setFunction('CalculateOtherStats');
+        $cron->setFunction('calculateOtherStats');
         $cron->setEnable(1);
         $cron->setDeamon(0);
         $cron->setSchedule('10 00 * * *');
@@ -107,11 +115,11 @@ function teleinfo_update() {
     }
     $cron->stop();
 
-    $crontoday = cron::byClassAndFunction('teleinfo', 'CalculateTodayStats');
+    $crontoday = cron::byClassAndFunction('teleinfo', 'calculateTodayStats');
     if (!is_object($crontoday)) {
         $crontoday = new cron();
         $crontoday->setClass('teleinfo');
-        $crontoday->setFunction('CalculateTodayStats');
+        $crontoday->setFunction('calculateTodayStats');
         $crontoday->setEnable(1);
         $crontoday->setDeamon(0);
         $crontoday->setSchedule('*/5 * * * *');
@@ -125,7 +133,7 @@ function teleinfo_update() {
 
 function teleinfo_remove() {
     if (teleinfo::deamonRunning()) {
-        teleinfo::stopDeamon();
+        teleinfo::deamon_stop();
     }
     $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
     if (is_object($cron)) {
@@ -136,5 +144,3 @@ function teleinfo_remove() {
         $crontoday->remove();
     }
 }
-
-?>

@@ -25,7 +25,7 @@ try {
     }
 
     if (init('action') == 'stopDeamon') {
-        teleinfo::stopDeamon();
+        teleinfo::deamon_stop();
         ajax::success();
     }
 
@@ -38,7 +38,7 @@ try {
         if ($port == 'none') {
             ajax::success();
         }
-        teleinfo::stopDeamon();
+        teleinfo::deamon_stop();
         if (teleinfo::deamonRunning()) {
             throw new \Exception(__('Impossible d\'arrêter le démon', __FILE__));
         }
@@ -54,17 +54,6 @@ try {
                 throw new \Exception(__('Impossible de trouver l\'esclave : ', __FILE__) . init('id'));
             }
             $jeeNetwork->sendRawRequest('restartDeamon', array('plugin' => 'teleinfo'));
-        }
-        ajax::success();
-    }
-
-    if (init('action') == 'stopSlaveDeamon') {
-        if (config::byKey('jeeNetwork::mode') == 'master') {
-            $jeeNetwork = jeeNetwork::byId(init('id'));
-            if (!is_object($jeeNetwork)) {
-                throw new \Exception(__('Impossible de trouver l\'esclave : ', __FILE__) . init('id'));
-            }
-            $jeeNetwork->sendRawRequest('stopDeamon', array('plugin' => 'teleinfo'));
         }
         ajax::success();
     }
