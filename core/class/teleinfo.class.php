@@ -433,24 +433,24 @@ class teleinfo extends eqLogic
             }
         }
 
-        log::add('teleinfo', 'info', '----- Calcul des statistiques temps réel -----');
-        log::add('teleinfo', 'info', 'Date de début : ' . date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d"), date("Y"))));
-        log::add('teleinfo', 'info', 'Date de fin   : ' . date("Y-m-d H:i:s", mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y"))));
-        log::add('teleinfo', 'info', '----------------------------------------------');
-
         $startdatetoday     = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
         $enddatetoday       = date("Y-m-d H:i:s", mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y")));
-        $startdateyesterday = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+        log::add('teleinfo', 'info', '----- Calcul des statistiques temps réel -----');
+        log::add('teleinfo', 'info', 'Date de début : ' . $startdatetoday);
+        log::add('teleinfo', 'info', 'Date de fin   : ' . $enddatetoday);
+        log::add('teleinfo', 'info', '----------------------------------------------');
 
-        if ($TYPE_TENDANCE == 1) {
+        $startdateyesterday = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+        if ($TYPE_TENDANCE === 1) {
             $enddateyesterday = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
         } else {
             $enddateyesterday = date("Y-m-d H:i:s", mktime(date("H"), date("i"), date("s"), date("m"), date("d") - 1, date("Y")));
         }
 
         foreach ($stat_hc_to_cumul as $key => $value) {
-            log::add('teleinfo', 'debug', 'Commande HC N°' . $value);
             $cmd = cmd::byId($value);
+
+            log::add('teleinfo', 'debug', 'Commande HC N°' . $value);
             log::add('teleinfo', 'debug', ' ==> Valeur HC MAX : ' . $cmd->getStatistique($startdatetoday, $enddatetoday)['max']);
             log::add('teleinfo', 'debug', ' ==> Valeur HC MIN : ' . $cmd->getStatistique($startdatetoday, $enddatetoday)['min']);
 
@@ -459,8 +459,9 @@ class teleinfo extends eqLogic
             log::add('teleinfo', 'debug', 'Total HC --> ' . $STAT_TODAY_HC);
         }
         foreach ($stat_hp_to_cumul as $key => $value) {
-            log::add('teleinfo', 'debug', 'Commande HP N°' . $value);
             $cmd = cmd::byId($value);
+
+            log::add('teleinfo', 'debug', 'Commande HP N°' . $value);
             log::add('teleinfo', 'debug', ' ==> Valeur HP MAX : ' . $cmd->getStatistique($startdatetoday, $enddatetoday)['max']);
             log::add('teleinfo', 'debug', ' ==> Valeur HP MIN : ' . $cmd->getStatistique($startdatetoday, $enddatetoday)['min']);
 
@@ -473,22 +474,23 @@ class teleinfo extends eqLogic
 
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "stat") {
-                    if ($cmd->getConfiguration('info_conso') == "STAT_TODAY") {
+                    switch ($cmd->getConfiguration('info_conso')) {
+                        case "STAT_TODAY":
                         log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière ==> ' . intval($STAT_TODAY_HP + $STAT_TODAY_HC));
-                        $cmd->setValue(intval($STAT_TODAY_HP + $STAT_TODAY_HC));
                         $cmd->event(intval($STAT_TODAY_HP + $STAT_TODAY_HC));
-                    } elseif ($cmd->getConfiguration('info_conso') == "TENDANCE_DAY") {
+                        break;
+                        case "TENDANCE_DAY":
                         log::add('teleinfo', 'debug', 'Mise à jour de la tendance journalière ==> ' . '(Hier : ' . intval($STAT_YESTERDAY_HC + $STAT_YESTERDAY_HP) . ' Aujourd\'hui : ' . intval($STAT_TODAY_HC + $STAT_TODAY_HP) . ' Différence : ' . (intval($STAT_YESTERDAY_HC + $STAT_YESTERDAY_HP) - intval($STAT_TODAY_HC + $STAT_TODAY_HP)) . ')');
-                        $cmd->setValue(intval($STAT_YESTERDAY_HC + $STAT_YESTERDAY_HP) - intval($STAT_TODAY_HC + $STAT_TODAY_HP));
                         $cmd->event(intval($STAT_YESTERDAY_HC + $STAT_YESTERDAY_HP) - intval($STAT_TODAY_HC + $STAT_TODAY_HP));
-                    } elseif ($cmd->getConfiguration('info_conso') == "STAT_TODAY_HP") {
+                        break;
+                        case "STAT_TODAY_HP":
                         log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière (HP) ==> ' . intval($STAT_TODAY_HP));
-                        $cmd->setValue(intval($STAT_TODAY_HP));
                         $cmd->event(intval($STAT_TODAY_HP));
-                    } elseif ($cmd->getConfiguration('info_conso') == "STAT_TODAY_HC") {
+                        break;
+                        case "STAT_TODAY_HC":
                         log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière (HC) ==> ' . intval($STAT_TODAY_HC));
-                        $cmd->setValue(intval($STAT_TODAY_HC));
                         $cmd->event(intval($STAT_TODAY_HC));
+                        break;
                     }
                 }
             }
@@ -631,8 +633,6 @@ class teleinfo extends eqLogic
             $STAT_OCT_HC  += intval($cmd->getStatistique($startdate_oct, $enddate_oct)['max']) - intval($cmd->getStatistique($startdate_oct, $enddate_oct)['min']);
             $STAT_NOV_HC  += intval($cmd->getStatistique($startdate_nov, $enddate_nov)['max']) - intval($cmd->getStatistique($startdate_nov, $enddate_nov)['min']);
             $STAT_DEC_HC  += intval($cmd->getStatistique($startdate_dec, $enddate_dec)['max']) - intval($cmd->getStatistique($startdate_dec, $enddate_dec)['min']);
-
-            //log::add('teleinfo', 'info', 'Conso HC --> ' . $STAT_TODAY_HC);
         }
         foreach ($stat_hp_to_cumul as $key => $value) {
             log::add('teleinfo', 'debug', 'Commande HP N°' . $value);
