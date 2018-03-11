@@ -246,7 +246,7 @@ class teleinfo extends eqLogic
         }
         lancement:
         $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
-        exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1');
+        exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
 
         log::add('teleinfo', 'info', '--------- Informations sur le master --------');
         log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
@@ -416,17 +416,20 @@ class teleinfo extends eqLogic
         $return          = array();
         $return['log']   = 'teleinfo';
         $return['state'] = 'nok';
-        $pid_file        = '/tmp/teleinfo_conso.pid';
-        if (file_exists($pid_file)) {
-            if (posix_getsid(trim(file_get_contents($pid_file)))) {
+        $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
+        if ($twoCptCartelectronic == 1) {
+            $pidFile     = '/tmp/teleinfo2cpt.pid';
+        }
+        else {
+            $pidFile     = '/tmp/teleinfo_conso.pid';
+        }
+        if (file_exists($pidFile)) {
+            if (posix_getsid(trim(file_get_contents($pidFile)))) {
                 $return['state'] = 'ok';
             } else {
-                shell_exec('sudo rm -rf ' . $pid_file . ' 2>&1 > /dev/null;rm -rf ' . $pid_file . ' 2>&1 > /dev/null;');
+                shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
             }
         }
-        /* if(self::deamonRunning()){
-          $return['state'] = 'ok';
-          } */
         $return['launchable'] = 'ok';
         return $return;
     }
@@ -1353,7 +1356,7 @@ class teleinfo extends eqLogic
             $cmd->setEventOnly(1);
             $cmd->setIsVisible(1);
             $cmd->save();
-                
+
             $cmd = new teleinfoCmd();
             $cmd->setName('Index HC');
             $cmd->setEqLogic_id($this->id);
@@ -1367,7 +1370,7 @@ class teleinfo extends eqLogic
             $cmd->setEventOnly(1);
             $cmd->setIsVisible(1);
             $cmd->save();
-                
+
             $cmd = new teleinfoCmd();
             $cmd->setName('Puissance Apparente');
             $cmd->setEqLogic_id($this->id);
@@ -1382,7 +1385,7 @@ class teleinfo extends eqLogic
             $cmd->setEventOnly(1);
             $cmd->setIsVisible(1);
             $cmd->save();
-                
+
             $cmd = new teleinfoCmd();
             $cmd->setName('Intensité');
             $cmd->setEqLogic_id($this->id);
@@ -1396,7 +1399,7 @@ class teleinfo extends eqLogic
             $cmd->setEventOnly(1);
             $cmd->setIsVisible(1);
             $cmd->save();
-                
+
             $cmd = new teleinfoCmd();
             $cmd->setName('Dépassement');
             $cmd->setEqLogic_id($this->id);
@@ -1410,7 +1413,7 @@ class teleinfo extends eqLogic
             $cmd->setEventOnly(1);
             $cmd->setIsVisible(1);
             $cmd->save();
-                
+
             $cmd = new teleinfoCmd();
             $cmd->setName('Plage Horaire');
             $cmd->setEqLogic_id($this->id);
@@ -1525,7 +1528,7 @@ class teleinfoCmd extends cmd
 
     public function execute($_options = null)
     {
-        
+
     }
 
     /*     * **********************Getteur Setteur*************************** */
