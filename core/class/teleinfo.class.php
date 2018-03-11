@@ -305,20 +305,24 @@ class teleinfo extends eqLogic
     {
         log::add('teleinfo', 'info', '[Production] Mode local');
         $teleinfo_path        = realpath(dirname(__FILE__) . '/../../ressources');
-        $modemAddr            = config::byKey('port_production', 'teleinfo');
+        $modem_serie_addr     = config::byKey('port_production', 'teleinfo');
         $_debug               = config::byKey('debug_production', 'teleinfo');
         $_force               = config::byKey('force_production', 'teleinfo');
+        $_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic_production', 'teleinfo');
         if (config::byKey('modem_vitesse_production', 'teleinfo') == "") {
             $modem_vitesse = '1200';
         } else {
             $modem_vitesse = config::byKey('modem_vitesse_production', 'teleinfo');
         }
-        if ($modemAddr == "serie") {
+        if ($modem_serie_addr == "serie") {
             $port = config::byKey('modem_serie_production_addr', 'teleinfo');
             goto lancement;
         }
-        $port = jeedom::getUsbMapping($modemAddr);
-
+        $port = jeedom::getUsbMapping(config::byKey('port_production', 'teleinfo'));
+        if ($_2cpt_cartelectronic == 1) {
+            $port = '/dev/ttyUSB1';
+            goto lancement;
+        }
         if (!file_exists($port)) {
             log::add('teleinfo', 'error', '[Production] Le port n\'existe pas');
             goto end;
@@ -338,7 +342,6 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'info', 'Path complémentaire :' . $parsed_url['path']);
         $ip_interne = $parsed_url['scheme'] . '://' . $parsed_url['host'] . ':' . $parsed_url['port'] . $parsed_url['path'];
         log::add('teleinfo', 'info', 'Mise en forme pour le service : ' . $ip_interne);
-        log::add('teleinfo', 'info', 'Vitesse : ' . $modem_vitesse);
         log::add('teleinfo', 'info', 'Debug : ' . $_debug);
         log::add('teleinfo', 'info', 'Force : ' . $_force);
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
@@ -354,8 +357,18 @@ class teleinfo extends eqLogic
         }
         log::add('teleinfo', 'info', '---------------------------------------------');
 
-        $teleinfo_path = $teleinfo_path . '/teleinfo.py';
-        $cmd           = 'nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modem_vitesse . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -r ' . realpath(dirname(__FILE__));
+        if ($_2cpt_cartelectronic == 1) {
+            log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteur');
+            //exec('sudo chmod 777 /dev/bus/usb/* > /dev/null 2>&1');
+            $teleinfo_path = $teleinfo_path . '/teleinfo_2_cpt.py';
+            $cmd           = 'sudo nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modem_vitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
+        } else {
+            log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
+            $teleinfo_path = $teleinfo_path . '/teleinfo.py';
+            // $cmd = 'sudo nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d 0 -p ' . $port . ' -v ' . $modem_vitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -r ' . realpath(dirname(__FILE__));
+            $cmd           = 'nice -n 19 /usr/bin/python ' . $teleinfo_path . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modem_vitesse . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -r ' . realpath(dirname(__FILE__));
+        }
+
         log::add('teleinfo', 'info', '[Production] Exécution du service : ' . $cmd);
         $result = exec('nohup ' . $cmd . ' >> ' . log::getPathToLog('teleinfo') . ' 2>&1 &');
         if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
@@ -427,16 +440,22 @@ class teleinfo extends eqLogic
     public static function deamon_start($_debug = false)
     {
         $productionActivated = config::byKey('activation_production', 'teleinfo');
-        if (config::byKey('port', 'teleinfo') != "") {    // Si un port est sélectionné
+        if (config::byKey('jeeNetwork::mode') == 'slave') { //Je suis l'esclave
             if (!self::deamonRunning()) {
-                self::runDeamon($_debug);
+                self::runExternalDeamon($_debug);
             }
-            if ($productionActivated == 1) {
-                self::runProductionDeamon($_debug);
+        } else {    // Je suis le jeedom master
+            if (config::byKey('port', 'teleinfo') != "") {    // Si un port est sélectionné
+                if (!self::deamonRunning()) {
+                    self::runDeamon($_debug);
+                }
+                if ($productionActivated == 1) {
+                    self::runProductionDeamon($_debug);
+                }
+                message::removeAll('teleinfo', 'noTeleinfoPort');
+            } else {
+                log::add('teleinfo', 'info', 'Pas d\'informations sur le port USB (Modem série ?)');
             }
-            message::removeAll('teleinfo', 'noTeleinfoPort');
-        } else {
-            log::add('teleinfo', 'info', 'Pas d\'informations sur le port USB (Modem série ?)');
         }
     }
 

@@ -161,6 +161,7 @@ try {
             <div class="form-group div_local">
                 <label class="col-lg-4 control-label">Vitesse : </label>
                 <div class="col-lg-4">
+                    <!--<input id="port_serie" class="configKey form-control" data-l1key="modem_vitesse" style="margin-top:5px;" placeholder="1200"/>-->
                     <select class="configKey form-control" id="port_serie" data-l1key="modem_production_vitesse">
                         <option value="">{{Par défaut}}</option>
                         <option value="1200">1200</option>
