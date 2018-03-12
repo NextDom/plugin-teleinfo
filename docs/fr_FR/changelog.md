@@ -12,7 +12,15 @@ Change log
 - Noms des variables et fonctions
 - Compatibilité Linky
 
-2.6.1 [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
+2.6.3 [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
+=====
+- Lancement du démon pour la partie production
+
+2.6.2
+=====
+- Etat du démon pour le mode 2 compteurs
+
+2.6.1
 =====
 - Revue de certains designs
 - Ajout de la fonction compteur de production
