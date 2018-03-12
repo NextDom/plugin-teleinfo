@@ -1,15 +1,27 @@
 ---
-langs: [fr_FR,en_US,de_DE,es_ES,id_ID] 
+langs: [fr_FR]
 baseurl: "/"
 sass:
   sass_dir: assets/css
   style: compressed
 markdown: kramdown
+permalink: /404.html
 kramdown:
   input: GFM
   hard_wrap: false
 highlighter: rouge
 gems:
 - jekyll-paginate
+- jekyll-seo-tag
 exclude:
 - vendor
+plugins:
+- jekyll-seo-tag
+title: "Documentation Plugin-Teleinfo"
+description: "Ceci est la documentation du plugin téléinfo"
+author: "ticed35"
+image: https://avatars2.githubusercontent.com/u/13416516?s=200&v=4
+social:
+  name: ticed35
+  links:
+    - https://github.com/ticed35

@@ -23,6 +23,19 @@ if (!isConnect()) {
 }
 
 $port = config::byKey('port', 'teleinfo');
+$core_version = '1.1.1';
+if (!file_exists(dirname(__FILE__) . '/info.json')) {
+    log::add('teleinfo','warning','Pas de fichier info.json');
+}
+$data = json_decode(file_get_contents(dirname(__FILE__) . '/info.json'), true);
+if (!is_array($data)) {
+    log::add('teleinfo','warning','Impossible de décoder le fichier info.json');
+}
+try {
+    $core_version = $data['pluginVersion'];
+} catch (\Exception $e) {
+    log::add('teleinfo','warning','Impossible de récupérer la version.');
+}
 ?>
 
 <form class="form-horizontal">
@@ -190,18 +203,10 @@ $port = config::byKey('port', 'teleinfo');
         </div>
     </fieldset>
     <fieldset>
-    <legend><i class="icon loisir-pacman1"></i> {{Versions}}</legend>
+    <legend><i class="icon loisir-pacman1"></i> {{Version}}</legend>
         <div class="form-group">
             <label class="col-lg-4 control-label">Core Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{C'est la version du programme de connexion au modem}}" style="font-size : 1em;color:grey;"></i></sup></label>
-            <span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_core_version','teleinfo'); ?></span>
-        </div>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">Desktop Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{Version de la partie graphique pour le desktop}}" style="font-size : 1em;color:grey;"></i></sup></label>
-            <span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_desktop_version','teleinfo'); ?></span>
-        </div>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">Mobile Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{Version de la partie graphique pour le site mobile}}" style="font-size : 1em;color:grey;"></i></sup></label>
-            <span style="top:6px;" class="col-lg-4"><?php echo config::byKey('teleinfo_mobile_version','teleinfo'); ?></span>
+            <span style="top:6px;" class="col-lg-4"><?php echo $core_version; ?></span>
         </div>
     </fieldset>
 </form>

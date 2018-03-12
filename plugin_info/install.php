@@ -19,6 +19,22 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 
 function teleinfo_install() {
+    $core_version = '1.1.1';
+    if (!file_exists(dirname(__FILE__) . '/info.json')) {
+        log::add('teleinfo','warning','Pas de fichier info.json');
+        goto step2;
+    }
+    $data = json_decode(file_get_contents(dirname(__FILE__) . '/info.json'), true);
+    if (!is_array($data)) {
+        log::add('teleinfo','warning','Impossible de décoder le fichier info.json');
+        goto step2;
+    }
+    try {
+        $core_version = $data['pluginVersion'];
+    } catch (\Exception $e) {
+
+    }
+    step2:
     if (teleinfo::deamonRunning()) {
         teleinfo::stopDeamon();
     }
@@ -43,13 +59,26 @@ function teleinfo_install() {
         $crontoday->setSchedule('*/5 * * * *');
         $crontoday->save();
     }
-    cache::set('teleinfo::current_core','2.600', 0);
+    //cache::set('teleinfo::current_core','2.610', 0);
 }
 
 function teleinfo_update() {
-    $core_version = '2.600';
-    $desktop_version = '1.010';
-    $mobile_version = '1.001';
+    $core_version = '1.1.1';
+    if (!file_exists(dirname(__FILE__) . '/info.json')) {
+        log::add('teleinfo','warning','Pas de fichier info.json');
+        goto step2;
+    }
+    $data = json_decode(file_get_contents(dirname(__FILE__) . '/info.json'), true);
+    if (!is_array($data)) {
+        log::add('teleinfo','warning','Impossible de décoder le fichier info.json');
+        goto step2;
+    }
+    try {
+        $core_version = $data['pluginVersion'];
+    } catch (\Exception $e) {
+
+    }
+    step2:
     if (teleinfo::deamonRunning()) {
         teleinfo::stopDeamon();
     }
@@ -57,14 +86,10 @@ function teleinfo_update() {
     log::add('teleinfo','info','*****************************************************');
     log::add('teleinfo','info','*********** Mise à jour du plugin teleinfo **********');
     log::add('teleinfo','info','*****************************************************');
-    log::add('teleinfo','info','*        Core version    : '. $core_version. '                 *');
-    log::add('teleinfo','info','*        Desktop version : '. $desktop_version. '                 *');
-    log::add('teleinfo','info','*        Mobile version  : '. $mobile_version. '                 *');
+    log::add('teleinfo','info','**        Core version    : '. $core_version. '                  **');
     log::add('teleinfo','info','*****************************************************');
 
-    config::save('teleinfo_core_version',$core_version,'teleinfo');
-    config::save('teleinfo_desktop_version',$desktop_version,'teleinfo');
-    config::save('teleinfo_mobile_version',$mobile_version,'teleinfo');
+    //config::save('teleinfo_core_version',$core_version,'teleinfo');
 
     $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
     if (!is_object($cron)) {
@@ -93,11 +118,6 @@ function teleinfo_update() {
         $crontoday->save();
     }
     $crontoday->stop();
-    $thisplugin = plugin::byid('teleinfo');
-    //$current_core_version = cache::byKey('teleinfo::current_core', false,true);
-    //log::add('teleinfo', 'message', 'Merci de valider à nouveau votre objet Téléinfo en re-sauvegardant.');
-    //cache::set('teleinfo::current_core','2.230', 0);
-    //cache::set('teleinfo::current_core',$thisplugin->getVersion(), 0);
     message::removeAll('Téléinfo');
     message::add('Téléinfo', 'Mise à jour terminée, vous êtes en version ' . $core_version . '.', null, null);
     teleinfo::cron();
