@@ -42,20 +42,16 @@ class teleinfo extends eqLogic
         self::moyLastHour();
     }
 
-    public static function createFromDef($_def)
+    public static function createFromDef(string $adco)
     {
         $autorisationCreationObjet = config::byKey('createNewADCO', 'teleinfo');
         if ($autorisationCreationObjet != 1) {
-            if (!isset($_def['ADCO'])) {
-                log::add('teleinfo', 'info', 'Information manquante pour ajouter l\'équipement : ' . print_r($_def, true));
-                return false;
-            }
-            $teleinfo = teleinfo::byLogicalId($_def['ADCO'], 'teleinfo');
+            $teleinfo = teleinfo::byLogicalId($adco, 'teleinfo');
             if (!is_object($teleinfo)) {
                 $eqLogic = new teleinfo();
-                $eqLogic->setName($_def['ADCO']);
+                $eqLogic->setName($adco);
             }
-            $eqLogic->setLogicalId($_def['ADCO']);
+            $eqLogic->setLogicalId($adco);
             $eqLogic->setEqType_name('teleinfo');
             $eqLogic->setIsEnable(1);
             $eqLogic->setIsVisible(1);
@@ -1010,8 +1006,7 @@ class teleinfo extends eqLogic
         $array = array("HEALTH");
         for ($ii = 0; $ii < 1; $ii++) {
             $cmd = $this->getCmd('info', $array[$ii]);
-            if ($cmd === null) {
-
+            if ($cmd === false) {
                 $cmd = new teleinfoCmd();
                 $cmd->setName($array[$ii]);
                 $cmd->setEqLogic_id($this->id);
@@ -1032,10 +1027,9 @@ class teleinfo extends eqLogic
     public function createPanelStats()
     {
         $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC", "STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR");
-        for ($ii = 0; $ii < 26; $ii++) {
+        for ($ii = 0; $ii < 1; $ii++) {
             $cmd = $this->getCmd('info', $array[$ii]);
-            if ($cmd === null) {
-
+            if ($cmd === false) {
                 $cmd = new teleinfoCmd();
                 $cmd->setName($array[$ii]);
                 $cmd->setEqLogic_id($this->id);
