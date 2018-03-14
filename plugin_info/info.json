@@ -12,5 +12,5 @@
 	"maxDependancyInstallTime" : 45,
 	"changelog" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/changelog",
 	"documentation" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/",
-	"pluginVersion" : "2.6.4"
+	"pluginVersion" : "2.7.0"
 }

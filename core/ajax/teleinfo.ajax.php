@@ -25,7 +25,7 @@ try {
     }
 
     if (init('action') == 'stopDeamon') {
-        teleinfo::stopDeamon();
+        teleinfo::deamon_stop();
         ajax::success();
     }
 
@@ -33,12 +33,12 @@ try {
         $port                 = config::byKey('port', 'teleinfo', 'none');
         $_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         if ($_2cpt_cartelectronic == 1) {
-            
+
         }
         if ($port == 'none') {
             ajax::success();
         }
-        teleinfo::stopDeamon();
+        teleinfo::deamon_stop();
         if (teleinfo::deamonRunning()) {
             throw new \Exception(__('Impossible d\'arrêter le démon', __FILE__));
         }
@@ -54,17 +54,6 @@ try {
                 throw new \Exception(__('Impossible de trouver l\'esclave : ', __FILE__) . init('id'));
             }
             $jeeNetwork->sendRawRequest('restartDeamon', array('plugin' => 'teleinfo'));
-        }
-        ajax::success();
-    }
-
-    if (init('action') == 'stopSlaveDeamon') {
-        if (config::byKey('jeeNetwork::mode') == 'master') {
-            $jeeNetwork = jeeNetwork::byId(init('id'));
-            if (!is_object($jeeNetwork)) {
-                throw new \Exception(__('Impossible de trouver l\'esclave : ', __FILE__) . init('id'));
-            }
-            $jeeNetwork->sendRawRequest('stopDeamon', array('plugin' => 'teleinfo'));
         }
         ajax::success();
     }
@@ -208,19 +197,12 @@ try {
 
     if (init('action') == 'getCout') {
         $return = array();
-        /* $data = array();
-          $datetime = null; */
-        //console.log("essai");
-        //console.log('Commande : ' . init('id'));
         $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
-        //$dateEnd = date('Y-m-d H:i:s');
         ajax::success($return);
     }
 
 
-    throw new \Exception('Aucune methode correspondante');
-    /*     * *********Catch exeption*************** */
+throw new \Exception('Aucune methode correspondante');
 } catch (\Exception $e) {
     ajax::error(displayExeption($e), $e->getCode());
 }
- 

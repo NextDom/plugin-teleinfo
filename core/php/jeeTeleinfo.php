@@ -16,69 +16,116 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 require_once dirname(__FILE__) . "/../../../../core/php/core.inc.php";
-if (isset($argv)) {
-    foreach ($argv as $arg) {
-        $argList = explode('=', $arg);
-        if (isset($argList[0]) && isset($argList[1])) {
-            $_GET[$argList[0]] = $argList[1];
-        }
-    }
-}
 set_time_limit(15);
 
 if ((php_sapi_name() != 'cli' || isset($_SERVER['REQUEST_METHOD']) || !isset($_SERVER['argc'])) && (config::byKey('api') != init('api') && init('api') != '')) {
-    connection::failed();
     echo 'Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (jeeTeleinfo)';
     die();
 }
+$args = array(
+    'BASE'   => FILTER_SANITIZE_STRING,
+    'PAPP'   => FILTER_SANITIZE_STRING,
+    'HCHP'   => FILTER_SANITIZE_STRING,
+    'HCHC'   => FILTER_SANITIZE_STRING,
+    'PTEC'   => FILTER_SANITIZE_STRING,
+    'IINST'   => FILTER_SANITIZE_STRING,
+    'IINST1'   => FILTER_SANITIZE_STRING,
+    'IINST2'   => FILTER_SANITIZE_STRING,
+    'IINST3'   => FILTER_SANITIZE_STRING,
+    'IMAX'   => FILTER_SANITIZE_STRING,
+    'IMAX1'   => FILTER_SANITIZE_STRING,
+    'IMAX2'   => FILTER_SANITIZE_STRING,
+    'IMAX3'   => FILTER_SANITIZE_STRING,
+    'PMAX'   => FILTER_SANITIZE_STRING,
+    'ADPS'   => FILTER_SANITIZE_STRING,
+    'ADIR1'   => FILTER_SANITIZE_STRING,
+    'ADIR2'   => FILTER_SANITIZE_STRING,
+    'ADIR3'   => FILTER_SANITIZE_STRING,
+    'OPTARIF'   => FILTER_SANITIZE_STRING,
+    'ISOUSC'   => FILTER_SANITIZE_STRING,
+    'EJPHN'   => FILTER_SANITIZE_STRING,
+    'EJPHPM'   => FILTER_SANITIZE_STRING,
+    'HHPHC'   => FILTER_SANITIZE_STRING,
+    'PPOT'   => FILTER_SANITIZE_STRING,
+    'BBRHCJB'   => FILTER_SANITIZE_STRING,
+    'BBRHPJB'   => FILTER_SANITIZE_STRING,
+    'BBRHCJW'   => FILTER_SANITIZE_STRING,
+    'BBRHPJW'   => FILTER_SANITIZE_STRING,
+    'BBRHCJR'   => FILTER_SANITIZE_STRING,
+    'BBRHPJR'   => FILTER_SANITIZE_STRING,
+    'PEJP'   => FILTER_SANITIZE_STRING,
+    'DEMAIN'   => FILTER_SANITIZE_STRING,
+    'MOTDETAT'   => FILTER_SANITIZE_STRING,
+    'ADCO'   => FILTER_SANITIZE_STRING
+);
 
-if (isset($_GET['message'])) {
-    $text     = "";
-    //log::add('teleinfo', 'event', 'Log Daemon : ' . $_GET['message']);
-    $text     = substr($_GET['message'], 0, -2);
+$message = filter_input(INPUT_GET, 'message', FILTER_SANITIZE_STRING);
+$adco = filter_input(INPUT_GET, 'ADCO', FILTER_SANITIZE_STRING);
+$adsc = filter_input(INPUT_GET, 'ADSC', FILTER_SANITIZE_STRING);
+$sentDatas = "";
+
+if($message != ''){
+    $text = substr($message, 0, -2);
     $messages = preg_split("#(&|[\*]{2})#", $text);
-    $text     = "";
-    foreach ($messages as $key => $value) {
+    foreach ($messages as $key => $value){
         log::add('teleinfo', 'event', 'Log Daemon : ' . $value);
-        $text = $text . date("Y-m-d H:i:s") . " " . $value . "</br>";
+        $text = $text . date("Y-m-d H:i:s") . " " .  $value . "</br>";
     }
     $cache = cache::byKey('teleinfo::console', false);
-    //$cache->setValue($cache->getValue("") . "\n" . $text);
     cache::set('teleinfo::console', $cache->getValue("") . $text, 1440);
     die();
 }
 
-$array_recu = "";
-if (!isset($_GET["ADCO"])) {
-    log::add('teleinfo', 'info', 'Pas d\'ADCO dans la trame');
+if ($adco == '' && $adsc == ''){
+    log::add('teleinfo', 'info', 'Pas d\'ADCO/ADSC dans la trame');
     die();
 }
-$teleinfo = teleinfo::byLogicalId($_GET['ADCO'], 'teleinfo');
+
+if ($adco != '')
+{
+    $teleinfo = teleinfo::byLogicalId($adco, 'teleinfo');
+}
+else
+{
+    $teleinfo = teleinfo::byLogicalId($adsc, 'teleinfo');
+}
+
 if (!is_object($teleinfo)) {
-    $teleinfo = teleinfo::createFromDef($_GET);
+    $teleinfo = ($adco != '') ? teleinfo::createFromDef($adco) : teleinfo::createFromDef($adsc);
     if (!is_object($teleinfo)) {
-        log::add('teleinfo', 'info', 'Aucun équipement trouvé pour le compteur n°' . $_GET['ADCO']);
+        log::add('teleinfo', 'info', 'Aucun équipement trouvé pour le compteur n°' . $adco . $adsc);
         die();
     }
 }
 
-$health_cmd = $teleinfo->getCmd('info', 'health');
+$myDatas = filter_input_array(INPUT_GET, $args);
 
-foreach ($_GET as $key => $value) {
-    $array_recu = $array_recu . $key . '=' . $value . ' / ';
-    if (is_object($health_cmd)) {
-        $_value = array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s"));
-        $health_cmd->setConfiguration($key, $_value);
-        $health_cmd->save();
-    }
-    $cmd = $teleinfo->getCmd('info', $key);
-    if (is_object($cmd)) {
-        $cmd->event($value);
-    } else {
-        if ($key != 'api' && $key != 'ADCO') {
-            log::add('teleinfo', 'debug', 'Commande inexistante (' . $key . ')');
-            teleinfo::createCmdFromDef($teleinfo->getLogicalId(), $key, $value);
+$healthCmd = $teleinfo->getCmd('info','health');
+$healthEnable = false;
+if (is_object($healthCmd)) {
+    $healthEnable = true;
+}
+
+foreach ($myDatas as $key => $value){
+    if ($value != '') {
+        $sentDatas = $sentDatas . $key . '=' . $value . ' / ';
+        $cmd = $teleinfo->getCmd('info',$key);
+        if ($cmd === false) {
+            if($key != 'api' && $key != 'ADCO'){
+                teleinfo::createCmdFromDef($teleinfo->getLogicalId(), $key, $value);
+                if($healthEnable) {
+                    $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
+                    $healthCmd->save();
+                }
+            }
+        }
+        else{
+            $cmd->event($value);
+            if($healthEnable) {
+                $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
+                $healthCmd->save();
+            }
         }
     }
 }
-log::add('teleinfo', 'debug', 'Reception de : ' . $array_recu);
+log::add('teleinfo', 'debug', 'Reception de : ' . $sentDatas);
