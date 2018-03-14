@@ -33,7 +33,7 @@ try {
         $port                 = config::byKey('port', 'teleinfo', 'none');
         $_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         if ($_2cpt_cartelectronic == 1) {
-            
+
         }
         if ($port == 'none') {
             ajax::success();
@@ -197,19 +197,12 @@ try {
 
     if (init('action') == 'getCout') {
         $return = array();
-        /* $data = array();
-          $datetime = null; */
-        //console.log("essai");
-        //console.log('Commande : ' . init('id'));
         $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
-        //$dateEnd = date('Y-m-d H:i:s');
         ajax::success($return);
     }
 
 
-    throw new \Exception('Aucune methode correspondante');
-    /*     * *********Catch exeption*************** */
+throw new \Exception('Aucune methode correspondante');
 } catch (\Exception $e) {
     ajax::error(displayExeption($e), $e->getCode());
 }
- 

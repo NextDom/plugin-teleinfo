@@ -22,37 +22,6 @@ if ((php_sapi_name() != 'cli' || isset($_SERVER['REQUEST_METHOD']) || !isset($_S
     echo 'Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (jeeTeleinfo)';
     die();
 }
-
-$message = filter_input(INPUT_GET, 'message', FILTER_SANITIZE_STRING);
-$adco = filter_input(INPUT_GET, 'ADCO', FILTER_SANITIZE_STRING);
-$array_recu = "";
-
-if($message != ''){
-    $text = substr($message, 0, -2);
-    $messages = preg_split("#(&|[\*]{2})#", $text);
-    foreach ($messages as $key => $value){
-        log::add('teleinfo', 'event', 'Log Daemon : ' . $value);
-        $text = $text . date("Y-m-d H:i:s") . " " .  $value . "</br>";
-    }
-    $cache = cache::byKey('teleinfo::console', false);
-    cache::set('teleinfo::console', $cache->getValue("") . $text, 1440);
-    die();
-}
-
-if ($adco == ''){
-    log::add('teleinfo', 'info', 'Pas d\'ADCO dans la trame');
-    die();
-}
-
-$teleinfo = teleinfo::byLogicalId($adco, 'teleinfo');
-if (!is_object($teleinfo)) {
-    $teleinfo = teleinfo::createFromDef($adco);
-    if (!is_object($teleinfo)) {
-        log::add('teleinfo', 'info', 'Aucun équipement trouvé pour le compteur n°' . $adco);
-        die();
-    }
-}
-
 $args = array(
     'BASE'   => FILTER_SANITIZE_STRING,
     'PAPP'   => FILTER_SANITIZE_STRING,
@@ -90,6 +59,45 @@ $args = array(
     'ADCO'   => FILTER_SANITIZE_STRING
 );
 
+$message = filter_input(INPUT_GET, 'message', FILTER_SANITIZE_STRING);
+$adco = filter_input(INPUT_GET, 'ADCO', FILTER_SANITIZE_STRING);
+$adsc = filter_input(INPUT_GET, 'ADSC', FILTER_SANITIZE_STRING);
+$sentDatas = "";
+
+if($message != ''){
+    $text = substr($message, 0, -2);
+    $messages = preg_split("#(&|[\*]{2})#", $text);
+    foreach ($messages as $key => $value){
+        log::add('teleinfo', 'event', 'Log Daemon : ' . $value);
+        $text = $text . date("Y-m-d H:i:s") . " " .  $value . "</br>";
+    }
+    $cache = cache::byKey('teleinfo::console', false);
+    cache::set('teleinfo::console', $cache->getValue("") . $text, 1440);
+    die();
+}
+
+if ($adco == '' && $adsc == ''){
+    log::add('teleinfo', 'info', 'Pas d\'ADCO/ADSC dans la trame');
+    die();
+}
+
+if ($adco != '')
+{
+    $teleinfo = teleinfo::byLogicalId($adco, 'teleinfo');
+}
+else
+{
+    $teleinfo = teleinfo::byLogicalId($adsc, 'teleinfo');
+}
+
+if (!is_object($teleinfo)) {
+    $teleinfo = ($adco != '') ? teleinfo::createFromDef($adco) : teleinfo::createFromDef($adsc);
+    if (!is_object($teleinfo)) {
+        log::add('teleinfo', 'info', 'Aucun équipement trouvé pour le compteur n°' . $adco . $adsc);
+        die();
+    }
+}
+
 $myDatas = filter_input_array(INPUT_GET, $args);
 
 $healthCmd = $teleinfo->getCmd('info','health');
@@ -100,7 +108,7 @@ if (is_object($healthCmd)) {
 
 foreach ($myDatas as $key => $value){
     if ($value != '') {
-        $array_recu = $array_recu . $key . '=' . $value . ' / ';
+        $sentDatas = $sentDatas . $key . '=' . $value . ' / ';
         $cmd = $teleinfo->getCmd('info',$key);
         if ($cmd === false) {
             if($key != 'api' && $key != 'ADCO'){
@@ -120,4 +128,4 @@ foreach ($myDatas as $key => $value){
         }
     }
 }
-log::add('teleinfo', 'debug', 'Reception de : ' . $array_recu);
+log::add('teleinfo', 'debug', 'Reception de : ' . $sentDatas);

@@ -78,7 +78,6 @@ class teleinfo extends eqLogic
         }
         if ($teleinfo->getConfiguration('AutoCreateFromCompteur') == '1') {
             log::add('teleinfo', 'info', 'Création de la commande ' . $_oKey . ' sur l\'ADCO ' . $_oADCO);
-
             $cmd = new teleinfoCmd();
             $cmd->setName($_oKey);
             $cmd->setEqLogic_id($teleinfo->id);
@@ -86,16 +85,13 @@ class teleinfo extends eqLogic
             $cmd->setType('info');
             $cmd->setConfiguration('info_conso', $_oKey);
             switch ($_oKey) {
-                case "PAPP":
-                    $cmd->setDisplay('generic_type', 'GENERIC_INFO');
-                    $cmd->setDisplay('icon', '<i class=\"fa fa-tachometer\"><\/i>');
-                    $cmd->setSubType('string');
-                    break;
+                //case "PAPP":
                 case "OPTARIF":
                 case "HHPHC":
                 case "PPOT":
                 case "PEJP":
                 case "DEMAIN":
+                case "PTEC":
                     $cmd->setSubType('string');
                     $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
@@ -158,18 +154,8 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'info', 'Force : ' . $_force);
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
         log::add('teleinfo', 'info', 'Type : ' . $type);
-
         $_debug = ($_debug) ? "1" : "0";
         $_force = ($_force) ? "1" : "0";
-
-        // if ($_debug) {
-        //     $_debug = "1";
-        // } else {
-        //     $_debug = "0";
-        // }
-        // if ($_force != "1") {
-        //     $_force = "0";
-        // }
         log::add('teleinfo', 'info', '---------------------------------------------');
 
         if ($twoCptCartelectronic == 1) {
@@ -179,7 +165,7 @@ class teleinfo extends eqLogic
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
             $teleinfoPath = $teleinfoPath . '/teleinfo.py';
-            $cmd           = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -r ' . realpath(dirname(__FILE__));
+            $cmd           = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -r ' . realpath(dirname(__FILE__));
         }
 
         log::add('teleinfo', 'info', 'Exécution du service : ' . $cmd);
@@ -259,7 +245,7 @@ class teleinfo extends eqLogic
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
             $teleinfoPath = $teleinfoPath . '/teleinfo.py';
-            $cmd           = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -r ' . realpath(dirname(__FILE__));
+            $cmd           = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -r ' . realpath(dirname(__FILE__));
         }
 
         log::add('teleinfo', 'info', '[Production] Exécution du service : ' . $cmd);
@@ -345,8 +331,8 @@ class teleinfo extends eqLogic
     public static function deamon_stop()
     {
         log::add('teleinfo', 'info', '[deamon_stop] Arret du service');
-        $deamon_info = self::deamon_info();
-        if ($deamon_info['state'] == 'ok') {
+        $deamonInfo = self::deamon_info();
+        if ($deamonInfo['state'] == 'ok') {
             $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
             if ($twoCptCartelectronic == 1) {
                 $result = exec("ps aux | grep teleinfo_2_cpt.py | grep -v grep | awk '{print $2}'");
@@ -800,20 +786,19 @@ class teleinfo extends eqLogic
 
     public static function moyLastHour()
     {
-        $ppap_hp  = 0;
-        $ppap_hc  = 0;
-        $cmd_ppap = null;
+        $ppapHp  = 0;
+        $ppapHc  = 0;
+        $cmdPpap = null;
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == 'stat') {
                     if ($cmd->getConfiguration('info_conso') == 'STAT_MOY_LAST_HOUR') {
                         log::add('teleinfo', 'debug', '----- Calcul de la consommation moyenne sur la dernière heure -----');
-                        $cmd_ppap = $cmd;
+                        $cmdPpap = $cmd;
                     }
                 }
             }
-            if ($cmd_ppap !== null) {
-                //log::add('teleinfo', 'debug', 'Cmd trouvée');
+            if ($cmdPpap !== null) {
                 foreach ($eqLogic->getCmd('info') as $cmd) {
                     if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
                         switch ($cmd->getConfiguration('info_conso')) {
@@ -823,7 +808,7 @@ class teleinfo extends eqLogic
                             case "BBRHPJW":
                             case "BBRHPJR":
                             case "EJPHPM":
-                                $ppap_hp += $cmd->execCmd();
+                                $ppapHp += $cmd->execCmd();
                                 log::add('teleinfo', 'debug', 'Cmd : ' . $cmd->getId() . ' / Value : ' . $cmd->execCmd());
                                 break;
                         }
@@ -833,26 +818,26 @@ class teleinfo extends eqLogic
                             case "BBRHCJW":
                             case "BBRHCJR":
                             case "EJPHN":
-                                $ppap_hc += $cmd->execCmd();
+                                $ppapHc += $cmd->execCmd();
                                 log::add('teleinfo', 'debug', 'Cmd : ' . $cmd->getId() . ' / Value : ' . $cmd->execCmd());
                                 break;
                         }
                     }
                 }
 
-                $cache_hc = cache::byKey('teleinfo::stat_moy_last_hour::hc', false);
-                $cache_hp = cache::byKey('teleinfo::stat_moy_last_hour::hp', false);
-                $cache_hc = $cache_hc->getValue();
-                $cache_hp = $cache_hp->getValue();
+                $cacheHc = cache::byKey('teleinfo::stat_moy_last_hour::hc', false);
+                $cacheHp = cache::byKey('teleinfo::stat_moy_last_hour::hp', false);
+                $cacheHc = $cacheHc->getValue();
+                $cacheHp = $cacheHp->getValue();
 
-                log::add('teleinfo', 'debug', 'Cache HP : ' . $cache_hp);
-                log::add('teleinfo', 'debug', 'Cache HC : ' . $cache_hc);
+                log::add('teleinfo', 'debug', 'Cache HP : ' . $cacheHp);
+                log::add('teleinfo', 'debug', 'Cache HC : ' . $cacheHc);
 
-                log::add('teleinfo', 'debug', 'Conso Wh : ' . (($ppap_hp - $cache_hp) + ($ppap_hc - $cache_hc)));
-                $cmd_ppap->event(intval((($ppap_hp - $cache_hp) + ($ppap_hc - $cache_hc))));
+                log::add('teleinfo', 'debug', 'Conso Wh : ' . (($ppapHp - $cacheHp) + ($ppapHc - $cacheHc)));
+                $cmdPpap->event(intval((($ppapHp - $cacheHp) + ($ppapHc - $cacheHc))));
 
-                cache::set('teleinfo::stat_moy_last_hour::hc', $ppap_hc, 7200);
-                cache::set('teleinfo::stat_moy_last_hour::hp', $ppap_hp, 7200);
+                cache::set('teleinfo::stat_moy_last_hour::hc', $ppapHc, 7200);
+                cache::set('teleinfo::stat_moy_last_hour::hp', $ppapHp, 7200);
             } else {
                 log::add('teleinfo', 'debug', 'Pas de calcul');
             }
@@ -861,19 +846,19 @@ class teleinfo extends eqLogic
 
     public static function calculatePAPP()
     {
-        $ppap_hp  = 0;
-        $ppap_hc  = 0;
-        $cmd_ppap = null;
+        $ppapHp  = 0;
+        $ppapHc  = 0;
+        $cmdPpap = null;
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == 'stat') {
                     if ($cmd->getConfiguration('info_conso') == 'PPAP_MANUELLE') {
                         log::add('teleinfo', 'debug', '----- Calcul de la puissance apparante moyenne -----');
-                        $cmd_ppap = $cmd;
+                        $cmdPpap = $cmd;
                     }
                 }
             }
-            if ($cmd_ppap !== null) {
+            if ($cmdPpap !== null) {
                 log::add('teleinfo', 'debug', 'Cmd trouvée');
                 foreach ($eqLogic->getCmd('info') as $cmd) {
                     if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
@@ -884,7 +869,7 @@ class teleinfo extends eqLogic
                             case "BBRHPJW":
                             case "BBRHPJR":
                             case "EJPHPM":
-                                $ppap_hp += $cmd->execCmd();
+                                $ppapHp += $cmd->execCmd();
                                 break;
                         }
                         switch ($cmd->getConfiguration('info_conso')) {
@@ -893,28 +878,28 @@ class teleinfo extends eqLogic
                             case "BBRHCJW":
                             case "BBRHCJR":
                             case "EJPHN":
-                                $ppap_hc += $cmd->execCmd();
+                                $ppapHc += $cmd->execCmd();
                                 break;
                         }
                     }
                 }
 
-                $cache_hc        = cache::byKey('teleinfo::ppap_manuelle::hc', false);
-                $datetime_mesure = date_create($cache_hc->getDatetime());
-                $cache_hp        = cache::byKey('teleinfo::ppap_manuelle::hp', false);
-                $cache_hc        = $cache_hc->getValue();
-                $cache_hp        = $cache_hp->getValue();
+                $cacheHc        = cache::byKey('teleinfo::ppap_manuelle::hc', false);
+                $datetimeMesure = date_create($cacheHc->getDatetime());
+                $cacheHp        = cache::byKey('teleinfo::ppap_manuelle::hp', false);
+                $cacheHc        = $cacheHc->getValue();
+                $cacheHp        = $cacheHp->getValue();
 
-                $datetime_mesure = $datetime_mesure->getTimestamp();
-                $datetime2       = time();
-                $interval        = $datetime2 - $datetime_mesure;
+                $datetimeMesure = $datetimeMesure->getTimestamp();
+                $datetime2      = time();
+                $interval       = $datetime2 - $datetimeMesure;
+                $consoResultat  = ((($ppapHp - $cacheHp) + ($ppapHc - $cacheHc)) / $interval) * 3600;
                 log::add('teleinfo', 'debug', 'Intervale depuis la dernière valeur : ' . $interval);
-                log::add('teleinfo', 'debug', 'Conso calculée : ' . ((($ppap_hp - $cache_hp) + ($ppap_hc - $cache_hc)) / $interval) * 3600 . ' Wh');
-                //$cmd_ppap->setValue(intval(((($ppap_hp - $cache_hp) + ($ppap_hc - $cache_hc)) / $interval) * 3600));
-                $cmd_ppap->event(intval(((($ppap_hp - $cache_hp) + ($ppap_hc - $cache_hc)) / $interval) * 3600));
+                log::add('teleinfo', 'debug', 'Conso calculée : ' . $consoResultat . ' Wh');
+                $cmdPpap->event(intval($consoResultat));
 
-                cache::set('teleinfo::ppap_manuelle::hc', $ppap_hc, 150);
-                cache::set('teleinfo::ppap_manuelle::hp', $ppap_hp, 150);
+                cache::set('teleinfo::ppap_manuelle::hc', $ppapHc, 150);
+                cache::set('teleinfo::ppap_manuelle::hp', $ppapHp, 150);
             } else {
                 log::add('teleinfo', 'debug', 'Pas de calcul');
             }
@@ -1029,7 +1014,7 @@ class teleinfo extends eqLogic
     public function createPanelStats()
     {
         $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC", "STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR");
-        for ($ii = 0; $ii < 1; $ii++) {
+        for ($ii = 0; $ii < 26; $ii++) {
             $cmd = $this->getCmd('info', $array[$ii]);
             if ($cmd === false) {
                 $cmd = new teleinfoCmd();
@@ -1066,7 +1051,6 @@ class teleinfo extends eqLogic
         $return['log']           = 'teleinfo_update';
         $return['progress_file'] = '/tmp/teleinfo_in_progress';
         $return['state']         = (self::installationOk()) ? 'ok' : 'nok';
-
         return $return;
     }
 
@@ -1100,11 +1084,7 @@ class teleinfo extends eqLogic
 
 class teleinfoCmd extends cmd
 {
-
     public function execute($_options = null)
     {
-
     }
-
-    /*     * **********************Getteur Setteur*************************** */
 }
