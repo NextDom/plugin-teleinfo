@@ -12,7 +12,11 @@ Change log
 - Noms des variables et fonctions
 - Compatibilité Linky
 
-2.6.3 [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
+2.6.4 [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
+=====
+- Bugfix erreur lors de l'enregistrement
+
+2.6.3
 =====
 - Lancement du démon pour la partie production
 
