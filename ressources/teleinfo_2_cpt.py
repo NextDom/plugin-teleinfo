@@ -528,7 +528,7 @@ def main():
     else:
         teleinfo = Teleinfo()
     pid = str(os.getpid())
-    file("/tmp/teleinfo.pid", 'w').write("%s\n" % pid)
+    file("/tmp/teleinfo2cpt.pid", 'w').write("%s\n" % pid)
     signal.signal(signal.SIGTERM, teleinfo.exit_handler)
     teleinfo.readMeter(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath)
     if FTDI_TYPE == 0:
