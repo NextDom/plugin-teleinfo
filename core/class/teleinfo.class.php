@@ -445,23 +445,25 @@ class teleinfo extends eqLogic
 
         foreach ($stat_hc_to_cumul as $key => $value) {
             $cmd = cmd::byId($value);
-
+            $statHcMaxToday = $cmd->getStatistique($startdatetoday, $enddatetoday)['max'];
+            $statHcMinToday = $cmd->getStatistique($startdatetoday, $enddatetoday)['min'];
             log::add('teleinfo', 'debug', 'Commande HC N°' . $value);
-            log::add('teleinfo', 'debug', ' ==> Valeur HC MAX : ' . $cmd->getStatistique($startdatetoday, $enddatetoday)['max']);
-            log::add('teleinfo', 'debug', ' ==> Valeur HC MIN : ' . $cmd->getStatistique($startdatetoday, $enddatetoday)['min']);
+            log::add('teleinfo', 'debug', ' ==> Valeur HC MAX : ' . $statHcMaxToday);
+            log::add('teleinfo', 'debug', ' ==> Valeur HC MIN : ' . $statHcMinToday);
 
-            $STAT_TODAY_HC     += intval($cmd->getStatistique($startdatetoday, $enddatetoday)['max']) - intval($cmd->getStatistique($startdatetoday, $enddatetoday)['min']);
+            $STAT_TODAY_HC     += intval($statHcMaxToday) - intval($statHcMinToday);
             $STAT_YESTERDAY_HC += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
             log::add('teleinfo', 'debug', 'Total HC --> ' . $STAT_TODAY_HC);
         }
         foreach ($stat_hp_to_cumul as $key => $value) {
             $cmd = cmd::byId($value);
-
+            $statHcMaxToday = $cmd->getStatistique($startdatetoday, $enddatetoday)['max'];
+            $statHcMinToday = $cmd->getStatistique($startdatetoday, $enddatetoday)['min'];
             log::add('teleinfo', 'debug', 'Commande HP N°' . $value);
-            log::add('teleinfo', 'debug', ' ==> Valeur HP MAX : ' . $cmd->getStatistique($startdatetoday, $enddatetoday)['max']);
-            log::add('teleinfo', 'debug', ' ==> Valeur HP MIN : ' . $cmd->getStatistique($startdatetoday, $enddatetoday)['min']);
+            log::add('teleinfo', 'debug', ' ==> Valeur HP MAX : ' . $statHcMaxToday);
+            log::add('teleinfo', 'debug', ' ==> Valeur HP MIN : ' . $statHcMinToday);
 
-            $STAT_TODAY_HP     += intval($cmd->getStatistique($startdatetoday, $enddatetoday)['max']) - intval($cmd->getStatistique($startdatetoday, $enddatetoday)['min']);
+            $STAT_TODAY_HP     += intval($statHcMaxToday) - intval($statHcMinToday);
             $STAT_YESTERDAY_HP += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
             log::add('teleinfo', 'debug', 'Total HP --> ' . $STAT_TODAY_HP);
         }
@@ -970,7 +972,7 @@ class teleinfo extends eqLogic
                     $cmd->refresh();
                     break;
                 default :
-                    log::add('teleinfo', 'debug', '=> ptec');
+                    log::add('teleinfo', 'debug', '=> default');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     }
