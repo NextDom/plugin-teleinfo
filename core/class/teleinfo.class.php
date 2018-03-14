@@ -1232,8 +1232,7 @@ class teleinfo extends eqLogic
         $array = array("HEALTH");
         for ($ii = 0; $ii < 1; $ii++) {
             $cmd = $this->getCmd('info', $array[$ii]);
-            if ($cmd === null) {
-
+            if ($cmd === false) {
                 $cmd = new teleinfoCmd();
                 $cmd->setName($array[$ii]);
                 $cmd->setEqLogic_id($this->id);
@@ -1256,8 +1255,7 @@ class teleinfo extends eqLogic
         $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC", "STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR");
         for ($ii = 0; $ii < 26; $ii++) {
             $cmd = $this->getCmd('info', $array[$ii]);
-            if ($cmd === null) {
-
+            if ($cmd === false) {
                 $cmd = new teleinfoCmd();
                 $cmd->setName($array[$ii]);
                 $cmd->setEqLogic_id($this->id);
