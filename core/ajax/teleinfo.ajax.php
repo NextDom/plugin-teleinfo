@@ -76,7 +76,8 @@ try {
             ajax::success($return);
         break;
         case 'getInformation':
-            if (init('eqLogic_id') !== null) {
+            if (init('eqLogic_id') !== '') {
+
                 $eqLogic                          = eqLogic::byId(init('eqLogic_id'));
                 $return[$eqLogic->getId()]        = utils::o2a($eqLogic);
                 $return[$eqLogic->getId()]['cmd'] = array();
