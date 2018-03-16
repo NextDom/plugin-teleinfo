@@ -44,13 +44,13 @@ class teleinfo extends eqLogic
         if ($autorisationCreationObjet != 1) {
             $teleinfo = teleinfo::byLogicalId($adco, 'teleinfo');
             if (!is_object($teleinfo)) {
-                $eqLogic = new teleinfo();
-                $eqLogic->setName($adco);
+                $eqLogic = (new teleinfo()) 
+                    ->setName($adco);
             }
-            $eqLogic->setLogicalId($adco);
-            $eqLogic->setEqType_name('teleinfo');
-            $eqLogic->setIsEnable(1);
-            $eqLogic->setIsVisible(1);
+            $eqLogic->setLogicalId($adco) 
+                ->setEqType_name('teleinfo')
+                ->setIsEnable(1)
+                ->setIsVisible(1);
             $eqLogic->save();
             return $eqLogic;
         } else {
