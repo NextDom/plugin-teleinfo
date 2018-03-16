@@ -24,15 +24,14 @@ if (!is_object($jsonrpc)) {
 }
 $params = $jsonrpc->getParams();
 
-if ($jsonrpc->getMethod() == 'deamonRunning') {
-    $jsonrpc->makeSuccess(teleinfo::deamonRunning());
-}
-
-if ($jsonrpc->getMethod() == 'stopDeamon') {
-    $jsonrpc->makeSuccess(teleinfo::deamon_stop());
-}
-
-if ($jsonrpc->getMethod() == 'restartDeamon') {
+switch ($jsonrpc->getMethod()) {
+    case 'deamonRunning':
+        $jsonrpc->makeSuccess(teleinfo::deamonRunning());
+    break;
+    case 'stopDeamon':
+        $jsonrpc->makeSuccess(teleinfo::deamon_stop());
+    break;
+    case 'restartDeamon':
     teleinfo::deamon_stop();
     if (teleinfo::deamonRunning()) {
         throw new \Exception(__('Impossible d\'arrêter le démon', __FILE__));
@@ -40,6 +39,7 @@ if ($jsonrpc->getMethod() == 'restartDeamon') {
     log::clear('teleinfocmd');
     teleinfo::cron();
     $jsonrpc->makeSuccess();
+    break;
 }
 
 throw new \Exception(__('Aucune methode correspondante pour le plugin Teleinfo : ' . $jsonrpc->getMethod(), __FILE__));
