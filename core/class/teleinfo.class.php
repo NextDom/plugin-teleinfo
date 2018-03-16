@@ -235,7 +235,7 @@ class teleinfo extends eqLogic
         if ($twoCptCartelectronic == 1) {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteur');
             $teleinfoPath = $teleinfoPath . '/teleinfo_2_cpt.py';
-            $cmd           = 'sudo nice -n 19 /usr/bin/python3 ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
+            $cmd           = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
             $teleinfoPath = $teleinfoPath . '/teleinfo.py';
