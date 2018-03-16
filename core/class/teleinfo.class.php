@@ -16,14 +16,10 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* * ***************************Includes********************************* */
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class teleinfo extends eqLogic
 {
-    /*     * *************************Attributs****************************** */
-    /*     * ***********************Methode static*************************** */
-
     public static function getTeleinfoInfo($_url)
     {
         $return = self::deamon_info();
@@ -78,11 +74,11 @@ class teleinfo extends eqLogic
         }
         if ($teleinfo->getConfiguration('AutoCreateFromCompteur') == '1') {
             log::add('teleinfo', 'info', 'Création de la commande ' . $_oKey . ' sur l\'ADCO ' . $_oADCO);
-            $cmd = new teleinfoCmd();
-            $cmd->setName($_oKey);
-            $cmd->setEqLogic_id($teleinfo->id);
-            $cmd->setLogicalId($_oKey);
-            $cmd->setType('info');
+            $cmd = (new teleinfoCmd())
+                ->setName($_oKey)
+                ->setEqLogic_id($teleinfo->id)
+                ->setLogicalId($_oKey)
+                ->setType('info');
             $cmd->setConfiguration('info_conso', $_oKey);
             switch ($_oKey) {
                 //case "PAPP":
@@ -92,17 +88,17 @@ class teleinfo extends eqLogic
                 case "PEJP":
                 case "DEMAIN":
                 case "PTEC":
-                    $cmd->setSubType('string');
-                    $cmd->setDisplay('generic_type', 'GENERIC_INFO');
+                    $cmd->setSubType('string')
+                        ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
                 default:
-                    $cmd->setSubType('numeric');
-                    $cmd->setDisplay('generic_type', 'GENERIC_INFO');
+                    $cmd->setSubType('numeric')
+                        ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
             }
-            $cmd->setIsHistorized(1);
-            $cmd->setEventOnly(1);
-            $cmd->setIsVisible(1);
+            $cmd->setIsHistorized(1)
+                ->setEventOnly(1)
+                ->setIsVisible(1);
             $cmd->save();
             $cmd->event($_oValue);
             return $cmd;
@@ -296,8 +292,7 @@ class teleinfo extends eqLogic
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         if ($twoCptCartelectronic == 1) {
             $pidFile     = '/tmp/teleinfo2cpt.pid';
-        }
-        else {
+        } else {
             $pidFile     = '/tmp/teleinfo_conso.pid';
         }
         if (file_exists($pidFile)) {
@@ -325,8 +320,7 @@ class teleinfo extends eqLogic
                 self::runProductionDeamon($_debug);
             }
             message::removeAll('teleinfo', 'noTeleinfoPort');
-        }
-        else {
+        } else {
             log::add('teleinfo', 'info', 'Pas d\'informations sur le port USB (Modem série ?)');
         }
     }
@@ -649,7 +643,6 @@ class teleinfo extends eqLogic
             $STAT_DEC_HP  += intval($cmd->getStatistique($startdate_dec, $enddate_dec)['max']) - intval($cmd->getStatistique($startdate_dec, $enddate_dec)['min']);
             //log::add('teleinfo', 'info', 'Conso HP --> ' . $STAT_TODAY_HP);
         }
-
 
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
 
@@ -986,7 +979,6 @@ class teleinfo extends eqLogic
         $this->createOtherCmd();
 
         $this->createPanelStats();
-
     }
 
     public function preRemove()
