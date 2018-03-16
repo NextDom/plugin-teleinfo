@@ -107,8 +107,8 @@ class teleinfo extends eqLogic
     public static function runDeamon($_debug = false, $type = 'conso')
     {
         log::add('teleinfo', 'info', 'Démarrage compteur de consommation');
-        $teleinfoPath        = realpath(dirname(__FILE__) . '/../../ressources');
-        $modemSerieAddr     = config::byKey('port', 'teleinfo');
+        $teleinfoPath         = realpath(dirname(__FILE__) . '/../../ressources');
+        $modemSerieAddr       = config::byKey('port', 'teleinfo');
         $_debug               = config::byKey('debug', 'teleinfo');
         $_force               = config::byKey('force', 'teleinfo');
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
@@ -119,23 +119,23 @@ class teleinfo extends eqLogic
         }
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_addr', 'teleinfo');
-            goto lancement;
+        } else {
+            $port = jeedom::getUsbMapping(config::byKey('port', 'teleinfo'));
+            if ($twoCptCartelectronic == 1) {
+                $port = '/dev/ttyUSB1';
+            } else {
+                if (!file_exists($port)) {
+                    log::add('teleinfo', 'error', 'Le port n\'existe pas');
+                    return false;
+                }
+                $cle_api = config::byKey('api');
+                if ($cle_api == '') {
+                    log::add('teleinfo', 'error', 'Erreur de clé api, veuillez la vérifier.');
+                    return false;
+                }
+            }
         }
-        $port = jeedom::getUsbMapping(config::byKey('port', 'teleinfo'));
-        if ($twoCptCartelectronic == 1) {
-            $port = '/dev/ttyUSB1';
-            goto lancement;
-        }
-        if (!file_exists($port)) {
-            log::add('teleinfo', 'error', 'Le port n\'existe pas');
-            goto end;
-        }
-        $cle_api = config::byKey('api');
-        if ($cle_api == '') {
-            log::add('teleinfo', 'error', 'Erreur de clé api, veuillez la vérifier.');
-            goto end;
-        }
-        lancement:
+
         $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
         exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
 
@@ -180,7 +180,6 @@ class teleinfo extends eqLogic
         message::removeAll('teleinfo', 'unableStartDeamon');
         log::add('teleinfo', 'info', 'Service OK');
         log::add('teleinfo', 'info', '---------------------------------------------');
-        end:
     }
 
     public static function runProductionDeamon($_debug = false, $type = 'prod')
@@ -198,23 +197,23 @@ class teleinfo extends eqLogic
         }
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_production_addr', 'teleinfo');
-            goto lancement;
+        } else {
+            $port = jeedom::getUsbMapping(config::byKey('port_production', 'teleinfo'));
+            if ($twoCptCartelectronic == 1) {
+                $port = '/dev/ttyUSB1';
+            } else {
+                if (!file_exists($port)) {
+                    log::add('teleinfo', 'error', '[Production] Le port n\'existe pas');
+                    return false;
+                }
+                $cle_api = config::byKey('api');
+                if ($cle_api == '') {
+                    log::add('teleinfo', 'error', '[Production] Erreur de clé api, veuillez la vérifier.');
+                    return false;
+                }
+            }
         }
-        $port = jeedom::getUsbMapping(config::byKey('port_production', 'teleinfo'));
-        if ($twoCptCartelectronic == 1) {
-            $port = '/dev/ttyUSB1';
-            goto lancement;
-        }
-        if (!file_exists($port)) {
-            log::add('teleinfo', 'error', '[Production] Le port n\'existe pas');
-            goto end;
-        }
-        $cle_api = config::byKey('api');
-        if ($cle_api == '') {
-            log::add('teleinfo', 'error', '[Production] Erreur de clé api, veuillez la vérifier.');
-            goto end;
-        }
-        lancement:
+
         $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
         exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1');
 
@@ -236,7 +235,7 @@ class teleinfo extends eqLogic
         if ($twoCptCartelectronic == 1) {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteur');
             $teleinfoPath = $teleinfoPath . '/teleinfo_2_cpt.py';
-            $cmd           = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
+            $cmd           = 'sudo nice -n 19 /usr/bin/python3 ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
             $teleinfoPath = $teleinfoPath . '/teleinfo.py';
@@ -260,7 +259,6 @@ class teleinfo extends eqLogic
         message::removeAll('teleinfo', 'unableStartDeamon');
         log::add('teleinfo', 'info', '[Production] Service OK');
         log::add('teleinfo', 'info', '---------------------------------------------');
-        end:
     }
 
     public static function deamonRunning()
@@ -344,14 +342,11 @@ class teleinfo extends eqLogic
                         $pid  = intval(trim(file_get_contents($pidFile)));
                         $kill = posix_kill($pid, 15);
                         usleep(500);
-                        if ($kill) {
-                            goto prod_stop_success;
-                        } else {
+                        if (!$kill) {
                             system::kill($pid);
                         }
                     }
                 }
-                prod_stop_success:
                 $pidFile = '/tmp/teleinfo_conso.pid';
                 if (file_exists($pidFile)) {
                     $pid  = intval(trim(file_get_contents($pidFile)));
@@ -1068,13 +1063,8 @@ class teleinfo extends eqLogic
 
     public static function dependancy_install()
     {
-        if (file_exists('/tmp/teleinfo_in_progress')) {
-            return;
-        }
-        log::remove('teleinfo_update');
-        $cmd = 'sudo /bin/bash ' . dirname(__FILE__) . '/../../ressources/install.sh';
-        $cmd .= ' >> ' . log::getPathToLog('teleinfo_update') . ' 2>&1 &';
-        exec($cmd);
+        log::remove(__CLASS__ . '_update');
+        return array('script' => dirname(__FILE__) . '/../../ressources/install_#stype#.sh ' . jeedom::getTmpFolder('teleinfo') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
     }
 
 }
