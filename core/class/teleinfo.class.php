@@ -77,9 +77,9 @@ class teleinfo extends eqLogic
             $cmd = (new teleinfoCmd())
                 ->setName($_oKey)
                 ->setLogicalId($_oKey)
-                ->setType('info')
-                ->setConfiguration('info_conso', $_oKey);
+                ->setType('info');
             $cmd->setEqLogic_id($teleinfo->id);
+            $cmd->setConfiguration('info_conso', $_oKey);
             switch ($_oKey) {
                 //case "PAPP":
                 case "OPTARIF":
