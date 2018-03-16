@@ -44,10 +44,10 @@ class teleinfo extends eqLogic
         if ($autorisationCreationObjet != 1) {
             $teleinfo = teleinfo::byLogicalId($adco, 'teleinfo');
             if (!is_object($teleinfo)) {
-                $eqLogic = (new teleinfo()) 
+                $eqLogic = (new teleinfo())
                     ->setName($adco);
             }
-            $eqLogic->setLogicalId($adco) 
+            $eqLogic->setLogicalId($adco)
                 ->setEqType_name('teleinfo')
                 ->setIsEnable(1)
                 ->setIsVisible(1);
@@ -76,10 +76,10 @@ class teleinfo extends eqLogic
             log::add('teleinfo', 'info', 'Création de la commande ' . $_oKey . ' sur l\'ADCO ' . $_oADCO);
             $cmd = (new teleinfoCmd())
                 ->setName($_oKey)
-                ->setEqLogic_id($teleinfo->id)
                 ->setLogicalId($_oKey)
-                ->setType('info');
-            $cmd->setConfiguration('info_conso', $_oKey);
+                ->setType('info')
+                ->setConfiguration('info_conso', $_oKey);
+            $cmd->setEqLogic_id($teleinfo->id);
             switch ($_oKey) {
                 //case "PAPP":
                 case "OPTARIF":
@@ -97,7 +97,6 @@ class teleinfo extends eqLogic
                     break;
             }
             $cmd->setIsHistorized(1)
-                ->setEventOnly(1)
                 ->setIsVisible(1);
             $cmd->save();
             $cmd->event($_oValue);
