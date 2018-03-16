@@ -59,6 +59,8 @@ function teleinfo_install() {
         $crontoday->setSchedule('*/5 * * * *');
         $crontoday->save();
     }
+    message::removeAll('Téléinfo');
+    message::add('Téléinfo', 'Installation du plugin Téléinfo terminée, vous êtes en version ' . $core_version . '.', null, null);
     //cache::set('teleinfo::current_core','2.610', 0);
 }
 
@@ -83,7 +85,7 @@ function teleinfo_update() {
     if (teleinfo::deamonRunning()) {
         teleinfo::deamon_stop();
     }
-    message::add('Téléinfo', 'Mise à jour en cours...', null, null);
+    message::add('Téléinfo', 'Mise à jour du plugin Téléinfo en cours...', null, null);
     log::add('teleinfo','info','*****************************************************');
     log::add('teleinfo','info','*********** Mise à jour du plugin teleinfo **********');
     log::add('teleinfo','info','*****************************************************');
@@ -127,7 +129,7 @@ function teleinfo_update() {
     }
     $crontoday->stop();
     message::removeAll('Téléinfo');
-    message::add('Téléinfo', 'Mise à jour terminée, vous êtes en version ' . $core_version . '.', null, null);
+    message::add('Téléinfo', 'Mise à jour du plugin Téléinfo terminée, vous êtes en version ' . $core_version . '.', null, null);
     teleinfo::cron();
 }
 
@@ -143,4 +145,6 @@ function teleinfo_remove() {
     if (is_object($crontoday)) {
         $crontoday->remove();
     }
+    message::removeAll('Téléinfo');
+    message::add('Téléinfo', 'Désinstallation du plugin Téléinfo terminée, vous pouvez de nouveau relever les index à la main ;)', null, null);
 }
