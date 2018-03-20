@@ -1,0 +1,15 @@
+matrix:
+    language: php
+    php:
+      - 5.6
+    before_script:
+        - find . -type f -name *.php | xargs -n1 php -l
+    script: 
+        - cd ${TRAVIS_BUILD_DIR}/tests
+        - pwd
+    after_success:
+        - cd ${TRAVIS_BUILD_DIR}/tests
+        - ls -latr
+    after_failure:
+        - cd ${TRAVIS_BUILD_DIR}/tests
+        - ls -latr
