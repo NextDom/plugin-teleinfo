@@ -15,17 +15,12 @@ matrix:
         - ls -latr
     - language: python
       python: 2.7
-      before_script:
-        - chmod +x /tests/tools/lintAllPythonFiles.sh
       install:
         - pip install pylint
       script:
         - cd ${TRAVIS_BUILD_DIR}
         - ./tests/tools/lintAllPythonFiles.sh
     - language: markdown
-      before_script:
-        - chmod +x /tests/tools/setCustomMDWarnings.sh
-        - chmod +x /tests/tools/spellCheckMD.sh
       addons:
         apt:
           packages:
