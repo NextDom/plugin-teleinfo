@@ -103,6 +103,7 @@ class teleinfo extends eqLogic
                 case "PPOT":
                 case "PEJP":
                 case "DEMAIN":
+                case "PTEC":
                     $cmd->setSubType('string');
                     $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
