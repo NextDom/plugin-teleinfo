@@ -6,11 +6,14 @@
 3.
 4.
 
-## Contexte:
+## Contexte
 
 ## Proposition de solution (optionnel):
 
-## Environnement:
+## Environnement
 * **Version Jeedom**:
 * **Platform**:
-* **Version du Plugin**:
+* **Version du Plugin (ex: 2.6.0)**:
+
+## Logs
+Merci de joindre les logs. 
