@@ -12,14 +12,14 @@ Change log
 - Noms des variables et fonctions
 - Compatibilité Linky
 
-2.7.0 Beta [![Beta](https://img.shields.io/badge/version-beta-yellow.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/milestone/1)
+2.7.0 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
 =====
 - Issue du démon 2 compteurs et librairie ftdi.
 - Reprise du processus des dépendances.
 - Erreurs 500 sur le panel.
 - Suppresion de fonctions dépréciés
 
-2.6.4 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
+2.6.4
 =====
 - Bugfix erreur lors de l'enregistrement
 
