@@ -5,14 +5,25 @@ Change log
 > Commit](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/commits/master)
 
 
-3.0.0 [![Stable](https://img.shields.io/badge/version-beta-yellow.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/milestone/1)
+3.0.0
 =====
 - Docs au nouveau standard de la team (github pages)
 - Refaire fonctionner le mode 2 compteurs.
 - Noms des variables et fonctions
 - Compatibilité Linky
 
-2.6.3 [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
+2.7.0 Beta [![Beta](https://img.shields.io/badge/version-beta-yellow.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/milestone/1)
+=====
+- Issue du démon 2 compteurs et librairie ftdi.
+- Reprise du processus des dépendances.
+- Erreurs 500 sur le panel.
+- Suppresion de fonctions dépréciés
+
+2.6.4 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
+=====
+- Bugfix erreur lors de l'enregistrement
+
+2.6.3
 =====
 - Lancement du démon pour la partie production
 

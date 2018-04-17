@@ -238,9 +238,10 @@ class Teleinfo(object):
     def __init__(self, ftdi_):
         """
         """
+        self._log = MyLogger()
+        self._log.info("Initialisation de la teleinfo")
         if FTDI_TYPE == 0:
-            self._log = MyLogger()
-            self._log.info("Initialisation de la teleinfo")
+            self.context = ""
             super(Teleinfo, self).__init__()
             self.__ftdi = ftdi_
         else:
@@ -526,7 +527,7 @@ def main():
         ftdi_.init()
         teleinfo = Teleinfo(ftdi_)
     else:
-        teleinfo = Teleinfo()
+        teleinfo = Teleinfo("")
     pid = str(os.getpid())
     file("/tmp/teleinfo2cpt.pid", 'w').write("%s\n" % pid)
     signal.signal(signal.SIGTERM, teleinfo.exit_handler)

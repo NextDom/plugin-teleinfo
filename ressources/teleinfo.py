@@ -241,12 +241,8 @@ class Teleinfo:
 
         def target():
             self.process = None
-            #logger.debug("Thread started, timeout = " + str(timeout)+", command : "+str(self.cmd))
             self.process = subprocess.Popen(self.cmd + _SendData, shell=True)
-            #print self.cmd
             self.process.communicate()
-            #logger.debug("Return code: " + str(self.process.returncode))
-            #logger.debug("Thread finished")
             self.timer.cancel()
 
         def timer_callback():
@@ -266,13 +262,12 @@ class Teleinfo:
             self.open()
         except TeleinfoException as err:
             self._log.error(err.value)
-            #print err.value
             self.terminate()
             return
         # Read a frame
         while(1):
             _RazCalcul = datetime.now() - _RAZ
-            if(_RazCalcul.seconds > 3600):
+            if(_RazCalcul.seconds > 60):
                 _RAZ = datetime.now()
                 for cle, valeur in Donnees.items():
                     Donnees.pop(cle)
@@ -292,10 +287,8 @@ class Teleinfo:
                     Donnees[cle] = valeur
             if(self._externalip != ""):
                 self.cmd = "curl -L -s -G --max-time 15 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
-                #self.cmd = "curl -L -s " + "192.168.1.150" +'/plugins/teleinfo/core/php/jeeTeleinfo.php?api=' + self._cleAPI
                 _Separateur = "&"
             else:
-                #self.cmd = "curl -L -s -G " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
                 self.cmd = 'nice -n 19 timeout 15 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
                 _Separateur = " "
 
@@ -308,35 +301,31 @@ class Teleinfo:
                     _SendData += _Separateur + cle +'='+ valeur
                     _Donnees[cle] = valeur
 
-            #response = urllib2.urlopen(self.cmd)
             if (_SendData != ""):
                 _SendData += _Separateur + "ADCO=" + Donnees["ADCO"]
-                #self.cmd += _SendData
-                if (self._debug == '1'):
-                    print self.cmd
-                    #print ""
-                    self._log.debug(self.cmd + _SendData)
                 if(self._externalip != ""):
                     try:
                         _SendData += "'"
+                        if (self._debug == '1'):
+                            print self.cmd + _SendData
+                            self._log.debug(self.cmd + _SendData)
                         thread = threading.Thread(target=target)
                         self.timer = threading.Timer(int(5), timer_callback)
                         self.timer.start()
                         thread.start()
-                        #response = urllib2.urlopen(self.cmd)
                     except Exception, e:
                         errorCom = "Connection error '%s'" % e
                 else:
                     try:
+                        if (self._debug == '1'):
+                            print self.cmd + _SendData
+                            self._log.debug(self.cmd + _SendData)
                         thread = threading.Thread(target=target)
                         self.timer = threading.Timer(int(5), timer_callback)
                         self.timer.start()
                         thread.start()
-                        #self.process = subprocess.Popen(self.cmd, shell=True)
-                        #self.process.communicate()
                     except Exception, e:
                         errorCom = "Connection error '%s'" % e
-        # This is the End!
         self.terminate()
     def exit_handler(self, *args):
         self.terminate()
@@ -358,7 +347,6 @@ if __name__ == "__main__":
     parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
     parser.add_option("-t", "--type", dest="type", help="type du deamon")
     (options, args) = parser.parse_args()
-    #print "opt: %s, arglen: %s" % (options, len(args))
     if options.port:
             try:
                 gDeviceName = options.port
