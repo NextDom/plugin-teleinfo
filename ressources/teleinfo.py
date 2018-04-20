@@ -32,6 +32,7 @@ gRealPath = ''
 gVitesse = ''
 gMessageTemp = ''
 gCanStart = 'true'
+gMode = ''
 # ----------------------------------------------------------------------------
 # LOGGING
 # ----------------------------------------------------------------------------
@@ -98,7 +99,7 @@ class Teleinfo:
     each time all data are collected
     """
 
-    def __init__(self, device, externalip, cleapi, debug, realpath, vitesse):
+    def __init__(self, device, externalip, cleapi, debug, realpath, vitesse, mode):
         """ @param device : teleinfo modem device path
         @param log : log instance
         @param callback : method to call each time all data are collected
@@ -112,6 +113,7 @@ class Teleinfo:
         self._realpath = realpath
         self._vitesse = vitesse
         self._ser = None
+        self._mode = mode
         #self._stop = Event()
 
     def open(self):
@@ -168,13 +170,22 @@ class Teleinfo:
                 #\x03 is the end of the frame
                 while '\x03' not in resp:
                     #Don't use strip() here because the checksum can be ' '
-                    if len(resp.replace('\r','').replace('\n','').split()) == 2:
-                        #The checksum char is ' '
-                        name, value = resp.replace('\r','').replace('\n','').split()
-                        checksum = ' '
+                    if (self._mode == "standard"):
+                        if len(resp.replace('\r','').replace('\n','').split('\x09')) == 4:
+                            #The checksum char is ' '
+                            name, horodate, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
+                            checksum = ' '
+                        else:
+                            name, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
+                            #print "name : %s, value : %s, checksum : %s" % (name, value, checksum)
                     else:
-                        name, value, checksum = resp.replace('\r','').replace('\n','').split()
-                        #print "name : %s, value : %s, checksum : %s" % (name, value, checksum)
+                        if len(resp.replace('\r','').replace('\n','').split()) == 2:
+                            #The checksum char is ' '
+                            name, value = resp.replace('\r','').replace('\n','').split()
+                            checksum = ' '
+                        else:
+                            name, value, checksum = resp.replace('\r','').replace('\n','').split()
+                            #print "name : %s, value : %s, checksum : %s" % (name, value, checksum)
                     if self._is_valid(resp, checksum):
                         #frame.append({"name" : name, "value" : value, "checksum" : checksum})
                         #frameCsv.append(value)
@@ -219,13 +230,26 @@ class Teleinfo:
         @param frame : the full frame
         @param checksum : the frame checksum
         """
-        #print "Check checksum : f = %s, chk = %s" % (frame, checksum)
-        datas = ' '.join(frame.split()[0:2])
-        my_sum = 0
-        for cks in datas:
-            my_sum = my_sum + ord(cks)
-        computed_checksum = ( my_sum & int("111111", 2) ) + 0x20
-        #print "computed_checksum = %s" % chr(computed_checksum)
+        if (self._mode == "standard"):
+            #Gestion des champs horodates
+            if len(frame.split('\x09')) == 4:
+                datas = '\x09'.join(frame.split('\x09')[0:3])
+                #self._log.debug("HORODATE")
+            else:
+                datas = '\x09'.join(frame.split('\x09')[0:2])
+                #self._log.debug("NON HORODATE")
+            my_sum = 0
+            for cks in datas:
+                my_sum = my_sum + ord(cks)
+            computed_checksum = ((my_sum + 0x09) & int("111111", 2)) + 0x20
+        else:
+            #print "Check checksum : f = %s, chk = %s" % (frame, checksum)
+            datas = ' '.join(frame.split()[0:2])
+            my_sum = 0
+            for cks in datas:
+                my_sum = my_sum + ord(cks)
+            computed_checksum = ( my_sum & int("111111", 2) ) + 0x20
+            #print "computed_checksum = %s" % chr(computed_checksum)
         return chr(computed_checksum) == checksum
 
     def run(self):
@@ -346,6 +370,8 @@ if __name__ == "__main__":
     parser.add_option("-v", "--vitesse", dest="vitesse", help="vitesse du modem")
     parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
     parser.add_option("-t", "--type", dest="type", help="type du deamon")
+    parser.add_option("-m", "--mode", dest="mode", help="TIC standard ou hystorique")
+
     (options, args) = parser.parse_args()
     if options.port:
             try:
@@ -383,6 +409,12 @@ if __name__ == "__main__":
             except:
                 error = "Can not get vitesse %s" % options.vitesse
                 raise TeleinfoException(error)
+    if options.mode:
+            try:
+                gMode = options.mode
+            except:
+                error = "Can not get mode %s" % options.mode
+                #raise TeleinfoException(error)
     if options.force:
             try:
                 if options.force == '0':
@@ -400,7 +432,7 @@ if __name__ == "__main__":
     if gCanStart == 'true':
         pid = str(os.getpid())
         file("/tmp/teleinfo_" + options.type + ".pid", 'w').write("%s\n" % pid)
-        teleinfo = Teleinfo(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath, gVitesse)
+        teleinfo = Teleinfo(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath, gVitesse, gMode)
         signal.signal(signal.SIGTERM, teleinfo.exit_handler)
         teleinfo.run()
     sys.exit()
