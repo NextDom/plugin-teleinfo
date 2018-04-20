@@ -1,7 +1,7 @@
 {
 	"id" : "teleinfo",
 	"name" : "Téléinfo",
-	"description" : "Plugin pour utiliser les modems téléinformation USB",
+	"description" : "Plugin pour utiliser les modems téléinformation USB / Série",
 	"licence" : "AGPL",
 	"author" : "Cédric GUINE",
 	"require" : "3.0",
@@ -10,7 +10,10 @@
 	"hasDependency" : true,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 45,
+	"link" : {
+		"forum":"http://forum.jeedom.fr/viewtopic.php?f=28&t=614"
+	},
 	"changelog" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/changelog",
 	"documentation" : "https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/#language#/",
-	"pluginVersion" : "2.7.0"
+	"pluginVersion" : "2.7.1"
 }
