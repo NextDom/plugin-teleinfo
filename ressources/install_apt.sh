@@ -39,7 +39,9 @@ echo 30 > ${PROGRESS_FILE}
 echo 40 > ${PROGRESS_FILE}
 echo "Installation de la librairie serial"
 #pip_install serial
-pip_install pypserial
+sudo pip uninstall -y serial
+#apt_install python-serial
+pip_install pyserial
 echo 50 > ${PROGRESS_FILE}
 echo "Mise à jour de cmdline ou inittab suivant système"
 if [ -e /dev/ttyAMA0 ];  then
