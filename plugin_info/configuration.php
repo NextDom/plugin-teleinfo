@@ -41,6 +41,14 @@ try {
 <form class="form-horizontal">
     <fieldset>
         <legend><i class="icon fa fa-bolt"></i> {{Consommation électrique}}</legend>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Linky </label>
+            <div id="div_linky" class="col-lg-4 tooltips" title="{{ Compteur Linky }}">
+                <!--<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{Oui}}</label>-->
+                <input type="checkbox" id="linky" class="configKey" data-l1key="linky" placeholder="{{}}"/>
+                <label for="linky">  </label>
+            </div>
+        </div>
         <div class="form-group div_local">
             <label class="col-lg-4 control-label">Port du modem :</label>
             <div class="col-lg-4">
