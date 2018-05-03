@@ -166,6 +166,78 @@ try {
             $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
             ajax::success($return);
         break;
+        case 'diagnostic_step0':
+            $return = array();
+
+            $return['portName'] = config::byKey('port', 'teleinfo');
+            if ($return['portName'] == "serie") {
+                $return['portName'] = config::byKey('modem_serie_addr', 'teleinfo');
+            }
+            if ($return['portName'] === ""){
+                $return['result'] = '0';
+            }
+            else {
+                $return['result'] = '1';
+            }
+            $return['message'] = 'Step0';
+            ajax::success($return);
+        break;
+        case 'diagnostic_step1':
+            $return = array();
+            $return['portName'] = config::byKey('port', 'teleinfo');
+            if ($return['portName'] == "serie") {
+                $return['portName'] = config::byKey('modem_serie_addr', 'teleinfo');
+            }
+            $return['portAvailable'] = file_exists($return['portName']);
+
+            if (!$return['portAvailable']){
+                $return['result'] = '0';
+            }
+            else {
+                $return['result'] = '1';
+            }
+            $return['message'] = 'Step1';
+            ajax::success($return);
+        break;
+        case 'diagnostic_step2':
+            $return = array();
+            // verifier sudo
+            $return['message'] = 'Step2';
+            $return['result'] = '0';
+            ajax::success($return);
+        break;
+        case 'diagnostic_step3':
+            $return = array();
+            // lire data
+            $return['message'] = 'Step3';
+            $return['result'] = '0';
+            ajax::success($return);
+        break;
+        case 'diagnostic_step4':
+            $return = array();
+            // intégrité des donnees
+            $return['message'] = 'Step4';
+            $return['result'] = '0';
+            ajax::success($return);
+        break;
+        case 'diagnostic_step5':
+            $return = array();
+            $monfichier = fopen(dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt', 'w+');
+            foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+                fwrite($monfichier,$eqLogic);
+                //$eqLogic->getCmd()
+            }
+            fclose($monfichier);
+
+
+            $return["files"] = log::getPathToLog('teleinfo'). " " . log::getPathToLog('teleinfo_deamon'). " " . log::getPathToLog('teleinfo_update') . " " . dirname(__FILE__) . '/../../plugin_info/info.json'. " " . dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt';
+            $return["path"] = dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar';
+            exec('rm ' . dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar');
+            $return["compress"] = exec('tar -cvf ' . dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar ' . $return["files"]);
+            $return['message'] = '<a href="core/php/downloadFile.php?pathfile=tmp/teleinfolog.tar" target="_blank">Télécharger</a>';
+            $return['result'] = '0';
+            ajax::success($return);
+        break;
     }
     throw new \Exception('Aucune methode correspondante');
 } catch (\Exception $e) {

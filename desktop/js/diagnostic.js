@@ -1,8 +1,9 @@
-var etapes = [{"name": "Configuration du plugin", "command": "", "result": "", "advise": "Vérifier la configuration du plugin"},
-    {"name": "Modem connecté", "command": "", "result": "", "advise": "Vérifier la connexion du modem à Jeedom"},
-    {"name": "Accès au Modem", "command": "", "result": "", "advise": "Vérifier les droits sur le port du Modem"},
-    {"name": "Lecture des données", "command": "", "result": "", "advise": "Vérifier que les cables soient bien connectés; que la téléinformation est bien activée par EDF"},
-    {"name": "Intégritée des données", "command": "", "result": "", "advise": ""}
+var etapes = [{"name": "Configuration du plugin", "result": "", "advise": "Vérifier la configuration du plugin"},
+    {"name": "Modem connecté", "result": "", "advise": "Vérifier la connexion du modem à Jeedom"},
+    {"name": "Accès au Modem", "result": "", "advise": "Vérifier les droits sur le port du Modem"},
+    {"name": "Lecture des données", "result": "", "advise": "Vérifier que les cables soient bien connectés; que la téléinformation est bien activée par EDF"},
+    {"name": "Intégritée des données", "result": "", "advise": ""},
+    {"name": "Package de logs", "result": "", "advise": ""}
 ];
 
 function populate_table(){
@@ -16,16 +17,16 @@ function populate_table(){
             tbody += '</td>';
 
             tbody += '<td>';
-            tbody += '<span  style="font-size : 1em;"><a class="btn btn-sm btn-success" onclick="run_check('+etapes[i].command+');"><i class="fa fa-fast-forward"></i></a></span>';
+            tbody += '<span  style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid='+i+' ><i class="fa fa-fast-forward"></i></a></span>';
             tbody += '</td>';
 
             tbody += '<td class="result">';
             /*tbody += '<span class="" style="">'+etapes[i].result+'</span>';*/
-            tbody += '<span class="" style=""></span>';
+            tbody += '<span class="result'+i+'" style=""></span>';
             tbody += '</td>';
 
             tbody += '<td>';
-            tbody += '<span class="" style="">'+etapes[i].advise+'</span>';
+            tbody += '<span class="advise'+i+'" style="display:none">'+etapes[i].advise+'</span>';
             tbody += '</td>';
 
             tbody += '</tr>';
@@ -33,11 +34,31 @@ function populate_table(){
     $('#table_health tbody').empty().append(tbody);
 }
 
-function run_check(command){
-    $(this).closest('.result').find('.span').html('test');
-    console.log($(this).closest('.result').find('.span').value);
+$( document ).on( "click", ".btn", function() {
+  var temp = $(this).attr("btnid")
+  $(".result"+temp+"").append('<i class="fa fa-spinner fa-spin"></i>');
+  $.ajax({
+  async:true,
+  global : false,
+  url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+  data: {
+      action:'diagnostic_step' + temp
+      },
+  dataType: 'json',
+  error: function (request, status, error) {
+      console.log(request);
+      handleAjaxError(request, status, error,$('#div_DiagnosticAlert'));
+  },
+  success: function (data) {
+      console.log(data);
+      $(".result"+temp+"").empty().append(data.result.message);
 
-}
+      if (data.result.result === '0'){
+          $('.advise'+temp).show();
+      }
+  }
+  });
+});
 
 function check_state(name,  datetime){
     return '<span  class="label label-danger" style="font-size : 1em;">NOK</span>';
