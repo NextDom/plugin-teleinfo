@@ -222,14 +222,20 @@ try {
         break;
         case 'diagnostic_step5':
             $return = array();
-            $monfichier = fopen(dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt', 'w+');
+            $monfichier = dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt';
+            exec('rm ' . $monfichier);
             foreach (eqLogic::byType('teleinfo') as $eqLogic) {
-                fwrite($monfichier,$eqLogic);
-                //$eqLogic->getCmd()
+                //file_put_contents($monfichier, $eqLogic->getConfiguration(), FILE_APPEND | LOCK_EX);
+
+                file_put_contents($monfichier, $eqLogic->getName() . ";", FILE_APPEND | LOCK_EX);
+                file_put_contents($monfichier, serialize($eqLogic->getConfiguration()), FILE_APPEND | LOCK_EX);
+                file_put_contents($monfichier, serialize('\r\n'), FILE_APPEND | LOCK_EX);
+                /*foreach ($eqLogic->getCmd() as $cmd) {
+                    file_put_contents($monfichier, serialize($cmd), FILE_APPEND | LOCK_EX);
+                    file_put_contents($monfichier, serialize('\r\n'), FILE_APPEND | LOCK_EX);
+                }
+                file_put_contents($monfichier, serialize('\r\n'), FILE_APPEND | LOCK_EX);*/
             }
-            fclose($monfichier);
-
-
             $return["files"] = log::getPathToLog('teleinfo'). " " . log::getPathToLog('teleinfo_deamon'). " " . log::getPathToLog('teleinfo_update') . " " . dirname(__FILE__) . '/../../plugin_info/info.json'. " " . dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt';
             $return["path"] = dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar';
             exec('rm ' . dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar');
