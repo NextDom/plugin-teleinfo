@@ -5,5 +5,6 @@
 {% include_relative commandes.md %}
 {% include_relative sante.md %}
 {% include_relative api.md %}
+{% include_relative diagnostic.md %}
 {% include_relative faq.md %}
 {% include_relative bug.md %}
