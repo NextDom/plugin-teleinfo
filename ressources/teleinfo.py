@@ -125,8 +125,8 @@ class Teleinfo:
                 # self._ser = serial.Serial(self._device, 1200, bytesize=7, parity = 'E', stopbits=1)
             self._log.info("Teleinfo modem successfully opened")
         except:
-            #error = "Error opening Teleinfo modem '%s' : %s" % (self._device, traceback.format_exc())
-            self._log.error("Error opening Teleinfo modem '%s' : %s" % (self._device, traceback.format_exc()))
+            error = "Error opening Teleinfo modem '%s' : %s" % (self._device, traceback.format_exc())
+            self._log.error(error)
             raise TeleinfoException(error)
 
     def close(self):
