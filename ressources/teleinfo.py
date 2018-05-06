@@ -114,28 +114,23 @@ class Teleinfo:
         self._vitesse = vitesse
         self._ser = None
         self._mode = mode
-        #self._stop = Event()
 
     def open(self):
         """ open teleinfo modem device
         """
         try:
             self._log.info("Try to open Teleinfo modem '%s' with speed '%s'" % (self._device, self._vitesse))
-            # if(self.vitesse == '9600'):
             self._ser = serial.Serial(self._device, self._vitesse, bytesize=7, parity = 'E', stopbits=1)
-            # else:
-                # self._ser = serial.Serial(self._device, 1200, bytesize=7, parity = 'E', stopbits=1)
             self._log.info("Teleinfo modem successfully opened")
         except:
-            #error = "Error opening Teleinfo modem '%s' : %s" % (self._device, traceback.format_exc())
-            self._log.error("Error opening Teleinfo modem '%s' : %s" % (self._device, traceback.format_exc()))
+            error = "Error opening Teleinfo modem '%s' : %s" % (self._device, traceback.format_exc())
+            self._log.error(error)
             raise TeleinfoException(error)
 
     def close(self):
         """ close telinfo modem
         """
         self._log.info("Try to close Teleinfo modem")
-        #self._stop.set()
         if self._ser != None  and self._ser.isOpen():
             self._ser.close()
             self._log.info("Teleinfo modem successfully closed")
@@ -143,7 +138,6 @@ class Teleinfo:
     def terminate(self):
         print "Terminating..."
         self.close()
-        #sys.close(gOutput)
         sys.exit()
 
     def read(self):
@@ -153,7 +147,7 @@ class Teleinfo:
         this method can take time but it enures that the frame returned is valid
         @return frame : list of dict {name, value, checksum}
         """
-        if (self._mode == "standard"):
+        if (self._mode == "standard"): # Zone linky standard
             resp = self._ser.readline()
             is_ok = False
             Content = {}
@@ -161,37 +155,35 @@ class Teleinfo:
                 try:
                     while 'ADSC' not in resp:
                         resp = self._ser.readline()
-                        #self._log.debug(resp)
                         if len(resp.replace('\r','').replace('\n','').split('\x09')) == 4:
-                            #The checksum char is ' '
                             name, horodate, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
                             checksum = ' '
                             Content[name] = value;
-                            #self._log.debug('name : ' + name + ' value : ' + value)
+                            if (self._debug == '1'):
+                                self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                         else:
                             name, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
                             Content[name] = value;
-                            #self._log.debug('name : ' + name + ' value : ' + value)#print "name : %s, value : %s, checksum : %s" % (name, value, checksum)
+                            if (self._debug == '1'):
+                                self._log.debug('name : ' + name + ' value : ' + value)
                     is_ok = True
                     if len(resp.replace('\r','').replace('\n','').split('\x09')) == 4:
-                        #The checksum char is ' '
                         name, horodate, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
                         checksum = ' '
                         Content[name] = value;
-                        #self._log.debug('name : ' + name + ' value : ' + value)
+                        if (self._debug == '1'):
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                     else:
                         name, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
                         Content[name] = value;
-                        #self._log.debug('name : ' + name + ' value : ' + value)#print "name : %s, value : %s, checksum : %s" % (name, value, checksum)
+                        if (self._debug == '1'):
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                 except ValueError:
                     checksum = ' '
-                    #self._log.error('')
-        else:
+        else: # Zone historique
             #Get the begin of the frame, markde by \x02
             resp = self._ser.readline()
             is_ok = False
-            #frame = []
-            #frameCsv = []
             Content = {}
             while not is_ok:
                 try:
@@ -204,47 +196,37 @@ class Teleinfo:
                     #\x03 is the end of the frame
                     while '\x03' not in resp:
                         #Don't use strip() here because the checksum can be ' '
-                        if (self._mode == "standard"):
-                            if len(resp.replace('\r','').replace('\n','').split('\x09')) == 4:
-                                #The checksum char is ' '
-                                name, horodate, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
-                                checksum = ' '
-                            else:
-                                name, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
-                                #print "name : %s, value : %s, checksum : %s" % (name, value, checksum)
+                        if len(resp.replace('\r','').replace('\n','').split()) == 2:
+                            #The checksum char is ' '
+                            name, value = resp.replace('\r','').replace('\n','').split()
+                            checksum = ' '
+                            if (self._debug == '1'):
+                                self._log.debug('name : ' + name + ' value : ' + value)
                         else:
-                            if len(resp.replace('\r','').replace('\n','').split()) == 2:
-                                #The checksum char is ' '
-                                name, value = resp.replace('\r','').replace('\n','').split()
-                                checksum = ' '
-                            else:
-                                name, value, checksum = resp.replace('\r','').replace('\n','').split()
-                                #print "name : %s, value : %s, checksum : %s" % (name, value, checksum)
+                            name, value, checksum = resp.replace('\r','').replace('\n','').split()
+                            if (self._debug == '1'):
+                                self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                         if self._is_valid(resp, checksum):
-                            #frame.append({"name" : name, "value" : value, "checksum" : checksum})
-                            #frameCsv.append(value)
                             Content[name] = value;
                         else:
                             self._log.error("** FRAME CORRUPTED !")
+                            self._log.debug('** FRAME : ' + resp + '**')
                             #This frame is corrupted, we need to wait until the next one
-                            #frame = []
-                            #frameCsv = []
                             while '\x02' not in resp:
                                 resp = self._ser.readline()
                             self._log.error("* New frame after corrupted")
                         resp = self._ser.readline()
                     #\x03 has been detected, that's the last line of the frame
                     if len(resp.replace('\r','').replace('\n','').split()) == 2:
-                        #print "* End frame"
-                        #The checksum char is ' '
                         name, value = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
                         checksum = ' '
+                        if (self._debug == '1'):
+                            self._log.debug('name : ' + name + ' value : ' + value)
                     else:
                         name, value, checksum = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
+                        if (self._debug == '1'):
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                     if self._is_valid(resp, checksum):
-                        #frame.append({"name" : name, "value" : value, "checksum" : checksum})
-                        #frameCsv.append(value)
-                        #print "* End frame, is valid : %s" % frame
                         is_ok = True
                     else:
                         self._log.error("** Last frame invalid")
@@ -252,11 +234,8 @@ class Teleinfo:
                 except ValueError:
                     #Badly formatted frame
                     #This frame is corrupted, we need to wait until the next one
-                    #frame = []
-                    #frameCsv = []
                     while '\x02' not in resp:
                         resp = self._ser.readline()
-            #self._log.info(Content)
         return Content
 
     def _is_valid(self, frame, checksum):
@@ -268,10 +247,8 @@ class Teleinfo:
             #Gestion des champs horodates
             if len(frame.split('\x09')) == 4:
                 datas = '\x09'.join(frame.split('\x09')[0:3])
-                #self._log.debug("HORODATE")
             else:
                 datas = '\x09'.join(frame.split('\x09')[0:2])
-                #self._log.debug("NON HORODATE")
             my_sum = 0
             for cks in datas:
                 my_sum = my_sum + ord(cks)
@@ -295,7 +272,6 @@ class Teleinfo:
         _RazCalcul = 0
         _Separateur = " "
         _SendData = ""
-        #global gMessageTemp
 
         def target():
             self.process = None
@@ -345,10 +321,10 @@ class Teleinfo:
                     valeur = valeur.replace(" ","%20")
                     Donnees[cle] = valeur
             if(self._externalip != ""):
-                self.cmd = "curl -L -s -G --max-time 15 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
+                self.cmd = "curl -L -s -G --max-time 8 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
                 _Separateur = "&"
             else:
-                self.cmd = 'nice -n 19 timeout 15 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
+                self.cmd = 'nice -n 19 timeout 8 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
                 _Separateur = " "
 
             for cle, valeur in Donnees.items():
@@ -372,7 +348,7 @@ class Teleinfo:
                                 print self.cmd + _SendData
                                 self._log.debug(self.cmd + _SendData)
                             thread = threading.Thread(target=target)
-                            self.timer = threading.Timer(int(5), timer_callback)
+                            self.timer = threading.Timer(int(10), timer_callback)
                             self.timer.start()
                             thread.start()
                         except Exception, e:
@@ -383,7 +359,7 @@ class Teleinfo:
                                 print self.cmd + _SendData
                                 self._log.debug(self.cmd + _SendData)
                             thread = threading.Thread(target=target)
-                            self.timer = threading.Timer(int(5), timer_callback)
+                            self.timer = threading.Timer(int(10), timer_callback)
                             self.timer.start()
                             thread.start()
                         except Exception, e:
