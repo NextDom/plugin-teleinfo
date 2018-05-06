@@ -209,15 +209,15 @@ try {
             <span style="top:6px;" class="col-lg-4"><?php echo $core_version; ?></span>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Diagnostic <sup><i class="fa fa-question-circle tooltips" title="{{Rechercher la cause d'un disfonctionnement}}" style="font-size : 1em;color:grey;"></i></sup></label>
-            <span style="top:6px;" class="col-lg-4"><a class="btn btn-sm btn-info" id="btn_diagnostic" style="position:relative;top:-5px;"><i class="fa fa-times"></i> Démarrer</a></span>
+            <label class="col-lg-4 control-label">Diagnostique <sup><i class="fa fa-question-circle tooltips" title="{{Rechercher la cause d'un disfonctionnement}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <span style="top:6px;" class="col-lg-4"><a class="btn btn-sm btn-info" id="btn_diagnostic" style="position:relative;top:-5px;"><i class="divers-svg"></i> Démarrer</a></span>
         </div>
     </fieldset>
 </form>
 
 <script>
         $('#btn_diagnostic').on('click',function(){
-            $('#md_modal').dialog({title: "{{Diagnostic de résolution d'incident}}"});
+            $('#md_modal').dialog({title: "{{Diagnostique de résolution d'incident}}"});
             $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=diagnostic').dialog('open');
         });
 

@@ -51,11 +51,16 @@ $( document ).on( "click", ".btn", function() {
   },
   success: function (data) {
       console.log(data);
-      $(".result"+temp+"").empty().append(data.result.message);
-
       if (data.result.result === '0'){
           $('.advise'+temp).show();
+          $(".result"+temp+"").empty().append('<i class="fa fa-times" style="color:#FF0000"></i> ');
       }
+      else if (data.result.result === '1'){
+          $(".result"+temp+"").empty().append('<i class="fa fa-check" style="color:#00FF00"></i> ');
+      }else {
+          $(".result"+temp+"").empty();
+      }
+      $(".result"+temp+"").append(data.result.message);
   }
   });
 });
