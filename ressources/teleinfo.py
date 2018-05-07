@@ -225,7 +225,7 @@ class Teleinfo:
                     else:
                         name, value, checksum = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
                         if (self._debug == '1'):
-                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     if self._is_valid(resp, checksum):
                         is_ok = True
                     else:
