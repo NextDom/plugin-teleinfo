@@ -18,7 +18,7 @@ if (!isConnect('admin')) {
 		</tr>
 	</thead>
 	<tbody>
-
+        <div class="alert alert-info" role="alert">Merci d'activer l'option activer les traces ERDF quelques temps avant de soumettre les logs afin d'avoir toutes les informations nécessaires au traitement du ticket.</div>
 	</tbody>
 </table>
 

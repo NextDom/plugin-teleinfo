@@ -4,18 +4,20 @@ Change log
 > Detail complet des mises à jour sur [Historique
 > Commit](https://github.com/NextDom/plugin-teleinfo/commits/master)
 
-
 A venir
 =====
 - Docs au nouveau standard (github pages)
 - Refaire fonctionner le mode 2 compteurs.
 - Noms des variables et fonctions
+
+3.0.0
+=====
 - Compatibilité Linky
+- Fonction diagnostique
 
 2.7.3 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/NextDom/plugin-teleinfo/releases)
 =====
 - Bugfix sur le démon afin de prévenir des crash dans certaines conditions.
-- Fonction diagnostique
 
 2.7.2
 =====
