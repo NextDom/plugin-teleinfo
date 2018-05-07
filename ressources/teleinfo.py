@@ -218,12 +218,12 @@ class Teleinfo:
                         resp = self._ser.readline()
                     #\x03 has been detected, that's the last line of the frame
                     if len(resp.replace('\r', '').replace('\n', '').split()) == 2:
-                        name, value = resp.replace('\r', '').replace('\n', '').replace('\x02','').replace('\x03','').split()
+                        name, value = resp.replace('\r', '').replace('\n', '').replace('\x02', '').replace('\x03', '').split()
                         checksum = ' '
                         if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value)
                     else:
-                        name, value, checksum = resp.replace('\r', '').replace('\n', '').replace('\x02','').replace('\x03','').split()
+                        name, value, checksum = resp.replace('\r', '').replace('\n', '').replace('\x02', '').replace('\x03', '').split()
                         if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     if self._is_valid(resp, checksum):
