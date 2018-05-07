@@ -162,19 +162,19 @@ class Teleinfo:
                             if self._debug == '1':
                                 self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                         else:
-                            name, value, checksum = resp.replace('\r', '').replace('\n','').split('\x09')
+                            name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                             content[name] = value;
                             if self._debug == '1':
                                 self._log.debug('name : ' + name + ' value : ' + value)
                     is_ok = True
-                    if len(resp.replace('\r', '').replace('\n','').split('\x09')) == 4:
-                        name, horodate, value, checksum = resp.replace('\r', '').replace('\n','').split('\x09')
+                    if len(resp.replace('\r', '').replace('\n', '').split('\x09')) == 4:
+                        name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                         checksum = ' '
                         content[name] = value;
                         if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                     else:
-                        name, value, checksum = resp.replace('\r', '').replace('\n','').split('\x09')
+                        name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                         content[name] = value;
                         if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
@@ -196,14 +196,14 @@ class Teleinfo:
                     #\x03 is the end of the frame
                     while '\x03' not in resp:
                         #Don't use strip() here because the checksum can be ' '
-                        if len(resp.replace('\r', '').replace('\n','').split()) == 2:
+                        if len(resp.replace('\r', '').replace('\n', '').split()) == 2:
                             #The checksum char is ' '
-                            name, value = resp.replace('\r', '').replace('\n','').split()
+                            name, value = resp.replace('\r', '').replace('\n', '').split()
                             checksum = ' '
                             if self._debug == '1':
                                 self._log.debug('name : ' + name + ' value : ' + value)
                         else:
-                            name, value, checksum = resp.replace('\r', '').replace('\n','').split()
+                            name, value, checksum = resp.replace('\r', '').replace('\n', '').split()
                             if self._debug == '1':
                                 self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                         if self._is_valid(resp, checksum):
@@ -217,13 +217,13 @@ class Teleinfo:
                             self._log.error("* New frame after corrupted")
                         resp = self._ser.readline()
                     #\x03 has been detected, that's the last line of the frame
-                    if len(resp.replace('\r', '').replace('\n','').split()) == 2:
-                        name, value = resp.replace('\r', '').replace('\n','').replace('\x02','').replace('\x03','').split()
+                    if len(resp.replace('\r', '').replace('\n', '').split()) == 2:
+                        name, value = resp.replace('\r', '').replace('\n', '').replace('\x02','').replace('\x03','').split()
                         checksum = ' '
                         if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value)
                     else:
-                        name, value, checksum = resp.replace('\r', '').replace('\n','').replace('\x02','').replace('\x03','').split()
+                        name, value, checksum = resp.replace('\r', '').replace('\n', '').replace('\x02','').replace('\x03','').split()
                         if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     if self._is_valid(resp, checksum):
@@ -310,15 +310,15 @@ class Teleinfo:
             frameCsv = self.read()
             for cle, valeur in frameCsv.items():
                 if cle == 'PTEC':
-                    valeur = valeur.replace(".","")
-                    valeur = valeur.replace(")","")
+                    valeur = valeur.replace(".", "")
+                    valeur = valeur.replace(")", "")
                     data[cle] = valeur
                 elif cle == 'OPTARIF':
-                    valeur = valeur.replace(".","")
-                    valeur = valeur.replace(")","")
+                    valeur = valeur.replace(".", "")
+                    valeur = valeur.replace(")", "")
                     data[cle] = valeur
                 else:
-                    valeur = valeur.replace(" ","%20")
+                    valeur = valeur.replace(" ", "%20")
                     data[cle] = valeur
             if self._externalip != "":
                 self.cmd = "curl -L -s -G --max-time 8 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleApi
