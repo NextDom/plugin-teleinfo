@@ -15,4 +15,4 @@ Retrouvez le sur le Market Jeedom [ici](https://www.jeedom.com/market/index.php?
 Lien vers le forum [ici](https://www.jeedom.com/forum/viewtopic.php?f=149&t=614)
 
 ## Documentation
-[Cliquer ici](https://Jeedom-Plugins-Extra.github.io/plugin-teleinfo/)
+[Cliquer ici](https://NextDom.github.io/plugin-teleinfo/)

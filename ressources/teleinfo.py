@@ -32,6 +32,7 @@ gRealPath = ''
 gVitesse = ''
 gMessageTemp = ''
 gCanStart = 'true'
+gMode = ''
 # ----------------------------------------------------------------------------
 # LOGGING
 # ----------------------------------------------------------------------------
@@ -98,7 +99,7 @@ class Teleinfo:
     each time all data are collected
     """
 
-    def __init__(self, device, externalip, cleapi, debug, realpath, vitesse):
+    def __init__(self, device, externalip, cleapi, debug, realpath, vitesse, mode):
         """ @param device : teleinfo modem device path
         @param log : log instance
         @param callback : method to call each time all data are collected
@@ -112,17 +113,14 @@ class Teleinfo:
         self._realpath = realpath
         self._vitesse = vitesse
         self._ser = None
-        #self._stop = Event()
+        self._mode = mode
 
     def open(self):
         """ open teleinfo modem device
         """
         try:
             self._log.info("Try to open Teleinfo modem '%s' with speed '%s'" % (self._device, self._vitesse))
-            # if(self.vitesse == '9600'):
             self._ser = serial.Serial(self._device, self._vitesse, bytesize=7, parity = 'E', stopbits=1)
-            # else:
-                # self._ser = serial.Serial(self._device, 1200, bytesize=7, parity = 'E', stopbits=1)
             self._log.info("Teleinfo modem successfully opened")
         except:
             error = "Error opening Teleinfo modem '%s' : %s" % (self._device, traceback.format_exc())
@@ -133,7 +131,6 @@ class Teleinfo:
         """ close telinfo modem
         """
         self._log.info("Try to close Teleinfo modem")
-        #self._stop.set()
         if self._ser != None  and self._ser.isOpen():
             self._ser.close()
             self._log.info("Teleinfo modem successfully closed")
@@ -141,7 +138,6 @@ class Teleinfo:
     def terminate(self):
         print "Terminating..."
         self.close()
-        #sys.close(gOutput)
         sys.exit()
 
     def read(self):
@@ -151,67 +147,95 @@ class Teleinfo:
         this method can take time but it enures that the frame returned is valid
         @return frame : list of dict {name, value, checksum}
         """
-        #Get the begin of the frame, markde by \x02
-        resp = self._ser.readline()
-        is_ok = False
-        #frame = []
-        #frameCsv = []
-        Content = {}
-        while not is_ok:
-            try:
-                while '\x02' not in resp:
-                    resp = self._ser.readline()
-                #\x02 is in the last line of a frame, so go until the next one
-                #print "* Begin frame"
-                resp = self._ser.readline()
-                #A new frame starts
-                #\x03 is the end of the frame
-                while '\x03' not in resp:
-                    #Don't use strip() here because the checksum can be ' '
-                    if len(resp.replace('\r','').replace('\n','').split()) == 2:
-                        #The checksum char is ' '
-                        name, value = resp.replace('\r','').replace('\n','').split()
-                        checksum = ' '
-                    else:
-                        name, value, checksum = resp.replace('\r','').replace('\n','').split()
-                        #print "name : %s, value : %s, checksum : %s" % (name, value, checksum)
-                    if self._is_valid(resp, checksum):
-                        #frame.append({"name" : name, "value" : value, "checksum" : checksum})
-                        #frameCsv.append(value)
-                        Content[name] = value;
-                    else:
-                        self._log.error("** FRAME CORRUPTED !")
-                        #This frame is corrupted, we need to wait until the next one
-                        #frame = []
-                        #frameCsv = []
-                        while '\x02' not in resp:
-                            resp = self._ser.readline()
-                        self._log.error("* New frame after corrupted")
-                    resp = self._ser.readline()
-                #\x03 has been detected, that's the last line of the frame
-                if len(resp.replace('\r','').replace('\n','').split()) == 2:
-                    #print "* End frame"
-                    #The checksum char is ' '
-                    name, value = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
-                    checksum = ' '
-                else:
-                    name, value, checksum = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
-                if self._is_valid(resp, checksum):
-                    #frame.append({"name" : name, "value" : value, "checksum" : checksum})
-                    #frameCsv.append(value)
-                    #print "* End frame, is valid : %s" % frame
+        if (self._mode == "standard"): # Zone linky standard
+            resp = self._ser.readline()
+            is_ok = False
+            Content = {}
+            while not is_ok:
+                try:
+                    while 'ADSC' not in resp:
+                        resp = self._ser.readline()
+                        if len(resp.replace('\r','').replace('\n','').split('\x09')) == 4:
+                            name, horodate, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
+                            checksum = ' '
+                            Content[name] = value;
+                            if (self._debug == '1'):
+                                self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
+                        else:
+                            name, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
+                            Content[name] = value;
+                            if (self._debug == '1'):
+                                self._log.debug('name : ' + name + ' value : ' + value)
                     is_ok = True
-                else:
-                    self._log.error("** Last frame invalid")
+                    if len(resp.replace('\r','').replace('\n','').split('\x09')) == 4:
+                        name, horodate, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
+                        checksum = ' '
+                        Content[name] = value;
+                        if (self._debug == '1'):
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
+                    else:
+                        name, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
+                        Content[name] = value;
+                        if (self._debug == '1'):
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
+                except ValueError:
+                    checksum = ' '
+        else: # Zone historique
+            #Get the begin of the frame, markde by \x02
+            resp = self._ser.readline()
+            is_ok = False
+            Content = {}
+            while not is_ok:
+                try:
+                    while '\x02' not in resp:
+                        resp = self._ser.readline()
+                    #\x02 is in the last line of a frame, so go until the next one
+                    #print "* Begin frame"
                     resp = self._ser.readline()
-            except ValueError:
-                #Badly formatted frame
-                #This frame is corrupted, we need to wait until the next one
-                #frame = []
-                #frameCsv = []
-                while '\x02' not in resp:
-                    resp = self._ser.readline()
-        #self._log.info(Content)
+                    #A new frame starts
+                    #\x03 is the end of the frame
+                    while '\x03' not in resp:
+                        #Don't use strip() here because the checksum can be ' '
+                        if len(resp.replace('\r','').replace('\n','').split()) == 2:
+                            #The checksum char is ' '
+                            name, value = resp.replace('\r','').replace('\n','').split()
+                            checksum = ' '
+                            if (self._debug == '1'):
+                                self._log.debug('name : ' + name + ' value : ' + value)
+                        else:
+                            name, value, checksum = resp.replace('\r','').replace('\n','').split()
+                            if (self._debug == '1'):
+                                self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                        if self._is_valid(resp, checksum):
+                            Content[name] = value;
+                        else:
+                            self._log.error("** FRAME CORRUPTED !")
+                            self._log.debug('** FRAME : ' + resp + '**')
+                            #This frame is corrupted, we need to wait until the next one
+                            while '\x02' not in resp:
+                                resp = self._ser.readline()
+                            self._log.error("* New frame after corrupted")
+                        resp = self._ser.readline()
+                    #\x03 has been detected, that's the last line of the frame
+                    if len(resp.replace('\r','').replace('\n','').split()) == 2:
+                        name, value = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
+                        checksum = ' '
+                        if (self._debug == '1'):
+                            self._log.debug('name : ' + name + ' value : ' + value)
+                    else:
+                        name, value, checksum = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
+                        if (self._debug == '1'):
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                    if self._is_valid(resp, checksum):
+                        is_ok = True
+                    else:
+                        self._log.error("** Last frame invalid")
+                        resp = self._ser.readline()
+                except ValueError:
+                    #Badly formatted frame
+                    #This frame is corrupted, we need to wait until the next one
+                    while '\x02' not in resp:
+                        resp = self._ser.readline()
         return Content
 
     def _is_valid(self, frame, checksum):
@@ -219,13 +243,24 @@ class Teleinfo:
         @param frame : the full frame
         @param checksum : the frame checksum
         """
-        #print "Check checksum : f = %s, chk = %s" % (frame, checksum)
-        datas = ' '.join(frame.split()[0:2])
-        my_sum = 0
-        for cks in datas:
-            my_sum = my_sum + ord(cks)
-        computed_checksum = ( my_sum & int("111111", 2) ) + 0x20
-        #print "computed_checksum = %s" % chr(computed_checksum)
+        if (self._mode == "standard"):
+            #Gestion des champs horodates
+            if len(frame.split('\x09')) == 4:
+                datas = '\x09'.join(frame.split('\x09')[0:3])
+            else:
+                datas = '\x09'.join(frame.split('\x09')[0:2])
+            my_sum = 0
+            for cks in datas:
+                my_sum = my_sum + ord(cks)
+            computed_checksum = ((my_sum + 0x09) & int("111111", 2)) + 0x20
+        else:
+            #print "Check checksum : f = %s, chk = %s" % (frame, checksum)
+            datas = ' '.join(frame.split()[0:2])
+            my_sum = 0
+            for cks in datas:
+                my_sum = my_sum + ord(cks)
+            computed_checksum = ( my_sum & int("111111", 2) ) + 0x20
+            #print "computed_checksum = %s" % chr(computed_checksum)
         return chr(computed_checksum) == checksum
 
     def run(self):
@@ -237,7 +272,6 @@ class Teleinfo:
         _RazCalcul = 0
         _Separateur = " "
         _SendData = ""
-        #global gMessageTemp
 
         def target():
             self.process = None
@@ -284,12 +318,13 @@ class Teleinfo:
                     valeur = valeur.replace(")","")
                     Donnees[cle] = valeur
                 else:
+                    valeur = valeur.replace(" ","%20")
                     Donnees[cle] = valeur
             if(self._externalip != ""):
-                self.cmd = "curl -L -s -G --max-time 15 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
+                self.cmd = "curl -L -s -G --max-time 8 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
                 _Separateur = "&"
             else:
-                self.cmd = 'nice -n 19 timeout 15 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
+                self.cmd = 'nice -n 19 timeout 8 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
                 _Separateur = " "
 
             for cle, valeur in Donnees.items():
@@ -300,32 +335,37 @@ class Teleinfo:
                 else:
                     _SendData += _Separateur + cle +'='+ valeur
                     _Donnees[cle] = valeur
-
-            if (_SendData != ""):
-                _SendData += _Separateur + "ADCO=" + Donnees["ADCO"]
-                if(self._externalip != ""):
-                    try:
-                        _SendData += "'"
-                        if (self._debug == '1'):
-                            print self.cmd + _SendData
-                            self._log.debug(self.cmd + _SendData)
-                        thread = threading.Thread(target=target)
-                        self.timer = threading.Timer(int(5), timer_callback)
-                        self.timer.start()
-                        thread.start()
-                    except Exception, e:
-                        errorCom = "Connection error '%s'" % e
-                else:
-                    try:
-                        if (self._debug == '1'):
-                            print self.cmd + _SendData
-                            self._log.debug(self.cmd + _SendData)
-                        thread = threading.Thread(target=target)
-                        self.timer = threading.Timer(int(5), timer_callback)
-                        self.timer.start()
-                        thread.start()
-                    except Exception, e:
-                        errorCom = "Connection error '%s'" % e
+            try:
+                if (_SendData != ""):
+                    if (self._mode == "standard"):
+                        _SendData += _Separateur + "ADCO=" + Donnees["ADSC"]
+                    else:
+                        _SendData += _Separateur + "ADCO=" + Donnees["ADCO"]
+                    if(self._externalip != ""):
+                        try:
+                            _SendData += "'"
+                            if (self._debug == '1'):
+                                print self.cmd + _SendData
+                                self._log.debug(self.cmd + _SendData)
+                            thread = threading.Thread(target=target)
+                            self.timer = threading.Timer(int(10), timer_callback)
+                            self.timer.start()
+                            thread.start()
+                        except Exception, e:
+                            errorCom = "Connection error '%s'" % e
+                    else:
+                        try:
+                            if (self._debug == '1'):
+                                print self.cmd + _SendData
+                                self._log.debug(self.cmd + _SendData)
+                            thread = threading.Thread(target=target)
+                            self.timer = threading.Timer(int(10), timer_callback)
+                            self.timer.start()
+                            thread.start()
+                        except Exception, e:
+                            errorCom = "Connection error '%s'" % e
+            except Exception:
+                erreur = ""
         self.terminate()
     def exit_handler(self, *args):
         self.terminate()
@@ -346,6 +386,8 @@ if __name__ == "__main__":
     parser.add_option("-v", "--vitesse", dest="vitesse", help="vitesse du modem")
     parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
     parser.add_option("-t", "--type", dest="type", help="type du deamon")
+    parser.add_option("-m", "--mode", dest="mode", help="TIC standard ou historique")
+
     (options, args) = parser.parse_args()
     if options.port:
             try:
@@ -383,6 +425,12 @@ if __name__ == "__main__":
             except:
                 error = "Can not get vitesse %s" % options.vitesse
                 raise TeleinfoException(error)
+    if options.mode:
+            try:
+                gMode = options.mode
+            except:
+                error = "Can not get mode %s" % options.mode
+                #raise TeleinfoException(error)
     if options.force:
             try:
                 if options.force == '0':
@@ -400,7 +448,7 @@ if __name__ == "__main__":
     if gCanStart == 'true':
         pid = str(os.getpid())
         file("/tmp/teleinfo_" + options.type + ".pid", 'w').write("%s\n" % pid)
-        teleinfo = Teleinfo(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath, gVitesse)
+        teleinfo = Teleinfo(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath, gVitesse, gMode)
         signal.signal(signal.SIGTERM, teleinfo.exit_handler)
         teleinfo.run()
     sys.exit()

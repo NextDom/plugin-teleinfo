@@ -2,17 +2,32 @@ Change log
 ==========
 
 > Detail complet des mises à jour sur [Historique
-> Commit](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/commits/master)
+> Commit](https://github.com/NextDom/plugin-teleinfo/commits/master)
 
+A venir
+=====
+- Docs au nouveau standard (github pages)
+- Refaire fonctionner le mode 2 compteurs.
+- Noms des variables et fonctions
 
 3.0.0
 =====
-- Docs au nouveau standard de la team (github pages)
-- Refaire fonctionner le mode 2 compteurs.
-- Noms des variables et fonctions
 - Compatibilité Linky
+- Fonction diagnostique
 
-2.7.0 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
+2.7.3 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/NextDom/plugin-teleinfo/releases)
+=====
+- Bugfix sur le démon afin de prévenir des crash dans certaines conditions.
+
+2.7.2
+=====
+- Bugfix sur les dépendances utilisées
+
+2.7.1
+=====
+- Problème lors de l'installation des dépendances
+
+2.7.0
 =====
 - Issue du démon 2 compteurs et librairie ftdi.
 - Reprise du processus des dépendances.

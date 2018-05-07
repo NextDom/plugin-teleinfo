@@ -4,7 +4,21 @@ Pour récupérer la Téléinformation il faut se connecter sur les bornes I1 et 
 
 ![teleinfo1](../images/teleinfo_compteur.png)
 
-![teleinfo2](../images/teleinfo_archi.png)
+## Compteur électronique
+
+![teleinfoelectronique1](../images/teleinfo_electronique1.png)
+
+Pas de configuration spécifique pour ce type de compteur.
+
+## Compteur Linky
+
+![teleinfolinky1](../images/teleinfo_linky1.png)
+
+Le compteur linky possède 2 modes de téléinformation.
+-    Le premier appelé historique : Ce mode assure une compatibilité égale aux compteurs d'ancienne génération.
+-    Le second appelé stantard : Seul ce mode requiert l'option Linky sur le plugin, il s'agit du nouveau mode de communication.
+
+>Pour connaitre le mode utilisé par le compteur appuyer plusieurs fois sur + jusqu'à l'affichage TIC Stantard ou TIC Historique.
 
 Cas d'utilisation de 2 compteurs
 ===

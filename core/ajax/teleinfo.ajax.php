@@ -166,6 +166,148 @@ try {
             $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
             ajax::success($return);
         break;
+        case 'diagnostic_step0':
+            $return = array();
+
+            $return['portName'] = config::byKey('port', 'teleinfo');
+            if ($return['portName'] == "serie") {
+                $return['portName'] = config::byKey('modem_serie_addr', 'teleinfo');
+            }
+            if ($return['portName'] === ""){
+                $return['result'] = '0';
+            }
+            else {
+                $return['result'] = '1';
+            }
+            $return['message'] = "Modem configuré : " . $return['portName'];
+            try {
+                $diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
+                exec('rm ' . $diagnosticFile);
+                file_put_contents($diagnosticFile, serialize(date('Y-m-d H:i:s')), FILE_APPEND | LOCK_EX);
+                file_put_contents($diagnosticFile, serialize('||STEP_0||'), FILE_APPEND | LOCK_EX);
+                file_put_contents($diagnosticFile, serialize($return), FILE_APPEND | LOCK_EX);
+            } catch (\Exception $e) {
+
+            }
+            ajax::success($return);
+        break;
+        case 'diagnostic_step1':
+            $return = array();
+            $return['portName'] = config::byKey('port', 'teleinfo');
+            if ($return['portName'] == "serie") {
+                $return['portName'] = config::byKey('modem_serie_addr', 'teleinfo');
+            }
+            $return['portAddress'] = jeedom::getUsbMapping($return['portName']);
+            $return['portAvailable'] = file_exists($return['portAddress']);
+            if (!$return['portAvailable']){
+                $return['result'] = '0';
+                $return['message'] = 'Accès KO';
+            }
+            else {
+                $return['result'] = '1';
+                $return['message'] = 'Accès OK';
+            }
+            try {
+                $diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
+                file_put_contents($diagnosticFile, serialize('||STEP_1||'), FILE_APPEND | LOCK_EX);
+                file_put_contents($diagnosticFile, serialize($return), FILE_APPEND | LOCK_EX);
+            } catch (\Exception $e) {}
+            ajax::success($return);
+        break;
+        case 'diagnostic_step2':
+            $return = array();
+            $return['isCapable'] = jeedom::isCapable('sudo');
+            if (!jeedom::isCapable('sudo')) {
+                $return['result'] = '0';
+                $return['message'] = 'Vérifiez la configuration de votre Jeedom';
+            }
+            else {
+                $return['result'] = '1';
+                $return['message'] = 'OK';
+            }
+            try {
+                $diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
+                file_put_contents($diagnosticFile, serialize('||STEP_2||'), FILE_APPEND | LOCK_EX);
+                file_put_contents($diagnosticFile, serialize($return), FILE_APPEND | LOCK_EX);
+            } catch (\Exception $e) {}
+            ajax::success($return);
+        break;
+        case 'diagnostic_step3':
+            $return = array();
+            $modemSerieAddr       = config::byKey('port', 'teleinfo');
+            $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
+            if (config::byKey('modem_vitesse', 'teleinfo') == "") {
+                $modemVitesse = '1200';
+            } else {
+                $modemVitesse = config::byKey('modem_vitesse', 'teleinfo');
+            }
+            if ($modemSerieAddr == "serie") {
+                $port = config::byKey('modem_serie_addr', 'teleinfo');
+            } else {
+                $port = jeedom::getUsbMapping(config::byKey('port', 'teleinfo'));
+            }
+            if ($twoCptCartelectronic == 1) {
+                $return['result'] = '2';
+                $return['message'] = 'Indisponible avec le modem 2 compteurs';
+            }
+            else{
+                exec('stty -F ' . $port . ' ' . $modemVitesse . ' sane evenp parenb cs7 -crtscts');
+                passthru('timeout 5 sed -n 5,8p ' . $port, $return['data']);
+                $return['result'] = '1';
+            }
+            if ($return['data'] > 5){
+                $return['result'] = '1';
+                $return['message'] = 'OK';
+            }
+            else {
+                $return['result'] = '0';
+                $return['message'] = 'NOK';
+            }
+            try {
+                $diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
+                file_put_contents($diagnosticFile, serialize('||STEP_3||'), FILE_APPEND | LOCK_EX);
+                file_put_contents($diagnosticFile, serialize($return), FILE_APPEND | LOCK_EX);
+            } catch (\Exception $e) {}
+            ajax::success($return);
+        break;
+        case 'diagnostic_step4':
+            $return = array();
+            $return['message'] = '';
+            $return['result'] = '1';
+            try {
+                $diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
+                file_put_contents($diagnosticFile, serialize('||STEP_4||'), FILE_APPEND | LOCK_EX);
+                file_put_contents($diagnosticFile, serialize($return), FILE_APPEND | LOCK_EX);
+            } catch (\Exception $e) {}
+            ajax::success($return);
+        break;
+        case 'diagnostic_step5':
+            $return = array();
+            $monfichier = dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt';
+            $diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
+            exec('rm ' . $monfichier);
+            file_put_contents($monfichier, serialize(date('Y-m-d H:i:s')), FILE_APPEND | LOCK_EX);
+            foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+                //file_put_contents($monfichier, $eqLogic->getConfiguration(), FILE_APPEND | LOCK_EX);
+                file_put_contents($monfichier, serialize('||EQLOGIC_NEW||'), FILE_APPEND | LOCK_EX);
+                file_put_contents($monfichier, $eqLogic->getName() . ";", FILE_APPEND | LOCK_EX);
+                file_put_contents($monfichier, serialize($eqLogic->getConfiguration()), FILE_APPEND | LOCK_EX);
+                //file_put_contents($monfichier, serialize('\r\n'), FILE_APPEND | LOCK_EX);
+                foreach ($eqLogic->getCmd() as $cmd) {
+                    file_put_contents($monfichier, serialize('||CMD_NEW||'), FILE_APPEND | LOCK_EX);
+                    file_put_contents($monfichier, serialize($cmd), FILE_APPEND | LOCK_EX);
+                    file_put_contents($monfichier, serialize('||CMD_END||'), FILE_APPEND | LOCK_EX);
+                }
+                file_put_contents($monfichier, serialize('||EQLOGIC_END||'), FILE_APPEND | LOCK_EX);
+            }
+            $return["files"] = log::getPathToLog('teleinfo'). " " . log::getPathToLog('teleinfo_deamon'). " " . log::getPathToLog('teleinfo_update') . " " . dirname(__FILE__) . '/../../plugin_info/info.json'. " " . dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt' . " " . dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
+            $return["path"] = dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar';
+            exec('rm ' . dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar');
+            $return["compress"] = exec('tar -cvf ' . dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar ' . $return["files"]);
+            $return['message'] = '<a class="btn btn-success" href="core/php/downloadFile.php?pathfile=tmp/teleinfolog.tar" target="_blank">Télécharger</a>';
+            $return['result'] = '2';
+            ajax::success($return);
+        break;
     }
     throw new \Exception('Aucune methode correspondante');
 } catch (\Exception $e) {

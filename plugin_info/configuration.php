@@ -41,6 +41,24 @@ try {
 <form class="form-horizontal">
     <fieldset>
         <legend><i class="icon fa fa-bolt"></i> {{Consommation électrique}}</legend>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Compteur Linky <sup><i class="fa fa-question-circle tooltips" title="{{Veuillez regarder la documentation pour identifier votre compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <div id="div_linky" class="col-lg-4 tooltips" title="{{ Veuillez regarder la documentation pour identifier votre compteur }}">
+                <input type="checkbox" id="linky" class="configKey" data-l1key="linky" placeholder="{{}}"/>
+                <label for="linky">  </label>
+                <label id="label_linky" style="color:red;margin-left:100px;margin-top:-15px;display:none">Attention, assurez vous que votre compteur soit en mode standard. Aucune idée ? Se reporter à la documentation.</label>
+                <script>
+                $( "#linky" ).change(function() {
+                        if($( this ).value() == "1"){
+                            $("#label_linky").show();
+                        }
+                        else{
+                            $("#label_linky").hide();
+                        }
+                });
+                </script>
+            </div>
+        </div>
         <div class="form-group div_local">
             <label class="col-lg-4 control-label">Port du modem :</label>
             <div class="col-lg-4">
@@ -95,7 +113,7 @@ try {
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Activer les traces ERDF </label>
+            <label class="col-lg-4 control-label">Activer les traces ERDF <sup><i class="fa fa-question-circle tooltips" title="{{A utiliser lors de demande de support}}" style="font-size : 1em;color:grey;"></i></sup> </label>
             <div id="div_debug" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
                 <!--<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{Oui}}</label>-->
                 <input type="checkbox" id="debug" class="configKey" data-l1key="debug" placeholder="{{}}"/>
@@ -208,10 +226,19 @@ try {
             <label class="col-lg-4 control-label">Core Teleinfo <sup><i class="fa fa-question-circle tooltips" title="{{C'est la version du programme de connexion au modem}}" style="font-size : 1em;color:grey;"></i></sup></label>
             <span style="top:6px;" class="col-lg-4"><?php echo $core_version; ?></span>
         </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Diagnostique <sup><i class="fa fa-question-circle tooltips" title="{{Rechercher la cause d'un disfonctionnement}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <span style="top:6px;" class="col-lg-4"><a class="btn btn-sm btn-info" id="btn_diagnostic" style="position:relative;top:-5px;"><i class="divers-svg"></i> Démarrer</a></span>
+        </div>
     </fieldset>
 </form>
 
 <script>
+        $('#btn_diagnostic').on('click',function(){
+            $('#md_modal').dialog({title: "{{Diagnostique de résolution d'incident}}"});
+            $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=diagnostic').dialog('open');
+        });
+
         $('#bt_stopTeleinfoDeamon').on('click', function () {
             $.ajax({// fonction permettant de faire de l'ajax
                 type: "POST", // methode de transmission des données au fichier php
