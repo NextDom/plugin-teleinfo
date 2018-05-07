@@ -1,18 +1,26 @@
 matrix:
   include:
-    - language: php
+    - language:  php
       php: 5.6
       before_script:
-        - find . -type f -name *.php | xargs -n1 php -l
+          - find . -type f -name *.php | xargs -n1 php -l
+      script:
+          - cd ${TRAVIS_BUILD_DIR}
+          - pwd
+      after_success:
+          - cd ${TRAVIS_BUILD_DIR}
+          - ls -latr
+      after_failure:
+          - cd ${TRAVIS_BUILD_DIR}
+          - ls -latr
+
+    - language: python
+      python: 2.7
+      install:
+        - pip install pylint
       script:
         - cd ${TRAVIS_BUILD_DIR}
-        - pwd
-      after_success:
-        - cd ${TRAVIS_BUILD_DIR}
-        - ls -latr
-      after_failure:
-        - cd ${TRAVIS_BUILD_DIR}
-        - ls -latr
+        - ./tests/tools/pylint_allfiles.sh
     - language: markdown
       addons:
         apt:
