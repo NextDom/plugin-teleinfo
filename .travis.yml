@@ -20,7 +20,7 @@ matrix:
         - pip install pylint
       script:
         - cd ${TRAVIS_BUILD_DIR}
-        - ./tests/tools/pylint_allfiles.sh
+        - ./travis/tools/lintAllPythonFiles.sh
     - language: markdown
       addons:
         apt:
@@ -30,6 +30,6 @@ matrix:
       script:
         - gem install mdl
         - cd ${TRAVIS_BUILD_DIR}
-        - ./tests/tools/setCustomMDWarnings.sh
+        - ./travis/tools/setCustomMDWarnings.sh
         - mdl -r $MDLWAR *.md docs/fr_FR/*.md
-        - ./tests/tools/spellCheckMD.sh
+        - ./travis/tools/spellCheckMD.sh
