@@ -11,6 +11,7 @@ A venir
 - Refaire fonctionner le mode 2 compteurs.
 - Noms des variables et fonctions
 - Compatibilité Linky
+- Fonction diagnostique
 
 2.7.3 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/Jeedom-Plugins-Extra/plugin-teleinfo/releases)
 =====
@@ -18,8 +19,8 @@ A venir
 - Fonction diagnostique
 
 2.7.2
-=====
 - Bugfix sur les dépendances utilisées
+=====
 
 2.7.1
 =====
