@@ -16,7 +16,7 @@ Pas de configuration spécifique pour ce type de compteur.
 
 Le compteur linky possède 2 modes de téléinformation.
 -    Le premier appelé historique : Ce mode assure une compatibilité égale aux compteurs d'ancienne génération.
--    Le second appelé stantard : Seul ce mode requiert l'option Linky sur le plugin, il s'agit du nouveau mode de communication.
+-    Le second appelé stantard : **Seul ce mode requiert l'option Linky sur le plugin**, il s'agit du nouveau mode de communication.
 
 >Pour connaitre le mode utilisé par le compteur appuyer plusieurs fois sur + jusqu'à l'affichage TIC Stantard ou TIC Historique.
 
