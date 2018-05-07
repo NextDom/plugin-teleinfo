@@ -1,10 +1,10 @@
 matrix:
   include:
-    - language: php 
+    - language: php
       php: 5.6
       before_script:
         - find . -type f -name *.php | xargs -n1 php -l
-      script: 
+      script:
         - cd ${TRAVIS_BUILD_DIR}
         - pwd
       after_success:
@@ -13,13 +13,6 @@ matrix:
       after_failure:
         - cd ${TRAVIS_BUILD_DIR}
         - ls -latr
-    - language: python
-      python: 2.7
-      install:
-        - pip install pylint
-      script:
-        - cd ${TRAVIS_BUILD_DIR}
-        - ./tests/tools/lintAllPythonFiles.sh
     - language: markdown
       addons:
         apt:
@@ -29,6 +22,6 @@ matrix:
       script:
         - gem install mdl
         - cd ${TRAVIS_BUILD_DIR}
-        - ./tests/tools/setCustomMDWarnings.sh 
+        - ./tests/tools/setCustomMDWarnings.sh
         - mdl -r $MDLWAR *.md docs/fr_FR/*.md
-        - ./tests/tools/spellCheckMD.sh 
+        - ./tests/tools/spellCheckMD.sh
