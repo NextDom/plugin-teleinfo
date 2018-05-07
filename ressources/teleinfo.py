@@ -1,4 +1,4 @@
-raz_timedata#!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
