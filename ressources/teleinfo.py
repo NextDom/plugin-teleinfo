@@ -1,4 +1,4 @@
-#!/usr/bin/python
+raz_timedata#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
@@ -22,17 +22,17 @@ import signal
 gLogLevel = logging.DEBUG
 
 # Device name
-gDeviceName = '/dev/ttyUSB0'
+global_device_name = '/dev/ttyUSB0'
 # Default output is stdout
-gOutput = sys.__stdout__
-gExternalIP = ''
-gCleAPI = ''
-gDebug = ''
-gRealPath = ''
-gVitesse = ''
-gMessageTemp = ''
-gCanStart = 'true'
-gMode = ''
+global_output = sys.__stdout__
+global_external_ip = ''
+global_api = ''
+global_debug = ''
+global_real_path = ''
+global_vitesse = ''
+global_message_temp = ''
+global_can_start = 'true'
+global_mode = ''
 # ----------------------------------------------------------------------------
 # LOGGING
 # ----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ class Teleinfo:
         self._log = MyLogger()
         self._device = device
         self._externalip = externalip
-        self._cleAPI = cleapi
+        self._cleApi = cleapi
         self._debug = debug
         self._realpath = realpath
         self._vitesse = vitesse
@@ -120,7 +120,7 @@ class Teleinfo:
         """
         try:
             self._log.info("Try to open Teleinfo modem '%s' with speed '%s'" % (self._device, self._vitesse))
-            self._ser = serial.Serial(self._device, self._vitesse, bytesize=7, parity = 'E', stopbits=1)
+            self._ser = serial.Serial(self._device, self._vitesse, bytesize=7, parity='E', stopbits=1)
             self._log.info("Teleinfo modem successfully opened")
         except:
             error = "Error opening Teleinfo modem '%s' : %s" % (self._device, traceback.format_exc())
@@ -147,36 +147,36 @@ class Teleinfo:
         this method can take time but it enures that the frame returned is valid
         @return frame : list of dict {name, value, checksum}
         """
-        if (self._mode == "standard"): # Zone linky standard
+        if self._mode == "standard": # Zone linky standard
             resp = self._ser.readline()
             is_ok = False
-            Content = {}
+            content = {}
             while not is_ok:
                 try:
                     while 'ADSC' not in resp:
                         resp = self._ser.readline()
-                        if len(resp.replace('\r','').replace('\n','').split('\x09')) == 4:
-                            name, horodate, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
+                        if len(resp.replace('\r', '').replace('\n', '').split('\x09')) == 4:
+                            name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                             checksum = ' '
-                            Content[name] = value;
-                            if (self._debug == '1'):
+                            content[name] = value;
+                            if self._debug == '1':
                                 self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                         else:
-                            name, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
-                            Content[name] = value;
-                            if (self._debug == '1'):
+                            name, value, checksum = resp.replace('\r', '').replace('\n','').split('\x09')
+                            content[name] = value;
+                            if self._debug == '1':
                                 self._log.debug('name : ' + name + ' value : ' + value)
                     is_ok = True
-                    if len(resp.replace('\r','').replace('\n','').split('\x09')) == 4:
-                        name, horodate, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
+                    if len(resp.replace('\r', '').replace('\n','').split('\x09')) == 4:
+                        name, horodate, value, checksum = resp.replace('\r', '').replace('\n','').split('\x09')
                         checksum = ' '
-                        Content[name] = value;
-                        if (self._debug == '1'):
+                        content[name] = value;
+                        if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                     else:
-                        name, value, checksum = resp.replace('\r','').replace('\n','').split('\x09')
-                        Content[name] = value;
-                        if (self._debug == '1'):
+                        name, value, checksum = resp.replace('\r', '').replace('\n','').split('\x09')
+                        content[name] = value;
+                        if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                 except ValueError:
                     checksum = ' '
@@ -184,7 +184,7 @@ class Teleinfo:
             #Get the begin of the frame, markde by \x02
             resp = self._ser.readline()
             is_ok = False
-            Content = {}
+            content = {}
             while not is_ok:
                 try:
                     while '\x02' not in resp:
@@ -196,18 +196,18 @@ class Teleinfo:
                     #\x03 is the end of the frame
                     while '\x03' not in resp:
                         #Don't use strip() here because the checksum can be ' '
-                        if len(resp.replace('\r','').replace('\n','').split()) == 2:
+                        if len(resp.replace('\r', '').replace('\n','').split()) == 2:
                             #The checksum char is ' '
-                            name, value = resp.replace('\r','').replace('\n','').split()
+                            name, value = resp.replace('\r', '').replace('\n','').split()
                             checksum = ' '
-                            if (self._debug == '1'):
+                            if self._debug == '1':
                                 self._log.debug('name : ' + name + ' value : ' + value)
                         else:
-                            name, value, checksum = resp.replace('\r','').replace('\n','').split()
-                            if (self._debug == '1'):
+                            name, value, checksum = resp.replace('\r', '').replace('\n','').split()
+                            if self._debug == '1':
                                 self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                         if self._is_valid(resp, checksum):
-                            Content[name] = value;
+                            content[name] = value;
                         else:
                             self._log.error("** FRAME CORRUPTED !")
                             self._log.debug('** FRAME : ' + resp + '**')
@@ -217,14 +217,14 @@ class Teleinfo:
                             self._log.error("* New frame after corrupted")
                         resp = self._ser.readline()
                     #\x03 has been detected, that's the last line of the frame
-                    if len(resp.replace('\r','').replace('\n','').split()) == 2:
-                        name, value = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
+                    if len(resp.replace('\r', '').replace('\n','').split()) == 2:
+                        name, value = resp.replace('\r', '').replace('\n','').replace('\x02','').replace('\x03','').split()
                         checksum = ' '
-                        if (self._debug == '1'):
+                        if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value)
                     else:
-                        name, value, checksum = resp.replace('\r','').replace('\n','').replace('\x02','').replace('\x03','').split()
-                        if (self._debug == '1'):
+                        name, value, checksum = resp.replace('\r', '').replace('\n','').replace('\x02','').replace('\x03','').split()
+                        if self._debug == '1':
                             self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     if self._is_valid(resp, checksum):
                         is_ok = True
@@ -236,14 +236,14 @@ class Teleinfo:
                     #This frame is corrupted, we need to wait until the next one
                     while '\x02' not in resp:
                         resp = self._ser.readline()
-        return Content
+        return content
 
     def _is_valid(self, frame, checksum):
         """ Check if a frame is valid
         @param frame : the full frame
         @param checksum : the frame checksum
         """
-        if (self._mode == "standard"):
+        if self._mode == "standard":
             #Gestion des champs horodates
             if len(frame.split('\x09')) == 4:
                 datas = '\x09'.join(frame.split('\x09')[0:3])
@@ -259,23 +259,23 @@ class Teleinfo:
             my_sum = 0
             for cks in datas:
                 my_sum = my_sum + ord(cks)
-            computed_checksum = ( my_sum & int("111111", 2) ) + 0x20
+            computed_checksum = (my_sum & int("111111", 2)) + 0x20
             #print "computed_checksum = %s" % chr(computed_checksum)
         return chr(computed_checksum) == checksum
 
     def run(self):
         """ Main function
         """
-        Donnees = {}
-        _Donnees = {}
-        _RAZ = datetime.now()
-        _RazCalcul = 0
-        _Separateur = " "
-        _SendData = ""
+        data = {}
+        data_temp = {}
+        raz_time = datetime.now()
+        raz_calcul = 0
+        separateur = " "
+        send_data = ""
 
         def target():
             self.process = None
-            self.process = subprocess.Popen(self.cmd + _SendData, shell=True)
+            self.process = subprocess.Popen(self.cmd + send_data, shell=True)
             self.process.communicate()
             self.timer.cancel()
 
@@ -300,53 +300,53 @@ class Teleinfo:
             return
         # Read a frame
         while(1):
-            _RazCalcul = datetime.now() - _RAZ
-            if(_RazCalcul.seconds > 60):
-                _RAZ = datetime.now()
-                for cle, valeur in Donnees.items():
-                    Donnees.pop(cle)
-                    _Donnees.pop(cle)
-            _SendData = ""
+            raz_calcul = datetime.now() - raz_time
+            if raz_calcul.seconds > 60:
+                raz_time = datetime.now()
+                for cle, valeur in data.items():
+                    data.pop(cle)
+                    data_temp.pop(cle)
+            send_data = ""
             frameCsv = self.read()
             for cle, valeur in frameCsv.items():
-                if(cle == 'PTEC'):
+                if cle == 'PTEC':
                     valeur = valeur.replace(".","")
                     valeur = valeur.replace(")","")
-                    Donnees[cle] = valeur
-                elif(cle == 'OPTARIF'):
+                    data[cle] = valeur
+                elif cle == 'OPTARIF':
                     valeur = valeur.replace(".","")
                     valeur = valeur.replace(")","")
-                    Donnees[cle] = valeur
+                    data[cle] = valeur
                 else:
                     valeur = valeur.replace(" ","%20")
-                    Donnees[cle] = valeur
-            if(self._externalip != ""):
-                self.cmd = "curl -L -s -G --max-time 8 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleAPI
-                _Separateur = "&"
+                    data[cle] = valeur
+            if self._externalip != "":
+                self.cmd = "curl -L -s -G --max-time 8 " + self._externalip +"/plugins/teleinfo/core/php/jeeTeleinfo.php -d 'api=" + self._cleApi
+                separateur = "&"
             else:
-                self.cmd = 'nice -n 19 timeout 8 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
-                _Separateur = " "
+                self.cmd = 'nice -n 19 timeout 8 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleApi
+                separateur = " "
 
-            for cle, valeur in Donnees.items():
-                if(cle in _Donnees):
-                    if (Donnees[cle] != _Donnees[cle]):
-                        _SendData += _Separateur + cle +'='+ valeur
-                        _Donnees[cle] = valeur
+            for cle, valeur in data.items():
+                if cle in data_temp:
+                    if data[cle] != data_temp[cle]:
+                        send_data += separateur + cle +'='+ valeur
+                        data_temp[cle] = valeur
                 else:
-                    _SendData += _Separateur + cle +'='+ valeur
-                    _Donnees[cle] = valeur
+                    send_data += separateur + cle +'='+ valeur
+                    data_temp[cle] = valeur
             try:
-                if (_SendData != ""):
-                    if (self._mode == "standard"):
-                        _SendData += _Separateur + "ADCO=" + Donnees["ADSC"]
+                if send_data != "":
+                    if self._mode == "standard":
+                        send_data += separateur + "ADCO=" + data["ADSC"]
                     else:
-                        _SendData += _Separateur + "ADCO=" + Donnees["ADCO"]
-                    if(self._externalip != ""):
+                        send_data += separateur + "ADCO=" + data["ADCO"]
+                    if self._externalip != "":
                         try:
-                            _SendData += "'"
-                            if (self._debug == '1'):
-                                print self.cmd + _SendData
-                                self._log.debug(self.cmd + _SendData)
+                            send_data += "'"
+                            if self._debug == '1':
+                                print self.cmd + send_data
+                                self._log.debug(self.cmd + send_data)
                             thread = threading.Thread(target=target)
                             self.timer = threading.Timer(int(10), timer_callback)
                             self.timer.start()
@@ -355,9 +355,9 @@ class Teleinfo:
                             errorCom = "Connection error '%s'" % e
                     else:
                         try:
-                            if (self._debug == '1'):
-                                print self.cmd + _SendData
-                                self._log.debug(self.cmd + _SendData)
+                            if self._debug == '1':
+                                print self.cmd + send_data
+                                self._log.debug(self.cmd + send_data)
                             thread = threading.Thread(target=target)
                             self.timer = threading.Timer(int(10), timer_callback)
                             self.timer.start()
@@ -390,65 +390,65 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
     if options.port:
-            try:
-                gDeviceName = options.port
-            except:
-                error = "Can not change port %s" % options.port
-                raise TeleinfoException(error)
+        try:
+            global_device_name = options.port
+        except:
+            error = "Can not change port %s" % options.port
+            raise TeleinfoException(error)
     if options.externalip:
-            try:
-                gExternalIP = options.externalip
-            except:
-                error = "Can not change ip %s" % options.externalip
-                raise TeleinfoException(error)
+        try:
+            global_external_ip = options.externalip
+        except:
+            error = "Can not change ip %s" % options.externalip
+            raise TeleinfoException(error)
     if options.debug:
-            try:
-                gDebug = options.debug
-            except:
-                error = "Can not set debug mode %s" % options.debug
-                #raise TeleinfoException(error)
+        try:
+            global_debug = options.debug
+        except:
+            error = "Can not set debug mode %s" % options.debug
+            #raise TeleinfoException(error)
     if options.cleapi:
-            try:
-                gCleAPI = options.cleapi
-            except:
-                error = "Can not change ip %s" % options.cleapi
-                raise TeleinfoException(error)
+        try:
+            global_api = options.cleapi
+        except:
+            error = "Can not change ip %s" % options.cleapi
+            raise TeleinfoException(error)
     if options.realpath:
-            try:
-                gRealPath = options.realpath
-            except:
-                error = "Can not get realpath %s" % options.realpath
-                raise TeleinfoException(error)
+        try:
+            global_real_path = options.realpath
+        except:
+            error = "Can not get realpath %s" % options.realpath
+            raise TeleinfoException(error)
     if options.vitesse:
-            try:
-                gVitesse = options.vitesse
-            except:
-                error = "Can not get vitesse %s" % options.vitesse
-                raise TeleinfoException(error)
+        try:
+            global_vitesse = options.vitesse
+        except:
+            error = "Can not get vitesse %s" % options.vitesse
+            raise TeleinfoException(error)
     if options.mode:
-            try:
-                gMode = options.mode
-            except:
-                error = "Can not get mode %s" % options.mode
-                #raise TeleinfoException(error)
+        try:
+            global_mode = options.mode
+        except:
+            error = "Can not get mode %s" % options.mode
+            #raise TeleinfoException(error)
     if options.force:
-            try:
-                if options.force == '0':
-                    if os.path.isfile("/tmp/teleinfo_" + options.type + ".pid"):
-                        filetmp = open("/tmp/teleinfo_" + options.type + ".pid", 'r')
-                        filepid = filetmp.readline()
-                        filetmp.close()
-                        if filepid != "":
-                            _log = MyLogger()
-                            _log.warning('Deamon deja lance')
-                            gCanStart = 'false'
-            except:
-                error = "Can not get file PID"
-                raise TeleinfoException(error)
-    if gCanStart == 'true':
+        try:
+            if options.force == '0':
+                if os.path.isfile("/tmp/teleinfo_" + options.type + ".pid"):
+                    filetmp = open("/tmp/teleinfo_" + options.type + ".pid", 'r')
+                    filepid = filetmp.readline()
+                    filetmp.close()
+                    if filepid != "":
+                        _log = MyLogger()
+                        _log.warning('Deamon deja lance')
+                        global_can_start = 'false'
+        except:
+            error = "Can not get file PID"
+            raise TeleinfoException(error)
+    if global_can_start == 'true':
         pid = str(os.getpid())
         file("/tmp/teleinfo_" + options.type + ".pid", 'w').write("%s\n" % pid)
-        teleinfo = Teleinfo(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath, gVitesse, gMode)
+        teleinfo = Teleinfo(global_device_name, global_external_ip, global_api, global_debug, global_real_path, global_vitesse, global_mode)
         signal.signal(signal.SIGTERM, teleinfo.exit_handler)
         teleinfo.run()
     sys.exit()
