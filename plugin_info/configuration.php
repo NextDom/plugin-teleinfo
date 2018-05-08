@@ -68,6 +68,9 @@ try {
                     foreach (jeedom::getUsbMapping() as $name => $value) {
                         echo '<option value="' . $name . '">' . $name . ' (' . $value . ')</option>';
                     }
+                    foreach (ls('/dev/', 'tty*') as $value) {
+                        echo '<option value="/dev/' . $value . '">/dev/' . $value . '</option>';
+                    }
                     echo '<option value="serie">Modem Série</option>';
                     ?>
                 </select>
