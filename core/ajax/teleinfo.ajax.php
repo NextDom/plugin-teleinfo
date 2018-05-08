@@ -273,6 +273,7 @@ try {
         case 'diagnostic_step4':
             $return = array();
             $return['message'] = '';
+            $return['launch_url'] = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
             $return['result'] = '1';
             try {
                 $diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';

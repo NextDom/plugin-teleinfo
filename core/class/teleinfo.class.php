@@ -113,11 +113,7 @@ class teleinfo extends eqLogic
         $_force               = config::byKey('force', 'teleinfo');
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         $linky                = config::byKey('linky', 'teleinfo');
-        if (config::byKey('modem_vitesse', 'teleinfo') == "") {
-            $modemVitesse = '1200';
-        } else {
-            $modemVitesse = config::byKey('modem_vitesse', 'teleinfo');
-        }
+        $modemVitesse         = config::byKey('modem_vitesse', 'teleinfo');
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_addr', 'teleinfo');
         } else {
@@ -138,10 +134,15 @@ class teleinfo extends eqLogic
         }
         if ($linky == 1) {
             $mode = 'standard';
-            $modemVitesse = '9600';
+            if ($modemVitesse == "") {
+                $modemVitesse = '9600';
+            }
         }
         else {
             $mode = 'historique';
+            if ($modemVitesse == "") {
+                $modemVitesse = '1200';
+            }
         }
 
         $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
@@ -194,16 +195,14 @@ class teleinfo extends eqLogic
     public static function runProductionDeamon($_debug = false, $type = 'prod')
     {
         log::add('teleinfo', 'info', '[Production] Mode local');
-        $teleinfoPath        = realpath(dirname(__FILE__) . '/../../ressources');
-        $modemSerieAddr     = config::byKey('port_production', 'teleinfo');
+        $teleinfoPath         = realpath(dirname(__FILE__) . '/../../ressources');
+        $modemSerieAddr       = config::byKey('port_production', 'teleinfo');
         $_debug               = config::byKey('debug_production', 'teleinfo');
         $_force               = config::byKey('force_production', 'teleinfo');
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic_production', 'teleinfo');
-        if (config::byKey('modem_vitesse_production', 'teleinfo') == "") {
-            $modemVitesse = '1200';
-        } else {
-            $modemVitesse = config::byKey('modem_vitesse_production', 'teleinfo');
-        }
+        $linky                = config::byKey('linky_prod', 'teleinfo');
+        $modemVitesse         = config::byKey('modem_vitesse_production', 'teleinfo');
+
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_production_addr', 'teleinfo');
         } else {
@@ -223,8 +222,21 @@ class teleinfo extends eqLogic
             }
         }
 
+        if ($linky == 1) {
+            $mode = 'standard';
+            if ($modemVitesse == "") {
+                $modemVitesse = '9600';
+            }
+        }
+        else {
+            $mode = 'historique';
+            if ($modemVitesse == "") {
+                $modemVitesse = '1200';
+            }
+        }
+
+
         $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
-        exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1');
 
         log::add('teleinfo', 'info', '--------- Informations sur le master --------');
         log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
@@ -236,7 +248,7 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'info', 'Force : ' . $_force);
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
         log::add('teleinfo', 'info', 'Type : ' . $type);
-
+        log::add('teleinfo', 'info', 'Mode : ' . $mode);
         $_debug = ($_debug) ? "1" : "0";
         $_force = ($_force) ? "1" : "0";
         log::add('teleinfo', 'info', '---------------------------------------------');
@@ -248,7 +260,7 @@ class teleinfo extends eqLogic
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
             $teleinfoPath = $teleinfoPath . '/teleinfo.py';
-            $cmd           = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -r ' . realpath(dirname(__FILE__));
+            $cmd           = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -m ' . $mode . ' -r ' . realpath(dirname(__FILE__));
         }
 
         log::add('teleinfo', 'info', '[Production] Exécution du service : ' . $cmd);

@@ -92,10 +92,10 @@ try {
                 <!--<input id="port_serie" class="configKey form-control" data-l1key="modem_vitesse" style="margin-top:5px;" placeholder="1200"/>-->
                 <select class="configKey form-control" id="port_serie" data-l1key="modem_vitesse">
                     <option value="">{{Par défaut}}</option>
-                    <option value="1200">1200</option>
+                    <option style="font-weight: bold;" value="1200">1200</option>
                     <option value="2400">2400</option>
                     <option value="4800">4800</option>
-                    <option value="9600">9600</option>
+                    <option style="font-weight: bold;" value="9600">9600</option>
                     <option value="19200">19200</option>
                     <option value="38400">38400</option>
                     <option value="56000">56000</option>
@@ -145,8 +145,25 @@ try {
                 <label class="col-lg-4 control-label">Activer le modem de production électrique <sup><i class="fa fa-question-circle tooltips" title="{{En cas d'utilisation d'un second modem téléinfo}}" style="font-size : 1em;color:grey;"></i></sup></label>
                 <div id="div_activation_production" class="col-lg-4 tooltips" title="{{En cas d'utilisation d'un second modem téléinfo}}">
                     <input type="checkbox" id="activation_production" class="configKey" data-l1key="activation_production" placeholder="{{Activer}}"/>
-                    <label for="activation_production"> Activer </label>
-                    <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
+                    <label for="activation_production"></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-4 control-label">Compteur Linky <sup><i class="fa fa-question-circle tooltips" title="{{Veuillez regarder la documentation pour identifier votre compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                <div id="div_linky_prod" class="col-lg-4 tooltips" title="{{ Veuillez regarder la documentation pour identifier votre compteur }}">
+                    <input type="checkbox" id="linky_prod" class="configKey" data-l1key="linky_prod" placeholder="{{}}"/>
+                    <label for="linky_prod">  </label>
+                    <label id="label_linky_prod" style="color:red;margin-left:100px;margin-top:-15px;display:none">Attention, assurez vous que votre compteur soit en mode standard. Aucune idée ? Se reporter à la documentation.</label>
+                    <script>
+                    $( "#linky_prod" ).change(function() {
+                            if($( this ).value() == "1"){
+                                $("#label_linky_prod").show();
+                            }
+                            else{
+                                $("#label_linky_prod").hide();
+                            }
+                    });
+                    </script>
                 </div>
             </div>
             <div class="form-group div_local">
@@ -179,13 +196,12 @@ try {
             <div class="form-group div_local">
                 <label class="col-lg-4 control-label">Vitesse : </label>
                 <div class="col-lg-4">
-                    <!--<input id="port_serie" class="configKey form-control" data-l1key="modem_vitesse" style="margin-top:5px;" placeholder="1200"/>-->
-                    <select class="configKey form-control" id="port_serie" data-l1key="modem_production_vitesse">
+                    <select class="configKey form-control" id="port_serie_production" data-l1key="modem_production_vitesse">
                         <option value="">{{Par défaut}}</option>
-                        <option value="1200">1200</option>
+                        <option style="font-weight: bold;" value="1200">1200</option>
                         <option value="2400">2400</option>
                         <option value="4800">4800</option>
-                        <option value="9600">9600</option>
+                        <option style="font-weight: bold;" value="9600">9600</option>
                         <option value="19200">19200</option>
                         <option value="38400">38400</option>
                         <option value="56000">56000</option>
