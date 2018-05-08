@@ -1,0 +1,21 @@
+[BASIC]
+const-rgx=[a-z_][a-z0-9_]{2,30}$
+module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+
+[FORMAT]
+# Maximum number of characters on a single line.
+max-line-length=150
+
+[DESIGN]
+# Maximum number of arguments for function / method
+max-args=10 #5
+# Maximum number of attributes for a class (see R0902).
+max-attributes=15 #7
+# Maximum number of locals for function / method body
+max-locals=17 #15
+# Maximum number of branch for function / method body
+max-branches=13
+
+[REFACTORING]
+# Maximum number of nested blocks for function / method body
+max-nested-blocks=6

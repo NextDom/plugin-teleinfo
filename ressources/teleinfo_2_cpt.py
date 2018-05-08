@@ -49,33 +49,33 @@ import logging
 import signal
 try:
     import ftdi
-    FTDI_TYPE = 0
+    ftdi_type = 0
 except ImportError:
     import ftdi1 as ftdi
-    FTDI_TYPE = 1
+    ftdi_type = 1
     #raise ImportError('Erreur de librairie ftdi')
 
 # USB settings
-USB_VENDOR = 0x0403
-USB_PRODUCT = 0x6001
-USB_PORT = [0x00, 0x11, 0x22]
-BAUD_RATE = 1200
+usb_vendor = 0x0403
+usb_product = 0x6001
+usb_port = [0x00, 0x11, 0x22]
+baud_rate = 1200
 # Default log level
-gLogLevel = logging.DEBUG
+global_log_level = logging.DEBUG
 
 # TELEINFO settings
-FRAME_LENGTH = 400  # Nb chars to read to ensure to get a least one complete raw frame
+frame_length = 400  # Nb chars to read to ensure to get a least one complete raw frame
 
 # Misc
-STX = 0x02  # start of text
-ETX = 0x03  # end of text
-EOT = 0x04  # end of transmission
+stx = 0x02  # start of text
+etx = 0x03  # end of text
+eot = 0x04  # end of transmission
 
 # Datas
-gExternalIP = ''
-gCleAPI = ''
-gDebug = ''
-gRealPath = ''
+global_external_ip = ''
+global_cle_api = ''
+global_debug = ''
+global_real_path = ''
 
 class MyLogger:
     """ Our own logger """
@@ -86,7 +86,7 @@ class MyLogger:
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
         hdlr.setFormatter(formatter)
         self._logger.addHandler(hdlr)
-        self._logger.setLevel(gLogLevel)
+        self._logger.setLevel(global_log_level)
 
 
     def debug(self, text):
@@ -152,12 +152,12 @@ class Ftdi(object):
 
         # Open port
         self._log.info("Try to open ftdi port")
-        err = ftdi.ftdi_usb_open(self.__ftdic, USB_VENDOR, USB_PRODUCT)
+        err = ftdi.ftdi_usb_open(self.__ftdic, usb_vendor, usb_product)
         if err < 0:
             self._log.error("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
 
-        err = ftdi.ftdi_set_baudrate(self.__ftdic, BAUD_RATE)
+        err = ftdi.ftdi_set_baudrate(self.__ftdic, baud_rate)
         if err < 0:
             self._log.error("Can't set baudrate (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't set baudrate (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
@@ -206,8 +206,8 @@ class Ftdi(object):
             self.shutdown()
             raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
         if err:
-            c = unichr(ord(buf) % 0x80)  # Clear bit 7
-            return c
+            c_error = unichr(ord(buf) % 0x80)  # Clear bit 7
+            return c_error
         else:
             return None
 
@@ -219,7 +219,7 @@ class Ftdi(object):
         self.purgeBuffers()
 
         raw = u""
-        while len(raw) < FRAME_LENGTH:
+        while len(raw) < frame_length:
             c = self.readOne()
             if c is not None and c != '\x00':
                 raw += c
@@ -240,7 +240,7 @@ class Teleinfo(object):
         """
         self._log = MyLogger()
         self._log.info("Initialisation de la teleinfo")
-        if FTDI_TYPE == 0:
+        if ftdi_type == 0:
             self.context = ""
             super(Teleinfo, self).__init__()
             self.__ftdi = ftdi_
@@ -253,10 +253,10 @@ class Teleinfo(object):
     def __selectMeter(self, num):
         """ Select giver meter
         """
-        if FTDI_TYPE == 0:
-            self.__ftdi.selectPort(USB_PORT[num])
+        if ftdi_type == 0:
+            self.__ftdi.selectPort(usb_port[num])
         else:
-            err = ftdi.set_bitmode(self.context, USB_PORT[num], ftdi.BITMODE_CBUS)
+            err = ftdi.set_bitmode(self.context, usb_port[num], ftdi.BITMODE_CBUS)
             if err < 0:
                 self._log.error("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(self.context)))
                 raise FtdiError("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(self.context)))
@@ -283,15 +283,15 @@ class Teleinfo(object):
 
         # As the data are sent asynchronously by the USB interface, we probably don't start
         # to read at the start of a frame. So, we read enough chars to retreive a complete frame
-        if FTDI_TYPE == 0:
-            raw = self.__ftdi.read(FRAME_LENGTH)
+        if ftdi_type == 0:
+            raw = self.__ftdi.read(frame_length)
         else:
             err = ftdi.usb_purge_buffers(self.context)
             if err < 0:
                 self._log.error("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(self.context)))
                 raise FtdiError("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(self.context)))
             raw = u""
-            while len(raw) < FRAME_LENGTH:
+            while len(raw) < frame_length:
                 err, c = self.__readOne()
                 if c is not None and c != '\x00':
                     raw += c
@@ -334,14 +334,14 @@ class Teleinfo(object):
     def extractDatas(self, raw):
         """ Extract datas from raw frame
         """
-        end = raw.rfind(chr(ETX)) + 1
-        start = raw[:end].rfind(chr(ETX)+chr(STX))
+        end = raw.rfind(chr(etx)) + 1
+        start = raw[:end].rfind(chr(etx)+chr(stx))
         frame = raw[start+2:end-2]
 
-        # Check if there is a EOT, cancel frame
-        if frame.find(chr(EOT)) != -1:
-            return {'Message':'EOT'}
-            #raise TeleinfoError("EOT found")
+        # Check if there is a eot, cancel frame
+        if frame.find(chr(eot)) != -1:
+            return {'Message':'eot'}
+            #raise TeleinfoError("eot found")
 
         # Convert frame back to ERDF standard
         #frame = frame.replace('\n', '')     # Remove new line
@@ -360,91 +360,90 @@ class Teleinfo(object):
         self._debug = debug
         self._realpath = realpath
 
-        _CompteurNum = 1
-        Donnees_cpt1 = {}
-        Donnees_cpt2 = {}
-        _Donnees_cpt1 = {}
-        _Donnees_cpt2 = {}
-        _RAZ = 3600
-        _Separateur = " "
-        _SendData = ""
+        num_compteur = 1
+        cpt1_data = {}
+        cpt2_data = {}
+        cpt1_data_temp = {}
+        cpt2_data_temp = {}
+        raz_time = 600
+        separateur = " "
+        send_data = ""
         #for cle, valeur in Donnees.items():
         #            Donnees.pop(cle)
         #            _Donnees.pop(cle)
         while(1):
-            if(_RAZ > 1):
-                _RAZ = _RAZ - 1
+            if raz_time > 1:
+                raz_time = raz_time - 1
             else:
-                _RAZ = 3600
-                for cle, valeur in Donnees_cpt1.items():
-                    Donnees_cpt1.pop(cle)
-                    _Donnees_cpt1.pop(cle)
-                for cle, valeur in Donnees_cpt2.items():
-                    Donnees_cpt2.pop(cle)
-                    _Donnees_cpt2.pop(cle)
-            _SendData = ""
+                raz_time = 600
+                for cle, valeur in cpt1_data.items():
+                    cpt1_data.pop(cle)
+                    cpt1_data_temp.pop(cle)
+                for cle, valeur in cpt2_data.items():
+                    cpt2_data.pop(cle)
+                    cpt2_data_temp.pop(cle)
+            send_data = ""
 
-            self.__selectMeter(_CompteurNum)
+            self.__selectMeter(num_compteur)
             raw = self.__readRawFrame()
             self.__selectMeter(0)
             datas = self.extractDatas(raw)
 
-            if(_CompteurNum == 1):
+            if num_compteur == 1:
                 for cle, valeur in datas.items():
-                    if(cle == 'PTEC'):
-                        valeur = valeur.replace(".","")
-                        valeur = valeur.replace(")","")
-                        Donnees_cpt1[cle] = valeur
+                    if cle == 'PTEC':
+                        valeur = valeur.replace(".", "")
+                        valeur = valeur.replace(")", "")
+                        cpt1_data[cle] = valeur
                     else:
-                        Donnees_cpt1[cle] = valeur
-            elif(_CompteurNum == 2):
+                        cpt1_data[cle] = valeur
+            elif num_compteur == 2:
                 for cle, valeur in datas.items():
-                    if(cle == 'PTEC'):
-                        valeur = valeur.replace(".","")
-                        valeur = valeur.replace(")","")
-                        Donnees_cpt2[cle] = valeur
+                    if cle == 'PTEC':
+                        valeur = valeur.replace(".", "")
+                        valeur = valeur.replace(")", "")
+                        cpt2_data[cle] = valeur
                     else:
-                        Donnees_cpt2[cle] = valeur
+                        cpt2_data[cle] = valeur
 
-            if(self._externalip != ""):
+            if self._externalip != "":
                 self.cmd = self._externalip +'/plugins/teleinfo/core/php/jeeTeleinfo.php?api=' + self._cleAPI
-                _Separateur = "&"
+                separateur = "&"
             else:
                 self.cmd = 'nice -n 19 timeout 15 /usr/bin/php ' + self._realpath + '/../php/jeeTeleinfo.php api=' + self._cleAPI
-                _Separateur = " "
+                separateur = " "
 
-            if(_CompteurNum == 1):
-                for cle, valeur in Donnees_cpt1.items():
-                    if(cle in _Donnees_cpt1):
-                        if (Donnees_cpt1[cle] != _Donnees_cpt1[cle]):
-                            _SendData += _Separateur + cle +'='+ valeur
-                            _Donnees_cpt1[cle] = valeur
+            if num_compteur == 1:
+                for cle, valeur in cpt1_data.items():
+                    if cle in cpt1_data_temp:
+                        if cpt1_data[cle] != cpt1_data_temp[cle]:
+                            send_data += separateur + cle +'='+ valeur
+                            cpt1_data_temp[cle] = valeur
                     else:
-                        _SendData += _Separateur + cle +'='+ valeur
-                        _Donnees_cpt1[cle] = valeur
-            elif(_CompteurNum == 2):
-                for cle, valeur in Donnees_cpt2.items():
-                    if(cle in _Donnees_cpt2):
-                        if (Donnees_cpt2[cle] != _Donnees_cpt2[cle]):
-                            _SendData += _Separateur + cle +'='+ valeur
-                            _Donnees_cpt2[cle] = valeur
+                        send_data += separateur + cle +'='+ valeur
+                        cpt1_data_temp[cle] = valeur
+            elif num_compteur == 2:
+                for cle, valeur in cpt2_data.items():
+                    if cle in cpt2_data_temp:
+                        if cpt2_data[cle] != cpt2_data_temp[cle]:
+                            send_data += separateur + cle +'='+ valeur
+                            cpt2_data_temp[cle] = valeur
                     else:
-                        _SendData += _Separateur + cle +'='+ valeur
-                        _Donnees_cpt2[cle] = valeur
+                        send_data += separateur + cle +'='+ valeur
+                        cpt2_data_temp[cle] = valeur
 
-            #response = urllib2.urlopen(self.cmd)
-            if (_SendData != ""):
-                if(_CompteurNum == 1):
-                    if (_Donnees_cpt1.has_key("ADCO")):
-                        _SendData += _Separateur + "ADCO=" + _Donnees_cpt1["ADCO"]
-                elif(_CompteurNum == 2):
-                    if (_Donnees_cpt2.has_key("ADCO")):
-                        _SendData += _Separateur + "ADCO=" + _Donnees_cpt2["ADCO"]
-                self.cmd += _SendData
-                if (self._debug == '1'):
+            if send_data != "":
+                if num_compteur == 1:
+                    if cpt1_data_temp.has_key("ADCO"):
+                        send_data += separateur + "ADCO=" + cpt1_data_temp["ADCO"]
+                elif(num_compteur == 2):
+                    if cpt2_data_temp.has_key("ADCO"):
+                        send_data += separateur + "ADCO=" + cpt2_data_temp["ADCO"]
+                self.cmd += send_data
+                if self._debug == '1':
                     #print self.cmd
                     self._log.debug(self.cmd)
-                if(self._externalip != ""):
+                if self._externalip != "":
                     try:
                         response = urllib2.urlopen(self.cmd)
                     except Exception, e:
@@ -455,10 +454,10 @@ class Teleinfo(object):
                         self.process.communicate()
                     except Exception, e:
                         errorCom = "Connection error '%s'" % e
-            if (_CompteurNum == 1):
-                _CompteurNum = 2
+            if num_compteur == 1:
+                num_compteur = 2
             else:
-                _CompteurNum = 1
+                num_compteur = 1
         self.terminate()
 
     def exit_handler(self, *args):
@@ -466,7 +465,7 @@ class Teleinfo(object):
         self._log.info("[exit_handler]")
 
     def close(self):
-        if FTDI_TYPE == 0:
+        if ftdi_type == 0:
             self.__ftdi.shutdown()
         else:
             ftdi.close()
@@ -478,7 +477,7 @@ class Teleinfo(object):
         sys.exit()
 
 def main():
-    usage  = "%prog -r [options] -> read meters\n"
+    usage = "%prog -r [options] -> read meters\n"
     # Common options
     parser = optparse.OptionParser(usage)
     parser.add_option("-o", "--output", dest="filename", help="append result in FILENAME")
@@ -490,39 +489,39 @@ def main():
     parser.add_option("-v", "--vitesse", dest="vitesse", help="vitesse")
     parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
     (options, args) = parser.parse_args()
-    gDeviceName = gExternalIP = gDebug = gCleAPI = gRealPath = ""
+    gDeviceName = global_external_ip = global_debug = global_cle_api = global_real_path = ""
     if options.port:
-            try:
-                gDeviceName = options.port
-            except:
-                error = "Can not change port %s" % options.port
-                raise TeleinfoError(error)
+        try:
+            gDeviceName = options.port
+        except:
+            error = "Can not change port %s" % options.port
+            raise TeleinfoError(error)
     if options.externalip:
-            try:
-                gExternalIP = options.externalip
-            except:
-                error = "Can not change ip %s" % options.externalip
-                raise TeleinfoError(error)
+        try:
+            global_external_ip = options.externalip
+        except:
+            error = "Can not change ip %s" % options.externalip
+            raise TeleinfoError(error)
     if options.debug:
-            try:
-                gDebug = options.debug
-            except:
-                error = "Can not set debug mode %s" % options.debug
-                #raise TeleinfoError(error)
+        try:
+            global_debug = options.debug
+        except:
+            error = "Can not set debug mode %s" % options.debug
+            #raise TeleinfoError(error)
     if options.cleapi:
-            try:
-                gCleAPI = options.cleapi
-            except:
-                error = "Can not change ip %s" % options.cleapi
-                raise TeleinfoError(error)
+        try:
+            global_cle_api = options.cleapi
+        except:
+            error = "Can not change ip %s" % options.cleapi
+            raise TeleinfoError(error)
     if options.realpath:
-            try:
-                gRealPath = options.realpath
-            except:
-                error = "Can not get realpath %s" % options.realpath
-                raise TeleinfoError(error)
+        try:
+            global_real_path = options.realpath
+        except:
+            error = "Can not get realpath %s" % options.realpath
+            raise TeleinfoError(error)
 
-    if FTDI_TYPE == 0:
+    if ftdi_type == 0:
         ftdi_ = Ftdi()
         ftdi_.init()
         teleinfo = Teleinfo(ftdi_)
@@ -531,8 +530,8 @@ def main():
     pid = str(os.getpid())
     file("/tmp/teleinfo2cpt.pid", 'w').write("%s\n" % pid)
     signal.signal(signal.SIGTERM, teleinfo.exit_handler)
-    teleinfo.readMeter(gDeviceName, gExternalIP, gCleAPI, gDebug, gRealPath)
-    if FTDI_TYPE == 0:
+    teleinfo.readMeter(gDeviceName, global_external_ip, global_cle_api, global_debug, global_real_path)
+    if ftdi_type == 0:
         ftdi_.shutdown()
     sys.exit()
 
