@@ -165,7 +165,7 @@ class Teleinfo:
                             name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                             content[name] = value;
                             if self._debug == '1':
-                                self._log.debug('name : ' + name + ' value : ' + value)
+                                self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     is_ok = True
                     if len(resp.replace('\r', '').replace('\n', '').split('\x09')) == 4:
                         name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
@@ -177,7 +177,7 @@ class Teleinfo:
                         name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                         content[name] = value;
                         if self._debug == '1':
-                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                 except ValueError:
                     checksum = ' '
         else: # Zone historique
