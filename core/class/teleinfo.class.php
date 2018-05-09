@@ -320,6 +320,17 @@ class teleinfo extends eqLogic
                 shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
             }
         }
+        $productionActivated = config::byKey('activation_production', 'teleinfo');
+        if ($productionActivated == 1) {
+            $pidFile = '/tmp/teleinfo_prod.pid';
+            if (file_exists($pidFile)) {
+                if (posix_getsid(trim(file_get_contents($pidFile)))) {
+                    $return['state'] = 'ok';
+                } else {
+                    shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
+                }
+            }
+        }
         $return['launchable'] = 'ok';
         return $return;
     }
