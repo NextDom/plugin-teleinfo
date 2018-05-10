@@ -144,12 +144,18 @@ class teleinfo extends eqLogic
                 $modemVitesse = '1200';
             }
         }
-
-        $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
+        
+        ig (config::byKey('internalComplement', 'core') !== ""){
+            $internalComplement = "/" .config::byKey('internalComplement', 'core');
+        }
+        else{
+            $internalComplement = "";
+        }
+        $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . $internalComplement);
         //exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
 
         log::add('teleinfo', 'info', '--------- Informations sur le master --------');
-        log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
+        log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . $internalComplement);
         log::add('teleinfo', 'info', 'Host / Port         :' . $parsed_url['host'] . ':' . $parsed_url['port']);
         log::add('teleinfo', 'info', 'Path complémentaire :' . $parsed_url['path']);
         $ip_interne = $parsed_url['scheme'] . '://' . $parsed_url['host'] . ':' . $parsed_url['port'] . $parsed_url['path'];
