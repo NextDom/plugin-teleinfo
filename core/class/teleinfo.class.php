@@ -145,7 +145,7 @@ class teleinfo extends eqLogic
             }
         }
         
-        ig (config::byKey('internalComplement', 'core') !== ""){
+        if (config::byKey('internalComplement', 'core') !== ""){
             $internalComplement = "/" .config::byKey('internalComplement', 'core');
         }
         else{
