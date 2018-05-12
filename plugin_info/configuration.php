@@ -305,8 +305,7 @@ try {
 <style type="text/css">
 [type="checkbox"][class="configKey"]:not(:checked),
     [type="checkbox"][class="configKey"]:checked {
-        position: absolute;
-        left: -9999px;
+        display:none;
     }
     [type="checkbox"][class="configKey"]:not(:checked) + label,
     [type="checkbox"][class="configKey"]:checked + label {

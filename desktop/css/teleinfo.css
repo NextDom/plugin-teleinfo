@@ -9,8 +9,7 @@ and open the template in the editor.
 */
 [type="checkbox"][data-l1key="configuration"]:not(:checked),
 	[type="checkbox"][data-l1key="configuration"]:checked {
-		position: absolute;
-		left: -9999px;
+		display:none;
 	}
 	[type="checkbox"][data-l1key="configuration"]:not(:checked) + label,
 	[type="checkbox"][data-l1key="configuration"]:checked + label {
