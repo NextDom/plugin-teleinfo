@@ -144,7 +144,7 @@ class teleinfo extends eqLogic
                 $modemVitesse = '1200';
             }
         }
-        
+
         if (config::byKey('internalComplement', 'core') !== ""){
             $internalComplement = "/" .config::byKey('internalComplement', 'core');
         }
@@ -152,7 +152,7 @@ class teleinfo extends eqLogic
             $internalComplement = "";
         }
         $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . $internalComplement);
-        //exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
+        exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
 
         log::add('teleinfo', 'info', '--------- Informations sur le master --------');
         log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . $internalComplement);
