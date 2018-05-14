@@ -10,7 +10,15 @@ A venir
 - Refaire fonctionner le mode 2 compteurs.
 - Noms des variables et fonctions
 
-3.0.0 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/NextDom/plugin-teleinfo/releases)
+3.0.2 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/NextDom/plugin-teleinfo/releases)
+=====
+- Droits sur le port
+
+3.0.1
+=====
+- Correction erreur horodatage
+
+3.0.0
 =====
 - Compatibilité Linky
 - Fonction diagnostique
