@@ -1,11 +1,12 @@
 Configuration
 ===
-Le plugin offre la possibilité de créer automatiquement les commandes réceptionnées. Pour cela démarrez le daemon, attendez que les premières trames arrivent puis rendez vous sur Plugin / Protocoles Domotiques / Téléinfo.
-Vous devriez voir apparaitre un objet avec un ID.
-
->Il est possible de désactiver la création automatique des nouveaux compteurs.
+>Il est possible de désactiver la création automatique des nouveaux compteurs. Pour cela il suffit d'activer l'option depuis la page du plugin. 
 >
 >![teleinfo51](../images/teleinformation_blocage.png)
+
+
+Le plugin offre la possibilité de créer automatiquement les commandes réceptionnées. Pour cela démarrez le daemon, attendez que les premières trames arrivent puis rendez vous sur Plugin / Protocoles Domotiques / Téléinfo.
+Vous devriez voir apparaitre un objet avec un ID.
 
 Cliquez sur l'objet et sélectionnez "Création automatique des commandes" en haut à droite, enfin sauvegardez. A partir de ce moment toutes les commandes reçu et non reconnu seront ajoutée automatiquement.
 
