@@ -275,7 +275,7 @@ class Teleinfo:
 
         def target():
             self.process = None
-            self.process = subprocess.Popen(self.cmd + send_data, shell=True)
+            self.process = subprocess.Popen(self.cmd + send_data_bak, shell=True)
             self.process.communicate()
             self.timer.cancel()
 
@@ -347,6 +347,7 @@ class Teleinfo:
                             if self._debug == '1':
                                 print self.cmd + send_data
                                 self._log.debug(self.cmd + send_data)
+                            send_data_bak = send_data
                             thread = threading.Thread(target=target)
                             self.timer = threading.Timer(int(10), timer_callback)
                             self.timer.start()
@@ -358,6 +359,7 @@ class Teleinfo:
                             if self._debug == '1':
                                 print self.cmd + send_data
                                 self._log.debug(self.cmd + send_data)
+                            send_data_bak = send_data
                             thread = threading.Thread(target=target)
                             self.timer = threading.Timer(int(10), timer_callback)
                             self.timer.start()
