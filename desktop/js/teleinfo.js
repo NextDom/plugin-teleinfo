@@ -204,6 +204,7 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="PPOINTE">PPOINTE</option>';
         selRequestType += '<option value="SINSTI">SINSTI</option>';
         selRequestType += '<option value="IRMS1">IRMS1</option>';
+        selRequestType += '<option value="URMS1">URMS1</option>';
         selRequestType += '</select>';
     }
 
