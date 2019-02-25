@@ -19,7 +19,7 @@ import threading
 import signal
 
 # Default log level
-gLogLevel = logging.DEBUG
+gLogLevel = logging.INFO
 
 # Device name
 global_device_name = '/dev/ttyUSB0'
@@ -27,25 +27,26 @@ global_device_name = '/dev/ttyUSB0'
 global_output = sys.__stdout__
 global_external_ip = ''
 global_api = ''
-global_debug = ''
 global_real_path = ''
 global_vitesse = ''
 global_message_temp = ''
 global_can_start = 'true'
 global_mode = ''
+global_logfile = os.path.dirname(os.path.realpath(__file__)) + '/../../../log/teleinfo_deamon'
+global_sleep = 0
 # ----------------------------------------------------------------------------
 # LOGGING
 # ----------------------------------------------------------------------------
 class MyLogger:
     """ Our own logger """
     def __init__(self):
-        program_path = os.path.dirname(os.path.realpath(__file__))
         self._logger = logging.getLogger('teleinfo')
-        hdlr = logging.FileHandler(program_path + '/../../../log/teleinfo_deamon')
+        hdlr = logging.FileHandler(global_logfile)
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
         hdlr.setFormatter(formatter)
         self._logger.addHandler(hdlr)
         self._logger.setLevel(gLogLevel)
+        self.info("logger started in " + logging.getLevelName(self._logger.getEffectiveLevel()) + " mode")
 
     def debug(self, text):
         try:
@@ -99,7 +100,7 @@ class Teleinfo:
     each time all data are collected
     """
 
-    def __init__(self, device, externalip, cleapi, debug, realpath, vitesse, mode):
+    def __init__(self, device, externalip, cleapi, realpath, vitesse, mode):
         """ @param device : teleinfo modem device path
         @param log : log instance
         @param callback : method to call each time all data are collected
@@ -109,7 +110,6 @@ class Teleinfo:
         self._device = device
         self._externalip = externalip
         self._cleApi = cleapi
-        self._debug = debug
         self._realpath = realpath
         self._vitesse = vitesse
         self._ser = None
@@ -138,6 +138,7 @@ class Teleinfo:
     def terminate(self):
         print "Terminating..."
         self.close()
+        os.remove("/tmp/teleinfo_" + options.type + ".pid")
         sys.exit()
 
     def read(self):
@@ -159,25 +160,21 @@ class Teleinfo:
                             name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                             checksum = ' '
                             content[name] = value;
-                            if self._debug == '1':
-                                self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                         else:
                             name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                             content[name] = value;
-                            if self._debug == '1':
-                                self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     is_ok = True
                     if len(resp.replace('\r', '').replace('\n', '').split('\x09')) == 4:
                         name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                         checksum = ' '
                         content[name] = value;
-                        if self._debug == '1':
-                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
+                        self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                     else:
                         name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                         content[name] = value;
-                        if self._debug == '1':
-                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                        self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                 except ValueError:
                     checksum = ' '
         else: # Zone historique
@@ -200,12 +197,10 @@ class Teleinfo:
                             #The checksum char is ' '
                             name, value = resp.replace('\r', '').replace('\n', '').split()
                             checksum = ' '
-                            if self._debug == '1':
-                                self._log.debug('name : ' + name + ' value : ' + value)
+                            self._log.debug('name : ' + name + ' value : ' + value)
                         else:
                             name, value, checksum = resp.replace('\r', '').replace('\n', '').split()
-                            if self._debug == '1':
-                                self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                         if self._is_valid(resp, checksum):
                             content[name] = value;
                         else:
@@ -220,12 +215,10 @@ class Teleinfo:
                     if len(resp.replace('\r', '').replace('\n', '').split()) == 2:
                         name, value = resp.replace('\r', '').replace('\n', '').replace('\x02', '').replace('\x03', '').split()
                         checksum = ' '
-                        if self._debug == '1':
-                            self._log.debug('name : ' + name + ' value : ' + value)
+                        self._log.debug('name : ' + name + ' value : ' + value)
                     else:
                         name, value, checksum = resp.replace('\r', '').replace('\n', '').replace('\x02', '').replace('\x03', '').split()
-                        if self._debug == '1':
-                            self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                        self._log.debug('name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     if self._is_valid(resp, checksum):
                         is_ok = True
                     else:
@@ -275,7 +268,7 @@ class Teleinfo:
 
         def target():
             self.process = None
-            self.process = subprocess.Popen(self.cmd + send_data, shell=True)
+            self.process = subprocess.Popen(self.cmd + send_data_bak, shell=True)
             self.process.communicate()
             self.timer.cancel()
 
@@ -344,9 +337,8 @@ class Teleinfo:
                     if self._externalip != "":
                         try:
                             send_data += "'"
-                            if self._debug == '1':
-                                print self.cmd + send_data
-                                self._log.debug(self.cmd + send_data)
+                            self._log.debug(self.cmd + send_data)
+                            send_data_bak = send_data
                             thread = threading.Thread(target=target)
                             self.timer = threading.Timer(int(10), timer_callback)
                             self.timer.start()
@@ -355,15 +347,20 @@ class Teleinfo:
                             errorCom = "Connection error '%s'" % e
                     else:
                         try:
-                            if self._debug == '1':
-                                print self.cmd + send_data
-                                self._log.debug(self.cmd + send_data)
+                            self._log.debug(self.cmd + send_data)
+                            send_data_bak = send_data
                             thread = threading.Thread(target=target)
                             self.timer = threading.Timer(int(10), timer_callback)
                             self.timer.start()
                             thread.start()
                         except Exception, e:
                             errorCom = "Connection error '%s'" % e
+                if (global_sleep != 0):
+                        self._log.debug("start sleeping " + str(global_sleep) + " seconds")
+                        time.sleep(global_sleep)
+                        self._log.debug("octets dans la file apres sleep " + str(self._ser.inWaiting()))
+                        self._ser.flushInput()
+                        self._log.debug("octets dans la file apres flush " + str(self._ser.inWaiting()))
             except Exception:
                 erreur = ""
         self.terminate()
@@ -385,8 +382,10 @@ if __name__ == "__main__":
     parser.add_option("-r", "--realpath", dest="realpath", help="path usr")
     parser.add_option("-v", "--vitesse", dest="vitesse", help="vitesse du modem")
     parser.add_option("-f", "--force", dest="force", help="forcer le lancement")
-    parser.add_option("-t", "--type", dest="type", help="type du deamon")
+    parser.add_option("-t", "--type", dest="type", help="type du deamon", default="single")
     parser.add_option("-m", "--mode", dest="mode", help="TIC standard ou historique")
+    parser.add_option("--logpath", dest="logpath", help="emplacement du log")
+    parser.add_option("--sleep", dest="sleep", help="sleep time", type="int")
 
     (options, args) = parser.parse_args()
     if options.port:
@@ -403,7 +402,8 @@ if __name__ == "__main__":
             raise TeleinfoException(error)
     if options.debug:
         try:
-            global_debug = options.debug
+            if options.debug == '1':
+                gLogLevel = logging.DEBUG
         except:
             error = "Can not set debug mode %s" % options.debug
             #raise TeleinfoException(error)
@@ -445,10 +445,24 @@ if __name__ == "__main__":
         except:
             error = "Can not get file PID"
             raise TeleinfoException(error)
+    if options.logpath:
+        try:
+            global_logfile = os.path.realpath(options.logpath) + '/teleinfo_deamon'
+            print "loggile : " + global_logfile
+        except:
+            error = "Can not get logptah %s" % options.logpath
+            raise TeleinfoException(error)
+    if options.sleep:
+        try:
+            global_sleep = options.sleep
+        except:
+            error = "Can not get sleep %s" % options.sleep
+            raise TeleinfoException(error)
     if global_can_start == 'true':
         pid = str(os.getpid())
         file("/tmp/teleinfo_" + options.type + ".pid", 'w').write("%s\n" % pid)
-        teleinfo = Teleinfo(global_device_name, global_external_ip, global_api, global_debug, global_real_path, global_vitesse, global_mode)
+        print "pidfile : " + "/tmp/teleinfo_" + options.type + ".pid"
+        teleinfo = Teleinfo(global_device_name, global_external_ip, global_api, global_real_path, global_vitesse, global_mode)
         signal.signal(signal.SIGTERM, teleinfo.exit_handler)
         teleinfo.run()
     sys.exit()

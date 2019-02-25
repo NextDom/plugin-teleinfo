@@ -22,6 +22,9 @@ switch ($controlerState) {
 		// ));
 		break;
 	case 'nok':
+		if (config::byKey('deamonAutoMode', 'teleinfo') != 1) {		
+			break;
+		}	
 		event::add('jeedom::alert', array(
 			'level' => 'danger',
 			'page' => 'teleinfo',
