@@ -75,6 +75,7 @@ $.ajax({
                             {
                                 case "STAT_YESTERDAY":
                                     break;
+                                case "SINSTS":
                                 case "PAPP":
                                     console.log("[loadData][PAPP] " + data.result[eqLogic].cmd[cmd].id);
                                     getObjectHistory('div_graphGlobalPower', 'Simple', data.result[eqLogic].cmd[cmd]);
