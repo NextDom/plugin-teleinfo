@@ -48,6 +48,8 @@ import traceback
 import logging
 import signal
 import globals
+import argparse
+import thread
 try:
     import ftdi
     ftdi_type = 0
@@ -56,11 +58,11 @@ except ImportError:
     ftdi_type = 1
     #raise ImportError('Erreur de librairie ftdi')
 try:
-	from jeedom.jeedom import *
+    from jeedom.jeedom import *
 except ImportError as ex:
-	print("Error: importing module from jeedom folder")
-	print(ex)
-	sys.exit(1)
+    print("Error: importing module from jeedom folder")
+    print(ex)
+    sys.exit(1)
 # USB settings
 usb_vendor = 0x0403
 usb_product = 0x6001
@@ -189,7 +191,7 @@ class Ftdi(object):
         return raw
 
 class Teleinfo(object):
-	import globals
+    import globals
     """ Class for handling teleinfo stuff
     """
     def __init__(self, ftdi_):
@@ -236,9 +238,9 @@ class Teleinfo(object):
     def __readRawFrame(self):
         """ Read raw frame
         """
-
         # As the data are sent asynchronously by the USB interface, we probably don't start
         # to read at the start of a frame. So, we read enough chars to retreive a complete frame
+        logging.debug("Lecture des donnees")
         if ftdi_type == 0:
             raw = self.__ftdi.read(frame_length)
         else:
@@ -333,7 +335,6 @@ class Teleinfo(object):
                     cpt2_data.pop(cle)
                     cpt2_data_temp.pop(cle)
             send_data = {}
-
             self.__selectMeter(num_compteur)
             raw = self.__readRawFrame()
             self.__selectMeter(0)
@@ -355,45 +356,45 @@ class Teleinfo(object):
                         cpt2_data[cle] = valeur
                     else:
                         cpt2_data[cle] = valeur
-			PENDING_CHANGES = False
+            PENDING_CHANGES = False
             if num_compteur == 1:
                 for cle, valeur in cpt1_data.items():
                     if cle in cpt1_data_temp:
                         if cpt1_data[cle] != cpt1_data_temp[cle]:
                             send_data[cle] = valeur
                             cpt1_data_temp[cle] = valeur
-							PENDING_CHANGES = True
+                            PENDING_CHANGES = True
                     else:
                         send_data[cle] = valeur
                         cpt1_data_temp[cle] = valeur
-						PENDING_CHANGES = True
+                        PENDING_CHANGES = True
             elif num_compteur == 2:
                 for cle, valeur in cpt2_data.items():
                     if cle in cpt2_data_temp:
                         if cpt2_data[cle] != cpt2_data_temp[cle]:
                             send_data[cle] = valeur
                             cpt2_data_temp[cle] = valeur
-							PENDING_CHANGES = True
+                            PENDING_CHANGES = True
                     else:
                         send_data[cle] = valeur
                         cpt2_data_temp[cle] = valeur
-						PENDING_CHANGES = True
+                        PENDING_CHANGES = True
             try:
                 if PENDING_CHANGES :
                     if num_compteur == 1:
-						if globals.mode == "standard": # Zone linky standard
-							send_data["device"] = cpt1_data_temp["ADSC"]
-							globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADSC"],send_data)
-						else:
-							send_data["device"] = cpt1_data_temp["ADCO"]
-							globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADCO"],send_data)
+                        if globals.mode == "standard": # Zone linky standard
+                            send_data["device"] = cpt1_data_temp["ADSC"]
+                            globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADSC"],send_data)
+                        else:
+                            send_data["device"] = cpt1_data_temp["ADCO"]
+                            globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADCO"],send_data)
                     elif num_compteur == 2:
                         if globals.mode == "standard": # Zone linky standard
-							send_data["device"] = cpt2_data_temp["ADSC"]
-							globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADSC"],send_data)
-						else:
-							send_data["device"] = cpt2_data_temp["ADCO"]
-							globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADCO"],send_data)
+                            send_data["device"] = cpt2_data_temp["ADSC"]
+                            globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADSC"],send_data)
+                        else:
+                            send_data["device"] = cpt2_data_temp["ADCO"]
+                            globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADCO"],send_data)
             except Exception:
                 errorCom = "Connection error"
                 logging.error(errorCom)
@@ -427,81 +428,82 @@ class Teleinfo(object):
         #sys.exit()
 
 def read_socket(cycle):
-	while True :
-		try:
-			global JEEDOM_SOCKET_MESSAGE
-			if not JEEDOM_SOCKET_MESSAGE.empty():
-				logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE")
-				message = json.loads(JEEDOM_SOCKET_MESSAGE.get())
-				if message['apikey'] != globals.apikey:
-					logging.error("SOCKET-READ------Invalid apikey from socket : " + str(message))
-					return
-				logging.debug('SOCKET-READ------Received command from jeedom : '+str(message['cmd']))
-				if message['cmd'] == 'action':
-					logging.debug('SOCKET-READ------Attempt an action on a device')
-					thread.start_new_thread( action_handler, (message,))
-					logging.debug('SOCKET-READ------Action Thread Launched')
-				elif message['cmd'] == 'logdebug':
-					logging.info('SOCKET-READ------Passage du demon en mode debug force')
-					log = logging.getLogger()
-					for hdlr in log.handlers[:]:
-						log.removeHandler(hdlr)
-					jeedom_utils.set_log_level('debug')
-					logging.debug('SOCKET-READ------<----- La preuve ;)')
-				elif message['cmd'] == 'lognormal':
-					logging.info('SOCKET-READ------Passage du demon en mode de log normal')
-					log = logging.getLogger()
-					for hdlr in log.handlers[:]:
-						log.removeHandler(hdlr)
-					jeedom_utils.set_log_level('error')
-		except Exception as e:
-			logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
-			logging.debug(traceback.format_exc())
-		time.sleep(cycle)
+    while True :
+        try:
+            global JEEDOM_SOCKET_MESSAGE
+            if not JEEDOM_SOCKET_MESSAGE.empty():
+                logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE")
+                message = json.loads(JEEDOM_SOCKET_MESSAGE.get())
+                if message['apikey'] != globals.apikey:
+                    logging.error("SOCKET-READ------Invalid apikey from socket : " + str(message))
+                    return
+                logging.debug('SOCKET-READ------Received command from jeedom : '+str(message['cmd']))
+                if message['cmd'] == 'action':
+                    logging.debug('SOCKET-READ------Attempt an action on a device')
+                    thread.start_new_thread( action_handler, (message,))
+                    logging.debug('SOCKET-READ------Action Thread Launched')
+                elif message['cmd'] == 'logdebug':
+                    logging.info('SOCKET-READ------Passage du demon en mode debug force')
+                    log = logging.getLogger()
+                    for hdlr in log.handlers[:]:
+                        log.removeHandler(hdlr)
+                    jeedom_utils.set_log_level('debug')
+                    logging.debug('SOCKET-READ------<----- La preuve ;)')
+                elif message['cmd'] == 'lognormal':
+                    logging.info('SOCKET-READ------Passage du demon en mode de log normal')
+                    log = logging.getLogger()
+                    for hdlr in log.handlers[:]:
+                        log.removeHandler(hdlr)
+                    jeedom_utils.set_log_level('error')
+        except Exception as e:
+            logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
+            logging.debug(traceback.format_exc())
+        time.sleep(cycle)
 
 def listen():
-	globals.PENDING_ACTION=False
-	jeedom_socket.open()
-	logging.info("GLOBAL------Start listening...")
-	#globals.TELEINFO = Teleinfo()
-	logging.info("GLOBAL------Preparing Teleinfo...")
-	thread.start_new_thread( read_socket, (globals.cycle,))
-	logging.debug('GLOBAL------Read Socket Thread Launched')
-	while 1:
-		try:
-			if ftdi_type == 0:
-				ftdi_ = Ftdi()
-				ftdi_.init()
-				globals.TELEINFO = Teleinfo(ftdi_)
-			else:
-				globals.TELEINFO = Teleinfo("")
-			globals.TELEINFO.readMeter()
-		except Exception as e:
-			print("Error:")
-			print(e)
-			shutdown()
+    globals.PENDING_ACTION=False
+    jeedom_socket.open()
+    logging.info("GLOBAL------Start listening...")
+    #globals.TELEINFO = Teleinfo()
+    logging.info("GLOBAL------Preparing Teleinfo...")
+    thread.start_new_thread( read_socket, (globals.cycle,))
+    logging.debug('GLOBAL------Read Socket Thread Launched')
+    while 1:
+        try:
+            if ftdi_type == 0:
+                ftdi_ = Ftdi()
+                ftdi_.init()
+                globals.TELEINFO = Teleinfo(ftdi_)
+            else:
+                globals.TELEINFO = Teleinfo("")
+            globals.TELEINFO.readMeter()
+        except Exception as e:
+            print("Error:")
+            print(e)
+            shutdown()
 
 def handler(signum=None, frame=None):
-	logging.debug("Signal %i caught, exiting..." % int(signum))
-	shutdown()
+    logging.debug("Signal %i caught, exiting..." % int(signum))
+    shutdown()
 
 def shutdown():
-	logging.debug("GLOBAL------Shutdown")
-	if ftdi_type == 0:
-		ftdi_.shutdown()
-	logging.debug("Shutdown")
-	logging.debug("Removing PID file " + str(globals.pidfile))
-	try:
-		os.remove(globals.pidfile)
-	except:
-		pass
-	try:
-		jeedom_socket.close()
-	except:
-		pass
-	logging.debug("Exit 0")
-	sys.stdout.flush()
-	os._exit(0)
+    logging.debug("GLOBAL------Shutdown")
+    #if ftdi_type == 0:
+        #ftdi_.shutdown()
+    #globals.TELEINFO.close()
+    logging.debug("Shutdown")
+    logging.debug("Removing PID file " + str(globals.pidfile))
+    try:
+        os.remove(globals.pidfile)
+    except:
+        pass
+    try:
+        jeedom_socket.close()
+    except:
+        pass
+    logging.debug("Exit 0")
+    sys.stdout.flush()
+    os._exit(0)
 #------------------------------------------------------------------------------
 # MAIN
 #------------------------------------------------------------------------------
@@ -527,23 +529,23 @@ parser.add_argument("--cyclesommeil", help="Wait time between 2 readline", type=
 args = parser.parse_args()
 
 if args.apikey:
-	globals.apikey = args.apikey
+    globals.apikey = args.apikey
 if args.loglevel:
-	globals.log_level = args.loglevel
+    globals.log_level = args.loglevel
 if args.callback:
-	globals.callback = args.callback
+    globals.callback = args.callback
 if args.socketport:
     globals.socketport = args.socketport
 if args.sockethost:
     globals.sockethost = args.sockethost
 if args.cycle:
-	globals.cycle = float(args.cycle)
+    globals.cycle = float(args.cycle)
 if args.port:
-	globals.port = args.port
+    globals.port = args.port
 if args.vitesse:
-	globals.vitesse = args.vitesse
+    globals.vitesse = args.vitesse
 if args.mode:
-	globals.mode = args.mode
+    globals.mode = args.mode
 if args.cyclesommeil:
     globals.cycle_sommeil = float(args.cyclesommeil)
 
@@ -569,8 +571,8 @@ globals.pidfile = "/tmp/jeedom/teleinfo/teleinfo2cpt.pid"
 jeedom_utils.write_pid(str(globals.pidfile))
 globals.JEEDOM_COM = jeedom_com(apikey = globals.apikey,url = globals.callback,cycle=globals.cycle)
 if not globals.JEEDOM_COM.test():
-	logging.error('GLOBAL------Network communication issues. Please fix your Jeedom network configuration.')
-	shutdown()
+    logging.error('GLOBAL------Network communication issues. Please fix your Jeedom network configuration.')
+    shutdown()
 jeedom_socket = jeedom_socket(port=globals.socketport,address=globals.sockethost)
 listen()
 sys.exit()
