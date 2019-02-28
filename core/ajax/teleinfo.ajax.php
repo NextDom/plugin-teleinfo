@@ -43,6 +43,9 @@ try {
             teleinfo::cron();
             ajax::success();
         break;
+        case 'changeLogLive':
+            ajax::success(teleinfo::changeLogLive(init('level')));
+        break;
         case 'getTeleinfo':
             if (init('object_id') == '') {
                 $_GET['object_id'] = $_SESSION['user']->getOptions('defaultDashboardObject');

@@ -112,23 +112,7 @@ try {
                 <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">Activer les traces ERDF <sup><i class="fa fa-question-circle tooltips" title="{{A utiliser lors de demande de support}}" style="font-size : 1em;color:grey;"></i></sup> </label>
-            <div id="div_debug" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
-                <!--<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{Oui}}</label>-->
-                <input type="checkbox" id="debug" class="configKey" data-l1key="debug" placeholder="{{}}"/>
-                <label for="debug">  </label>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label class="col-lg-4 control-label">/!\ Forcer <sup><i class="fa fa-question-circle tooltips" title="{{Attention pas de vérification de conformité des paramètres}}" style="font-size : 1em;color:grey;"></i></sup></label>
-            <div id="div_debug" class="col-lg-4 tooltips"  title="{{Attention pas de vérification de conformité des paramètres}}">
-                <!--<label class="checkbox-inline"><input id="force" type="checkbox" class="configKey" data-l1key="force" />{{Oui}}</label>-->
-                <input type="checkbox" id="force" class="configKey" data-l1key="force" placeholder="{{Actif}}"/>
-                <label for="force">  </label>
-            </div>
-        </div>
         <div class="form-group">
             <label class="col-lg-4 control-label">Bloquer la création automatique des compteurs <sup><i class="fa fa-question-circle tooltips" title="{{Interdire la création automatique des nouveaux compteurs}}" style="font-size : 1em;color:grey;"></i></sup></label>
             <div id="div_auth_new_object" class="col-lg-4 tooltips"  title="{{Interdire la création automatique des nouveaux compteurs}}">
@@ -217,23 +201,6 @@ try {
                     <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-lg-4 control-label">Activer les traces ERDF </label>
-                <div id="div_debug_production" class="col-lg-4 tooltips" title="{{ Afficher les traces ERDF }}">
-                    <!--<label class="checkbox-inline"><input id="debug" type="checkbox" class="configKey" data-l1key="debug" />{{Oui}}</label>-->
-                    <input type="checkbox" id="debug_production" class="configKey" data-l1key="debug_production" placeholder="{{}}"/>
-                    <label for="debug_production"> Oui </label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-lg-4 control-label">/!\ Forcer <sup><i class="fa fa-question-circle tooltips" title="{{Attention pas de vérification de conformité des paramètres}}" style="font-size : 1em;color:grey;"></i></sup></label>
-                <div id="div_force_production" class="col-lg-4 tooltips"  title="{{Attention pas de vérification de conformité des paramètres}}">
-                    <!--<label class="checkbox-inline"><input id="force" type="checkbox" class="configKey" data-l1key="force" />{{Oui}}</label>-->
-                    <input type="checkbox" id="force_production" class="configKey" data-l1key="force_production" placeholder="{{Actif}}"/>
-                    <label for="force_production"> Oui </label>
-                </div>
-            </div>
         </div>
     </fieldset>
     <fieldset>
@@ -243,8 +210,27 @@ try {
             <span style="top:6px;" class="col-lg-4"><?php echo $core_version; ?></span>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Diagnostique <sup><i class="fa fa-question-circle tooltips" title="{{Rechercher la cause d'un disfonctionnement}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <label class="col-lg-4 control-label">Diagnostic <sup><i class="fa fa-question-circle tooltips" title="{{Rechercher la cause d'un disfonctionnement}}" style="font-size : 1em;color:grey;"></i></sup></label>
             <span style="top:6px;" class="col-lg-4"><a class="btn btn-sm btn-info" id="btn_diagnostic" style="position:relative;top:-5px;"><i class="divers-svg"></i> Démarrer</a></span>
+        </div>
+        <div class="form-group">
+    	    <label class="col-lg-4 control-label">{{Port socket interne (modification dangereuse)}}</label>
+    	    <div class="col-lg-2">
+    	        <input class="configKey form-control" data-l1key="socketport" placeholder="{{55062}}" />
+    	    </div>
+        </div>
+        <div class="form-group">
+    			<label class="col-sm-4 control-label">{{Cycle (s)}}</label>
+    			<div class="col-sm-2">
+    				<input class="configKey form-control" data-l1key="cycle" placeholder="{{0.5}}"/>
+    			</div>
+    	</div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label"></label>
+            <div class="col-sm-4">
+        		<a class="btn btn-warning changeLogLive" data-log="logdebug"><i class="fa fa-cogs"></i> {{Mode debug forcé temporaire}}</a>
+        		<a class="btn btn-success changeLogLive" data-log="lognormal"><i class="fa fa-paperclip"></i> {{Remettre niveau de log local}}</a>
+        	</div>
         </div>
     </fieldset>
 </form>
@@ -299,6 +285,27 @@ try {
         });
         });
 
+        $('.changeLogLive').on('click', function () {
+	           $.ajax({// fonction permettant de faire de l'ajax
+                type: "POST", // methode de transmission des données au fichier php
+                url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
+                data: {
+                    action: "changeLogLive",
+    				level : $(this).attr('data-log')
+                },
+                dataType: 'json',
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { // si l'appel a bien fonctionné
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    $('#div_alert').showAlert({message: '{{Réussie}}', level: 'success'});
+                }
+            });
+    });
 
 </script>
 
