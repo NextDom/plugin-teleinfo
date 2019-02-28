@@ -363,7 +363,7 @@ class teleinfo extends eqLogic
         $return['state']      = 'nok';
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         if ($twoCptCartelectronic == 1) {
-            $pidFile = '/tmp/teleinfo2cpt.pid';
+            $pidFile = '/tmp/jeedom/teleinfo/teleinfo2cpt.pid';
         } else {
             $pidFile = '/tmp/jeedom/teleinfo/teleinfo_conso.pid';
         }
@@ -376,7 +376,7 @@ class teleinfo extends eqLogic
         }
         $productionActivated = config::byKey('activation_production', 'teleinfo');
         if ($productionActivated == 1) {
-            $pidFile = '/tmp/teleinfo_prod.pid';
+            $pidFile = '/tmp/jeedom/teleinfo/teleinfo_prod.pid';
             if (file_exists($pidFile)) {
                 if (posix_getsid(trim(file_get_contents($pidFile)))) {
                     $return['state'] = 'ok';
@@ -423,7 +423,7 @@ class teleinfo extends eqLogic
             } else {
                 $productionActivated = config::byKey('activation_production', 'teleinfo');
                 if ($productionActivated == 1) {
-                    $pidFile = '/tmp/teleinfo_prod.pid';
+                    $pidFile = '/tmp/jeedom/teleinfo/teleinfo_prod.pid';
                     if (file_exists($pidFile)) {
                         $pid  = intval(trim(file_get_contents($pidFile)));
                         $kill = posix_kill($pid, 15);
@@ -433,7 +433,7 @@ class teleinfo extends eqLogic
                         }
                     }
                 }
-                $pidFile = '/tmp/teleinfo_conso.pid';
+                $pidFile = '/tmp/jeedom/teleinfo/teleinfo_conso.pid';
                 if (file_exists($pidFile)) {
                     $pid  = intval(trim(file_get_contents($pidFile)));
                     $kill = posix_kill($pid, 15);
@@ -1011,24 +1011,26 @@ class teleinfo extends eqLogic
                 case "BBRHCJW":
                 case "BBRHCJR":
                 case "EJPHPM":
-                    log::add('teleinfo', 'debug', '=> index');
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> index');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     }
+					$cmd->setConfiguration('historizeMode', 'none');
                     $cmd->save();
                     $cmd->refresh();
                     break;
                 case "PAPP":
-                    log::add('teleinfo', 'debug', '=> papp');
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> papp');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                         $cmd->setDisplay('icon', '<i class=\"fa fa-tachometer\"><\/i>');
                     }
+					$cmd->setConfiguration('historizeMode', 'none');
                     $cmd->save();
                     $cmd->refresh();
                     break;
                 case "PTEC":
-                    log::add('teleinfo', 'debug', '=> ptec');
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> ptec');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     }
@@ -1036,7 +1038,7 @@ class teleinfo extends eqLogic
                     $cmd->refresh();
                     break;
                 default :
-                    log::add('teleinfo', 'debug', '=> default');
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> default');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     }
