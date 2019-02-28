@@ -29,6 +29,7 @@ if (init('test') != '') {
 }
 
 $args = array(
+	'device' => FILTER_SANITIZE_STRING,
     'BASE'   => FILTER_SANITIZE_STRING,
     'PAPP'   => FILTER_SANITIZE_STRING,
     'HCHP'   => FILTER_SANITIZE_STRING,
@@ -116,6 +117,7 @@ if (!is_array($result)) {
 	die();
 }
 
+
 $var_to_log = '';
 
 if (isset($result['device'])) {
@@ -148,23 +150,6 @@ if (isset($result['device'])) {
                         }
                     }
                 }
-                /*foreach ($eqlogic->getCmd('info') as $cmd) {
-                    $logicalId = $cmd->getLogicalId();
-                    if ( isset($flattenResults[$logicalId]) ) {
-                        $cmd->event($flattenResults[$logicalId]);
-                        if($healthEnable) {
-                            $healthCmd->setConfiguration($logicalId, array("name" => $logicalId, "value" => $flattenResults[$logicalId], "update_time" => date("Y-m-d H:i:s")));
-                            $healthCmd->save();
-                        }
-                    }
-                    else {
-                        //teleinfo::createCmdFromDef($data['device'], $logicalId, $flattenResults[$logicalId]);
-                        if($healthEnable) {
-                            $healthCmd->setConfiguration($logicalId, array("name" => $logicalId, "value" => $flattenResults[$logicalId], "update_time" => date("Y-m-d H:i:s")));
-                            $healthCmd->save();
-                        }
-                    }
-                }*/
             }
             else {
                 $teleinfo = ($result['device'] != '') ? teleinfo::createFromDef($result['device']) : teleinfo::createFromDef($result['device']);

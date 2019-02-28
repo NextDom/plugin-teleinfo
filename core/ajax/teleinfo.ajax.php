@@ -154,11 +154,6 @@ try {
                 ajax::success($return);
             }
         break;
-        case 'getInfoExternalDaemon':
-            $jeeNetwork = jeeNetwork::byPlugin('enocean');
-            $return['result'] = $jeeNetwork;
-            ajax::success($return);
-        break;
         case 'getHistory':
             $return = array();
             $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
