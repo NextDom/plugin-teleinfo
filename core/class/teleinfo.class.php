@@ -136,8 +136,6 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'info', 'Démarrage compteur de consommation');
         $teleinfoPath         = realpath(dirname(__FILE__) . '/../../ressources');
         $modemSerieAddr       = config::byKey('port', 'teleinfo');
-        $debug                = config::byKey('debug', 'teleinfo');
-        $force                = config::byKey('force', 'teleinfo');
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         $linky                = config::byKey('linky', 'teleinfo');
         $modemVitesse         = config::byKey('modem_vitesse', 'teleinfo');
@@ -181,24 +179,23 @@ class teleinfo extends eqLogic
         exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
 
         log::add('teleinfo', 'info', '--------- Informations sur le master --------');
-        log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . $internalComplement);
-        //log::add('teleinfo', 'info', 'Host / Port         :' . $parsed_url['host'] . ':' . $parsed_url['port']);
-        //log::add('teleinfo', 'info', 'Path complémentaire :' . $parsed_url['path']);
-        $ip_interne = $parsed_url['scheme'] . '://' . $parsed_url['host'] . ':' . $parsed_url['port'] . $parsed_url['path'];
-        log::add('teleinfo', 'info', 'Mise en forme pour le service : ' . $ip_interne);
-        //log::add('teleinfo', 'info', 'Debug : ' . $debug);
-        //log::add('teleinfo', 'info', 'Force : ' . $force);
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
         log::add('teleinfo', 'info', 'Type : ' . $type);
         log::add('teleinfo', 'info', 'Mode : ' . $mode);
-        $debug     = ($debug) ? "1" : "0";
-        $force     = ($force) ? "1" : "0";
         log::add('teleinfo', 'info', '---------------------------------------------');
 
         if ($twoCptCartelectronic == 1) {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteur');
-            $teleinfoPath = $teleinfoPath . '/teleinfo_2_cpt.py';
-            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $force . ' -r ' . realpath(dirname(__FILE__));
+            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo_2_cpt.py';
+			$cmd         .= ' --port ' . $port;
+            $cmd         .= ' --vitesse ' . $modemVitesse;
+            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
+            $cmd         .= ' --mode ' . $mode;
+            $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
+            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
+            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
+            $cmd         .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;			
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
             $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
@@ -1045,7 +1042,6 @@ class teleinfo extends eqLogic
                     break;
             }
         }
-        after_template:
         log::add('teleinfo', 'info', '==> Gestion des id des commandes');
         foreach ($this->getCmd('info') as $cmd) {
             log::add('teleinfo', 'debug', 'Commande : ' . $cmd->getConfiguration('info_conso'));
@@ -1104,6 +1100,7 @@ class teleinfo extends eqLogic
                 $cmd->setType('info');
                 $cmd->setConfiguration('info_conso', $array[$ii]);
                 $cmd->setConfiguration('type', 'panel');
+				$cmd->setConfiguration('historizeMode', 'none');
                 $cmd->setDisplay('generic_type', 'DONT');
                 $cmd->setSubType('numeric');
                 $cmd->setUnite('Wh');
