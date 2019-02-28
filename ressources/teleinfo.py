@@ -306,7 +306,8 @@ def handler(signum=None, frame=None):
 	shutdown()
 
 def shutdown():
-	logging.debug("GLOBAL------Shutdown")
+	jeedom_utils.set_log_level('info')
+	logging.info("GLOBAL------Shutdown")
 	#signal.signal(signal.SIGTERM, globals.SONYBRAVIA.exit_handler())
 	logging.debug("Shutdown")
 	logging.debug("Removing PID file " + str(globals.pidfile))
@@ -385,7 +386,6 @@ logging.info('GLOBAL------Cycle : '+str(globals.cycle))
 logging.info('GLOBAL------Port : '+str(globals.port))
 logging.info('GLOBAL------Type : '+str(globals.type))
 logging.info('GLOBAL------Mode : '+str(globals.mode))
-
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
 globals.pidfile = "/tmp/jeedom/teleinfo/teleinfo_"+globals.type+".pid"
