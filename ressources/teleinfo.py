@@ -60,6 +60,7 @@ class Teleinfo:
     def terminate(self):
         print "Terminating..."
         self.close()
+        os.remove("/tmp/teleinfo_" + options.type + ".pid")
         sys.exit()
 
     def read(self):
