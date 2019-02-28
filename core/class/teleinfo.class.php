@@ -170,16 +170,11 @@ class teleinfo extends eqLogic
             }
         }
 
-        if (config::byKey('internalComplement', 'core') !== "") {
-            $internalComplement = "/" . config::byKey('internalComplement', 'core');
-        } else {
-            $internalComplement = "";
-        }
-        $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . $internalComplement);
-        exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
+		exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
 
         log::add('teleinfo', 'info', '--------- Informations sur le master --------');
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
+		log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062'));
         log::add('teleinfo', 'info', 'Type : ' . $type);
         log::add('teleinfo', 'info', 'Mode : ' . $mode);
         log::add('teleinfo', 'info', '---------------------------------------------');
@@ -236,17 +231,15 @@ class teleinfo extends eqLogic
      * @param type $type
      * @return boolean
      */
-    public static function runProductionDeamon($_debug = false, $type = 'prod')
+    public static function runProductionDeamon($debug = false, $type = 'prod')
     {
         log::add('teleinfo', 'info', '[Production] Mode local');
         $teleinfoPath         = realpath(dirname(__FILE__) . '/../../ressources');
         $modemSerieAddr       = config::byKey('port_production', 'teleinfo');
-        $_debug               = config::byKey('debug_production', 'teleinfo');
-        $_force               = config::byKey('force_production', 'teleinfo');
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic_production', 'teleinfo');
         $linky                = config::byKey('linky_prod', 'teleinfo');
         $modemVitesse         = config::byKey('modem_vitesse_production', 'teleinfo');
-
+		$cycleSommeil         = config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_production_addr', 'teleinfo');
         } else {
@@ -278,36 +271,42 @@ class teleinfo extends eqLogic
             }
         }
 
-
-        $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
-
         log::add('teleinfo', 'info', '--------- Informations sur le master --------');
-        log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
-        log::add('teleinfo', 'info', 'Host / Port         :' . $parsed_url['host'] . ':' . $parsed_url['port']);
-        log::add('teleinfo', 'info', 'Path complémentaire :' . $parsed_url['path']);
-        $ip_interne = $parsed_url['scheme'] . '://' . $parsed_url['host'] . ':' . $parsed_url['port'] . $parsed_url['path'];
-        log::add('teleinfo', 'info', 'Mise en forme pour le service : ' . $ip_interne);
-        log::add('teleinfo', 'info', 'Debug : ' . $_debug);
-        log::add('teleinfo', 'info', 'Force : ' . $_force);
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
+		log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062') + 1);
         log::add('teleinfo', 'info', 'Type : ' . $type);
         log::add('teleinfo', 'info', 'Mode : ' . $mode);
-        $_debug     = ($_debug) ? "1" : "0";
-        $_force     = ($_force) ? "1" : "0";
         log::add('teleinfo', 'info', '---------------------------------------------');
 
         if ($twoCptCartelectronic == 1) {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteur');
-            $teleinfoPath = $teleinfoPath . '/teleinfo_2_cpt.py';
-            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
+            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo_2_cpt.py';
+            $cmd         .= ' --port ' . $port;
+            $cmd         .= ' --vitesse ' . $modemVitesse;
+            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
+            $cmd         .= ' --mode ' . $mode;
+            $cmd         .= ' --socketport ' . (config::byKey('socketport', 'teleinfo', '55062') + 1);
+            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
+            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
+            $cmd         .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;			
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
-            $teleinfoPath = $teleinfoPath . '/teleinfo.py';
-            $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -m ' . $mode . ' -r ' . realpath(dirname(__FILE__));
-        }
+            $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
+            $cmd         .= ' --port ' . $port;
+            $cmd         .= ' --vitesse ' . $modemVitesse;
+            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
+            $cmd         .= ' --type ' . $type;
+            $cmd         .= ' --mode ' . $mode;
+            $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
+            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
+            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
+            $cmd         .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
+		}
 
         log::add('teleinfo', 'info', '[Production] Exécution du service : ' . $cmd);
-        $result = exec('nohup ' . $cmd . ' >> ' . log::getPathToLog('teleinfo') . ' 2>&1 &');
+        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon') . ' 2>&1 &');
         if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
             log::add('teleinfo', 'error', $result);
             return false;

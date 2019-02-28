@@ -381,11 +381,19 @@ class Teleinfo(object):
             try:
                 if PENDING_CHANGES :
                     if num_compteur == 1:
-                        send_data["device"] = cpt1_data_temp["ADCO"]
-                        globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADCO"],send_data)
+						if globals.mode == "standard": # Zone linky standard
+							send_data["device"] = cpt1_data_temp["ADSC"]
+							globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADSC"],send_data)
+						else:
+							send_data["device"] = cpt1_data_temp["ADCO"]
+							globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADCO"],send_data)
                     elif num_compteur == 2:
-                        send_data["device"] = cpt2_data_temp["ADCO"]
-                        globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADCO"],send_data)
+                        if globals.mode == "standard": # Zone linky standard
+							send_data["device"] = cpt2_data_temp["ADSC"]
+							globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADSC"],send_data)
+						else:
+							send_data["device"] = cpt2_data_temp["ADCO"]
+							globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADCO"],send_data)
             except Exception:
                 errorCom = "Connection error"
                 logging.error(errorCom)
