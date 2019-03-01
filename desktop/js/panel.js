@@ -17,6 +17,8 @@
 
 //var globalIndexChart;
  var globalEqLogic = $( "#eqlogic_select option:selected" ).val();
+ var puissanceSeries = [];
+ var commandesPuissance = [];
 $(".in_datepicker").datepicker();
 
 
@@ -33,9 +35,11 @@ $( "#eqlogic_select" ).change(function() {
 });
 
 $('#bt_validChangeDate').on('click',function(){
+    puissanceSeries = [];
     //console.log($('#div_graphGlobalIndex').attr("cmd_id"));
-    getObjectHistory('div_graphGlobalPower', 'Simple', {'id': $('#div_graphGlobalPower').attr("cmd_id"), 'name': $('#div_graphGlobalPower').attr("cmd_name")});
-
+    $.each( commandesPuissance, function( key, value ) {
+        getObjectHistory('div_graphGlobalPower', 'Simple', {'id': value.id, 'name': value.name});
+    });
 });
 initHistoryTrigger();
 
@@ -77,6 +81,7 @@ $.ajax({
                                     break;
                                 case "SINSTS":
                                 case "PAPP":
+                                    commandesPuissance.push({"id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
                                     console.log("[loadData][PAPP] " + data.result[eqLogic].cmd[cmd].id);
                                     getObjectHistory('div_graphGlobalPower', 'Simple', data.result[eqLogic].cmd[cmd]);
                                     break;
@@ -266,8 +271,8 @@ function getTeleinfoObjectHistory(div, type, object) {
 }
 
 function getObjectHistory(div, type, object) {
-    $('#div_graphGlobalPower').attr( "cmd_id", object.id );
-    $('#div_graphGlobalPower').attr( "cmd_name", object.name );
+    //$('#div_graphGlobalPower').attr( "cmd_id", object.id );
+    //$('#div_graphGlobalPower').attr( "cmd_name", object.name );
     console.log("[getObjectHistory] Récupération de l'historique de la puissance");
     $.ajax({
         type: 'POST',
@@ -288,10 +293,11 @@ function getObjectHistory(div, type, object) {
             handleAjaxError(request, status, error);
         },
         success: function (data) {
+            var calculColor = "#" + (Math.random()*0xFFFFFF<<0).toString(16);
             switch(type)
             {
                 case 'Simple':
-                    var Series = [{
+                    puissanceSeries.push({
                         step: true,
                         name: '{{'+object.name+'}}',
                         data: data.result.data,
@@ -299,9 +305,19 @@ function getObjectHistory(div, type, object) {
                         tooltip: {
                             valueDecimals: 2
                         },
-                    }];
+                        color: calculColor,
+                    });
+                    /*var Series = [{
+                        step: true,
+                        name: '{{'+object.name+'}}',
+                        data: data.result.data,
+                        type: 'line',
+                        tooltip: {
+                            valueDecimals: 2
+                        },
+                    }];*/
                     //console.log(data.result.data);
-                    drawSimpleGraph(div, Series);
+                    drawSimpleGraph(div, puissanceSeries);
                 break;
                 case 'Stack':
                     drawStackGraph(div, Series);
