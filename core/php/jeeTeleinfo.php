@@ -19,7 +19,7 @@ require_once dirname(__FILE__) . "/../../../../core/php/core.inc.php";
 set_time_limit(15);
 
 if (!jeedom::apiAccess(init('apikey'), 'teleinfo')) {
-    echo __('Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (sonybravia)', __FILE__);
+    echo __('Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (teleinfo)', __FILE__);
     die();
 }
 

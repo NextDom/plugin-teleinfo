@@ -4,6 +4,7 @@ Change log
 
 * Refonte de la communication entre le démon et jeedom.
 * Mise à niveau pour compatibilité
+* Changement de l'API
 
 ### 3.0.2
 
