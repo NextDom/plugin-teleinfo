@@ -190,7 +190,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
             $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;			
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
             $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
@@ -284,7 +284,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
             $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;			
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
         } else {
             log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
             $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
@@ -724,11 +724,11 @@ class teleinfo extends eqLogic
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HC) ==> ' . intval($statYesterdayHc));
                             $cmd->event(intval($statYesterdayHc));
                             break;
-                        case "statMonth_LAST_YEAR":
+                        case "STAT_MONTH_LAST_YEAR":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois an -1 ==> ' . intval($statMonthLastYearHc) + intval($statMonthLastYearHp));
                             $cmd->event(intval($statMonthLastYearHc) + intval($statMonthLastYearHp));
                             break;
-                        case "statYear_LAST_YEAR":
+                        case "STAT_YEAR_LAST_YEAR":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique an-1 ==> ' . intval($statYearLastYearHc) + intval($statYearLastYearHp));
                             $cmd->event(intval($statYearLastYearHc) + intval($statYearLastYearHp));
                             break;
@@ -736,107 +736,107 @@ class teleinfo extends eqLogic
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois dernier ==> ' . intval($statLastMonth));
                             $cmd->event(intval($statLastMonth));
                             break;
-                        case "statMonth":
+                        case "STAT_MONTH":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois en cours ==> ' . intval($statMonth));
                             $cmd->event(intval($statMonth));
                             break;
-                        case "statYear":
+                        case "STAT_YEAR":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique anuelle ==> ' . intval($statYear));
                             $cmd->event(intval($statYear));
                             break;
-                        case "statJanHp":
+                        case "STAT_JAN_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique janvier (HP) ==> ' . intval($statJanHp));
                             $cmd->event(intval($statJanHp));
                             break;
-                        case "statJanHc":
+                        case "STAT_JAN_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique janvier (HC) ==> ' . intval($statJanHc));
                             $cmd->event(intval($statJanHc));
                             break;
-                        case "statFevHp":
+                        case "STAT_FEV_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique février (HP) ==> ' . intval($statFevHp));
                             $cmd->event(intval($statFevHp));
                             break;
-                        case "statFevHc":
+                        case "STAT_FEV_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique février (HC) ==> ' . intval($statFevHc));
                             $cmd->event(intval($statFevHc));
                             break;
-                        case "statMarHp":
+                        case "STAT_MAR_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique mars (HP) ==> ' . intval($statMarHp));
                             $cmd->event(intval($statMarHp));
                             break;
-                        case "statMarHc":
+                        case "STAT_MAR_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique mars (HC) ==> ' . intval($statMarHc));
                             $cmd->event(intval($statMarHc));
                             break;
-                        case "statAvrHp":
+                        case "STAT_AVR_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique avril (HP) ==> ' . intval($statAvrHp));
                             $cmd->event(intval($statAvrHp));
                             break;
-                        case "statAvrHc":
+                        case "STAT_AVR_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique avril (HC) ==> ' . intval($statAvrHc));
                             $cmd->event(intval($statAvrHc));
                             break;
-                        case "statMaiHp":
+                        case "STAT_MAI_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique mai (HP) ==> ' . intval($statMaiHp));
                             $cmd->event(intval($statMaiHp));
                             break;
-                        case "statMaiHc":
+                        case "STAT_MAI_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique mai (HC) ==> ' . intval($statMaiHc));
                             $cmd->event(intval($statMaiHc));
                             break;
-                        case "statJuinHp":
+                        case "STAT_JUIN_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique juin (HP) ==> ' . intval($statJuinHp));
                             $cmd->event(intval($statJuinHp));
                             break;
-                        case "statJuinHc":
+                        case "STAT_JUIN_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique juin (HC) ==> ' . intval($statJuinHc));
                             $cmd->event(intval($statJuinHc));
                             break;
-                        case "statJuiHp":
+                        case "STAT_JUI_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique juillet (HP) ==> ' . intval($statJuiHp));
                             $cmd->event(intval($statJuiHp));
                             break;
-                        case "statJuiHc":
+                        case "STAT_JUI_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique juillet (HC) ==> ' . intval($statJuiHc));
                             $cmd->event(intval($statJuiHc));
                             break;
-                        case "statAouHp":
+                        case "STAT_AOU_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique août (HP) ==> ' . intval($statAouHp));
                             $cmd->event(intval($statAouHp));
                             break;
-                        case "statAouHc":
+                        case "STAT_AOU_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique août (HC) ==> ' . intval($statAouHc));
                             $cmd->event(intval($statAouHc));
                             break;
-                        case "statSepHp":
+                        case "STAT_SEP_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique septembre (HP) ==> ' . intval($statSepHp));
                             $cmd->event(intval($statSepHp));
                             break;
-                        case "statSepHc":
+                        case "STAT_SEP_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique septembre (HC) ==> ' . intval($statSepHc));
                             $cmd->event(intval($statSepHc));
                             break;
-                        case "statOctHp":
+                        case "STAT_OCT_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique octobre (HP) ==> ' . intval($statOctHp));
                             $cmd->event(intval($statOctHp));
                             break;
-                        case "statOctHc":
+                        case "STAT_OCT_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique octobre (HC) ==> ' . intval($statOctHc));
                             $cmd->event(intval($statOctHc));
                             break;
-                        case "statNovHp":
+                        case "STAT_NOV_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique novembre (HP) ==> ' . intval($statNovHp));
                             $cmd->event(intval($statNovHp));
                             break;
-                        case "statNovHc":
+                        case "STAT_NOV_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique novembre (HC) ==> ' . intval($statNovHc));
                             $cmd->event(intval($statNovHc));
                             break;
-                        case "statDecHp":
+                        case "STAT_DEC_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique décembre (HP) ==> ' . intval($statDecHp));
                             $cmd->event(intval($statDecHp));
                             break;
-                        case "statDecHc":
+                        case "STAT_DEC_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique décembre (HC) ==> ' . intval($statDecHc));
                             $cmd->event(intval($statDecHc));
                             break;
@@ -900,7 +900,7 @@ class teleinfo extends eqLogic
 
                 cache::set('teleinfo::stat_moy_last_hour::hc', $ppapHc, 7200);
                 cache::set('teleinfo::stat_moy_last_hour::hp', $ppapHp, 7200);
-            } 
+            }
 			else {
                 log::add('teleinfo', 'debug', 'Pas de calcul');
             }
@@ -1076,7 +1076,7 @@ class teleinfo extends eqLogic
 
     public function createPanelStats()
     {
-        $array = array("statJanHp", "statJanHc", "statFevHp", "statFevHc", "statMarHp", "statMarHc", "statAvrHp", "statAvrHc", "statMaiHp", "statMaiHc", "statJuinHp", "statJuinHc", "statJuiHp", "statJuiHc", "statAouHp", "statAouHc", "statSepHp", "statSepHc", "statOctHp", "statOctHc", "statNovHp", "statNovHc", "statDecHp", "statDecHc", "statMonth_LAST_YEAR", "statYear_LAST_YEAR");
+        $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC", "STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR");
         for ($ii = 0; $ii < 26; $ii++) {
             $cmd = $this->getCmd('info', $array[$ii]);
             if ($cmd === false) {
