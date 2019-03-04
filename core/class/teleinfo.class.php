@@ -626,7 +626,7 @@ class teleinfo extends eqLogic
         $enddateyear   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
 
         $startdatemonth = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), 1, date("Y")));
-        $enddatemonth   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d"), date("Y")));
+        $enddatemonth   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
 
         $startdatelastmonth = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
         $enddatelastmonth   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m") - 1, date("t", mktime(0, 0, 0, date("m") - 1, date("d"), date("Y"))), date("Y")));
