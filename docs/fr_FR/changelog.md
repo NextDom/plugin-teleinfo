@@ -1,5 +1,10 @@
 Change log
 
+### 4.0.1 (03-03-2019)
+
+* Bugfix de l'interval calcul des stats mois et année.
+* Automation de la création de certaines stats pour le panel.
+
 ### 4.0.0  (28-02-2019)
 
 * Refonte de la communication entre le démon et jeedom.
