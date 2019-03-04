@@ -193,13 +193,6 @@ $.ajax({
             }
         }
     });
-
-    /*var pourcentMonth = ($('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]').text() / $('.teleinfoAttr[data-l1key=conso][data-l2key=month]').text()) *100;
-    $('#prg_month').attr( "aria-valuenow", pourcentMonth);
-    $('#prg_month').attr( "style","width: "+ pourcentMonth +"%;");
-    $('#prg_month').text( pourcentMonth +"%");*/
-
-
 }
 
 function getTeleinfoCmdValue(cmd) {
@@ -273,7 +266,7 @@ function getTeleinfoObjectHistory(div, type, object) {
 function getObjectHistory(div, type, object) {
     //$('#div_graphGlobalPower').attr( "cmd_id", object.id );
     //$('#div_graphGlobalPower').attr( "cmd_name", object.name );
-    console.log("[getObjectHistory] Récupération de l'historique de la puissance");
+    console.log("[getObjectHistory] Récupération de l'historique pour la commande " + object.name);
     $.ajax({
         type: 'POST',
         async:true,
@@ -307,16 +300,6 @@ function getObjectHistory(div, type, object) {
                         },
                         color: calculColor,
                     });
-                    /*var Series = [{
-                        step: true,
-                        name: '{{'+object.name+'}}',
-                        data: data.result.data,
-                        type: 'line',
-                        tooltip: {
-                            valueDecimals: 2
-                        },
-                    }];*/
-                    //console.log(data.result.data);
                     drawSimpleGraph(div, puissanceSeries);
                 break;
                 case 'Stack':
@@ -334,6 +317,7 @@ function getObjectHistory(div, type, object) {
         timeout: 10000 // sets timeout to 3 seconds
     });
 }
+
 function drawPieChart(_el, _data, _title) {
     new Highcharts.Chart({
         chart: {
@@ -551,8 +535,8 @@ function drawStackColumnChart(_el, _data){
         tooltip: {
             formatter: function () {
                 return '<b>' + this.x + '</b><br/>' +
-                    this.series.name + ': ' + this.y + '<br/>' +
-                    'Total: ' + this.point.stackTotal;
+                    this.series.name + ': ' + this.y + ' kWh<br/>' +
+                    'Total: ' + this.point.stackTotal + ' kWh';
             }
         },
         plotOptions: {
