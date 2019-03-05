@@ -1,5 +1,9 @@
 Change log
 
+### 4.1.1 (05-03-2019)
+
+* Correction de la ré-envoi des données.
+
 ### 4.1.0 (05-03-2019)
 
 * Ajout d'un affichage sur le panel

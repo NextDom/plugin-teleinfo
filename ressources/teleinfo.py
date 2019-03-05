@@ -196,8 +196,8 @@ class Teleinfo:
             self.terminate()
             return
         # Read a frame
+        raz_time = datetime.now()
         while(1):
-            raz_time = datetime.now()
             raz_calcul = datetime.now() - raz_time
             if raz_calcul.seconds > 60:
                 raz_time = datetime.now()
