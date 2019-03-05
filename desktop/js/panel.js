@@ -19,6 +19,7 @@
  var globalEqLogic = $( "#eqlogic_select option:selected" ).val();
  var puissanceSeries = [];
  var commandesPuissance = [];
+ var commandesStat = [];
 $(".in_datepicker").datepicker();
 
 
@@ -38,7 +39,10 @@ $('#bt_validChangeDate').on('click',function(){
     puissanceSeries = [];
     //console.log($('#div_graphGlobalIndex').attr("cmd_id"));
     $.each( commandesPuissance, function( key, value ) {
-        getObjectHistory('div_graphGlobalPower', 'Simple', {'id': value.id, 'name': value.name});
+        getObjectHistory('div_graphGlobalPower', 'Simple', {'id': value.id, 'name': value.name}, 'refresh');
+    });
+    $.each( commandesStat, function( key, value ) {
+        getDailyHistory('div_graphGlobalJournalier', {'id': value.id, 'name': value.name}, 'refresh');
     });
 });
 initHistoryTrigger();
@@ -87,7 +91,9 @@ $.ajax({
                                     break;
                                 case "STAT_TODAY":
                                     console.log("[loadData][STAT_TODAY] " + data.result[eqLogic].cmd[cmd].value);
+                                    commandesStat.push({"id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
                                     $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text((data.result[eqLogic].cmd[cmd].value)/1000);
+                                    getDailyHistory('div_graphGlobalJournalier',data.result[eqLogic].cmd[cmd])
                                     break;
                                 case "STAT_MONTH":
                                     console.log("[loadData][STAT_MONTH] " + data.result[eqLogic].cmd[cmd].value);
@@ -195,25 +201,6 @@ $.ajax({
     });
 }
 
-function getTeleinfoCmdValue(cmd) {
-    $.ajax({
-        type: 'POST',
-        async:true,
-        url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
-        data: {
-            action:'getValue',
-            id:object.id
-            },
-        dataType: 'json',
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-
-        }
-    });
-}
-
 
 function getTeleinfoObjectHistory(div, type, object) {
     $.ajax({
@@ -263,9 +250,14 @@ function getTeleinfoObjectHistory(div, type, object) {
     });
 }
 
-function getObjectHistory(div, type, object) {
+function getObjectHistory(div, type, object, action = 'none') {
     //$('#div_graphGlobalPower').attr( "cmd_id", object.id );
     //$('#div_graphGlobalPower').attr( "cmd_name", object.name );
+    if(action === 'refresh'){
+        startDate = $('#in_startDate').value()
+    }else {
+        startDate = $('#in_endDate').value()
+    }
     console.log("[getObjectHistory] Récupération de l'historique pour la commande " + object.name);
     $.ajax({
         type: 'POST',
@@ -274,8 +266,8 @@ function getObjectHistory(div, type, object) {
         data: {
             action:'getHistory',
             id:object.id,
-            dateRange:'7 days',
-            dateStart:$('#in_startDate').value(),
+            dateRange:'1 day',
+            dateStart:startDate,
             dateEnd:$('#in_endDate').value(),
             derive:'',
             allowZero:1
@@ -313,6 +305,104 @@ function getObjectHistory(div, type, object) {
                     drawPieChart(div, Series, '{{'+object.name+'}}');
                 break;
             }
+        },
+        timeout: 10000 // sets timeout to 3 seconds
+    });
+}
+
+function getDailyHistory(div,  object) {
+    console.log("[getDailyHistory] Récupération de l'historique pour la commande " + object.name);
+    $.ajax({
+        type: 'POST',
+        async:true,
+        url: "core/ajax/cmd.ajax.php", // url du fichier php
+        data: {
+            action:'getHistory',
+            id:object.id,
+            dateRange:'7 days',
+            dateStart:$('#in_startDate').value(),
+            dateEnd:$('#in_endDate').value(),
+            derive:'',
+            allowZero:1
+            },
+        dataType: 'json',
+        error: function (request, status, error) {
+            console.log("[getObjectHistory] Erreur lors de la récupération" + error);
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) {
+            new Highcharts.Chart({
+                chart: {
+                    renderTo: div,
+                    type: 'column',
+                    height: 350,
+                    spacingTop: 5,
+                    spacingLeft: -15,
+                    spacingRight: 0,
+                    spacingBottom: 0
+                },
+                title: {
+                    text: ''
+                },
+                credits: {
+                    text: 'Copyright Jeedom',
+                    href: 'http://jeedom.fr',
+                },
+                xAxis: {
+                    type: 'datetime',
+                    ordinal: false,
+                    maxPadding : 0.02,
+                    minPadding : 0.02
+                },
+                yAxis: [{ // Primary yAxis
+                    labels: {
+                         formatter: function(){
+                             return this.value/1000 + " kWh";
+                    },
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                    title: {
+                        text: 'Consommation',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    }
+                }],
+                navigator: {
+                    enabled: false
+                },
+                legend: {
+                    align: 'right',
+                    x: -30,
+                    verticalAlign: 'top',
+                    y: 25,
+                    floating: true,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                    borderColor: '#CCC',
+                    borderWidth: 1,
+                    shadow: false
+                },
+                tooltip: {
+                    xDateFormat: '%Y-%m-%d %H:%M:%S',
+                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+                    valueDecimals: 2,
+                    formatter: function(){
+                        return '<b>' + Highcharts.dateFormat('%e %b %Y', new Date(this.x))+ '</b><br/>' + this.y/1000 + ' kWh';
+                    },
+                },
+                series: [{
+                        name: data.result.cmd_name,
+                        data: data.result.data,
+                        dataGrouping: {
+                            approximation: 'high',
+                            enabled: true,
+                            forced: true,
+                            units: [['day',[1]]]
+                        },
+                    }]
+            });
         },
         timeout: 10000 // sets timeout to 3 seconds
     });
@@ -634,17 +724,6 @@ function drawSimpleGraph(_el, _serie) {
                 align: 'right',
                 x: -5
             }
-        },
-        scrollbar: {
-            barBackgroundColor: 'gray',
-            barBorderRadius: 7,
-            barBorderWidth: 0,
-            buttonBackgroundColor: 'gray',
-            buttonBorderWidth: 0,
-            buttonBorderRadius: 7,
-            trackBackgroundColor: 'none', trackBorderWidth: 1,
-            trackBorderRadius: 8,
-            trackBorderColor: '#CCC'
         },
         series: _serie
     });
