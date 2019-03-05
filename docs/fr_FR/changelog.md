@@ -1,5 +1,9 @@
 Change log
 
+### 4.1.0 (05-03-2019)
+
+* Ajout d'un affichage sur le panel
+
 ### 4.0.1 (03-03-2019)
 
 * Bugfix de l'interval calcul des stats mois et année.
