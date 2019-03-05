@@ -113,8 +113,12 @@ $eqLogics = eqLogic::byType('teleinfo');
 			<div id='div_graphGlobalPower'></div>
 		</div>
 		<div class="col-lg-6">
-			<legend>Evolution de la consommation</legend>
+			<legend>Evolution de la consommation mensuelle</legend>
 			<div id='div_graphGlobalIndex'></div>
+		</div>
+        <div class="col-lg-6">
+			<legend>Evolution de la consommation journalière</legend>
+			<div id='div_graphGlobalJournalier'></div>
 		</div>
 	</div>
 </div>

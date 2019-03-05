@@ -1,65 +1,74 @@
 Change log
-==========
 
-> Detail complet des mises à jour sur [Historique
-> Commit](https://github.com/NextDom/plugin-teleinfo/commits/master)
+### 4.1.1 (05-03-2019)
 
-A venir
-=====
-- Docs au nouveau standard (github pages)
-- Refaire fonctionner le mode 2 compteurs.
-- Noms des variables et fonctions
+* Correction de la ré-envoi des données.
 
-3.0.2 Stable [![Stable](https://img.shields.io/badge/version-stable-brightgreen.svg?longCache=true&style=flat-square)](https://github.com/NextDom/plugin-teleinfo/releases)
-=====
-- Droits sur le port
+### 4.1.0 (05-03-2019)
 
-3.0.1
-=====
-- Correction erreur horodatage
+* Ajout d'un affichage sur le panel
 
-3.0.0
-=====
-- Compatibilité Linky
-- Fonction diagnostique
+### 4.0.1 (03-03-2019)
 
-2.7.3
-=====
-- Bugfix sur le démon afin de prévenir des crash dans certaines conditions.
+* Bugfix de l'interval calcul des stats mois et année.
+* Automation de la création de certaines stats pour le panel.
 
-2.7.2
-=====
-- Bugfix sur les dépendances utilisées
+### 4.0.0  (28-02-2019)
 
-2.7.1
-=====
-- Problème lors de l'installation des dépendances
+* Refonte de la communication entre le démon et jeedom.
+* Mise à niveau pour compatibilité
+* Changement de l'API
 
-2.7.0
-=====
-- Issue du démon 2 compteurs et librairie ftdi.
-- Reprise du processus des dépendances.
-- Erreurs 500 sur le panel.
-- Suppresion de fonctions dépréciés
+### 3.0.2
 
-2.6.4
-=====
-- Bugfix erreur lors de l'enregistrement
+* Droits sur le port
 
-2.6.3
-=====
-- Lancement du démon pour la partie production
+### 3.0.1
 
-2.6.2
-=====
-- Etat du démon pour le mode 2 compteurs
+* Correction erreur horodatage
 
-2.6.1
-=====
-- Revue de certains designs
-- Ajout de la fonction compteur de production
+### 3.0.0
 
-2.6.0
-=====
-- Modification du panel
-- Ajout de statistiques
+* Compatibilité Linky
+* Fonction diagnostique
+
+### 2.7.3
+
+* Bugfix sur le démon afin de prévenir des crash dans certaines conditions.
+
+### 2.7.2
+
+* Bugfix sur les dépendances utilisées
+
+### 2.7.1
+
+* Problème lors de l'installation des dépendances
+
+### 2.7.0
+
+* Issue du démon 2 compteurs et librairie ftdi.
+* Reprise du processus des dépendances.
+* Erreurs 500 sur le panel.
+* Suppresion de fonctions dépréciés
+
+### 2.6.4
+
+* Bugfix erreur lors de l'enregistrement
+
+### 2.6.3
+
+* Lancement du démon pour la partie production
+
+### 2.6.2
+
+* Etat du démon pour le mode 2 compteurs
+
+### 2.6.1
+
+* Revue de certains designs
+* Ajout de la fonction compteur de production
+
+### 2.6.0
+
+* Modification du panel
+* Ajout de statistiques
