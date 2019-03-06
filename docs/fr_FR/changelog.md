@@ -1,4 +1,6 @@
-Change log
+# Changelog
+
+Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
 ### 4.1.1 (05-03-2019)
 
