@@ -187,14 +187,6 @@ class Teleinfo:
         separateur = " "
         send_data = ""
 
-        # Open Teleinfo modem
-        try:
-            logging.info("TELEINFO------RUN")
-            self.open()
-        except error as err:
-            logging.error(err.value)
-            self.terminate()
-            return
         # Read a frame
         raz_time = datetime.now()
         while(1):
@@ -295,6 +287,17 @@ def listen():
 	logging.debug('GLOBAL------Read Socket Thread Launched')
 	while 1:
 		try:
+			try:
+				logging.info("TELEINFO------RUN")
+				globals.TELEINFO.open()
+			except error as err:
+				logging.error(err.value)
+				globals.TELEINFO.terminate()
+				return
+			log = logging.getLogger()
+			for hdlr in log.handlers[:]:
+				log.removeHandler(hdlr)
+			jeedom_utils.set_log_level('error')
 			globals.TELEINFO.run()
 		except Exception as e:
 			print("Error:")
@@ -306,11 +309,12 @@ def handler(signum=None, frame=None):
 	shutdown()
 
 def shutdown():
-	jeedom_utils.set_log_level('info')
+	log = logging.getLogger()
+	for hdlr in log.handlers[:]:
+		log.removeHandler(hdlr)
+	jeedom_utils.set_log_level('debug')
 	logging.info("GLOBAL------Shutdown")
-	#signal.signal(signal.SIGTERM, globals.SONYBRAVIA.exit_handler())
-	logging.debug("Shutdown")
-	logging.debug("Removing PID file " + str(globals.pidfile))
+	logging.info("Removing PID file " + str(globals.pidfile))
 	try:
 		os.remove(globals.pidfile)
 	except:
