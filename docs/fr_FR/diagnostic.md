@@ -1,4 +1,4 @@
-Diagnostique
+Diagnostic
 ===
 Il est possible de lancer un diagnostique sur le plugin afin de tenter de détecter les problèmes.
 Pour cela un bouton est mis à disposition sur la page configuration du plugin

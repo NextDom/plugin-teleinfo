@@ -11,18 +11,20 @@ URL = http://#IP_JEEDOM#:#PORT_JEEDOM#/jeedom/plugins/teleinfo/core/php/jeeTelei
 
  #PORT_JEEDOM# correspond au port d'accès à votre Jeedom
 
- #VOTRE_API_JEEDOM# est la clé API disponible depuis le menu Général / Administration / Configuration
+ #VOTRE_API_JEEDOM# est la clé API disponible depuis Roue Cranté / Configuration
 
  ![teleinfo8](../images/teleinformation_api_menu1.png)
 
 En paramètre du POST l'information device est obligatoire et correspond à l'identifiant du compteur.
+```
 {
 "device": {
     "#IDENTIFIANT_DU_COMPTEUR#" : { "device":"#IDENTIFIANT_DU_COMPTEUR#", "#CLE#":"#VALEUR#", "#CLE#":"#VALEUR#" }
     }
 }
+```
 
-Attention le /jeedom peux être différent si vous êtes sur une installation DIY ou OEM. En règle générale il faut l'ajouter.
+Attention le /jeedom peux être différent si vous êtes sur une installation DIY ou OEM.
 
 Par exemple pour l'index d'un abonnement BASE EDF équivalent à 123456789 :
 
