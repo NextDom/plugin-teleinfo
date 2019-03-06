@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.1.3 (06-03-2019)
+
+* Erreur lors de la création automatique d'un compteur.
+
 ### 4.1.2 (06-03-2019)
 
 * Correction des dépendances

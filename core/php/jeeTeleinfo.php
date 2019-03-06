@@ -152,9 +152,9 @@ if (isset($result['device'])) {
                 }
             }
             else {
-                $teleinfo = ($result['device'] != '') ? teleinfo::createFromDef($result['device']) : teleinfo::createFromDef($result['device']);
+                $teleinfo = ($data['device'] != '') ? teleinfo::createFromDef($data['device']) : teleinfo::createFromDef($data['device']);
                 if (!is_object($teleinfo)) {
-                    log::add('teleinfo', 'info', 'Aucun équipement trouvé pour le compteur n°' . $adco . $adsc);
+                    log::add('teleinfo', 'info', 'Aucun équipement trouvé pour le compteur n°' . $data['device']);
                     die();
                 }
             }
