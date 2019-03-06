@@ -5,7 +5,7 @@ Il s'agit d'une URL d'appel de type POST.
 
 Pour y accéder ces informations sont obligatoires :
 
-URL = http://#IP_JEEDOM#:#PORT_JEEDOM#/jeedom/plugins/teleinfo/core/php/jeeTeleinfo.php?api=#VOTRE_API_JEEDOM#
+URL = http://#IP_JEEDOM#:#PORT_JEEDOM#/jeedom/plugins/teleinfo/core/php/jeeTeleinfo.php?apikey=#VOTRE_API_JEEDOM#
 
  #IP_JEEDOM# correspond à l'adresse ip de votre Jeedom
 
@@ -33,12 +33,13 @@ Par exemple pour l'index d'un abonnement BASE EDF équivalent à 123456789 :
     Index BASE : 123456789
 
 Donnera l'URL : http://192.168.1.15:80/jeedom/plugins/teleinfo/core/php/jeeTeleinfo.php?apikey=zertyuiolkjhgfdsxc
-
+```
 {
 "device": {
     "0095123657" : { "device":"0095123657", "BASE":"123456789" }
     }
 }
+```
 
 Il est possible d'envoyer toutes les informations transmises par les compteurs suivant les étiquettes définie par la norme.
 Quelques unes (Les plus connues) :
