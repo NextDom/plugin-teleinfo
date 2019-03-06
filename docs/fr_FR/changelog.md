@@ -2,7 +2,7 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
-### 4.1.3 (06-03-2019)
+### 4.2.0 (06-03-2019)
 
 * Gestion des indicateurs linky standard
 * Affichage de la production
