@@ -13,22 +13,22 @@ $eqLogics = eqLogic::byType('teleinfo');
 ?>
 
 <div class="row row-overflow" id="div_teleinfo">
-	<div class="row">
-		<div class="col-lg-12">
-			<input id="in_startDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 150px;" value="<?php echo $date['start']?>"/>
-			<input id="in_endDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 150px;" value="<?php echo $date['end']?>"/>
-			<a class="btn btn-success btn-sm tooltips" id='bt_validChangeDate' title="{{Attention une trop grande plage de dates peut mettre très longtemps à être calculée ou même ne pas s'afficher}}">{{Ok}}</a>
-			<select id="eqlogic_select">
-				<?php
-				foreach ($eqLogics as $eqLogic) {
-					echo '<option value="' . $eqLogic->getId() . '">"' . $eqLogic->getHumanName(true) . '"</option>';
-				}
-				?>
-			</select>
+    <div class="row">
+        <div class="col-lg-12">
+        <input id="in_startDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 150px;" value="<?php echo $date['start']?>"/>
+        <input id="in_endDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 150px;" value="<?php echo $date['end']?>"/>
+        <a class="btn btn-success btn-sm tooltips" id='bt_validChangeDate' title="{{Attention une trop grande plage de dates peut mettre très longtemps à être calculée ou même ne pas s'afficher}}">{{Ok}}</a>
+        <select id="eqlogic_select">
+            <?php
+            foreach ($eqLogics as $eqLogic) {
+                echo '<option value="' . $eqLogic->getId() . '">"' . $eqLogic->getHumanName(true) . '"</option>';
+            }
+            ?>
+        </select>
 
-			<a class="btn btn-default pull-right tooltips" style="margin-right:15px"  id="bt_teleinfoPanelSante" title="{{Vérifier l'intégrité des données}}"><i class="fa fa-check-circle-o"></i>{{ Vérifier }}</a>
-		</div>
-		<div class="col-lg-6" style="height: 200px;">
+        <a class="btn btn-default pull-right tooltips" style="margin-right:15px"  id="bt_teleinfoPanelSante" title="{{Vérifier l'intégrité des données}}"><i class="fa fa-check-circle-o"></i>{{ Vérifier }}</a>
+        </div>
+        <div class="col-lg-6" style="height: 200px;">
 			<form class="form-horizontal">
 				<fieldset>
 					<legend>{{Ma consommation}} </legend>
@@ -55,12 +55,6 @@ $eqLogics = eqLogic::byType('teleinfo');
 								kWh
 							</span>
 						</div>
-                    <!--</br>
-                        <div class="progress">
-                          <div class="progress-bar" id="prg_month" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                            60%
-                          </div>
-                      </div>-->
 					</div>
 					<div class="form-group col-md-4">
 						<div class="text-center">
@@ -77,6 +71,10 @@ $eqLogics = eqLogic::byType('teleinfo');
 				</fieldset>
 			</form>
         </div>
+    </div>
+
+	<div class="row">
+
         <div class="col-lg-6"  style="height: 200px;">
             <form class="form-horizontal">
                 <fieldset >
