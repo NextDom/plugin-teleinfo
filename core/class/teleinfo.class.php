@@ -293,7 +293,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
             $cmd         .= ' --type ' . $type;
             $cmd         .= ' --mode ' . $mode;
-            $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
+            $cmd         .= ' --socketport ' . (config::byKey('socketport', 'teleinfo', '55062') + 1);
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
             $cmd         .= ' --loglevel info'; //. log::convertLogLevel(log::getLogLevel('teleinfo'));
