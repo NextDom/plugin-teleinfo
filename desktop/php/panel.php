@@ -120,6 +120,10 @@ $eqLogics = eqLogic::byType('teleinfo');
 			<legend>Evolution de la consommation journalière</legend>
 			<div id='div_graphGlobalJournalier'></div>
 		</div>
+        <div class="col-lg-6">
+			<legend>Evolution de la production journalière</legend>
+			<div id='div_graphGlobalProdJournalier'></div>
+		</div>
 	</div>
 </div>
 

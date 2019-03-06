@@ -4,6 +4,11 @@ Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https
 
 ### 4.1.3 (06-03-2019)
 
+* Gestion des indicateurs linky standard
+* Affichage de la production
+
+### 4.1.3 (06-03-2019)
+
 * Erreur lors de la création automatique d'un compteur.
 
 ### 4.1.2 (06-03-2019)

@@ -42,7 +42,7 @@ $('#bt_validChangeDate').on('click',function(){
         getObjectHistory('div_graphGlobalPower', 'Simple', {'id': value.id, 'name': value.name}, 'refresh');
     });
     $.each( commandesStat, function( key, value ) {
-        getDailyHistory('div_graphGlobalJournalier', {'id': value.id, 'name': value.name}, 'refresh');
+        getDailyHistory(value.graph, {'id': value.id, 'name': value.name}, 'refresh');
     });
 });
 initHistoryTrigger();
@@ -91,7 +91,7 @@ $.ajax({
                                     break;
                                 case "STAT_TODAY":
                                     console.log("[loadData][STAT_TODAY] " + data.result[eqLogic].cmd[cmd].value);
-                                    commandesStat.push({"id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
+                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
                                     $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text((data.result[eqLogic].cmd[cmd].value)/1000);
                                     getDailyHistory('div_graphGlobalJournalier',data.result[eqLogic].cmd[cmd])
                                     break;
@@ -183,6 +183,11 @@ $.ajax({
                                     break;
                                 case "STAT_DEC_HC":
                                     if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 11, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
+                                    break;
+                                case "EAIT":
+                                    console.log("[loadData][EAIT] " + data.result[eqLogic].cmd[cmd].value);
+                                    commandesStat.push({"graph":"div_graphGlobalProdJournalier", "id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
+                                    getDailyHistory('div_graphGlobalProdJournalier',data.result[eqLogic].cmd[cmd])
                                     break;
                             }
                         }
