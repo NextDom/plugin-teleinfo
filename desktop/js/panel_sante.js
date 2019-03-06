@@ -1,4 +1,4 @@
-var populate = [{id:"STAT_TODAY",name:"Conso totale Aujourd'hui"},{id:"STAT_MONTH",name:"Conso Mois en cours"},{id:"STAT_YEAR",name:"Conso Année en cours"},{id:"PAPP",name:"Puissance apparente instantanée"},{id:"STAT_MONTH_LAST_YEAR",name:"Statistique consommation du mois l'année dernière"},{id:"STAT_YEAR_LAST_YEAR",name:"Statistique consommation de l'année dernière"}];
+var populate = [{id:"STAT_TODAY",name:"Conso totale Aujourd'hui"},{id:"STAT_MONTH",name:"Conso Mois en cours"},{id:"STAT_YEAR",name:"Conso Année en cours"},{id:"PAPP",name:"Puissance apparente instantanée compteur normal"},{id:"SINSTS",name:"Puissance apparente instantanée linky"},{id:"STAT_MONTH_LAST_YEAR",name:"Statistique consommation du mois l'année dernière"},{id:"STAT_YEAR_LAST_YEAR",name:"Statistique consommation de l'année dernière"}];
 
 $.ajax({
         type: 'POST',
@@ -25,6 +25,7 @@ $.ajax({
 					switch(data.result[eqLogic].cmd[cmd].logicalId)
 					{
 						case "PAPP":
+                        case "SINSTS":
                         case "STAT_YEAR_LAST_YEAR":
                         case "STAT_MONTH_LAST_YEAR":
                         case "STAT_TODAY":

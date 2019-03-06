@@ -1017,6 +1017,7 @@ class teleinfo extends eqLogic
                     $cmd->refresh();
                     break;
                 case "PAPP":
+                case "SINSTS":
                     log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> papp');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
@@ -1089,9 +1090,11 @@ class teleinfo extends eqLogic
 
     public function createPanelStats()
     {
-        $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC", "STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR", "STAT_TODAY", "STAT_MONTH", "STAT_YEAR");
+        log::add('teleinfo', 'debug', '-------- Commandes des stats --------');
+        $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC", "STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR");
         for ($ii = 0; $ii < 26; $ii++) {
             $cmd = $this->getCmd('info', $array[$ii]);
+            log::add('teleinfo', 'debug', '=> ' . $array[$ii]);
             if ($cmd === false) {
                 $cmd = new teleinfoCmd();
                 $cmd->setName($array[$ii]);
@@ -1112,6 +1115,38 @@ class teleinfo extends eqLogic
                 $cmd->setDisplay('generic_type', 'DONT');
 				$cmd->setConfiguration('historizeMode', 'none');
                 $cmd->save();
+            }
+        }
+        $array = array("STAT_TODAY", "STAT_MONTH", "STAT_YEAR");
+        for ($ii = 0; $ii < 3; $ii++) {
+            $cmd = $this->getCmd('info', $array[$ii]);
+            log::add('teleinfo', 'debug', '=> ' . $array[$ii]);
+            if ($cmd === false) {
+                log::add('teleinfo', 'debug', '    => false');
+                $cmd = new teleinfoCmd();
+                $cmd->setName($array[$ii]);
+                $cmd->setEqLogic_id($this->id);
+                $cmd->setLogicalId($array[$ii]);
+                $cmd->setType('info');
+                $cmd->setConfiguration('info_conso', $array[$ii]);
+                $cmd->setConfiguration('type', 'stat');
+				$cmd->setConfiguration('historizeMode', 'none');
+                $cmd->setDisplay('generic_type', 'DONT');
+                $cmd->setSubType('numeric');
+                $cmd->setUnite('Wh');
+                $cmd->setIsHistorized(1);
+                $cmd->setEventOnly(1);
+                $cmd->setIsVisible(0);
+                $cmd->save();
+                $cmd->refresh();
+            } else {
+                log::add('teleinfo', 'debug', '    => true');
+                $cmd->setIsHistorized(1);
+                $cmd->setConfiguration('type', 'stat');
+                $cmd->setConfiguration('historizeMode', 'none');
+                $cmd->setDisplay('generic_type', 'DONT');
+                $cmd->save();
+                $cmd->refresh();
             }
         }
     }
