@@ -208,7 +208,7 @@ class Teleinfo:
                     valeur = valeur.replace(")", "")
                     data[cle] = valeur
                 else:
-                    valeur = valeur.replace(" ", "%20")
+                    #valeur = valeur.replace(" ", "%20")
                     data[cle] = valeur
             _SendData = {}
             PENDING_CHANGES = False
