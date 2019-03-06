@@ -2,6 +2,11 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.1.2 (06-03-2019)
+
+* Correction des dépendances
+* Correction du socket modem production
+
 ### 4.1.1 (05-03-2019)
 
 * Correction de la ré-envoi des données.
