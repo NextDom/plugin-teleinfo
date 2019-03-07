@@ -20,6 +20,7 @@
  var puissanceSeries = [];
  var commandesPuissance = [];
  var commandesStat = [];
+ var dailyHistoryChart = null;
 $(".in_datepicker").datepicker();
 
 
@@ -336,10 +337,11 @@ function getDailyHistory(div,  object) {
             handleAjaxError(request, status, error);
         },
         success: function (data) {
-            new Highcharts.Chart({
+			
+			jeedom.history.chart[div] = new Highcharts.Chart({
+            //dailyHistoryChart = new Highcharts.Chart({
                 chart: {
                     renderTo: div,
-                    type: 'column',
                     height: 350,
                     spacingTop: 5,
                     spacingLeft: -15,
@@ -374,7 +376,15 @@ function getDailyHistory(div,  object) {
                             color: Highcharts.getOptions().colors[1]
                         }
                     }
-                }],
+                },{
+					title: {
+                        text: 'Température',
+                        style: {
+                            color: Highcharts.getOptions().colors[2]
+                        }
+                    }
+				}				
+				],
                 navigator: {
                     enabled: false
                 },
@@ -399,6 +409,7 @@ function getDailyHistory(div,  object) {
                 },
                 series: [{
                         name: data.result.cmd_name,
+						type: 'column',
                         data: data.result.data,
                         dataGrouping: {
                             approximation: 'high',
@@ -406,11 +417,76 @@ function getDailyHistory(div,  object) {
                             forced: true,
                             units: [['day',[1]]]
                         },
-                    }]
+                    },
+					{
+						name: "Temperature",
+						type: "line",
+					}]
             });
+	
+			/*jeedom.config.load({
+				plugin: "teleinfo",
+				configuration : "outside_temp",
+				error: function (error) {
+				},
+				success: function (myId) {
+					
+					$.ajax({
+						type: 'POST',
+						async:true,
+						url: "core/ajax/cmd.ajax.php", // url du fichier php
+						data: {
+							action:'getHistory',
+							id:myId,
+							dateRange:'7 days',
+							dateStart:$('#in_startDate').value(),
+							dateEnd:$('#in_endDate').value(),
+							derive:'',
+							allowZero:1
+							},
+						dataType: 'json',
+						error: function (request, status, error) {
+							console.log("[getObjectHistory] Erreur lors de la récupération" + error);
+							handleAjaxError(request, status, error);
+						},
+						success: function (data) {
+							console.log(data);
+							dailyHistoryChart.series[1] = data.result.data;
+							//dailyHistoryChart.series[1].addPoint({y:data.result.data[data.result.data.length - 1][1]});
+						}
+					});
+				}
+			});*/
+	
+	
         },
         timeout: 10000 // sets timeout to 3 seconds
+		
+		/*jeedom.config.load({
+				plugin: "teleinfo",
+				configuration : "outside_temp",
+				error: function (error) {
+				},
+				success: function (data) {
+					jeedom.history.drawChart({
+                    cmd_id: '#' + data + '#',
+                    el: 'div_graphGlobalJournalier',
+                    dateStart: $('#in_startDate').value(),
+                    dateEnd: $('#in_endDate').value(),
+                    option: {
+                        graphColor: '#2E9AFE',
+                        derive : 0,
+                        graphZindex : 3
+                    }
+					});
+				}
+			});*/
+			
     });
+
+	//var dailyHistoryChart = $('#div_graphGlobalJournalier');
+
+	
 }
 
 function drawPieChart(_el, _data, _title) {
