@@ -354,9 +354,9 @@ class teleinfo extends eqLogic
         $return['state']      = 'nok';
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         if ($twoCptCartelectronic == 1) {
-            $pidFile = '/tmp/jeedom/teleinfo/teleinfo2cpt.pid';
+            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo2cpt.pid';
         } else {
-            $pidFile = '/tmp/jeedom/teleinfo/teleinfo_conso.pid';
+            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_conso.pid';
         }
         if (file_exists($pidFile)) {
             if (posix_getsid(trim(file_get_contents($pidFile)))) {
@@ -1122,7 +1122,6 @@ class teleinfo extends eqLogic
             $cmd = $this->getCmd('info', $array[$ii]);
             log::add('teleinfo', 'debug', '=> ' . $array[$ii]);
             if ($cmd === false) {
-                log::add('teleinfo', 'debug', '    => false');
                 $cmd = new teleinfoCmd();
                 $cmd->setName($array[$ii]);
                 $cmd->setEqLogic_id($this->id);
@@ -1140,7 +1139,6 @@ class teleinfo extends eqLogic
                 $cmd->save();
                 $cmd->refresh();
             } else {
-                log::add('teleinfo', 'debug', '    => true');
                 $cmd->setIsHistorized(1);
                 $cmd->setConfiguration('type', 'stat');
                 $cmd->setConfiguration('historizeMode', 'none');

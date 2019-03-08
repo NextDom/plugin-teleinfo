@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.2.1 (08-03-2019)
+
+* Correction du bug de création du répertoire de conservation du pid. 
+
 ### 4.2.0 (06-03-2019)
 
 * Gestion des indicateurs linky standard
