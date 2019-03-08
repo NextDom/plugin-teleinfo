@@ -277,6 +277,14 @@ def read_socket(cycle):
 			logging.debug(traceback.format_exc())
 		time.sleep(cycle)
 
+def log_starting(cycle):
+	time.sleep(30)
+	logging.info('GLOBAL------Passage des logs en normal')
+	log = logging.getLogger()
+	for hdlr in log.handlers[:]:
+		log.removeHandler(hdlr)
+	jeedom_utils.set_log_level('error')
+
 def listen():
 	globals.PENDING_ACTION=False
 	jeedom_socket.open()
@@ -294,10 +302,7 @@ def listen():
 				logging.error(err.value)
 				globals.TELEINFO.terminate()
 				return
-			log = logging.getLogger()
-			for hdlr in log.handlers[:]:
-				log.removeHandler(hdlr)
-			jeedom_utils.set_log_level('error')
+			thread.start_new_thread( log_starting,(globals.cycle,))
 			globals.TELEINFO.run()
 		except Exception as e:
 			print("Error:")
