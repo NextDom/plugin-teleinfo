@@ -187,14 +187,6 @@ class Teleinfo:
         separateur = " "
         send_data = ""
 
-        # Open Teleinfo modem
-        try:
-            logging.info("TELEINFO------RUN")
-            self.open()
-        except error as err:
-            logging.error(err.value)
-            self.terminate()
-            return
         # Read a frame
         raz_time = datetime.now()
         while(1):
@@ -216,7 +208,7 @@ class Teleinfo:
                     valeur = valeur.replace(")", "")
                     data[cle] = valeur
                 else:
-                    valeur = valeur.replace(" ", "%20")
+                    #valeur = valeur.replace(" ", "%20")
                     data[cle] = valeur
             _SendData = {}
             PENDING_CHANGES = False
@@ -285,6 +277,14 @@ def read_socket(cycle):
 			logging.debug(traceback.format_exc())
 		time.sleep(cycle)
 
+def log_starting(cycle):
+	time.sleep(30)
+	logging.info('GLOBAL------Passage des logs en normal')
+	log = logging.getLogger()
+	for hdlr in log.handlers[:]:
+		log.removeHandler(hdlr)
+	jeedom_utils.set_log_level('error')
+
 def listen():
 	globals.PENDING_ACTION=False
 	jeedom_socket.open()
@@ -295,6 +295,14 @@ def listen():
 	logging.debug('GLOBAL------Read Socket Thread Launched')
 	while 1:
 		try:
+			try:
+				logging.info("TELEINFO------RUN")
+				globals.TELEINFO.open()
+			except error as err:
+				logging.error(err.value)
+				globals.TELEINFO.terminate()
+				return
+			thread.start_new_thread( log_starting,(globals.cycle,))
 			globals.TELEINFO.run()
 		except Exception as e:
 			print("Error:")
@@ -306,11 +314,12 @@ def handler(signum=None, frame=None):
 	shutdown()
 
 def shutdown():
-	jeedom_utils.set_log_level('info')
+	log = logging.getLogger()
+	for hdlr in log.handlers[:]:
+		log.removeHandler(hdlr)
+	jeedom_utils.set_log_level('debug')
 	logging.info("GLOBAL------Shutdown")
-	#signal.signal(signal.SIGTERM, globals.SONYBRAVIA.exit_handler())
-	logging.debug("Shutdown")
-	logging.debug("Removing PID file " + str(globals.pidfile))
+	logging.info("Removing PID file " + str(globals.pidfile))
 	try:
 		os.remove(globals.pidfile)
 	except:

@@ -2,6 +2,23 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.2.2 (08-03-2019)
+
+* Correction du panel santé spécifique
+
+### 4.2.1 (08-03-2019)
+
+* Correction du bug de création du répertoire de conservation du pid.
+
+### 4.2.0 (06-03-2019)
+
+* Gestion des indicateurs linky standard
+* Affichage de la production
+
+### 4.1.3 (06-03-2019)
+
+* Erreur lors de la création automatique d'un compteur.
+
 ### 4.1.2 (06-03-2019)
 
 * Correction des dépendances

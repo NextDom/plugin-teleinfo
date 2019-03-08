@@ -45,9 +45,9 @@ $('#create_data_teleinfo').on('click', function() {
     $('.eqLogicAction[data-action=save]').click();
 });
 
-$('#bt_cout').on('click', function() {
-    $('#md_modal').dialog({title: "{{Gestion des coûts}}"});
-    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=cout').dialog('open');
+$('#bt_options').on('click', function() {
+    $('#md_modal').dialog({title: "{{Options}}"});
+    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=options').dialog('open');
 });
 
 $('#bt_info_daemon').on('click', function() {
