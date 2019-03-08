@@ -105,22 +105,20 @@ try {
             }
         break;
         case 'getHealth':
-            if (init('eqLogicID') !== null) {
+            if (init('eqLogicID') !== '') {
                 $teleinfo       = teleinfo::byLogicalId(init('eqLogicID'), 'teleinfo');
                 $health_cmd     = $teleinfo->getCmd('info', 'health');
                 $return         = array('object' => utils::o2a($health_cmd));
                 $return["ADCO"] = init('eqLogicID');
                 ajax::success($return);
             } else {
-                $teleinfo = teleinfo::byType('teleinfo');
-                foreach ($teleinfo as $eqLogic) {
+                foreach (eqLogic::byType('teleinfo') as $eqLogic) {
                     $health_cmd     = $eqLogic->getCmd('info', 'health');
                     $return         = array('object' => utils::o2a($health_cmd));
                     $return["ADCO"] = $eqLogic->getLogicalId();
                     ajax::success($return);
                 }
             }
-
             ajax::error("", "");
         break;
         case 'getInfoDaemon':
