@@ -366,7 +366,7 @@ class teleinfo extends eqLogic
         }
         $productionActivated = config::byKey('activation_production', 'teleinfo');
         if ($productionActivated == 1) {
-            $pidFile = jeedom::getTmpFolder('teleinfo') '/teleinfo_prod.pid';
+            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
             if (file_exists($pidFile)) {
                 if (posix_getsid(trim(file_get_contents($pidFile)))) {
                     $return['state'] = 'ok';
