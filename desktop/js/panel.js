@@ -1,4 +1,4 @@
-﻿
+
 /* This file is part of Jeedom.
  *
  * Jeedom is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
  var puissanceSeries = [];
  var commandesPuissance = [];
  var commandesStat = [];
+ var dailyHistoryChart = [];
 $(".in_datepicker").datepicker();
 
 
@@ -256,6 +257,7 @@ function getTeleinfoObjectHistory(div, type, object) {
 }
 
 function getObjectHistory(div, type, object, action = 'none') {
+    dailyHistoryChart[div] = null;
     //$('#div_graphGlobalPower').attr( "cmd_id", object.id );
     //$('#div_graphGlobalPower').attr( "cmd_name", object.name );
     if(action === 'refresh'){
@@ -264,7 +266,33 @@ function getObjectHistory(div, type, object, action = 'none') {
         startDate = $('#in_endDate').value()
     }
     console.log("[getObjectHistory] Récupération de l'historique pour la commande " + object.name);
-    $.ajax({
+
+
+    teleinfoDrawChart({
+                    cmd_id: object.id,
+                    el: div,
+                    dateRange : 'all',
+                    dateStart: startDate,
+                    dateEnd: $('#in_endDate').value(),
+                    showNavigator : false,
+                    option: {
+                        derive : 0,
+                        graphType : 'line',
+                        graphZindex :3
+                    },
+                    newGraph: true,
+                    //tooltip : {
+                    //xDateFormat: '%Y-%m-%d %H:%M:%S',
+                    //pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+                    //valueDecimals: 2,
+                    //    formatter: function(){
+                    //        return '<b>' + Highcharts.dateFormat('%e %b %Y', new Date(this.x))+ '</b><br/>' + this.y/1000 + ' kWh';
+                    //    },
+                    //},
+
+                });
+
+    /*$.ajax({
         type: 'POST',
         async:true,
         url: "core/ajax/cmd.ajax.php", // url du fichier php
@@ -287,6 +315,7 @@ function getObjectHistory(div, type, object, action = 'none') {
             switch(type)
             {
                 case 'Simple':
+                    console.log(puissanceSeries.length);
                     puissanceSeries.push({
                         step: true,
                         name: '{{'+object.name+'}}',
@@ -312,105 +341,101 @@ function getObjectHistory(div, type, object, action = 'none') {
             }
         },
         timeout: 10000 // sets timeout to 3 seconds
-    });
+    });*/
 }
 
 function getDailyHistory(div,  object) {
+    //$('#' + div).empty();
+    dailyHistoryChart[div] = null;
+
+
+    //jeedom.history.chart[div] = null;
     console.log("[getDailyHistory] Récupération de l'historique pour la commande " + object.name);
-    $.ajax({
-        type: 'POST',
-        async:true,
-        url: "core/ajax/cmd.ajax.php", // url du fichier php
-        data: {
-            action:'getHistory',
-            id:object.id,
-            dateRange:'7 days',
-            dateStart:$('#in_startDate').value(),
-            dateEnd:$('#in_endDate').value(),
-            derive:'',
-            allowZero:1
-            },
-        dataType: 'json',
-        error: function (request, status, error) {
-            console.log("[getObjectHistory] Erreur lors de la récupération" + error);
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-            new Highcharts.Chart({
-                chart: {
-                    renderTo: div,
-                    type: 'column',
-                    height: 350,
-                    spacingTop: 5,
-                    spacingLeft: -15,
-                    spacingRight: 0,
-                    spacingBottom: 0
-                },
-                title: {
-                    text: ''
-                },
-                credits: {
-                    text: 'Copyright Jeedom',
-                    href: 'http://jeedom.fr',
-                },
-                xAxis: {
-                    type: 'datetime',
-                    ordinal: false,
-                    maxPadding : 0.02,
-                    minPadding : 0.02
-                },
-                yAxis: [{ // Primary yAxis
-                    labels: {
-                         formatter: function(){
-                             return this.value/1000 + " kWh";
+
+    teleinfoDrawChart({
+                    cmd_id: object.id,
+                    el: div,
+                    dateRange : 'all',
+                    dateStart: $('#in_startDate').value(),
+                    dateEnd: $('#in_endDate').value(),
+                    showNavigator : false,
+                    option: {
+                        graphColor: '#7cb5ec',
+                        derive : 0,
+                        graphStep: 1,
+                        graphScale : 1,
+                        graphType : 'column',
+                        graphZindex :1,
+                        groupingType:"high::day"
                     },
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
+                    divide:1000,
+                    //tooltip : {
+                    //xDateFormat: '%Y-%m-%d %H:%M:%S',
+                    //pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+                    //valueDecimals: 2,
+                    //    formatter: function(){
+                    //        return '<b>' + Highcharts.dateFormat('%e %b %Y', new Date(this.x))+ '</b><br/>' + this.y/1000 + ' kWh';
+                    //    },
+                    //},
+
+                });
+
+    /*jeedom.history.drawChart({
+                    cmd_id: object.id,
+                    el: div,
+                    dateStart: $('#in_startDate').value(),
+                    dateEnd: $('#in_endDate').value(),
+                    showNavigator : false,
+                    option: {
+                        graphColor: '#BDBDBD',
+                        derive : 0,
+                        graphStep: 1,
+                        graphScale : 1,
+                        graphType : 'column',
+                        graphZindex :1,
+                        groupingType:"high::day"
                     }
-                },
-                    title: {
-                        text: 'Consommation',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
-                        }
-                    }
-                }],
-                navigator: {
-                    enabled: false
-                },
-                legend: {
-                    align: 'right',
-                    x: -30,
-                    verticalAlign: 'top',
-                    y: 25,
-                    floating: true,
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-                    borderColor: '#CCC',
-                    borderWidth: 1,
-                    shadow: false
-                },
-                tooltip: {
-                    xDateFormat: '%Y-%m-%d %H:%M:%S',
-                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-                    valueDecimals: 2,
-                    formatter: function(){
-                        return '<b>' + Highcharts.dateFormat('%e %b %Y', new Date(this.x))+ '</b><br/>' + this.y/1000 + ' kWh';
-                    },
-                },
-                series: [{
-                        name: data.result.cmd_name,
-                        data: data.result.data,
-                        dataGrouping: {
-                            approximation: 'high',
-                            enabled: true,
-                            forced: true,
-                            units: [['day',[1]]]
-                        },
-                    }]
-            });
+                });*/
+
+
+    jeedom.config.load({
+        plugin: "teleinfo",
+        configuration : "outside_temp",
+        error: function (error) {
         },
-        timeout: 10000 // sets timeout to 3 seconds
+        success: function (myId) {
+            if (myId != ''){
+                console.log("[getDailyHistory] Id température exterieure : " + myId)
+                teleinfoDrawChart({
+                                cmd_id: myId,
+                                el: div,
+                                dateRange : 'all',
+                                dateStart: $('#in_startDate').value(),
+                                dateEnd: $('#in_endDate').value(),
+                                showNavigator : false,
+                                option: {
+                                    graphType : 'line',
+                                    graphColor: '#87b125',
+                                    derive : 0,
+                                    graphZindex : 2,
+                                    groupingType:"average::day"
+                                },
+                            });
+            }
+            else{
+                console.log("[getDailyHistory] Pas de température extérieur")
+            }
+        }
     });
+
+
+
+
+
+
+	//var dailyHistoryChart = $('#div_graphGlobalJournalier');
+
+
 }
 
 function drawPieChart(_el, _data, _title) {
@@ -647,11 +672,11 @@ function drawStackColumnChart(_el, _data){
             }
         },
         series: [{
-            name: 'HP'/*,
-            data: [5, 3, 4, 7, 2]*/
+            name: 'HP',
+            color: '#7cb5ec',
         }, {
-            name: 'HC'/*,
-            data: [2, 2, 3, 2, 1]*/
+            name: 'HC',
+            color: '#ed9448',
         }]
     });
 
@@ -736,4 +761,407 @@ function drawSimpleGraph(_el, _serie) {
 
 function initHistoryTrigger() {
 
+}
+
+
+
+function teleinfoDrawChart(_params) {
+  $.showLoading();
+  if ($.type(_params.dateRange) == 'object') {
+    _params.dateRange = json_encode(_params.dateRange);
+  }
+  _params.option = init(_params.option, {derive: ''});
+  $.ajax({
+    type: "POST",
+    url: "core/ajax/cmd.ajax.php",
+    data: {
+      action: "getHistory",
+      id: _params.cmd_id,
+      dateRange: _params.dateRange || '',
+      dateStart: _params.dateStart || '',
+      dateEnd: _params.dateEnd || '',
+      derive: _params.option.derive || '',
+      allowZero: init(_params.option.allowZero, 0)
+    },
+    dataType: 'json',
+    global: _params.global || true,
+    error: function (request, status, error) {
+      handleAjaxError(request, status, error);
+    },
+    success: function (data) {
+
+        if (init(_params.divide) != '') {
+            data.result.maxValue = data.result.maxValue / 1000;
+            data.result.data.forEach(function(item, index, array) {
+                item[1] = item[1] / _params.divide;
+          });
+        }
+
+      if (data.state != 'ok') {
+        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+        return;
+      }
+      if (data.result.data.length < 1) {
+        if(_params.option.displayAlert == false){
+          return;
+        }
+        if(!_params.noError){
+          var message = '{{Il n\'existe encore aucun historique pour cette commande :}} ' + data.result.history_name;
+          if (init(data.result.dateStart) != '') {
+            message += (init(data.result.dateEnd) != '') ?  ' {{du}} ' + data.result.dateStart + ' {{au}} ' + data.result.dateEnd : ' {{à partir de}} ' + data.result.dateStart;
+          } else {
+            message += (init(data.result.dateEnd) != '') ? ' {{jusqu\'au}} ' + data.result.dateEnd:'';
+          }
+          $('#div_alert').showAlert({message: message, level: 'danger'});
+        }
+        return;
+      }
+      if (isset(dailyHistoryChart[_params.el]) && isset(dailyHistoryChart[_params.el].cmd[_params.cmd_id])) {
+        dailyHistoryChart[_params.el].cmd[_params.cmd_id] = null;
+      }
+      _params.option.graphColor = (isset(dailyHistoryChart[_params.el])) ? init(_params.option.graphColor, Highcharts.getOptions().colors[init(dailyHistoryChart[_params.el].color, 0)]) : init(_params.option.graphColor, Highcharts.getOptions().colors[0]);
+      _params.option.graphStep = (_params.option.graphStep == "1") ? true : false;
+      if(isset(data.result.cmd)){
+        if (init(_params.option.graphStep) == '') {
+          _params.option.graphStep = (data.result.cmd.subType == 'binary') ? true : false;
+          if (isset(data.result.cmd.display) && init(data.result.cmd.display.graphStep) != '') {
+            _params.option.graphStep = (data.result.cmd.display.graphStep == "0") ? false : true;
+          }
+        }
+        if (init(_params.option.graphType) == '') {
+          _params.option.graphType = (isset(data.result.cmd.display) && init(data.result.cmd.display.graphType) != '') ? data.result.cmd.display.graphType : 'line';
+        }
+        if (init(_params.option.groupingType) == '' && isset(data.result.cmd.display) && init(data.result.cmd.display.groupingType) != '') {
+          var split = data.result.cmd.display.groupingType.split('::');
+          _params.option.groupingType = {function :split[0],time : split[1] };
+        }
+      }
+      var stacking = (_params.option.graphStack == undefined || _params.option.graphStack == null || _params.option.graphStack == 0) ? null : 'value';
+      _params.option.graphStack = (_params.option.graphStack == undefined || _params.option.graphStack == null || _params.option.graphStack == 0) ? Math.floor(Math.random() * 10000 + 2) : 1;
+      _params.option.graphScale = (_params.option.graphScale == undefined) ? 0 : parseInt(_params.option.graphScale);
+      _params.showLegend = (init(_params.showLegend, true) && init(_params.showLegend, true) != "0") ? true : false;
+      _params.showTimeSelector = (init(_params.showTimeSelector, true) && init(_params.showTimeSelector, true) != "0") ? true : false;
+      _params.showScrollbar = (init(_params.showScrollbar, true) && init(_params.showScrollbar, true) != "0") ? true : false;
+      _params.showNavigator = (init(_params.showNavigator, true) && init(_params.showNavigator, true) != "0") ? true : false;
+
+      if (init(_params.tooltip) == '') {
+        _params.tooltip = {pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>', valueDecimals: 2, };
+      }
+
+      var legend = {borderColor: 'black',borderWidth: 2,shadow: true};
+      legend.enabled = init(_params.showLegend, true);
+      if(isset(_params.newGraph) && _params.newGraph == true){
+        delete dailyHistoryChart[_params.el];
+      }
+      var charts = {
+        zoomType: 'x',
+        renderTo: _params.el,
+        alignTicks: false,
+        spacingBottom: 5,
+        spacingTop: 5,
+        spacingRight: 5,
+        spacingLeft: 5,
+        height : _params.height || null,
+        style: {fontFamily: 'Roboto'}
+      }
+      if(charts.height < 10){
+        charts.height = null;
+      }
+
+      if(isset(_params.transparentBackground) && _params.transparentBackground == "1"){
+        charts.backgroundColor = 'rgba(255, 255, 255, 0)';
+      }
+
+      if (isset(dailyHistoryChart[_params.el]) && dailyHistoryChart[_params.el].type == 'pie') {
+        _params.option.graphType = 'pie';
+      }
+
+      if( _params.option.graphType == 'pie'){
+        var series = {
+          type: _params.option.graphType,
+          id: _params.cmd_id,
+          cursor: 'pointer',
+          data: [{y:data.result.data[data.result.data.length - 1][1], name : (isset(_params.option.name)) ? _params.option.name + ' '+ data.result.unite : data.result.history_name + ' '+ data.result.unite}],
+          color: _params.option.graphColor,
+        };
+        if (!isset(dailyHistoryChart[_params.el]) || (isset(_params.newGraph) && _params.newGraph == true)) {
+          dailyHistoryChart[_params.el] = {};
+          dailyHistoryChart[_params.el].cmd = new Array();
+          dailyHistoryChart[_params.el].color = 0;
+          dailyHistoryChart[_params.el].type = _params.option.graphType;
+          dailyHistoryChart[_params.el].chart = new Highcharts.Chart({
+            chart: charts,
+            title: {
+              text: ''
+            },
+            credits: {
+              text: '',
+              href: '',
+            },
+            exporting: {
+              enabled: _params.enableExport || ($.mobile) ? false : true
+            },
+            tooltip: _params.tooltip,
+            plotOptions: {
+              pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                  enabled: true,
+                  format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                  style: {
+                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                  }
+                },
+                showInLegend: true
+              }
+            },
+            series: [series]
+          });
+        }else {
+          dailyHistoryChart[_params.el].chart.series[0].addPoint({y:data.result.data[data.result.data.length - 1][1], name : (isset(_params.option.name)) ? _params.option.name + ' '+ data.result.unite : data.result.history_name + ' '+ data.result.unite, color: _params.option.graphColor});
+        }
+      }else{
+        var dataGrouping = {
+          enabled: false
+        };
+        if(isset(_params.option.groupingType) && jQuery.type(_params.option.groupingType) == 'string' && _params.option.groupingType != ''){
+          var split = _params.option.groupingType.split('::');
+          _params.option.groupingType = {function :split[0],time : split[1] };
+        }
+        if(isset(_params.option.groupingType) && isset(_params.option.groupingType.function) && isset(_params.option.groupingType.time)){
+          dataGrouping = {
+            approximation: _params.option.groupingType.function,
+            enabled: true,
+            forced: true,
+            units: [[_params.option.groupingType.time,[1]]]
+          };
+        }
+        if(data.result.timelineOnly){
+          if(!isset(dailyHistoryChart[_params.el]) || !isset(dailyHistoryChart[_params.el].nbTimeline)){
+            nbTimeline = 1;
+          }else{
+            dailyHistoryChart[_params.el].nbTimeline++;
+            nbTimeline = dailyHistoryChart[_params.el].nbTimeline;
+          }
+          var series = {
+            type: 'flags',
+            name: (isset(_params.option.name)) ? _params.option.name + ' '+ data.result.unite : data.result.history_name+ ' '+ data.result.unite,
+            data: [],
+            id: _params.cmd_id,
+            color: _params.option.graphColor,
+            shape: 'squarepin',
+            cursor: 'pointer',
+            y : -30 - 25*(nbTimeline - 1),
+            point: {
+              events: {
+                click: function (event) {
+                  var deviceInfo = getDeviceType();
+                  if ($.mobile || deviceInfo.type == 'tablet' || deviceInfo.type == 'phone') {
+                    return
+                  }
+                  if($('#md_modal2').is(':visible')){
+                    return;
+                  }
+                  if($('#md_modal1').is(':visible')){
+                    return;
+                  }
+                  var id = this.series.userOptions.id;
+                  var datetime = Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x);
+                  var value = this.y;
+                  bootbox.prompt("{{Edition de la série :}} <b>" + this.series.name + "</b> {{et du point de}} <b>" + datetime + "</b> ({{valeur :}} <b>" + value + "</b>) ? {{Ne rien mettre pour supprimer la valeur}}", function (result) {
+                    if (result !== null) {
+                      jeedom.history.changePoint({cmd_id: id, datetime: datetime,oldValue:value, value: result});
+                    }
+                  });
+                }
+              }
+            }
+          }
+          for(var i in data.result.data){
+            series.data.push({
+              x : data.result.data[i][0],
+              title : data.result.data[i][1]
+            });
+          }
+        }else{
+          var series = {
+            dataGrouping: dataGrouping,
+            type: _params.option.graphType,
+            id: _params.cmd_id,
+            cursor: 'pointer',
+            name: (isset(_params.option.name)) ? _params.option.name + ' '+ data.result.unite : data.result.history_name+ ' '+ data.result.unite,
+            data: data.result.data,
+            color: _params.option.graphColor,
+            stack: _params.option.graphStack,
+            step: _params.option.graphStep,
+            yAxis: _params.option.graphScale,
+            stacking : stacking,
+            tooltip: _params.tooltip,
+            point: {
+              events: {
+                click: function (event) {
+                  var deviceInfo = getDeviceType();
+                  if ($.mobile || deviceInfo.type == 'tablet' || deviceInfo.type == 'phone') {
+                    return
+                  }
+                  if($('#md_modal2').is(':visible')){
+                    return;
+                  }
+                  if($('#md_modal1').is(':visible')){
+                    return;
+                  }
+                  var id = this.series.userOptions.id;
+                  var datetime = Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x);
+                  var value = this.y;
+                  bootbox.prompt("{{Edition de la série :}} <b>" + this.series.name + "</b> {{et du point de}} <b>" + datetime + "</b> ({{valeur :}} <b>" + value + "</b>) ? {{Ne rien mettre pour supprimer la valeur}}", function (result) {
+                    if (result !== null) {
+                      jeedom.history.changePoint({cmd_id: id, datetime: datetime,oldValue:value, value: result});
+                    }
+                  });
+                }
+              }
+            }
+          };
+        }
+        if(isset(_params.option.graphZindex)){
+          series.zIndex = _params.option.graphZindex;
+        }
+
+        if (!isset(dailyHistoryChart[_params.el]) || (isset(_params.newGraph) && _params.newGraph == true)) {
+          dailyHistoryChart[_params.el] = {};
+          dailyHistoryChart[_params.el].cmd = new Array();
+          dailyHistoryChart[_params.el].color = 0;
+          dailyHistoryChart[_params.el].nbTimeline = 1;
+
+          if(_params.dateRange == '30 min'){
+            var dateRange = 0
+          }else  if(_params.dateRange == '1 hour'){
+            var dateRange = 1
+          }else  if(_params.dateRange == '1 day'){
+            var dateRange = 2
+          }else  if(_params.dateRange == '7 days'){
+            var dateRange = 3
+          }else  if(_params.dateRange == '1 month'){
+            var dateRange = 4
+          }else  if(_params.dateRange == '1 year'){
+            var dateRange = 5
+          }else  if(_params.dateRange == 'all'){
+            var dateRange = 6
+          }else{
+            var dateRange = 3;
+          }
+
+          dailyHistoryChart[_params.el].type = _params.option.graphType;
+          dailyHistoryChart[_params.el].chart = new Highcharts.StockChart({
+            chart: charts,
+            credits: {
+              text: '',
+              href: '',
+            },
+            navigator: {
+              enabled:  _params.showNavigator,
+              series: {
+                includeInCSVExport: false
+              }
+            },
+            exporting: {
+              enabled: _params.enableExport || ($.mobile) ? false : true
+            },
+            rangeSelector: {
+              buttons: [{
+                type: 'minute',
+                count: 30,
+                text: '30m'
+              }, {
+                type: 'hour',
+                count: 1,
+                text: 'H'
+              }, {
+                type: 'day',
+                count: 1,
+                text: 'J'
+              }, {
+                type: 'week',
+                count: 1,
+                text: 'S'
+              }, {
+                type: 'month',
+                count: 1,
+                text: 'M'
+              }, {
+                type: 'year',
+                count: 1,
+                text: 'A'
+              }, {
+                type: 'all',
+                count: 1,
+                text: 'Tous'
+              }],
+              selected: dateRange,
+              inputEnabled: false,
+              enabled: _params.showTimeSelector
+            },
+            legend: legend,
+            tooltip: _params.tooltip,
+            yAxis: [{
+                                  format: '{value}',
+                                  showEmpty: false,
+                                  minPadding: 0.001,
+                                  maxPadding: 0.001,
+                                  showLastLabel: true,
+                                }, {
+                                  opposite: false,
+                                  format: '{value}',
+                                  showEmpty: false,
+                                  gridLineWidth: 0,
+                                  minPadding: 0.001,
+                                  maxPadding: 0.001,
+                                  labels: {
+                                    align: 'left',
+                                    x: 2
+                                  }
+                              }],
+            xAxis: {
+              type: 'datetime',
+              ordinal: false,
+              maxPadding : 0.02,
+              minPadding : 0.02
+            },
+            scrollbar: {
+              barBackgroundColor: 'gray',
+              barBorderRadius: 7,
+              barBorderWidth: 0,
+              buttonBackgroundColor: 'gray',
+              buttonBorderWidth: 0,
+              buttonBorderRadius: 7,
+              trackBackgroundColor: 'none', trackBorderWidth: 1,
+              trackBorderRadius: 8,
+              trackBorderColor: '#CCC',
+              enabled: _params.showScrollbar
+            },
+            series: [series]
+          });
+        } else {
+          dailyHistoryChart[_params.el].chart.addSeries(series);
+        }
+        dailyHistoryChart[_params.el].cmd[_params.cmd_id] = {option: _params.option, dateRange: _params.dateRange};
+      }
+
+      dailyHistoryChart[_params.el].color++;
+      if (dailyHistoryChart[_params.el].color > 9) {
+        dailyHistoryChart[_params.el].color = 0;
+      }
+
+      var extremes = dailyHistoryChart[_params.el].chart.xAxis[0].getExtremes();
+      var plotband = jeedom.history.generatePlotBand(extremes.min,extremes.max);
+      for(var i in plotband){
+        dailyHistoryChart[_params.el].chart.xAxis[0].addPlotBand(plotband[i]);
+      }
+      $.hideLoading();
+      if (typeof (init(_params.success)) == 'function') {
+        _params.success(data.result);
+      }
+    }
+  });
 }
