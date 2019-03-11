@@ -53,6 +53,13 @@ class teleinfo extends eqLogic
             socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'teleinfo','55062'));
             socket_write($socket, $value, strlen($value));
             socket_close($socket);
+
+            $productionActivated = config::byKey('activation_production', 'teleinfo');
+            if ($productionActivated == 1) {
+                socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'teleinfo','55062') + 1);
+                socket_write($socket, $value, strlen($value));
+                socket_close($socket);
+            }
             return true;
         } catch (Exception $e) {
             return false;
