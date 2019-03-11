@@ -2,6 +2,12 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.2.3 (11-03-2019)
+
+* Globalisation des index
+* Correction changement niveau log du démon
+* Correction dépendances
+
 ### 4.2.2 (08-03-2019)
 
 * Correction du panel santé spécifique
