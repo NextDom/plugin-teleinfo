@@ -1,4 +1,4 @@
-var populate = [{id:"STAT_TODAY",name:"Conso totale Aujourd'hui"},{id:"STAT_MONTH",name:"Conso Mois en cours"},{id:"STAT_YEAR",name:"Conso Année en cours"},{id:"PAPP",name:"Puissance apparente instantanée compteur normal"},{id:"SINSTS",name:"Puissance apparente instantanée linky"},{id:"STAT_MONTH_LAST_YEAR",name:"Statistique consommation du mois l'année dernière"},{id:"STAT_YEAR_LAST_YEAR",name:"Statistique consommation de l'année dernière"}];
+var populate = [{id:"STAT_TODAY",name:"Conso totale Aujourd'hui"},{id:"STAT_MONTH",name:"Conso Mois en cours"},{id:"STAT_YEAR",name:"Conso Année en cours"},{id:"PAPP",name:"Puissance apparente instantanée compteur normal",commentaire:"Nécessaire seulement si la puissance apparente instantanée linky est nok"},{id:"SINSTS",name:"Puissance apparente instantanée linky",commentaire:"Nécessaire seulement si la puissance apparente instantanée normal est nok"},{id:"STAT_MONTH_LAST_YEAR",name:"Statistique consommation du mois l'année dernière"},{id:"STAT_YEAR_LAST_YEAR",name:"Statistique consommation de l'année dernière"}];
 
 $.ajax({
         type: 'POST',
@@ -57,12 +57,14 @@ function populate_table(){
 		if(populate[i].found == 1){
 			tbody += '<td class="alert alert-success">OK';
 			tbody += '</td>';
+            tbody += '<td></td></tr>';
 		}else{
 			tbody += '<td class="alert alert-danger">NOK';
 			tbody += '</td>';
+            tbody += '<td>'+ populate[i].commentaire +'</td></tr>';
 		}
 
-		tbody += '<td></td></tr>';
+
 	}
 
 	$('#table_health tbody').empty().append(tbody);

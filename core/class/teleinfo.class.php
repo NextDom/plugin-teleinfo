@@ -414,7 +414,7 @@ class teleinfo extends eqLogic
             } else {
                 $productionActivated = config::byKey('activation_production', 'teleinfo');
                 if ($productionActivated == 1) {
-                    $pidFile = '/tmp/jeedom/teleinfo/teleinfo_prod.pid';
+                    $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
                     if (file_exists($pidFile)) {
                         $pid  = intval(trim(file_get_contents($pidFile)));
                         $kill = posix_kill($pid, 15);
@@ -424,7 +424,7 @@ class teleinfo extends eqLogic
                         }
                     }
                 }
-                $pidFile = '/tmp/jeedom/teleinfo/teleinfo_conso.pid';
+                $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_conso.pid';
                 if (file_exists($pidFile)) {
                     $pid  = intval(trim(file_get_contents($pidFile)));
                     $kill = posix_kill($pid, 15);
