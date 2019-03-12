@@ -23,30 +23,75 @@ if (!isConnect('admin')) {
 ?>
 <div id='div_OptionsAlert' style=""></div>
 <div class="input-group pull-right" style="display:inline-flex">
-  <span class="input-group-btn">
-    <a class="btn btn-success btn-sm roundedRight" id="btOptionsSave"><i class="fa fa-check-circle"></i> {{Enregistrer}}</a>
+  <span class="pull-right">
+    <a class="btn btn-success pull-right" id="btOptionsSave"><i class="fa fa-check-circle"></i> {{Enregistrer}}</a>
   </span>
 </div>
-<div class="form-group" class="col-md-12">
-	<label class="col-xs-3 control-label">{{Temp. extérieure}}</label>
-	<div class="col-xs-4">
-		<div class="input-group">
-  			<?php
-			$outsideTemp = config::byKey('outside_temp', 'teleinfo');
-			if($outsideTemp != ''){
-				echo '<input class="eqLogicAttr form-control input-sm" value="' . cmd::cmdToHumanReadable('#' . $outsideTemp  . '#') . '" id="outsideTemp"/>';
-			}
-			else {
-				echo '<input class="eqLogicAttr form-control input-sm" id="outsideTemp"/>';
-			}
-  			?>
-			<span class="input-group-btn">
-				<a class="btn btn-default btn-sm cursor" id="bt_selectoutsideTemp" title="{{Choisir une commande}}"><i class="fa fa-list-alt"></i></a>
-			</span>
-		</div>
-	</div>
-	<div class="col-xs-5"></div>
+
+
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">{{Temp. extérieure}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+              			<?php
+            			$outsideTemp = config::byKey('outside_temp', 'teleinfo');
+            			if($outsideTemp != ''){
+            				echo '<input id="outsideTemp" class="eqLogicAttr form-control input-sm" cmd="'.$outsideTemp.'" value="' . cmd::cmdToHumanReadable('#' . $outsideTemp  . '#') . '" id="outsideTemp"/>';
+            			}
+            			else {
+            				echo '<input id="outsideTemp" class="eqLogicAttr form-control input-sm" id="outsideTemp"/>';
+            			}
+              			?>
+            			<span class="input-group-btn">
+            				<a class="btn btn-default btn-sm cursor" id="bt_selectoutsideTemp" title="{{Choisir une commande}}"><i class="fa fa-list-alt"></i></a>
+            			</span>
+            		</div>
+                </div>
+
+            </div>
+    </form>
+</div>
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">{{Index consommation HP}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <?php
+            			$indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+                        echo '<input id="indexConsoHP" type="text" value="'.$indexConsoHP.'" data-role="tagsinput" />';
+              			?>
+            		</div>
+                </div>
+                <div class="col-lg-5">
+                </div>
+            </div>
+    </form>
+</div>
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">{{Index consommation HC}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <?php
+            			$indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+                        echo '<input id="indexConsoHC" type="text" value="'.$indexConsoHC.'" data-role="tagsinput"/>';
+              			?>
+            		</div>
+                </div>
+                <div class="col-lg-5">
+                </div>
+            </div>
+    </form>
 </div>
 
 
-<?php include_file('desktop', 'options', 'js', 'teleinfo');?>
+
+<?php
+include_file('desktop', 'options', 'js', 'teleinfo');
+include_file('3rdparty', 'bootstrap-tagsinput/bootstrap-tagsinput', 'js', 'teleinfo');
+include_file('3rdparty', 'bootstrap-tagsinput/bootstrap-tagsinput', 'css', 'teleinfo');
+?>

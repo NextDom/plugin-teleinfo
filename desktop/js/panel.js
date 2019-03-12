@@ -281,77 +281,12 @@ function getObjectHistory(div, type, object, action = 'none') {
                         graphZindex :3
                     },
                     newGraph: true,
-                    //tooltip : {
-                    //xDateFormat: '%Y-%m-%d %H:%M:%S',
-                    //pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-                    //valueDecimals: 2,
-                    //    formatter: function(){
-                    //        return '<b>' + Highcharts.dateFormat('%e %b %Y', new Date(this.x))+ '</b><br/>' + this.y/1000 + ' kWh';
-                    //    },
-                    //},
-
                 });
-
-    /*$.ajax({
-        type: 'POST',
-        async:true,
-        url: "core/ajax/cmd.ajax.php", // url du fichier php
-        data: {
-            action:'getHistory',
-            id:object.id,
-            dateRange:'1 day',
-            dateStart:startDate,
-            dateEnd:$('#in_endDate').value(),
-            derive:'',
-            allowZero:1
-            },
-        dataType: 'json',
-        error: function (request, status, error) {
-            console.log("[getObjectHistory] Erreur lors de la récupération" + error);
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-            var calculColor = "#" + (Math.random()*0xFFFFFF<<0).toString(16);
-            switch(type)
-            {
-                case 'Simple':
-                    console.log(puissanceSeries.length);
-                    puissanceSeries.push({
-                        step: true,
-                        name: '{{'+object.name+'}}',
-                        data: data.result.data,
-                        type: 'line',
-                        tooltip: {
-                            valueDecimals: 2
-                        },
-                        color: calculColor,
-                    });
-                    drawSimpleGraph(div, puissanceSeries);
-                break;
-                case 'Stack':
-                    drawStackGraph(div, Series);
-                break;
-                case 'StackColumn':
-                    console.log(data.result.data);
-                    drawStackColumnChart(div, Series);
-                break;
-                case 'Pie':
-                    drawPieChart(div, Series, '{{'+object.name+'}}');
-                break;
-            }
-        },
-        timeout: 10000 // sets timeout to 3 seconds
-    });*/
 }
 
 function getDailyHistory(div,  object) {
-    //$('#' + div).empty();
     dailyHistoryChart[div] = null;
-
-
-    //jeedom.history.chart[div] = null;
     console.log("[getDailyHistory] Récupération de l'historique pour la commande " + object.name);
-
     teleinfoDrawChart({
                     cmd_id: object.id,
                     el: div,
@@ -369,34 +304,7 @@ function getDailyHistory(div,  object) {
                         groupingType:"high::day"
                     },
                     divide:1000,
-                    //tooltip : {
-                    //xDateFormat: '%Y-%m-%d %H:%M:%S',
-                    //pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-                    //valueDecimals: 2,
-                    //    formatter: function(){
-                    //        return '<b>' + Highcharts.dateFormat('%e %b %Y', new Date(this.x))+ '</b><br/>' + this.y/1000 + ' kWh';
-                    //    },
-                    //},
-
                 });
-
-    /*jeedom.history.drawChart({
-                    cmd_id: object.id,
-                    el: div,
-                    dateStart: $('#in_startDate').value(),
-                    dateEnd: $('#in_endDate').value(),
-                    showNavigator : false,
-                    option: {
-                        graphColor: '#BDBDBD',
-                        derive : 0,
-                        graphStep: 1,
-                        graphScale : 1,
-                        graphType : 'column',
-                        graphZindex :1,
-                        groupingType:"high::day"
-                    }
-                });*/
-
 
     jeedom.config.load({
         plugin: "teleinfo",
@@ -427,15 +335,6 @@ function getDailyHistory(div,  object) {
             }
         }
     });
-
-
-
-
-
-
-	//var dailyHistoryChart = $('#div_graphGlobalJournalier');
-
-
 }
 
 function drawPieChart(_el, _data, _title) {

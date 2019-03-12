@@ -68,7 +68,7 @@ switch ($controlerState) {
 				</center>
 			<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Configuration}}</center></span>
 			</div>
-			
+
 			<div class="cursor" id="bt_options" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
 			  <center>
 				<i class="fa fa-list-alt" style="font-size : 5em;color:#767676;"></i>
@@ -240,7 +240,7 @@ switch ($controlerState) {
   <div role="tabpanel" class="tab-pane" id="commandtab">
   </br>
   <a class="btn btn-success btn-sm cmdAction" id="addDataToTable"><i class="fa fa-plus-circle"></i> {{Ajouter une donnée}}</a> &nbsp;
-  <a class="btn btn-success btn-sm cmdAction expertModeVisible" id="addStatToTable"><i class="fa fa-plus-circle"></i> {{Ajouter une statistique}}</a><br/><br/>
+  <a class="btn btn-info btn-sm cmdAction expertModeVisible" id="addStatToTable"><i class="fa fa-plus-circle"></i> {{Ajouter une statistique}}</a><br/><br/>
   <table id="table_cmd" class="table table-bordered table-condensed">
       <thead>
           <tr>
