@@ -213,7 +213,7 @@ class teleinfo extends eqLogic
         }
 
         log::add('teleinfo', 'info', 'Exécution du service : ' . $cmd);
-        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon') . ' 2>&1 &');
+        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_conso') . ' 2>&1 &');
         if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
             log::add('teleinfo', 'error', $result);
             return false;
@@ -307,7 +307,7 @@ class teleinfo extends eqLogic
 		}
 
         log::add('teleinfo', 'info', '[Production] Exécution du service : ' . $cmd);
-        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon') . ' 2>&1 &');
+        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_prod') . ' 2>&1 &');
         if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
             log::add('teleinfo', 'error', $result);
             return false;
