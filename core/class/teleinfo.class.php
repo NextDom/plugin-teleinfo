@@ -115,6 +115,9 @@ class teleinfo extends eqLogic
                 case "PEJP":
                 case "DEMAIN":
                 case "PTEC":
+                case "LTARF":
+                case "NGTF":
+                case "MSG1":
                     $cmd->setSubType('string')
                             ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
@@ -123,8 +126,7 @@ class teleinfo extends eqLogic
                             ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
             }
-            $cmd->setIsHistorized(1)
-                    ->setIsVisible(1);
+            $cmd->setIsHistorized(1)->setIsVisible(1);
             $cmd->save();
             $cmd->event($oValue);
             return $cmd;

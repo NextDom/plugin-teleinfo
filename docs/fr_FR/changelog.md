@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.2.4 (En cours)
+
+* Bug sur le type de commandes lors de la création automatique. 
+
 ### 4.2.3 (12-03-2019)
 
 * Globalisation des index
