@@ -3,7 +3,6 @@ PROGRESS_FILE=/tmp/jeedom/teleinfo/dependance
 PROGRESS_FILE=$1
 touch ${PROGRESS_FILE}
 echo 0 > ${PROGRESS_FILE}
-
 function apt_install {
   sudo apt-get -y install "$@"
   if [ $? -ne 0 ]; then
@@ -12,7 +11,6 @@ function apt_install {
     exit 1
   fi
 }
-
 function pip_install {
   sudo pip install "$@"
   if [ $? -ne 0 ]; then
@@ -42,6 +40,8 @@ echo "Installation de la librairie serial"
 sudo pip uninstall -y serial
 #apt_install python-serial
 pip_install pyserial
+pip_install requests
+pip_install pyudev
 echo 50 > ${PROGRESS_FILE}
 echo "Mise à jour de cmdline ou inittab suivant système"
 if [ -e /dev/ttyAMA0 ];  then

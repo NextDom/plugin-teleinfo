@@ -43,16 +43,19 @@ try {
             teleinfo::cron();
             ajax::success();
         break;
+        case 'changeLogLive':
+            ajax::success(teleinfo::changeLogLive(init('level')));
+        break;
         case 'getTeleinfo':
             if (init('object_id') == '') {
                 $_GET['object_id'] = $_SESSION['user']->getOptions('defaultDashboardObject');
             }
-            $object = object::byId(init('object_id'));
-            if (!is_object($object)) {
-                $object = object::rootObject();
+            $object = jeeObject::byId(init('object_id'));
+		    if (!is_object($object)) {
+                $object = jeeObject::rootObject();
             }
             if (!is_object($object)) {
-                throw new \Exception('{{Aucun objet racine trouv�}}');
+                throw new \Exception('{{Aucun objet racine trouve}}');
             }
             $return = array('object' => utils::o2a($object));
 
@@ -102,22 +105,20 @@ try {
             }
         break;
         case 'getHealth':
-            if (init('eqLogicID') !== null) {
+            if (init('eqLogicID') !== '') {
                 $teleinfo       = teleinfo::byLogicalId(init('eqLogicID'), 'teleinfo');
                 $health_cmd     = $teleinfo->getCmd('info', 'health');
                 $return         = array('object' => utils::o2a($health_cmd));
                 $return["ADCO"] = init('eqLogicID');
                 ajax::success($return);
             } else {
-                $teleinfo = teleinfo::byType('teleinfo');
-                foreach ($teleinfo as $eqLogic) {
+                foreach (eqLogic::byType('teleinfo') as $eqLogic) {
                     $health_cmd     = $eqLogic->getCmd('info', 'health');
                     $return         = array('object' => utils::o2a($health_cmd));
                     $return["ADCO"] = $eqLogic->getLogicalId();
                     ajax::success($return);
                 }
             }
-
             ajax::error("", "");
         break;
         case 'getInfoDaemon':
@@ -150,11 +151,6 @@ try {
                 $return['result'] = $page;
                 ajax::success($return);
             }
-        break;
-        case 'getInfoExternalDaemon':
-            $jeeNetwork = jeeNetwork::byPlugin('enocean');
-            $return['result'] = $jeeNetwork;
-            ajax::success($return);
         break;
         case 'getHistory':
             $return = array();

@@ -45,9 +45,9 @@ $('#create_data_teleinfo').on('click', function() {
     $('.eqLogicAction[data-action=save]').click();
 });
 
-$('#bt_cout').on('click', function() {
-    $('#md_modal').dialog({title: "{{Gestion des coûts}}"});
-    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=cout').dialog('open');
+$('#bt_options').on('click', function() {
+    $('#md_modal').dialog({title: "{{Options}}"});
+    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=options').dialog('open');
 });
 
 $('#bt_info_daemon').on('click', function() {
@@ -204,6 +204,7 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="PPOINTE">PPOINTE</option>';
         selRequestType += '<option value="SINSTI">SINSTI</option>';
         selRequestType += '<option value="IRMS1">IRMS1</option>';
+        selRequestType += '<option value="URMS1">URMS1</option>';
         selRequestType += '</select>';
     }
 
@@ -212,8 +213,11 @@ function addCmdToTable(_cmd) {
     }else if(init(_cmd.configuration['type']) == 'health'){
         var tr = '';
     }
+    else if (init(_cmd.configuration['type']) == 'stat'){
+        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="background-color: aliceblue;">';
+    }
     else{
-        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
+        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="background-color: #f2fff2;">';
     }
     if(init(_cmd.configuration['type']) != 'health'){
         tr += '<td>';

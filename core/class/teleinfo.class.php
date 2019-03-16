@@ -39,6 +39,33 @@ class teleinfo extends eqLogic
         self::moyLastHour();
     }
 
+    public static function changeLogLive($level)
+    {
+        $value = array('apikey' => jeedom::getApiKey('teleinfo'), 'cmd' => $level);
+        $value = json_encode($value);
+        self::socket_connection($value,True);
+    }
+
+    public static function socket_connection($value)
+    {
+        try {
+            $socket = socket_create(AF_INET, SOCK_STREAM, 0);
+            socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'teleinfo','55062'));
+            socket_write($socket, $value, strlen($value));
+            socket_close($socket);
+
+            $productionActivated = config::byKey('activation_production', 'teleinfo');
+            if ($productionActivated == 1) {
+                socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'teleinfo','55062') + 1);
+                socket_write($socket, $value, strlen($value));
+                socket_close($socket);
+            }
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
     public static function createFromDef(string $adco)
     {
         $autorisationCreationObjet = config::byKey('createNewADCO', 'teleinfo');
@@ -59,36 +86,38 @@ class teleinfo extends eqLogic
         }
     }
 
-    public static function createCmdFromDef($_oADCO, $_oKey, $_oValue)
+    public static function createCmdFromDef($oADCO, $oKey, $oValue)
     {
-        if (!isset($_oKey)) {
-            log::add('teleinfo', 'error', 'Information manquante pour ajouter l\'équipement : ' . print_r($_oKey, true));
+        if (!isset($oKey)) {
+            log::add('teleinfo', 'error', 'Information manquante pour ajouter l\'équipement : ' . print_r($oKey, true));
             return false;
         }
-        if (!isset($_oADCO)) {
-            log::add('teleinfo', 'error', 'Information manquante pour ajouter l\'équipement : ' . print_r($_oADCO, true));
+        if (!isset($oADCO)) {
+            log::add('teleinfo', 'error', 'Information manquante pour ajouter l\'équipement : ' . print_r($oADCO, true));
             return false;
         }
-        $teleinfo = teleinfo::byLogicalId($_oADCO, 'teleinfo');
+        $teleinfo = teleinfo::byLogicalId($oADCO, 'teleinfo');
         if (!is_object($teleinfo)) {
             return false;
         }
         if ($teleinfo->getConfiguration('AutoCreateFromCompteur') == '1') {
-            log::add('teleinfo', 'info', 'Création de la commande ' . $_oKey . ' sur l\'ADCO ' . $_oADCO);
+            log::add('teleinfo', 'info', 'Création de la commande ' . $oKey . ' sur l\'ADCO ' . $oADCO);
             $cmd = (new teleinfoCmd())
-                    ->setName($_oKey)
-                    ->setLogicalId($_oKey)
+                    ->setName($oKey)
+                    ->setLogicalId($oKey)
                     ->setType('info');
             $cmd->setEqLogic_id($teleinfo->id);
-            $cmd->setConfiguration('info_conso', $_oKey);
-            switch ($_oKey) {
-                //case "PAPP":
+            $cmd->setConfiguration('info_conso', $oKey);
+            switch ($oKey) {
                 case "OPTARIF":
                 case "HHPHC":
                 case "PPOT":
                 case "PEJP":
                 case "DEMAIN":
                 case "PTEC":
+                case "LTARF":
+                case "NGTF":
+                case "MSG1":
                     $cmd->setSubType('string')
                             ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
@@ -97,30 +126,28 @@ class teleinfo extends eqLogic
                             ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
             }
-            $cmd->setIsHistorized(1)
-                    ->setIsVisible(1);
+            $cmd->setIsHistorized(1)->setIsVisible(1);
             $cmd->save();
-            $cmd->event($_oValue);
+            $cmd->event($oValue);
             return $cmd;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param type $debug
      * @param type $type
      * @return boolean
      */
     public static function runDeamon($debug = false, $type = 'conso')
     {
-        log::add('teleinfo', 'info', 'Démarrage compteur de consommation');
+        log::add('teleinfo', 'info', '[runDeamon] Démarrage compteur de consommation');
         $teleinfoPath         = realpath(dirname(__FILE__) . '/../../ressources');
         $modemSerieAddr       = config::byKey('port', 'teleinfo');
-        $debug               = config::byKey('debug', 'teleinfo');
-        $force               = config::byKey('force', 'teleinfo');
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         $linky                = config::byKey('linky', 'teleinfo');
         $modemVitesse         = config::byKey('modem_vitesse', 'teleinfo');
+        $cycleSommeil         = config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_addr', 'teleinfo');
         } else {
@@ -151,41 +178,44 @@ class teleinfo extends eqLogic
             }
         }
 
-        if (config::byKey('internalComplement', 'core') !== "") {
-            $internalComplement = "/" . config::byKey('internalComplement', 'core');
-        } else {
-            $internalComplement = "";
-        }
-        $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . $internalComplement);
-        exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
+		exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
 
-        log::add('teleinfo', 'info', '--------- Informations sur le master --------');
-        log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . $internalComplement);
-        log::add('teleinfo', 'info', 'Host / Port         :' . $parsed_url['host'] . ':' . $parsed_url['port']);
-        log::add('teleinfo', 'info', 'Path complémentaire :' . $parsed_url['path']);
-        $ip_interne = $parsed_url['scheme'] . '://' . $parsed_url['host'] . ':' . $parsed_url['port'] . $parsed_url['path'];
-        log::add('teleinfo', 'info', 'Mise en forme pour le service : ' . $ip_interne);
-        log::add('teleinfo', 'info', 'Debug : ' . $debug);
-        log::add('teleinfo', 'info', 'Force : ' . $force);
+        log::add('teleinfo', 'info', '---------- Informations de lancement ---------');
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
+		log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062'));
         log::add('teleinfo', 'info', 'Type : ' . $type);
         log::add('teleinfo', 'info', 'Mode : ' . $mode);
-        $debug     = ($debug) ? "1" : "0";
-        $force     = ($force) ? "1" : "0";
         log::add('teleinfo', 'info', '---------------------------------------------');
 
         if ($twoCptCartelectronic == 1) {
-            log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteur');
-            $teleinfoPath = $teleinfoPath . '/teleinfo_2_cpt.py';
-            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $force . ' -r ' . realpath(dirname(__FILE__));
+            log::add('teleinfo', 'info', '[runDeamon] Fonctionnement en mode 2 compteur');
+            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo_2_cpt.py';
+			$cmd         .= ' --port ' . $port;
+            $cmd         .= ' --vitesse ' . $modemVitesse;
+            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
+            $cmd         .= ' --mode ' . $mode;
+            $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
+            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
+            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
+            $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
         } else {
-            log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
-            $teleinfoPath = $teleinfoPath . '/teleinfo.py';
-            $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $force . ' -t ' . $type . ' -m ' . $mode . ' -r ' . realpath(dirname(__FILE__));
+            log::add('teleinfo', 'info', '[runDeamon] Fonctionnement en mode 1 compteur');
+            $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
+            $cmd         .= ' --port ' . $port;
+            $cmd         .= ' --vitesse ' . $modemVitesse;
+            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
+            $cmd         .= ' --type ' . $type;
+            $cmd         .= ' --mode ' . $mode;
+            $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
+            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
+            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
+            $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
         }
 
         log::add('teleinfo', 'info', 'Exécution du service : ' . $cmd);
-        $result = exec('nohup ' . $cmd . ' >> ' . log::getPathToLog('teleinfo') . ' 2>&1 &');
+        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_conso') . ' 2>&1 &');
         if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
             log::add('teleinfo', 'error', $result);
             return false;
@@ -194,7 +224,7 @@ class teleinfo extends eqLogic
         if (!self::deamonRunning()) {
             sleep(10);
             if (!self::deamonRunning()) {
-                log::add('teleinfo', 'error', 'Impossible de lancer le démon téléinfo, vérifiez l\'ip', 'unableStartDeamon');
+                log::add('teleinfo', 'error', 'Impossible de lancer le démon téléinfo, vérifiez la configuration.', 'unableStartDeamon');
                 return false;
             }
         }
@@ -202,24 +232,22 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'info', 'Service OK');
         log::add('teleinfo', 'info', '---------------------------------------------');
     }
-    
+
     /**
-     * 
+     *
      * @param type $_debug
      * @param type $type
      * @return boolean
      */
-    public static function runProductionDeamon($_debug = false, $type = 'prod')
+    public static function runProductionDeamon($debug = false, $type = 'prod')
     {
         log::add('teleinfo', 'info', '[Production] Mode local');
         $teleinfoPath         = realpath(dirname(__FILE__) . '/../../ressources');
         $modemSerieAddr       = config::byKey('port_production', 'teleinfo');
-        $_debug               = config::byKey('debug_production', 'teleinfo');
-        $_force               = config::byKey('force_production', 'teleinfo');
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic_production', 'teleinfo');
         $linky                = config::byKey('linky_prod', 'teleinfo');
         $modemVitesse         = config::byKey('modem_vitesse_production', 'teleinfo');
-
+		$cycleSommeil         = config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_production_addr', 'teleinfo');
         } else {
@@ -229,11 +257,6 @@ class teleinfo extends eqLogic
             } else {
                 if (!file_exists($port)) {
                     log::add('teleinfo', 'error', '[Production] Le port n\'existe pas');
-                    return false;
-                }
-                $cle_api = config::byKey('api');
-                if ($cle_api == '') {
-                    log::add('teleinfo', 'error', '[Production] Erreur de clé api, veuillez la vérifier.');
                     return false;
                 }
             }
@@ -251,36 +274,42 @@ class teleinfo extends eqLogic
             }
         }
 
-
-        $parsed_url = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
-
-        log::add('teleinfo', 'info', '--------- Informations sur le master --------');
-        log::add('teleinfo', 'info', 'Adresse             :' . config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
-        log::add('teleinfo', 'info', 'Host / Port         :' . $parsed_url['host'] . ':' . $parsed_url['port']);
-        log::add('teleinfo', 'info', 'Path complémentaire :' . $parsed_url['path']);
-        $ip_interne = $parsed_url['scheme'] . '://' . $parsed_url['host'] . ':' . $parsed_url['port'] . $parsed_url['path'];
-        log::add('teleinfo', 'info', 'Mise en forme pour le service : ' . $ip_interne);
-        log::add('teleinfo', 'info', 'Debug : ' . $_debug);
-        log::add('teleinfo', 'info', 'Force : ' . $_force);
+        log::add('teleinfo', 'info', '---------- Informations de lancement ---------');
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
+		log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062') + 1);
         log::add('teleinfo', 'info', 'Type : ' . $type);
         log::add('teleinfo', 'info', 'Mode : ' . $mode);
-        $_debug     = ($_debug) ? "1" : "0";
-        $_force     = ($_force) ? "1" : "0";
         log::add('teleinfo', 'info', '---------------------------------------------');
 
         if ($twoCptCartelectronic == 1) {
-            log::add('teleinfo', 'info', 'Fonctionnement en mode 2 compteur');
-            $teleinfoPath = $teleinfoPath . '/teleinfo_2_cpt.py';
-            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -r ' . realpath(dirname(__FILE__));
+            log::add('teleinfo', 'info', '[Production] Fonctionnement en mode 2 compteur');
+            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo_2_cpt.py';
+            $cmd         .= ' --port ' . $port;
+            $cmd         .= ' --vitesse ' . $modemVitesse;
+            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
+            $cmd         .= ' --mode ' . $mode;
+            $cmd         .= ' --socketport ' . (config::byKey('socketport', 'teleinfo', '55062') + 1);
+            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
+            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
+            $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
         } else {
-            log::add('teleinfo', 'info', 'Fonctionnement en mode 1 compteur');
-            $teleinfoPath = $teleinfoPath . '/teleinfo.py';
-            $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . ' -d ' . $_debug . ' -p ' . $port . ' -v ' . $modemVitesse . ' -e ' . $ip_interne . ' -c ' . config::byKey('api') . ' -f ' . $_force . ' -t ' . $type . ' -m ' . $mode . ' -r ' . realpath(dirname(__FILE__));
-        }
+            log::add('teleinfo', 'info', '[Production] Fonctionnement en mode 1 compteur');
+            $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
+            $cmd         .= ' --port ' . $port;
+            $cmd         .= ' --vitesse ' . $modemVitesse;
+            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
+            $cmd         .= ' --type ' . $type;
+            $cmd         .= ' --mode ' . $mode;
+            $cmd         .= ' --socketport ' . (config::byKey('socketport', 'teleinfo', '55062') + 1);
+            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
+            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
+            $cmd         .= ' --loglevel info'; //. log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
+		}
 
         log::add('teleinfo', 'info', '[Production] Exécution du service : ' . $cmd);
-        $result = exec('nohup ' . $cmd . ' >> ' . log::getPathToLog('teleinfo') . ' 2>&1 &');
+        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_prod') . ' 2>&1 &');
         if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
             log::add('teleinfo', 'error', $result);
             return false;
@@ -289,7 +318,7 @@ class teleinfo extends eqLogic
         if (!self::deamonRunning()) {
             sleep(10);
             if (!self::deamonRunning()) {
-                log::add('teleinfo', 'error', '[Production] Impossible de lancer le démon téléinfo, vérifiez l\'ip', 'unableStartDeamon');
+                log::add('teleinfo', 'error', '[Production] Impossible de lancer le démon téléinfo, vérifiez la configuration', 'unableStartDeamon');
                 return false;
             }
         }
@@ -297,9 +326,9 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'info', '[Production] Service OK');
         log::add('teleinfo', 'info', '---------------------------------------------');
     }
-    
+
     /**
-     * 
+     *
      * @return boolean
      */
     public static function deamonRunning()
@@ -310,20 +339,20 @@ class teleinfo extends eqLogic
             if ($result != "") {
                 return true;
             }
-            log::add('teleinfo', 'info', 'Vérification de l\'état du service : NOK ');
+            log::add('teleinfo', 'info', '[deamonRunning] Vérification de l\'état du service : NOK ');
             return false;
         } else {
             $result = exec("ps aux | grep teleinfo.py | grep -v grep | awk '{print $2}'");
             if ($result != "") {
                 return true;
             }
-            log::add('teleinfo', 'info', 'Vérification de l\'état du service : NOK ');
+            log::add('teleinfo', 'info', '[deamonRunning] Vérification de l\'état du service : NOK ');
             return false;
         }
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     public static function deamon_info()
@@ -333,9 +362,9 @@ class teleinfo extends eqLogic
         $return['state']      = 'nok';
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         if ($twoCptCartelectronic == 1) {
-            $pidFile = '/tmp/teleinfo2cpt.pid';
+            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo2cpt.pid';
         } else {
-            $pidFile = '/tmp/teleinfo_conso.pid';
+            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_conso.pid';
         }
         if (file_exists($pidFile)) {
             if (posix_getsid(trim(file_get_contents($pidFile)))) {
@@ -346,7 +375,7 @@ class teleinfo extends eqLogic
         }
         $productionActivated = config::byKey('activation_production', 'teleinfo');
         if ($productionActivated == 1) {
-            $pidFile = '/tmp/teleinfo_prod.pid';
+            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
             if (file_exists($pidFile)) {
                 if (posix_getsid(trim(file_get_contents($pidFile)))) {
                     $return['state'] = 'ok';
@@ -364,6 +393,7 @@ class teleinfo extends eqLogic
      */
     public static function deamon_start($debug = false)
     {
+        log::add('teleinfo', 'info', '[deamon_start] Démarrage du service');
         $productionActivated = config::byKey('activation_production', 'teleinfo');
         if (config::byKey('port', 'teleinfo') != "") {    // Si un port est sélectionné
             if (!self::deamonRunning()) {
@@ -393,7 +423,7 @@ class teleinfo extends eqLogic
             } else {
                 $productionActivated = config::byKey('activation_production', 'teleinfo');
                 if ($productionActivated == 1) {
-                    $pidFile = '/tmp/teleinfo_prod.pid';
+                    $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
                     if (file_exists($pidFile)) {
                         $pid  = intval(trim(file_get_contents($pidFile)));
                         $kill = posix_kill($pid, 15);
@@ -403,7 +433,7 @@ class teleinfo extends eqLogic
                         }
                     }
                 }
-                $pidFile = '/tmp/teleinfo_conso.pid';
+                $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_conso.pid';
                 if (file_exists($pidFile)) {
                     $pid  = intval(trim(file_get_contents($pidFile)));
                     $kill = posix_kill($pid, 15);
@@ -427,103 +457,92 @@ class teleinfo extends eqLogic
 
     public static function calculateTodayStats()
     {
-        $STAT_TODAY_HP     = 0;
-        $STAT_TODAY_HC     = 0;
-        //$STAT_TENDANCE     = 0; unused
-        $STAT_YESTERDAY_HP = 0;
-        $STAT_YESTERDAY_HC = 0;
-        $TYPE_TENDANCE     = 0;
-        $stat_hp_to_cumul  = array();
-        $stat_hc_to_cumul  = array();
+        $statTodayHp     = 0;
+        $statTodayHc     = 0;
+        $statYesterdayHp = 0;
+        $statYesterdayHc = 0;
+        $typeTendance    = 0;
+        $statHpToCumul   = array();
+        $statHcToCumul   = array();
+        $indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
 
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
-                    switch ($cmd->getConfiguration('info_conso')) {
-                        case "BASE":
-                        case "HCHP":
-                        case "BBRHPJB":
-                        case "BBRHPJW":
-                        case "BBRHPJR":
-                        case "EJPHPM":
-                            array_push($stat_hp_to_cumul, $cmd->getId());
-                            break;
+                    if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                        array_push($statHpToCumul, $cmd->getId());
                     }
-                    switch ($cmd->getConfiguration('info_conso')) {
-                        case "HCHC":
-                        case "BBRHCJB":
-                        case "BBRHCJW":
-                        case "BBRHCJR":
-                        case "EJPHN":
-                            array_push($stat_hc_to_cumul, $cmd->getId());
-                            break;
+                    if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                        array_push($statHcToCumul, $cmd->getId());
                     }
                 }
                 if ($cmd->getConfiguration('info_conso') == "TENDANCE_DAY") {
-                    $TYPE_TENDANCE = $cmd->getConfiguration('type_calcul_tendance');
+                    $typeTendance = $cmd->getConfiguration('type_calcul_tendance');
                 }
             }
         }
 
-        $startdatetoday = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
-        $enddatetoday   = date("Y-m-d H:i:s", mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y")));
+        $startDateToday = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+        $endDateToday   = date("Y-m-d H:i:s", mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y")));
         log::add('teleinfo', 'info', '----- Calcul des statistiques temps réel -----');
-        log::add('teleinfo', 'info', 'Date de début : ' . $startdatetoday);
-        log::add('teleinfo', 'info', 'Date de fin   : ' . $enddatetoday);
+        log::add('teleinfo', 'info', 'Date de début : ' . $startDateToday);
+        log::add('teleinfo', 'info', 'Date de fin   : ' . $endDateToday);
+        log::add('teleinfo', 'info', 'Liste index HP  : ' . $indexConsoHP);
+        log::add('teleinfo', 'info', 'Liste index HC  : ' . $indexConsoHC);
         log::add('teleinfo', 'info', '----------------------------------------------');
 
         $startdateyesterday = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
-        if ($TYPE_TENDANCE === 1) {
+        if ($typeTendance === 1) {
             $enddateyesterday = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
         } else {
             $enddateyesterday = date("Y-m-d H:i:s", mktime(date("H"), date("i"), date("s"), date("m"), date("d") - 1, date("Y")));
         }
 
-        foreach ($stat_hc_to_cumul as $key => $value) {
+        foreach ($statHcToCumul as $key => $value) {
             $cmd            = cmd::byId($value);
-            $statHcMaxToday = $cmd->getStatistique($startdatetoday, $enddatetoday)['max'];
-            $statHcMinToday = $cmd->getStatistique($startdatetoday, $enddatetoday)['min'];
+            $statHcMaxToday = $cmd->getStatistique($startDateToday, $endDateToday)['max'];
+            $statHcMinToday = $cmd->getStatistique($startDateToday, $endDateToday)['min'];
             log::add('teleinfo', 'debug', 'Commande HC N°' . $value);
             log::add('teleinfo', 'debug', ' ==> Valeur HC MAX : ' . $statHcMaxToday);
             log::add('teleinfo', 'debug', ' ==> Valeur HC MIN : ' . $statHcMinToday);
 
-            $STAT_TODAY_HC     += intval($statHcMaxToday) - intval($statHcMinToday);
-            $STAT_YESTERDAY_HC += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
-            log::add('teleinfo', 'debug', 'Total HC --> ' . $STAT_TODAY_HC);
+            $statTodayHc     += intval($statHcMaxToday) - intval($statHcMinToday);
+            $statYesterdayHc += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
+            log::add('teleinfo', 'debug', 'Total HC --> ' . $statTodayHc);
         }
-        foreach ($stat_hp_to_cumul as $key => $value) {
+        foreach ($statHpToCumul as $key => $value) {
             $cmd            = cmd::byId($value);
-            $statHcMaxToday = $cmd->getStatistique($startdatetoday, $enddatetoday)['max'];
-            $statHcMinToday = $cmd->getStatistique($startdatetoday, $enddatetoday)['min'];
+            $statHcMaxToday = $cmd->getStatistique($startDateToday, $endDateToday)['max'];
+            $statHcMinToday = $cmd->getStatistique($startDateToday, $endDateToday)['min'];
             log::add('teleinfo', 'debug', 'Commande HP N°' . $value);
             log::add('teleinfo', 'debug', ' ==> Valeur HP MAX : ' . $statHcMaxToday);
             log::add('teleinfo', 'debug', ' ==> Valeur HP MIN : ' . $statHcMinToday);
 
-            $STAT_TODAY_HP     += intval($statHcMaxToday) - intval($statHcMinToday);
-            $STAT_YESTERDAY_HP += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
-            log::add('teleinfo', 'debug', 'Total HP --> ' . $STAT_TODAY_HP);
+            $statTodayHp     += intval($statHcMaxToday) - intval($statHcMinToday);
+            $statYesterdayHp += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
+            log::add('teleinfo', 'debug', 'Total HP --> ' . $statTodayHp);
         }
 
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
-
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "stat") {
                     switch ($cmd->getConfiguration('info_conso')) {
                         case "STAT_TODAY":
-                            log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière ==> ' . intval($STAT_TODAY_HP + $STAT_TODAY_HC));
-                            $cmd->event(intval($STAT_TODAY_HP + $STAT_TODAY_HC));
+                            log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière ==> ' . intval($statTodayHp + $statTodayHc));
+                            $cmd->event(intval($statTodayHp + $statTodayHc));
                             break;
                         case "TENDANCE_DAY":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la tendance journalière ==> ' . '(Hier : ' . intval($STAT_YESTERDAY_HC + $STAT_YESTERDAY_HP) . ' Aujourd\'hui : ' . intval($STAT_TODAY_HC + $STAT_TODAY_HP) . ' Différence : ' . (intval($STAT_YESTERDAY_HC + $STAT_YESTERDAY_HP) - intval($STAT_TODAY_HC + $STAT_TODAY_HP)) . ')');
-                            $cmd->event(intval($STAT_YESTERDAY_HC + $STAT_YESTERDAY_HP) - intval($STAT_TODAY_HC + $STAT_TODAY_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la tendance journalière ==> ' . '(Hier : ' . intval($statYesterdayHc + $statYesterdayHp) . ' Aujourd\'hui : ' . intval($statTodayHc + $statTodayHp) . ' Différence : ' . (intval($statYesterdayHc + $statYesterdayHp) - intval($statTodayHc + $statTodayHp)) . ')');
+                            $cmd->event(intval($statYesterdayHc + $statYesterdayHp) - intval($statTodayHc + $statTodayHp));
                             break;
                         case "STAT_TODAY_HP":
-                            log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière (HP) ==> ' . intval($STAT_TODAY_HP));
-                            $cmd->event(intval($STAT_TODAY_HP));
+                            log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière (HP) ==> ' . intval($statTodayHp));
+                            $cmd->event(intval($statTodayHp));
                             break;
                         case "STAT_TODAY_HC":
-                            log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière (HC) ==> ' . intval($STAT_TODAY_HC));
-                            $cmd->event(intval($STAT_TODAY_HC));
+                            log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière (HC) ==> ' . intval($statTodayHc));
+                            $cmd->event(intval($statTodayHc));
                             break;
                     }
                 }
@@ -533,67 +552,58 @@ class teleinfo extends eqLogic
 
     public static function calculateOtherStats()
     {
-        $STAT_YESTERDAY_HC = 0;
-        $STAT_YESTERDAY_HP = 0;
-        $STAT_LASTMONTH    = 0;
+        $statYesterdayHc = 0;
+        $statYesterdayHp = 0;
+        $statLastMonth    = 0;
 
-        $stat_month_last_year_hc = 0;
-        $stat_month_last_year_hp = 0;
+        $statMonthLastYearHc = 0;
+        $statMonthLastYearHp = 0;
 
-        $stat_year_last_year_hc = 0;
-        $stat_year_last_year_hp = 0;
+        $statYearLastYearHc = 0;
+        $statYearLastYearHp = 0;
 
-        $STAT_MONTH   = 0;
-        $STAT_YEAR    = 0;
-        $STAT_JAN_HP  = 0;
-        $STAT_JAN_HC  = 0;
-        $STAT_FEV_HP  = 0;
-        $STAT_FEV_HC  = 0;
-        $STAT_MAR_HP  = 0;
-        $STAT_MAR_HC  = 0;
-        $STAT_AVR_HP  = 0;
-        $STAT_AVR_HC  = 0;
-        $STAT_MAI_HP  = 0;
-        $STAT_MAI_HC  = 0;
-        $STAT_JUIN_HP = 0;
-        $STAT_JUIN_HC = 0;
-        $STAT_JUI_HP  = 0;
-        $STAT_JUI_HC  = 0;
-        $STAT_AOU_HP  = 0;
-        $STAT_AOU_HC  = 0;
-        $STAT_SEP_HP  = 0;
-        $STAT_SEP_HC  = 0;
-        $STAT_OCT_HP  = 0;
-        $STAT_OCT_HC  = 0;
-        $STAT_NOV_HP  = 0;
-        $STAT_NOV_HC  = 0;
-        $STAT_DEC_HP  = 0;
-        $STAT_DEC_HC  = 0;
+        $statMonth   = 0;
+        $statYear    = 0;
+        $statJanHp  = 0;
+        $statJanHc  = 0;
+        $statFevHp  = 0;
+        $statFevHc  = 0;
+        $statMarHp  = 0;
+        $statMarHc  = 0;
+        $statAvrHp  = 0;
+        $statAvrHc  = 0;
+        $statMaiHp  = 0;
+        $statMaiHc  = 0;
+        $statJuinHp = 0;
+        $statJuinHc = 0;
+        $statJuiHp  = 0;
+        $statJuiHc  = 0;
+        $statAouHp  = 0;
+        $statAouHc  = 0;
+        $statSepHp  = 0;
+        $statSepHc  = 0;
+        $statOctHp  = 0;
+        $statOctHc  = 0;
+        $statNovHp  = 0;
+        $statNovHc  = 0;
+        $statDecHp  = 0;
+        $statDecHc  = 0;
 
-        $stat_hp_to_cumul = array();
-        $stat_hc_to_cumul = array();
+        $statHpToCumul = array();
+        $statHcToCumul = array();
+
+        $indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+
         log::add('teleinfo', 'info', '----- Calcul des statistiques de la journée -----');
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
-                    switch ($cmd->getConfiguration('info_conso')) {
-                        case "BASE":
-                        case "HCHP":
-                        case "BBRHPJB":
-                        case "BBRHPJW":
-                        case "BBRHPJR":
-                        case "EJPHPM":
-                            array_push($stat_hp_to_cumul, $cmd->getId());
-                            break;
+                    if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                        array_push($statHpToCumul, $cmd->getId());
                     }
-                    switch ($cmd->getConfiguration('info_conso')) {
-                        case "HCHC":
-                        case "BBRHCJB":
-                        case "BBRHCJW":
-                        case "BBRHCJR":
-                        case "EJPHN":
-                            array_push($stat_hc_to_cumul, $cmd->getId());
-                            break;
+                    if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                        array_push($statHcToCumul, $cmd->getId());
                     }
                 }
             }
@@ -606,7 +616,7 @@ class teleinfo extends eqLogic
         $enddateyear   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
 
         $startdatemonth = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), 1, date("Y")));
-        $enddatemonth   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d"), date("Y")));
+        $enddatemonth   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
 
         $startdatelastmonth = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
         $enddatelastmonth   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m") - 1, date("t", mktime(0, 0, 0, date("m") - 1, date("d"), date("Y"))), date("Y")));
@@ -642,190 +652,182 @@ class teleinfo extends eqLogic
         $startdate_dec  = date("Y-m-d H:i:s", mktime(0, 0, 0, 12, 1, date("Y")));
         $enddate_dec    = date("Y-m-d H:i:s", mktime(23, 59, 59, 12, 31, date("Y")));
 
-        foreach ($stat_hc_to_cumul as $key => $value) {
+        foreach ($statHcToCumul as $key => $value) {
             log::add('teleinfo', 'debug', 'Commande HC N°' . $value);
-            //$cache = cache::byKey('teleinfo::stats::' . $value, false, true);
             $cmd               = cmd::byId($value);
-            //$STAT_TODAY_HC += intval($cmd->getStatistique($startdatetoday,$enddatetoday)[max]) - intval($cmd->getStatistique($startdatetoday,$enddatetoday)[min]);
-            $STAT_YESTERDAY_HC += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
-            $STAT_MONTH        += intval($cmd->getStatistique($startdatemonth, $enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth, $enddatemonth)['min']);
-            $STAT_YEAR         += intval($cmd->getStatistique($startdateyear, $enddateyear)['max']) - intval($cmd->getStatistique($startdateyear, $enddateyear)['min']);
-            $STAT_LASTMONTH    += intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['max']) - intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['min']);
-
-            $stat_month_last_year_hp += intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['max']) - intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['min']);
-            $stat_year_last_year_hp  += intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['max']) - intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['min']);
-
-            $STAT_JAN_HC  += intval($cmd->getStatistique($startdate_jan, $enddate_jan)['max']) - intval($cmd->getStatistique($startdate_jan, $enddate_jan)['min']);
-            $STAT_FEV_HC  += intval($cmd->getStatistique($startdate_fev, $enddate_fev)['max']) - intval($cmd->getStatistique($startdate_fev, $enddate_fev)['min']);
-            $STAT_MAR_HC  += intval($cmd->getStatistique($startdate_mar, $enddate_mar)['max']) - intval($cmd->getStatistique($startdate_mar, $enddate_mar)['min']);
-            $STAT_AVR_HC  += intval($cmd->getStatistique($startdate_avr, $enddate_avr)['max']) - intval($cmd->getStatistique($startdate_avr, $enddate_avr)['min']);
-            $STAT_MAI_HC  += intval($cmd->getStatistique($startdate_mai, $enddate_mai)['max']) - intval($cmd->getStatistique($startdate_mai, $enddate_mai)['min']);
-            $STAT_JUIN_HC += intval($cmd->getStatistique($startdate_juin, $enddate_juin)['max']) - intval($cmd->getStatistique($startdate_juin, $enddate_juin)['min']);
-            $STAT_JUI_HC  += intval($cmd->getStatistique($startdate_jui, $enddate_jui)['max']) - intval($cmd->getStatistique($startdate_jui, $enddate_jui)['min']);
-            $STAT_AOU_HC  += intval($cmd->getStatistique($startdate_aou, $enddate_aou)['max']) - intval($cmd->getStatistique($startdate_aou, $enddate_aou)['min']);
-            $STAT_SEP_HC  += intval($cmd->getStatistique($startdate_sep, $enddate_sep)['max']) - intval($cmd->getStatistique($startdate_sep, $enddate_sep)['min']);
-            $STAT_OCT_HC  += intval($cmd->getStatistique($startdate_oct, $enddate_oct)['max']) - intval($cmd->getStatistique($startdate_oct, $enddate_oct)['min']);
-            $STAT_NOV_HC  += intval($cmd->getStatistique($startdate_nov, $enddate_nov)['max']) - intval($cmd->getStatistique($startdate_nov, $enddate_nov)['min']);
-            $STAT_DEC_HC  += intval($cmd->getStatistique($startdate_dec, $enddate_dec)['max']) - intval($cmd->getStatistique($startdate_dec, $enddate_dec)['min']);
+            $statYesterdayHc	 += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
+            $statMonth           += intval($cmd->getStatistique($startdatemonth, $enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth, $enddatemonth)['min']);
+            $statYear            += intval($cmd->getStatistique($startdateyear, $enddateyear)['max']) - intval($cmd->getStatistique($startdateyear, $enddateyear)['min']);
+            $statLastMonth       += intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['max']) - intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['min']);
+            $statMonthLastYearHp += intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['max']) - intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['min']);
+            $statYearLastYearHp  += intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['max']) - intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['min']);
+            $statJanHc  		 += intval($cmd->getStatistique($startdate_jan, $enddate_jan)['max']) - intval($cmd->getStatistique($startdate_jan, $enddate_jan)['min']);
+            $statFevHc  		 += intval($cmd->getStatistique($startdate_fev, $enddate_fev)['max']) - intval($cmd->getStatistique($startdate_fev, $enddate_fev)['min']);
+            $statMarHc  		 += intval($cmd->getStatistique($startdate_mar, $enddate_mar)['max']) - intval($cmd->getStatistique($startdate_mar, $enddate_mar)['min']);
+            $statAvrHc  		 += intval($cmd->getStatistique($startdate_avr, $enddate_avr)['max']) - intval($cmd->getStatistique($startdate_avr, $enddate_avr)['min']);
+            $statMaiHc  		 += intval($cmd->getStatistique($startdate_mai, $enddate_mai)['max']) - intval($cmd->getStatistique($startdate_mai, $enddate_mai)['min']);
+            $statJuinHc 		 += intval($cmd->getStatistique($startdate_juin, $enddate_juin)['max']) - intval($cmd->getStatistique($startdate_juin, $enddate_juin)['min']);
+            $statJuiHc  		 += intval($cmd->getStatistique($startdate_jui, $enddate_jui)['max']) - intval($cmd->getStatistique($startdate_jui, $enddate_jui)['min']);
+            $statAouHc  		 += intval($cmd->getStatistique($startdate_aou, $enddate_aou)['max']) - intval($cmd->getStatistique($startdate_aou, $enddate_aou)['min']);
+            $statSepHc  		 += intval($cmd->getStatistique($startdate_sep, $enddate_sep)['max']) - intval($cmd->getStatistique($startdate_sep, $enddate_sep)['min']);
+            $statOctHc  		 += intval($cmd->getStatistique($startdate_oct, $enddate_oct)['max']) - intval($cmd->getStatistique($startdate_oct, $enddate_oct)['min']);
+            $statNovHc  		 += intval($cmd->getStatistique($startdate_nov, $enddate_nov)['max']) - intval($cmd->getStatistique($startdate_nov, $enddate_nov)['min']);
+            $statDecHc  		 += intval($cmd->getStatistique($startdate_dec, $enddate_dec)['max']) - intval($cmd->getStatistique($startdate_dec, $enddate_dec)['min']);
         }
-        foreach ($stat_hp_to_cumul as $key => $value) {
+        foreach ($statHpToCumul as $key => $value) {
             log::add('teleinfo', 'debug', 'Commande HP N°' . $value);
             $cmd               = cmd::byId($value);
-            $STAT_YESTERDAY_HP += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
-            $STAT_MONTH        += intval($cmd->getStatistique($startdatemonth, $enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth, $enddatemonth)['min']);
-            $STAT_YEAR         += intval($cmd->getStatistique($startdateyear, $enddateyear)['max']) - intval($cmd->getStatistique($startdateyear, $enddateyear)['min']);
-            $STAT_LASTMONTH    += intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['max']) - intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['min']);
-
-            $stat_month_last_year_hc += intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['max']) - intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['min']);
-            $stat_year_last_year_hp  += intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['max']) - intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['min']);
-
-            $STAT_JAN_HP  += intval($cmd->getStatistique($startdate_jan, $enddate_jan)['max']) - intval($cmd->getStatistique($startdate_jan, $enddate_jan)['min']);
-            $STAT_FEV_HP  += intval($cmd->getStatistique($startdate_fev, $enddate_fev)['max']) - intval($cmd->getStatistique($startdate_fev, $enddate_fev)['min']);
-            $STAT_MAR_HP  += intval($cmd->getStatistique($startdate_mar, $enddate_mar)['max']) - intval($cmd->getStatistique($startdate_mar, $enddate_mar)['min']);
-            $STAT_AVR_HP  += intval($cmd->getStatistique($startdate_avr, $enddate_avr)['max']) - intval($cmd->getStatistique($startdate_avr, $enddate_avr)['min']);
-            $STAT_MAI_HP  += intval($cmd->getStatistique($startdate_mai, $enddate_mai)['max']) - intval($cmd->getStatistique($startdate_mai, $enddate_mai)['min']);
-            $STAT_JUIN_HP += intval($cmd->getStatistique($startdate_juin, $enddate_juin)['max']) - intval($cmd->getStatistique($startdate_juin, $enddate_juin)['min']);
-            $STAT_JUI_HP  += intval($cmd->getStatistique($startdate_jui, $enddate_jui)['max']) - intval($cmd->getStatistique($startdate_jui, $enddate_jui)['min']);
-            $STAT_AOU_HP  += intval($cmd->getStatistique($startdate_aou, $enddate_aou)['max']) - intval($cmd->getStatistique($startdate_aou, $enddate_aou)['min']);
-            $STAT_SEP_HP  += intval($cmd->getStatistique($startdate_sep, $enddate_sep)['max']) - intval($cmd->getStatistique($startdate_sep, $enddate_sep)['min']);
-            $STAT_OCT_HP  += intval($cmd->getStatistique($startdate_oct, $enddate_oct)['max']) - intval($cmd->getStatistique($startdate_oct, $enddate_oct)['min']);
-            $STAT_NOV_HP  += intval($cmd->getStatistique($startdate_nov, $enddate_nov)['max']) - intval($cmd->getStatistique($startdate_nov, $enddate_nov)['min']);
-            $STAT_DEC_HP  += intval($cmd->getStatistique($startdate_dec, $enddate_dec)['max']) - intval($cmd->getStatistique($startdate_dec, $enddate_dec)['min']);
-            //log::add('teleinfo', 'info', 'Conso HP --> ' . $STAT_TODAY_HP);
+            $statYesterdayHp 	 += intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday, $enddateyesterday)['min']);
+            $statMonth       	 += intval($cmd->getStatistique($startdatemonth, $enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth, $enddatemonth)['min']);
+            $statYear        	 += intval($cmd->getStatistique($startdateyear, $enddateyear)['max']) - intval($cmd->getStatistique($startdateyear, $enddateyear)['min']);
+            $statLastMonth   	 += intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['max']) - intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['min']);
+            $statMonthLastYearHc += intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['max']) - intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['min']);
+            $statYearLastYearHp  += intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['max']) - intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['min']);
+            $statJanHp 			 += intval($cmd->getStatistique($startdate_jan, $enddate_jan)['max']) - intval($cmd->getStatistique($startdate_jan, $enddate_jan)['min']);
+            $statFevHp 			 += intval($cmd->getStatistique($startdate_fev, $enddate_fev)['max']) - intval($cmd->getStatistique($startdate_fev, $enddate_fev)['min']);
+            $statMarHp 			 += intval($cmd->getStatistique($startdate_mar, $enddate_mar)['max']) - intval($cmd->getStatistique($startdate_mar, $enddate_mar)['min']);
+            $statAvrHp 			 += intval($cmd->getStatistique($startdate_avr, $enddate_avr)['max']) - intval($cmd->getStatistique($startdate_avr, $enddate_avr)['min']);
+            $statMaiHp 			 += intval($cmd->getStatistique($startdate_mai, $enddate_mai)['max']) - intval($cmd->getStatistique($startdate_mai, $enddate_mai)['min']);
+            $statJuinHp			 += intval($cmd->getStatistique($startdate_juin, $enddate_juin)['max']) - intval($cmd->getStatistique($startdate_juin, $enddate_juin)['min']);
+            $statJuiHp 			 += intval($cmd->getStatistique($startdate_jui, $enddate_jui)['max']) - intval($cmd->getStatistique($startdate_jui, $enddate_jui)['min']);
+            $statAouHp 			 += intval($cmd->getStatistique($startdate_aou, $enddate_aou)['max']) - intval($cmd->getStatistique($startdate_aou, $enddate_aou)['min']);
+            $statSepHp 			 += intval($cmd->getStatistique($startdate_sep, $enddate_sep)['max']) - intval($cmd->getStatistique($startdate_sep, $enddate_sep)['min']);
+            $statOctHp 			 += intval($cmd->getStatistique($startdate_oct, $enddate_oct)['max']) - intval($cmd->getStatistique($startdate_oct, $enddate_oct)['min']);
+            $statNovHp 			 += intval($cmd->getStatistique($startdate_nov, $enddate_nov)['max']) - intval($cmd->getStatistique($startdate_nov, $enddate_nov)['min']);
+            $statDecHp 			 += intval($cmd->getStatistique($startdate_dec, $enddate_dec)['max']) - intval($cmd->getStatistique($startdate_dec, $enddate_dec)['min']);
         }
 
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
-
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "stat" || $cmd->getConfiguration('type') == "panel") {
                     switch ($cmd->getConfiguration('info_conso')) {
                         case "STAT_YESTERDAY":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier ==> ' . intval($STAT_YESTERDAY_HC) + intval($STAT_YESTERDAY_HP));
-                            $cmd->event(intval($STAT_YESTERDAY_HC) + intval($STAT_YESTERDAY_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier ==> ' . intval($statYesterdayHc) + intval($statYesterdayHp));
+                            $cmd->event(intval($statYesterdayHc) + intval($statYesterdayHp));
                             break;
                         case "STAT_YESTERDAY_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HP) ==> ' . intval($STAT_YESTERDAY_HP));
-                            $cmd->event(intval($STAT_YESTERDAY_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HP) ==> ' . intval($statYesterdayHp));
+                            $cmd->event(intval($statYesterdayHp));
                             break;
                         case "STAT_YESTERDAY_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HC) ==> ' . intval($STAT_YESTERDAY_HC));
-                            $cmd->event(intval($STAT_YESTERDAY_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HC) ==> ' . intval($statYesterdayHc));
+                            $cmd->event(intval($statYesterdayHc));
                             break;
                         case "STAT_MONTH_LAST_YEAR":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois an -1 ==> ' . intval($stat_month_last_year_hc) + intval($stat_month_last_year_hp));
-                            $cmd->event(intval($stat_month_last_year_hc) + intval($stat_month_last_year_hp));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois an -1 ==> ' . intval($statMonthLastYearHc) + intval($statMonthLastYearHp));
+                            $cmd->event(intval($statMonthLastYearHc) + intval($statMonthLastYearHp));
                             break;
                         case "STAT_YEAR_LAST_YEAR":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique an-1 ==> ' . intval($stat_year_last_year_hc) + intval($stat_year_last_year_hp));
-                            $cmd->event(intval($stat_year_last_year_hc) + intval($stat_year_last_year_hp));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique an-1 ==> ' . intval($statYearLastYearHc) + intval($statYearLastYearHp));
+                            $cmd->event(intval($statYearLastYearHc) + intval($statYearLastYearHp));
                             break;
                         case "STAT_LASTMONTH":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois dernier ==> ' . intval($STAT_LASTMONTH));
-                            $cmd->event(intval($STAT_LASTMONTH));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois dernier ==> ' . intval($statLastMonth));
+                            $cmd->event(intval($statLastMonth));
                             break;
                         case "STAT_MONTH":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois en cours ==> ' . intval($STAT_MONTH));
-                            $cmd->event(intval($STAT_MONTH));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois en cours ==> ' . intval($statMonth));
+                            $cmd->event(intval($statMonth));
                             break;
                         case "STAT_YEAR":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique anuelle ==> ' . intval($STAT_YEAR));
-                            $cmd->event(intval($STAT_YEAR));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique anuelle ==> ' . intval($statYear));
+                            $cmd->event(intval($statYear));
                             break;
                         case "STAT_JAN_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique janvier (HP) ==> ' . intval($STAT_JAN_HP));
-                            $cmd->event(intval($STAT_JAN_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique janvier (HP) ==> ' . intval($statJanHp));
+                            $cmd->event(intval($statJanHp));
                             break;
                         case "STAT_JAN_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique janvier (HC) ==> ' . intval($STAT_JAN_HC));
-                            $cmd->event(intval($STAT_JAN_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique janvier (HC) ==> ' . intval($statJanHc));
+                            $cmd->event(intval($statJanHc));
                             break;
                         case "STAT_FEV_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique février (HP) ==> ' . intval($STAT_FEV_HP));
-                            $cmd->event(intval($STAT_FEV_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique février (HP) ==> ' . intval($statFevHp));
+                            $cmd->event(intval($statFevHp));
                             break;
                         case "STAT_FEV_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique février (HC) ==> ' . intval($STAT_FEV_HC));
-                            $cmd->event(intval($STAT_FEV_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique février (HC) ==> ' . intval($statFevHc));
+                            $cmd->event(intval($statFevHc));
                             break;
                         case "STAT_MAR_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mars (HP) ==> ' . intval($STAT_MAR_HP));
-                            $cmd->event(intval($STAT_MAR_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mars (HP) ==> ' . intval($statMarHp));
+                            $cmd->event(intval($statMarHp));
                             break;
                         case "STAT_MAR_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mars (HC) ==> ' . intval($STAT_MAR_HC));
-                            $cmd->event(intval($STAT_MAR_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mars (HC) ==> ' . intval($statMarHc));
+                            $cmd->event(intval($statMarHc));
                             break;
                         case "STAT_AVR_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique avril (HP) ==> ' . intval($STAT_AVR_HP));
-                            $cmd->event(intval($STAT_AVR_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique avril (HP) ==> ' . intval($statAvrHp));
+                            $cmd->event(intval($statAvrHp));
                             break;
                         case "STAT_AVR_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique avril (HC) ==> ' . intval($STAT_AVR_HC));
-                            $cmd->event(intval($STAT_AVR_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique avril (HC) ==> ' . intval($statAvrHc));
+                            $cmd->event(intval($statAvrHc));
                             break;
                         case "STAT_MAI_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mai (HP) ==> ' . intval($STAT_MAI_HP));
-                            $cmd->event(intval($STAT_MAI_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mai (HP) ==> ' . intval($statMaiHp));
+                            $cmd->event(intval($statMaiHp));
                             break;
                         case "STAT_MAI_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mai (HC) ==> ' . intval($STAT_MAI_HC));
-                            $cmd->event(intval($STAT_MAI_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique mai (HC) ==> ' . intval($statMaiHc));
+                            $cmd->event(intval($statMaiHc));
                             break;
                         case "STAT_JUIN_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique juin (HP) ==> ' . intval($STAT_JUIN_HP));
-                            $cmd->event(intval($STAT_JUIN_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique juin (HP) ==> ' . intval($statJuinHp));
+                            $cmd->event(intval($statJuinHp));
                             break;
                         case "STAT_JUIN_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique juin (HC) ==> ' . intval($STAT_JUIN_HC));
-                            $cmd->event(intval($STAT_JUIN_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique juin (HC) ==> ' . intval($statJuinHc));
+                            $cmd->event(intval($statJuinHc));
                             break;
                         case "STAT_JUI_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique juillet (HP) ==> ' . intval($STAT_JUI_HP));
-                            $cmd->event(intval($STAT_JUI_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique juillet (HP) ==> ' . intval($statJuiHp));
+                            $cmd->event(intval($statJuiHp));
                             break;
                         case "STAT_JUI_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique juillet (HC) ==> ' . intval($STAT_JUI_HC));
-                            $cmd->event(intval($STAT_JUI_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique juillet (HC) ==> ' . intval($statJuiHc));
+                            $cmd->event(intval($statJuiHc));
                             break;
                         case "STAT_AOU_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique août (HP) ==> ' . intval($STAT_AOU_HP));
-                            $cmd->event(intval($STAT_AOU_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique août (HP) ==> ' . intval($statAouHp));
+                            $cmd->event(intval($statAouHp));
                             break;
                         case "STAT_AOU_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique août (HC) ==> ' . intval($STAT_AOU_HC));
-                            $cmd->event(intval($STAT_AOU_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique août (HC) ==> ' . intval($statAouHc));
+                            $cmd->event(intval($statAouHc));
                             break;
                         case "STAT_SEP_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique septembre (HP) ==> ' . intval($STAT_SEP_HP));
-                            $cmd->event(intval($STAT_SEP_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique septembre (HP) ==> ' . intval($statSepHp));
+                            $cmd->event(intval($statSepHp));
                             break;
                         case "STAT_SEP_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique septembre (HC) ==> ' . intval($STAT_SEP_HC));
-                            $cmd->event(intval($STAT_SEP_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique septembre (HC) ==> ' . intval($statSepHc));
+                            $cmd->event(intval($statSepHc));
                             break;
                         case "STAT_OCT_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique octobre (HP) ==> ' . intval($STAT_OCT_HP));
-                            $cmd->event(intval($STAT_OCT_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique octobre (HP) ==> ' . intval($statOctHp));
+                            $cmd->event(intval($statOctHp));
                             break;
                         case "STAT_OCT_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique octobre (HC) ==> ' . intval($STAT_OCT_HC));
-                            $cmd->event(intval($STAT_OCT_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique octobre (HC) ==> ' . intval($statOctHc));
+                            $cmd->event(intval($statOctHc));
                             break;
                         case "STAT_NOV_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique novembre (HP) ==> ' . intval($STAT_NOV_HP));
-                            $cmd->event(intval($STAT_NOV_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique novembre (HP) ==> ' . intval($statNovHp));
+                            $cmd->event(intval($statNovHp));
                             break;
                         case "STAT_NOV_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique novembre (HC) ==> ' . intval($STAT_NOV_HC));
-                            $cmd->event(intval($STAT_NOV_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique novembre (HC) ==> ' . intval($statNovHc));
+                            $cmd->event(intval($statNovHc));
                             break;
                         case "STAT_DEC_HP":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique décembre (HP) ==> ' . intval($STAT_DEC_HP));
-                            $cmd->event(intval($STAT_DEC_HP));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique décembre (HP) ==> ' . intval($statDecHp));
+                            $cmd->event(intval($statDecHp));
                             break;
                         case "STAT_DEC_HC":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique décembre (HC) ==> ' . intval($STAT_DEC_HC));
-                            $cmd->event(intval($STAT_DEC_HC));
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique décembre (HC) ==> ' . intval($statDecHc));
+                            $cmd->event(intval($statDecHc));
                             break;
                     }
                 }
@@ -838,6 +840,9 @@ class teleinfo extends eqLogic
         $ppapHp  = 0;
         $ppapHc  = 0;
         $cmdPpap = null;
+        $indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == 'stat') {
@@ -850,26 +855,11 @@ class teleinfo extends eqLogic
             if ($cmdPpap !== null) {
                 foreach ($eqLogic->getCmd('info') as $cmd) {
                     if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
-                        switch ($cmd->getConfiguration('info_conso')) {
-                            case "BASE":
-                            case "HCHP":
-                            case "BBRHPJB":
-                            case "BBRHPJW":
-                            case "BBRHPJR":
-                            case "EJPHPM":
-                                $ppapHp += $cmd->execCmd();
-                                log::add('teleinfo', 'debug', 'Cmd : ' . $cmd->getId() . ' / Value : ' . $cmd->execCmd());
-                                break;
+                        if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHpToCumul, $cmd->getId());
                         }
-                        switch ($cmd->getConfiguration('info_conso')) {
-                            case "HCHC":
-                            case "BBRHCJB":
-                            case "BBRHCJW":
-                            case "BBRHCJR":
-                            case "EJPHN":
-                                $ppapHc += $cmd->execCmd();
-                                log::add('teleinfo', 'debug', 'Cmd : ' . $cmd->getId() . ' / Value : ' . $cmd->execCmd());
-                                break;
+                        if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHcToCumul, $cmd->getId());
                         }
                     }
                 }
@@ -887,7 +877,8 @@ class teleinfo extends eqLogic
 
                 cache::set('teleinfo::stat_moy_last_hour::hc', $ppapHc, 7200);
                 cache::set('teleinfo::stat_moy_last_hour::hp', $ppapHp, 7200);
-            } else {
+            }
+			else {
                 log::add('teleinfo', 'debug', 'Pas de calcul');
             }
         }
@@ -898,6 +889,8 @@ class teleinfo extends eqLogic
         $ppapHp  = 0;
         $ppapHc  = 0;
         $cmdPpap = null;
+        $indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == 'stat') {
@@ -911,24 +904,11 @@ class teleinfo extends eqLogic
                 log::add('teleinfo', 'debug', 'Cmd trouvée');
                 foreach ($eqLogic->getCmd('info') as $cmd) {
                     if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
-                        switch ($cmd->getConfiguration('info_conso')) {
-                            case "BASE":
-                            case "HCHP":
-                            case "BBRHPJB":
-                            case "BBRHPJW":
-                            case "BBRHPJR":
-                            case "EJPHPM":
-                                $ppapHp += $cmd->execCmd();
-                                break;
+                        if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHpToCumul, $cmd->getId());
                         }
-                        switch ($cmd->getConfiguration('info_conso')) {
-                            case "HCHC":
-                            case "BBRHCJB":
-                            case "BBRHCJW":
-                            case "BBRHCJR":
-                            case "EJPHN":
-                                $ppapHc += $cmd->execCmd();
-                                break;
+                        if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHcToCumul, $cmd->getId());
                         }
                     }
                 }
@@ -981,24 +961,32 @@ class teleinfo extends eqLogic
                 case "BBRHCJW":
                 case "BBRHCJR":
                 case "EJPHPM":
-                    log::add('teleinfo', 'debug', '=> index');
+                case "EASF01":
+                case "EASF02":
+                case "EASD01":
+                case "EASD02":
+                case "EAIT":
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> index');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     }
+					$cmd->setConfiguration('historizeMode', 'none');
                     $cmd->save();
                     $cmd->refresh();
                     break;
                 case "PAPP":
-                    log::add('teleinfo', 'debug', '=> papp');
+                case "SINSTS":
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> papp');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                         $cmd->setDisplay('icon', '<i class=\"fa fa-tachometer\"><\/i>');
                     }
+					$cmd->setConfiguration('historizeMode', 'none');
                     $cmd->save();
                     $cmd->refresh();
                     break;
                 case "PTEC":
-                    log::add('teleinfo', 'debug', '=> ptec');
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> ptec');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     }
@@ -1006,14 +994,13 @@ class teleinfo extends eqLogic
                     $cmd->refresh();
                     break;
                 default :
-                    log::add('teleinfo', 'debug', '=> default');
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> default');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                     }
                     break;
             }
         }
-        after_template:
         log::add('teleinfo', 'info', '==> Gestion des id des commandes');
         foreach ($this->getCmd('info') as $cmd) {
             log::add('teleinfo', 'debug', 'Commande : ' . $cmd->getConfiguration('info_conso'));
@@ -1061,9 +1048,11 @@ class teleinfo extends eqLogic
 
     public function createPanelStats()
     {
+        log::add('teleinfo', 'debug', '-------- Commandes des stats --------');
         $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC", "STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR");
         for ($ii = 0; $ii < 26; $ii++) {
             $cmd = $this->getCmd('info', $array[$ii]);
+            log::add('teleinfo', 'debug', '=> ' . $array[$ii]);
             if ($cmd === false) {
                 $cmd = new teleinfoCmd();
                 $cmd->setName($array[$ii]);
@@ -1072,6 +1061,7 @@ class teleinfo extends eqLogic
                 $cmd->setType('info');
                 $cmd->setConfiguration('info_conso', $array[$ii]);
                 $cmd->setConfiguration('type', 'panel');
+				$cmd->setConfiguration('historizeMode', 'none');
                 $cmd->setDisplay('generic_type', 'DONT');
                 $cmd->setSubType('numeric');
                 $cmd->setUnite('Wh');
@@ -1081,7 +1071,38 @@ class teleinfo extends eqLogic
                 $cmd->save();
             } else {
                 $cmd->setDisplay('generic_type', 'DONT');
+				$cmd->setConfiguration('historizeMode', 'none');
                 $cmd->save();
+            }
+        }
+        $array = array("STAT_TODAY", "STAT_MONTH", "STAT_YEAR");
+        for ($ii = 0; $ii < 3; $ii++) {
+            $cmd = $this->getCmd('info', $array[$ii]);
+            log::add('teleinfo', 'debug', '=> ' . $array[$ii]);
+            if ($cmd === false) {
+                $cmd = new teleinfoCmd();
+                $cmd->setName($array[$ii]);
+                $cmd->setEqLogic_id($this->id);
+                $cmd->setLogicalId($array[$ii]);
+                $cmd->setType('info');
+                $cmd->setConfiguration('info_conso', $array[$ii]);
+                $cmd->setConfiguration('type', 'stat');
+				$cmd->setConfiguration('historizeMode', 'none');
+                $cmd->setDisplay('generic_type', 'DONT');
+                $cmd->setSubType('numeric');
+                $cmd->setUnite('Wh');
+                $cmd->setIsHistorized(1);
+                $cmd->setEventOnly(1);
+                $cmd->setIsVisible(0);
+                $cmd->save();
+                $cmd->refresh();
+            } else {
+                $cmd->setIsHistorized(1);
+                $cmd->setConfiguration('type', 'stat');
+                $cmd->setConfiguration('historizeMode', 'none');
+                $cmd->setDisplay('generic_type', 'DONT');
+                $cmd->save();
+                $cmd->refresh();
             }
         }
     }
@@ -1098,7 +1119,7 @@ class teleinfo extends eqLogic
     {
         $return                  = array();
         $return['log']           = 'teleinfo_update';
-        $return['progress_file'] = '/tmp/teleinfo_in_progress';
+        $return['progress_file'] = '/tmp/jeedom/teleinfo/dependance';
         $return['state']         = (self::installationOk()) ? 'ok' : 'nok';
         return $return;
     }
@@ -1131,7 +1152,7 @@ class teleinfoCmd extends cmd
 
     public function execute($_options = null)
     {
-        
+
     }
 
 }

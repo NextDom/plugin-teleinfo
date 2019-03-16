@@ -18,11 +18,18 @@
 require_once dirname(__FILE__) . "/../../../../core/php/core.inc.php";
 set_time_limit(15);
 
-if ((php_sapi_name() != 'cli' || isset($_SERVER['REQUEST_METHOD']) || !isset($_SERVER['argc'])) && (config::byKey('api') != init('api') && init('api') != '')) {
-    echo 'Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (jeeTeleinfo)';
+if (!jeedom::apiAccess(init('apikey'), 'teleinfo')) {
+    echo __('Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (teleinfo)', __FILE__);
     die();
 }
+
+if (init('test') != '') {
+	echo 'OK';
+	die();
+}
+
 $args = array(
+	'device' => FILTER_SANITIZE_STRING,
     'BASE'   => FILTER_SANITIZE_STRING,
     'PAPP'   => FILTER_SANITIZE_STRING,
     'HCHP'   => FILTER_SANITIZE_STRING,
@@ -96,76 +103,74 @@ $args = array(
     'PJOURF+1'   => FILTER_SANITIZE_STRING,
     'PPOINTE'   => FILTER_SANITIZE_STRING,
     'SINSTI'   => FILTER_SANITIZE_STRING,
-    'IRMS1'   => FILTER_SANITIZE_STRING
+    'IRMS1'   => FILTER_SANITIZE_STRING,
+    'URMS1'   => FILTER_SANITIZE_STRING
 );
 
-$message = filter_input(INPUT_GET, 'message', FILTER_SANITIZE_STRING);
-$adco = filter_input(INPUT_GET, 'ADCO', FILTER_SANITIZE_STRING);
-$adsc = filter_input(INPUT_GET, 'ADSC', FILTER_SANITIZE_STRING);
-$sentDatas = "";
+//$message = filter_input(INPUT_GET, 'message', FILTER_SANITIZE_STRING);
+//$adco = filter_input(INPUT_GET, 'ADCO', FILTER_SANITIZE_STRING);
+//$adsc = filter_input(INPUT_GET, 'ADSC', FILTER_SANITIZE_STRING);
+//$myDatas = filter_input_array(INPUT_GET, $args);
 
-if($message != ''){
-    $text = substr($message, 0, -2);
-    $messages = preg_split("#(&|[\*]{2})#", $text);
-    foreach ($messages as $key => $value){
-        log::add('teleinfo', 'event', 'Log Daemon : ' . $value);
-        $text = $text . date("Y-m-d H:i:s") . " " .  $value . "</br>";
-    }
-    $cache = cache::byKey('teleinfo::console', false);
-    cache::set('teleinfo::console', $cache->getValue("") . $text, 1440);
-    die();
+$result = json_decode(file_get_contents("php://input"), true);
+if (!is_array($result)) {
+	die();
 }
 
-if ($adco == '' && $adsc == ''){
-    log::add('teleinfo', 'info', 'Pas d\'ADCO/ADSC dans la trame');
-    die();
-}
 
-if ($adco != '')
-{
-    $teleinfo = teleinfo::byLogicalId($adco, 'teleinfo');
-}
-else
-{
-    $teleinfo = teleinfo::byLogicalId($adsc, 'teleinfo');
-}
+$var_to_log = '';
 
-if (!is_object($teleinfo)) {
-    $teleinfo = ($adco != '') ? teleinfo::createFromDef($adco) : teleinfo::createFromDef($adsc);
-    if (!is_object($teleinfo)) {
-        log::add('teleinfo', 'info', 'Aucun équipement trouvé pour le compteur n°' . $adco . $adsc);
-        die();
-    }
-}
-
-$myDatas = filter_input_array(INPUT_GET, $args);
-
-$healthCmd = $teleinfo->getCmd('info','health');
-$healthEnable = false;
-if (is_object($healthCmd)) {
-    $healthEnable = true;
-}
-
-foreach ($myDatas as $key => $value){
-    if ($value != '') {
-        $sentDatas = $sentDatas . $key . '=' . $value . ' / ';
-        $cmd = $teleinfo->getCmd('info',$key);
-        if ($cmd === false) {
-            if($key != 'api' && $key != 'ADCO'){
-                teleinfo::createCmdFromDef($teleinfo->getLogicalId(), $key, $value);
-                if($healthEnable) {
-                    $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
-                    $healthCmd->save();
+if (isset($result['device'])) {
+    foreach ($result['device'] as $key => $data) {
+            log::add('teleinfo','debug','This is a message from teleinfo program ' . $key);
+    		$eqlogic = teleinfo::byLogicalId($data['device'], 'teleinfo');
+    		if (is_object($eqlogic)) {
+                $healthCmd = $eqlogic->getCmd('info','health');
+                $healthEnable = false;
+                if (is_object($healthCmd)) {
+                    $healthEnable = true;
+                }
+                $flattenResults = array_flatten($data);
+                foreach ($flattenResults as $key => $value) {
+                    $cmd = $eqlogic->getCmd('info',$key);
+                    if ($cmd === false) {
+                        if($key != 'device' && $key != 'ADCO' && $key != 'ADSC'){
+                            teleinfo::createCmdFromDef($eqlogic->getLogicalId(), $key, $value);
+                            if($healthEnable) {
+                                $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
+                                $healthCmd->save();
+                            }
+                        }
+                    }
+                    else{
+                        $cmd->event($value);
+                        if($healthEnable) {
+                            $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
+                            $healthCmd->save();
+                        }
+                    }
                 }
             }
-        }
-        else{
-            $cmd->event($value);
-            if($healthEnable) {
-                $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
-                $healthCmd->save();
+            else {
+                $teleinfo = ($data['device'] != '') ? teleinfo::createFromDef($data['device']) : teleinfo::createFromDef($data['device']);
+                if (!is_object($teleinfo)) {
+                    log::add('teleinfo', 'info', 'Aucun équipement trouvé pour le compteur n°' . $data['device']);
+                    die();
+                }
             }
+            log::add('teleinfo','debug',$var_to_log);
         }
     }
+
+function array_flatten($array) {
+    global $var_to_log;
+    $return = array();
+    foreach ($array as $key => $value) {
+        $var_to_log = $var_to_log . $key . '=' . $value . '|';
+        if (is_array($value))
+            $return = array_merge($return, array_flatten($value));
+        else
+            $return[$key] = $value;
+    }
+    return $return;
 }
-log::add('teleinfo', 'debug', 'Reception de : ' . $sentDatas);
