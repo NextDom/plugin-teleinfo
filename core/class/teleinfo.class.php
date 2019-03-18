@@ -50,13 +50,13 @@ class teleinfo extends eqLogic
     {
         try {
             $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-            socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'teleinfo','55062'));
+            socket_connect($socket, config::byKey('sockethost', 'teleinfo', '127.0.0.1'), config::byKey('socketport', 'teleinfo', '55062'));
             socket_write($socket, $value, strlen($value));
             socket_close($socket);
 
             $productionActivated = config::byKey('activation_production', 'teleinfo');
             if ($productionActivated == 1) {
-                socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'teleinfo','55062') + 1);
+                socket_connect($socket, config::byKey('sockethost', 'teleinfo', '127.0.0.1'), config::byKey('socketport', 'teleinfo','55062') + 1);
                 socket_write($socket, $value, strlen($value));
                 socket_close($socket);
             }
@@ -147,7 +147,6 @@ class teleinfo extends eqLogic
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
         $linky                = config::byKey('linky', 'teleinfo');
         $modemVitesse         = config::byKey('modem_vitesse', 'teleinfo');
-        $cycleSommeil         = config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_addr', 'teleinfo');
         } else {
@@ -182,7 +181,7 @@ class teleinfo extends eqLogic
 
         log::add('teleinfo', 'info', '---------- Informations de lancement ---------');
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
-		log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062'));
+        log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062'));
         log::add('teleinfo', 'info', 'Type : ' . $type);
         log::add('teleinfo', 'info', 'Mode : ' . $mode);
         log::add('teleinfo', 'info', '---------------------------------------------');
@@ -190,7 +189,7 @@ class teleinfo extends eqLogic
         if ($twoCptCartelectronic == 1) {
             log::add('teleinfo', 'info', '[runDeamon] Fonctionnement en mode 2 compteur');
             $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo_2_cpt.py';
-			$cmd         .= ' --port ' . $port;
+            $cmd         .= ' --port ' . $port;
             $cmd         .= ' --vitesse ' . $modemVitesse;
             $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
             $cmd         .= ' --mode ' . $mode;
@@ -198,7 +197,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
             $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
+            $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         } else {
             log::add('teleinfo', 'info', '[runDeamon] Fonctionnement en mode 1 compteur');
             $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
@@ -211,7 +210,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
             $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
+            $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         }
 
         log::add('teleinfo', 'info', 'Exécution du service : ' . $cmd);
@@ -247,7 +246,6 @@ class teleinfo extends eqLogic
         $twoCptCartelectronic = config::byKey('2cpt_cartelectronic_production', 'teleinfo');
         $linky                = config::byKey('linky_prod', 'teleinfo');
         $modemVitesse         = config::byKey('modem_vitesse_production', 'teleinfo');
-		$cycleSommeil         = config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         if ($modemSerieAddr == "serie") {
             $port = config::byKey('modem_serie_production_addr', 'teleinfo');
         } else {
@@ -276,7 +274,7 @@ class teleinfo extends eqLogic
 
         log::add('teleinfo', 'info', '---------- Informations de lancement ---------');
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
-		log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062') + 1);
+        log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062') + 1);
         log::add('teleinfo', 'info', 'Type : ' . $type);
         log::add('teleinfo', 'info', 'Mode : ' . $mode);
         log::add('teleinfo', 'info', '---------------------------------------------');
@@ -292,7 +290,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
             $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
+            $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         } else {
             log::add('teleinfo', 'info', '[Production] Fonctionnement en mode 1 compteur');
             $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
@@ -305,8 +303,8 @@ class teleinfo extends eqLogic
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
             $cmd         .= ' --loglevel info'; //. log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . $cycleSommeil;
-		}
+            $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
+        }
 
         log::add('teleinfo', 'info', '[Production] Exécution du service : ' . $cmd);
         $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_prod') . ' 2>&1 &');

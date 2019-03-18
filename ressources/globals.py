@@ -4,16 +4,16 @@ TELEINFO_SERIAL = ''
 TELEINFO_FTDI = ''
 TELEINFO_FTDI_CONTEXT = ''
 log_level = "info"
-pidfile = '/tmp/jeedom/teleinfo/teleinfo.pid'
+pidfile = '/tmp/jeedom/teleinfo/teleinfo'
 apikey = ''
 callback = ''
-cycle = 1
-cycle_sommeil = 1
-daemonname='local'
-socketport=55062
-sockethost='127.0.0.1'
+cycle = 0.3
+cycle_sommeil = 0.5
+type = 'local'
+socketport = 55062
+sockethost = '127.0.0.1'
 
 # Device name
 port = '/dev/ttyUSB0'
-mode = ''
-global_vitesse = '1200'
+mode = 'historique'
+vitesse = '1200'

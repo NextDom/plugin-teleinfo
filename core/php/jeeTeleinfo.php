@@ -20,6 +20,7 @@ set_time_limit(15);
 
 if (!jeedom::apiAccess(init('apikey'), 'teleinfo')) {
     echo __('Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (teleinfo)', __FILE__);
+    http_response_code(403);
     die();
 }
 
