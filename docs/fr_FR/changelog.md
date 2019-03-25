@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.3.1 (25-03-2019)
+
+* Corrections pour le modem 2 compteurs.
+
 ### 4.3.0 (18-03-2019)
 
 * Modifications pour deport du daemon (@jlayec)

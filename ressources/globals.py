@@ -12,6 +12,7 @@ cycle_sommeil = 0.5
 type = 'local'
 socketport = 55062
 sockethost = '127.0.0.1'
+ftdi_context = ''
 
 # Device name
 port = '/dev/ttyUSB0'
