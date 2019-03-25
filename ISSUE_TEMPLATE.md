@@ -11,13 +11,10 @@
 ## Environnement
 * **Version Jeedom**:
 * **Platform**:
-* **Version du Plugin (ex: 2.6.0)**:
+* **Version du Plugin (ex: 4.2.0)**:
 * **Type de modem**:
-* **Compteur linky**: 
-- [ ] Oui 
-- [ ] Non
-
-* **Mode du compteur**:
+* **Compteur linky**:
+* **Compteur standard ou historique**:
 
 ## Logs
-Merci de joindre les logs. 
+Merci de joindre les fichiers de logs (Bouton télécharger en haut à droite sur Jeedom).

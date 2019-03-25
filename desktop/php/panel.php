@@ -89,29 +89,21 @@ $eqLogics = eqLogic::byType('teleinfo');
 
 
     					<?php
-    					switch (date("m")) {
-    						case "12":
-    						case "01":
-    						case "02":
-    							echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_hiver.png" height="105" width="600" />';
-    						break;
-    						case "03":
-    						case "04":
-    						case "05":
-    							echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_printemps.png" height="105" width="600" />';
-    						break;
-    						case "06":
-    						case "07":
-    						case "08":
-    							echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_ete.png" height="105" width="600" />';
-    						break;
-    						case "09":
-    						case "10":
-    						case "11":
-    							echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_automne.png" height="105" width="600" />';
-    						break;
-    					}
-
+                        if ($date >= '1222') {
+                            echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_hiver.png" height="105" width="600" />';
+                        }
+                        elseif ($date >= '0923') {
+                            echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_automne.png" height="105" width="600" />';
+                        }
+                        elseif ($date >= '0621') {
+                            echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_ete.png" height="105" width="600" />';
+                        }
+                        elseif ($date >= '0321') {
+                            echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_printemps.png" height="105" width="600" />';
+                        }
+                        else {
+                            echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_hiver.png" height="105" width="600" />';
+                         }
     					?>
 
 				</fieldset>

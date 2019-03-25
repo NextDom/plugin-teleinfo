@@ -214,22 +214,34 @@ try {
             <span style="top:6px;" class="col-lg-4"><a class="btn btn-sm btn-info" id="btn_diagnostic" style="position:relative;top:-5px;"><i class="divers-svg"></i> Démarrer</a></span>
         </div>
         <div class="form-group">
-    	    <label class="col-lg-4 control-label">{{Port socket interne (modification dangereuse)}}</label>
+    	    <label class="col-lg-4 control-label">{{Adresse IP socket interne (modification dangereuse)}}</label>
     	    <div class="col-lg-2">
-    	        <input class="configKey form-control" data-l1key="socketport" placeholder="{{55062}}" />
+    	        <input class="configKey form-control" data-l1key="sockethost" placeholder="{{127.0.0.1}}" />
     	    </div>
         </div>
         <div class="form-group">
-    			<label class="col-sm-4 control-label">{{Cycle (s)}}</label>
-    			<div class="col-sm-2">
-    				<input class="configKey form-control" data-l1key="cycle" placeholder="{{0.5}}"/>
-    			</div>
-    	</div>
+            <label class="col-lg-4 control-label">{{Port socket interne (modification dangereuse)}}</label>
+            <div class="col-lg-2">
+                <input class="configKey form-control" data-l1key="socketport" placeholder="{{55062}}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">{{Cycle (s)}}</label>
+            <div class="col-sm-2">
+                <input class="configKey form-control" data-l1key="cycle" placeholder="{{0.3}}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">{{Cycle sommeil acquisition teleinfo (s)}}</label>
+            <div class="col-sm-2">
+                <input class="configKey form-control" data-l1key="cycle_sommeil" placeholder="{{0.5}}"/>
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-sm-4 control-label"></label>
             <div class="col-sm-4">
         		<a class="btn btn-warning changeLogLive" data-log="logdebug"><i class="fa fa-cogs"></i> {{Mode debug forcé temporaire}}</a>
-        		<a class="btn btn-success changeLogLive" data-log="lognormal"><i class="fa fa-paperclip"></i> {{Remettre niveau de log local}}</a>
+        		<a class="btn btn-success changeLogLive" data-log="lognormal"><i class="fa fa-paperclip"></i> {{Remettre niveau de log normal}}</a>
         	</div>
         </div>
     </fieldset>

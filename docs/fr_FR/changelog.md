@@ -2,6 +2,24 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.3.0 (18-03-2019)
+
+* Modifications pour deport du daemon (@jlayec)
+
+### 4.2.4 (15-03-2019)
+
+* Bug sur le type de commandes lors de la création automatique.
+
+### 4.2.3 (12-03-2019)
+
+* Globalisation des index
+* Correction changement niveau log du démon
+* Correction dépendances
+* Coloration du type de commande
+* Correction sur le panel
+* Ajout de la configuration des index a utiliser
+* Ajout librairie tagsinput
+
 ### 4.2.2 (08-03-2019)
 
 * Correction du panel santé spécifique

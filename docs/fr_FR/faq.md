@@ -60,19 +60,6 @@ Depuis la version jessie le fichier inittab n'est plus présent. Il faut utilise
     sudo systemctl stop serial-getty@ttyAMA0.service
     sudo systemctl disable serial-getty@ttyAMA0.service
 
-
->Comment récupérer les statistiques du plugin
-
-Suivant l'architecture choisie les logs du plugin peuvent êtres séparés.
-
-En mode local tous les logs se trouvent sur l'interface log de Jeedom (En mode expert : Général / Administration / Logs ; cf doc jeedom
-
-[Accès doc](https://jeedom.fr/doc/documentation/core/fr_FR/doc-core-log.html)
-
-En mode satellite :
-- Sur le maitre : Les logs de récupération / traitement des données. Les calculs des statistiques
-- Sur l'esclave : Les logs de lancement du daemon.
-
 >Mon panel n'affiche pas les informations
 
 Dans un premier temps cliquer sur le bouton vérifier en haut à droite du panel afin de connaître l'état des données.

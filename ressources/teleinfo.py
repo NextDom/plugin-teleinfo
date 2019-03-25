@@ -127,7 +127,7 @@ class Teleinfo:
                             content[name] = value;
                         else:
                             logging.error("TELEINFO------ ** FRAME CORRUPTED ! **")
-                            logging.debug('** FRAME : ' + resp + '**')
+                            logging.error('** FRAME : ' + resp + '**')
                             #This frame is corrupted, we need to wait until the next one
                             while '\x02' not in resp:
                                 resp = globals.TELEINFO_SERIAL.readline()
@@ -335,13 +335,6 @@ def shutdown():
 # MAIN
 #------------------------------------------------------------------------------
 
-globals.log_level = "info"
-globals.socketport = 55062
-globals.sockethost = '127.0.0.1'
-globals.apikey = ''
-globals.callback = ''
-globals.cycle = 1;
-
 parser = argparse.ArgumentParser(description='Teleinfo Daemon for Jeedom plugin')
 parser.add_argument("--apikey", help="Value to write", type=str)
 parser.add_argument("--loglevel", help="Log Level for the daemon", type=str)
@@ -354,6 +347,7 @@ parser.add_argument("--vitesse", help="Vitesse du modem", type=str)
 parser.add_argument("--type", help="Compteur type", type=str)
 parser.add_argument("--mode", help="Model mode", type=str)
 parser.add_argument("--cyclesommeil", help="Wait time between 2 readline", type=str)
+parser.add_argument("--pidfile", help="pidfile", type=str)
 args = parser.parse_args()
 
 if args.apikey:
@@ -363,11 +357,11 @@ if args.loglevel:
 if args.callback:
 	globals.callback = args.callback
 if args.socketport:
-    globals.socketport = args.socketport
+	globals.socketport = args.socketport
 if args.sockethost:
-    globals.sockethost = args.sockethost
+	globals.sockethost = args.sockethost
 if args.cycle:
-	globals.cycle = float(args.cycle)
+	globals.cycle = args.cycle
 if args.port:
 	globals.port = args.port
 if args.vitesse:
@@ -377,10 +371,13 @@ if args.type:
 if args.mode:
 	globals.mode = args.mode
 if args.cyclesommeil:
-    globals.cycle_sommeil = float(args.cyclesommeil)
+	globals.cycle_sommeil = args.cyclesommeil
+if args.pidfile:
+	globals.pidfile = args.pidfile
 
 globals.socketport = int(globals.socketport)
 globals.cycle = float(globals.cycle)
+globals.cycle_sommeil = float(globals.cycle_sommeil)
 
 jeedom_utils.set_log_level(globals.log_level)
 logging.info('GLOBAL------Start teleinfod')
@@ -397,7 +394,7 @@ logging.info('GLOBAL------Type : '+str(globals.type))
 logging.info('GLOBAL------Mode : '+str(globals.mode))
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
-globals.pidfile = "/tmp/jeedom/teleinfo/teleinfo_"+globals.type+".pid"
+globals.pidfile = globals.pidfile+"_"+globals.type+".pid"
 jeedom_utils.write_pid(str(globals.pidfile))
 globals.JEEDOM_COM = jeedom_com(apikey = globals.apikey,url = globals.callback,cycle=globals.cycle)
 if not globals.JEEDOM_COM.test():
