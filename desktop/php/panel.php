@@ -89,6 +89,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 
 
     					<?php
+                        $date = date("md");
                         if ($date >= '1222') {
                             echo '<img class="pull-right" src="plugins/teleinfo/ressources/panel/portraitconso_saisons_energie_hiver.png" height="105" width="600" />';
                         }
