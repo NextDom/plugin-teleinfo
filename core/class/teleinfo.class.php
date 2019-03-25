@@ -196,7 +196,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-            $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --loglevel debug'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
             $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         } else {
             log::add('teleinfo', 'info', '[runDeamon] Fonctionnement en mode 1 compteur');
@@ -209,7 +209,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-            $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --loglevel debug'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
             $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         }
 
@@ -289,7 +289,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --socketport ' . (config::byKey('socketport', 'teleinfo', '55062') + 1);
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-            $cmd         .= ' --loglevel info'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --loglevel debug'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
             $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         } else {
             log::add('teleinfo', 'info', '[Production] Fonctionnement en mode 1 compteur');
@@ -302,7 +302,7 @@ class teleinfo extends eqLogic
             $cmd         .= ' --socketport ' . (config::byKey('socketport', 'teleinfo', '55062') + 1);
             $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
             $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-            $cmd         .= ' --loglevel info'; //. log::convertLogLevel(log::getLogLevel('teleinfo'));
+            $cmd         .= ' --loglevel debug'; //. log::convertLogLevel(log::getLogLevel('teleinfo'));
             $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         }
 

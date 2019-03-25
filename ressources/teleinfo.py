@@ -127,7 +127,7 @@ class Teleinfo:
                             content[name] = value;
                         else:
                             logging.error("TELEINFO------ ** FRAME CORRUPTED ! **")
-                            logging.debug('** FRAME : ' + resp + '**')
+                            logging.error('** FRAME : ' + resp + '**')
                             #This frame is corrupted, we need to wait until the next one
                             while '\x02' not in resp:
                                 resp = globals.TELEINFO_SERIAL.readline()
