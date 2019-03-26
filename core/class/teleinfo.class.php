@@ -110,14 +110,28 @@ class teleinfo extends eqLogic
             $cmd->setConfiguration('info_conso', $oKey);
             switch ($oKey) {
                 case "OPTARIF":
+                case "PTEC":
+                case "DEMAIN":
+                case "MOTDETAT":
                 case "HHPHC":
                 case "PPOT":
-                case "PEJP":
-                case "DEMAIN":
-                case "PTEC":
-                case "LTARF":
                 case "NGTF":
+                case "LTARF":
+                case "STGE":
+                case "DPM1":
+                case "FPM1":
+                case "DPM2":
+                case "FPM2":
+                case "DPM3":
+                case "FPM3":
                 case "MSG1":
+                case "MSG2":
+                case "PRM":
+                case "RELAIS":
+                case "NJOURF":
+                case "NJOURF+1":
+                case "PJOURF+1":
+                case "PPOINTE":
                     $cmd->setSubType('string')
                             ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
