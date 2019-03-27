@@ -905,10 +905,12 @@ class teleinfo extends eqLogic
                 foreach ($eqLogic->getCmd('info') as $cmd) {
                     if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
                         if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
-                            array_push($statHpToCumul, $cmd->getId());
+                            $ppapHp += $cmd->execCmd();
+                            log::add('teleinfo', 'debug', 'Cmd : ' . $cmd->getId() . ' / Value : ' . $cmd->execCmd());
                         }
                         if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
-                            array_push($statHcToCumul, $cmd->getId());
+                            $ppapHc += $cmd->execCmd();
+                            log::add('teleinfo', 'debug', 'Cmd : ' . $cmd->getId() . ' / Value : ' . $cmd->execCmd());
                         }
                     }
                 }
@@ -954,10 +956,10 @@ class teleinfo extends eqLogic
                 foreach ($eqLogic->getCmd('info') as $cmd) {
                     if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
                         if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
-                            array_push($statHpToCumul, $cmd->getId());
+                            $ppapHp += $cmd->execCmd();
                         }
                         if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
-                            array_push($statHcToCumul, $cmd->getId());
+                            $ppapHc += $cmd->execCmd();
                         }
                     }
                 }

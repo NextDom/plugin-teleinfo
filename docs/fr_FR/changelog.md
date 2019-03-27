@@ -7,6 +7,7 @@ Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https
 * Stat de production
 * Augmentation du délais du passage des logs normal au démarrage du démon
 * Changement pour le niveau de log, création du socket oublié pour la prod.
+* Bug sur le calcul de la consommation moyenne.
 
 ### 4.3.1 (25-03-2019)
 
