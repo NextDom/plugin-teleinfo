@@ -278,7 +278,7 @@ def read_socket(cycle):
 		time.sleep(cycle)
 
 def log_starting(cycle):
-	time.sleep(30)
+	time.sleep(90)
 	logging.info('GLOBAL------Passage des logs en normal')
 	log = logging.getLogger()
 	for hdlr in log.handlers[:]:

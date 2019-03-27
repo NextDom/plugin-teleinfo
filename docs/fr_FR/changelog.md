@@ -2,6 +2,12 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.3.2 (26-03-2019)
+
+* Stat de production
+* Augmentation du délais du passage des logs normal au démarrage du démon
+* Changement pour le niveau de log, création du socket oublié pour la prod.
+
 ### 4.3.1 (25-03-2019)
 
 * Corrections pour le modem 2 compteurs.

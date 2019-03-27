@@ -197,9 +197,11 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="STAT_YESTERDAY">Conso totale hier</option>';
         selRequestType += '<option value="STAT_YESTERDAY_HP">Conso HP hier</option>';
         selRequestType += '<option value="STAT_YESTERDAY_HC">Conso HC hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_PROD">Production hier</option>';
         selRequestType += '<option value="STAT_TODAY">Conso totale Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_HP">Conso HP Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_HC">Conso HC Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_PROD">Production Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_MONTH">Conso Mois en cours</option>';
         selRequestType += '<option value="STAT_MONTH_LAST_YEAR">Conso Mois en cours année précédente</option>';
         selRequestType += '<option value="STAT_YEAR_LAST_YEAR">Conso Année précédente au même jour</option>';

@@ -88,6 +88,24 @@ if (!isConnect('admin')) {
     </form>
 </div>
 
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">{{Index Production}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <?php
+            			$indexProduction = config::byKey('indexProduction', 'teleinfo', '');
+                        echo '<input id="indexProduction" type="text" value="'.$indexProduction.'" data-role="tagsinput"/>';
+              			?>
+            		</div>
+                </div>
+                <div class="col-lg-5">
+                </div>
+            </div>
+    </form>
+</div>
+
 
 
 <?php

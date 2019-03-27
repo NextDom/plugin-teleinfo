@@ -185,8 +185,8 @@ $.ajax({
                                 case "STAT_DEC_HC":
                                     if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 11, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
                                     break;
-                                case "EAIT":
-                                    console.log("[loadData][EAIT] " + data.result[eqLogic].cmd[cmd].value);
+                                case "STAT_YESTERDAY_PROD":
+                                    console.log("[loadData][STAT_YESTERDAY_PROD] " + data.result[eqLogic].cmd[cmd].value);
                                     commandesStat.push({"graph":"div_graphGlobalProdJournalier", "id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
                                     getDailyHistory('div_graphGlobalProdJournalier',data.result[eqLogic].cmd[cmd])
                                     break;

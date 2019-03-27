@@ -42,4 +42,15 @@ console.log($("#indexConsoHP").val());
 		}
     }));
 
+    console.log(jeedom.config.save({
+      plugin: "teleinfo",
+      configuration: {"indexProduction" : $("#indexProduction").val()},
+        error: function (error) {
+        $('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
+        },
+        success: function (data) {
+
+        }
+    }));
+
 });
