@@ -41,24 +41,6 @@ try {
 <form class="form-horizontal">
     <fieldset>
         <legend><i class="icon fa fa-bolt"></i> {{Consommation électrique}}</legend>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">Compteur Linky <sup><i class="fa fa-question-circle tooltips" title="{{Veuillez regarder la documentation pour identifier votre compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
-            <div id="div_linky" class="col-lg-4 tooltips" title="{{ Veuillez regarder la documentation pour identifier votre compteur }}">
-                <input type="checkbox" id="linky" class="configKey" data-l1key="linky" placeholder="{{}}"/>
-                <label for="linky">  </label>
-                <label id="label_linky" style="color:red;margin-left:100px;margin-top:-15px;display:none">Attention, assurez vous que votre compteur soit en mode standard. Aucune idée ? Se reporter à la documentation.</label>
-                <script>
-                $( "#linky" ).change(function() {
-                        if($( this ).value() == "1"){
-                            $("#label_linky").show();
-                        }
-                        else{
-                            $("#label_linky").hide();
-                        }
-                });
-                </script>
-            </div>
-        </div>
         <div class="form-group div_local">
             <label class="col-lg-4 control-label">Port du modem :</label>
             <div class="col-lg-4">
@@ -85,6 +67,33 @@ try {
                 });
                 </script>
             </div>
+			<span class="col-lg-4"><a class="btn btn-sm btn-info" id="btn_detect_type" style="position:relative;top:-5px;"><i class="divers-svg"></i> Détection Automatique</a></span>
+        </div>
+		<div class="form-group div_local">
+            <label class="col-lg-4 control-label">Mode 2 compteurs <sup><i class="fa fa-question-circle tooltips" title="{{Si vous utilisez le modem Cartelectronic en mode 2 compteurs}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{Seulement en cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
+                <input type="checkbox" id="mode_2_cpt" class="configKey" data-l1key="2cpt_cartelectronic" placeholder="{{Actif}}"/>
+                <label for="mode_2_cpt">  </label>
+                <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
+            </div>
+        </div>
+		<div class="form-group">
+            <label class="col-lg-4 control-label">Compteur Linky <sup><i class="fa fa-question-circle tooltips" title="{{Veuillez regarder la documentation pour identifier votre compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
+            <div id="div_linky" class="col-lg-4 tooltips" title="{{ Veuillez regarder la documentation pour identifier votre compteur }}">
+                <input type="checkbox" id="linky" class="configKey" data-l1key="linky" placeholder="{{}}"/>
+                <label for="linky">  </label>
+                <label id="label_linky" style="color:red;margin-left:100px;margin-top:-15px;display:none">Attention, assurez vous que votre compteur soit en mode standard. Aucune idée ? Se reporter à la documentation.</label>
+                <script>
+                $( "#linky" ).change(function() {
+                        if($( this ).value() == "1"){
+                            $("#label_linky").show();
+                        }
+                        else{
+                            $("#label_linky").hide();
+                        }
+                });
+                </script>
+            </div>
         </div>
         <div class="form-group div_local">
             <label class="col-lg-4 control-label">Vitesse : </label>
@@ -101,15 +110,6 @@ try {
                     <option value="56000">56000</option>
                     <option value="115200">115200</option>
                 </select>
-            </div>
-        </div>
-
-        <div class="form-group div_local">
-            <label class="col-lg-4 control-label">Mode 2 compteurs <sup><i class="fa fa-question-circle tooltips" title="{{Si vous utilisez le modem Cartelectronic en mode 2 compteurs}}" style="font-size : 1em;color:grey;"></i></sup></label>
-            <div id="div_mode_2_cpt" class="col-lg-4 tooltips" title="{{Seulement en cas d'utilisation de 2 compteurs simultanés (Cartelectronic)}}">
-                <input type="checkbox" id="mode_2_cpt" class="configKey" data-l1key="2cpt_cartelectronic" placeholder="{{Actif}}"/>
-                <label for="mode_2_cpt">  </label>
-                <!--<label class="checkbox-inline"><input id="mode_2_cpt" type="checkbox" class="configKey" data-l1key="2cpt_cartelectronic" />{{Actif}}</label>-->
             </div>
         </div>
 
@@ -251,6 +251,36 @@ try {
         $('#btn_diagnostic').on('click',function(){
             $('#md_modal').dialog({title: "{{Diagnostique de résolution d'incident}}"});
             $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=diagnostic').dialog('open');
+        });
+		
+		$('#btn_detect_type').on('click',function(){
+			
+			if($( "#select_port option:selected" ).val() == "serie"){
+				$selectPort = $("#port_serie").val();
+			}
+			else {
+				$selectPort = $( "#select_port option:selected" ).val();
+			}
+			
+            $.ajax({// fonction permettant de faire de l'ajax
+                type: "POST", // methode de transmission des données au fichier php
+                url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
+                data: {
+                    action: "findModemType",
+					port: $selectPort,
+                },
+                dataType: 'json',
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { // si l'appel a bien fonctionné
+                if (data.state != 'ok') {
+                    $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                    return;
+                }
+                $('#div_alert').showAlert({message: data.message, level: 'success'});
+				}
+            });
         });
 
         $('#bt_stopTeleinfoDeamon').on('click', function () {

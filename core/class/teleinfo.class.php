@@ -67,6 +67,11 @@ class teleinfo extends eqLogic
         }
     }
 
+	/**
+	 * Creation objet sur reception de trame
+	 * @param string $adco
+	 * @return eqLogic
+	 */
     public static function createFromDef(string $adco)
     {
         $autorisationCreationObjet = config::byKey('createNewADCO', 'teleinfo');
@@ -87,14 +92,17 @@ class teleinfo extends eqLogic
         }
     }
 
+	/**
+	 * Creation commande sur reception de trame
+	 * @param $oADCO identifiant compteur
+	 * @param $oKey etiquette
+	 * @param $oValue valeur
+	 * @return Commande
+	 */
     public static function createCmdFromDef($oADCO, $oKey, $oValue)
     {
-        if (!isset($oKey)) {
-            log::add('teleinfo', 'error', 'Information manquante pour ajouter l\'équipement : ' . print_r($oKey, true));
-            return false;
-        }
-        if (!isset($oADCO)) {
-            log::add('teleinfo', 'error', 'Information manquante pour ajouter l\'équipement : ' . print_r($oADCO, true));
+        if (!isset($oKey) || !isset($oADCO)) {
+            log::add('teleinfo', 'error', 'Information manquante pour ajouter l\'équipement : ' . print_r($oKey, true) . ' ' . print_r($oADCO, true));
             return false;
         }
         $teleinfo = teleinfo::byLogicalId($oADCO, 'teleinfo');
@@ -107,8 +115,6 @@ class teleinfo extends eqLogic
                     ->setName($oKey)
                     ->setLogicalId($oKey)
                     ->setType('info');
-            $cmd->setEqLogic_id($teleinfo->id);
-            $cmd->setConfiguration('info_conso', $oKey);
             switch ($oKey) {
                 case "OPTARIF":
                 case "PTEC":
@@ -141,6 +147,8 @@ class teleinfo extends eqLogic
                             ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
             }
+			$cmd->setEqLogic_id($teleinfo->id);
+            $cmd->setConfiguration('info_conso', $oKey);
             $cmd->setIsHistorized(1)->setIsVisible(1);
             $cmd->save();
             $cmd->event($oValue);
@@ -148,7 +156,52 @@ class teleinfo extends eqLogic
         }
     }
 
-    /**
+    
+	/**
+	 * Fonction de détection du type de compteur
+	 * @param $port
+	 * @return $return
+	 */
+	public static function findModemType($port)
+    {
+		$twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
+		if ($twoCptCartelectronic == 1) {
+			$return['result'] = '0';
+            $return['message'] = 'Non disponible pour le modem 2 compteurs';
+			return $return;
+		}
+		
+		exec('stty -F ' . $port . ' 1200 sane evenp parenb cs7 -crtscts');
+        passthru('timeout 5 sed -n 5,8p ' . $port, $return['data']);
+		
+		if ($return['data'] > 5){
+            $return['result'] = '1';
+            $return['type'] = 'historique';
+            $return['vitesse'] = '1200';
+            $return['message'] = 'Il s\'agit d\'un compteur en mode historique.';
+        }
+        else {
+            exec('stty -F ' . $port . ' 9600 sane evenp parenb cs7 -crtscts');
+			passthru('timeout 5 sed -n 5,8p ' . $port, $return['data']);
+			if ($return['data'] > 5){
+				$return['result'] = '1';
+				$return['type'] = 'standard';
+				$return['vitesse'] = '9600';
+				$return['message'] = 'Il s\'agit d\'un compteur en mode standard.';
+			}
+			else {
+				$return['result'] = '0';
+				$return['type'] = '';
+				$return['vitesse'] = '';
+				$return['message'] = 'Impossible de détecter le type de compteur';
+			}
+        }
+		return $return;
+	}
+	
+	
+	
+	/**
      *
      * @param type $debug
      * @param type $type
@@ -156,124 +209,48 @@ class teleinfo extends eqLogic
      */
     public static function runDeamon($debug = false, $type = 'conso')
     {
-        log::add('teleinfo', 'info', '[runDeamon] Démarrage compteur de consommation');
-        $teleinfoPath         = realpath(dirname(__FILE__) . '/../../ressources');
-        $modemSerieAddr       = config::byKey('port', 'teleinfo');
-        $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
-        $linky                = config::byKey('linky', 'teleinfo');
-        $modemVitesse         = config::byKey('modem_vitesse', 'teleinfo');
-        if ($modemSerieAddr == "serie") {
-            $port = config::byKey('modem_serie_addr', 'teleinfo');
-        } else {
-            $port = jeedom::getUsbMapping(config::byKey('port', 'teleinfo'));
-            if ($twoCptCartelectronic == 1) {
-                $port = '/dev/ttyUSB1';
-            } else {
-                if (!file_exists($port)) {
-                    log::add('teleinfo', 'error', 'Le port n\'existe pas');
-                    return false;
-                }
-                $cle_api = config::byKey('api');
-                if ($cle_api == '') {
-                    log::add('teleinfo', 'error', 'Erreur de clé api, veuillez la vérifier.');
-                    return false;
-                }
-            }
-        }
-        if ($linky == 1) {
-            $mode = 'standard';
-            if ($modemVitesse == "") {
-                $modemVitesse = '9600';
-            }
-        } else {
-            $mode = 'historique';
-            if ($modemVitesse == "") {
-                $modemVitesse = '1200';
-            }
-        }
-
-		exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1'); // TODO : Vérifier dans futur release si tjs nécessaire
-
-        log::add('teleinfo', 'info', '---------- Informations de lancement ---------');
-        log::add('teleinfo', 'info', 'Port modem : ' . $port);
-        log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062'));
-        log::add('teleinfo', 'info', 'Type : ' . $type);
-        log::add('teleinfo', 'info', 'Mode : ' . $mode);
-        log::add('teleinfo', 'info', '---------------------------------------------');
-
-        if ($twoCptCartelectronic == 1) {
-            log::add('teleinfo', 'info', '[runDeamon] Fonctionnement en mode 2 compteur');
-            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo_2_cpt.py';
-            $cmd         .= ' --port ' . $port;
-            $cmd         .= ' --vitesse ' . $modemVitesse;
-            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
-            $cmd         .= ' --mode ' . $mode;
-            $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
-            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
-            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-            $cmd         .= ' --loglevel debug'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
-        } else {
-            log::add('teleinfo', 'info', '[runDeamon] Fonctionnement en mode 1 compteur');
-            $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
-            $cmd         .= ' --port ' . $port;
-            $cmd         .= ' --vitesse ' . $modemVitesse;
-            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
-            $cmd         .= ' --type ' . $type;
-            $cmd         .= ' --mode ' . $mode;
-            $cmd         .= ' --socketport ' . config::byKey('socketport', 'teleinfo', '55062');
-            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
-            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-            $cmd         .= ' --loglevel debug'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
-        }
-
-        log::add('teleinfo', 'info', 'Exécution du service : ' . $cmd);
-        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_conso') . ' 2>&1 &');
-        if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
-            log::add('teleinfo', 'error', $result);
-            return false;
-        }
-        sleep(2);
-        if (!self::deamonRunning()) {
-            sleep(10);
-            if (!self::deamonRunning()) {
-                log::add('teleinfo', 'error', 'Impossible de lancer le démon téléinfo, vérifiez la configuration.', 'unableStartDeamon');
-                return false;
-            }
-        }
-        message::removeAll('teleinfo', 'unableStartDeamon');
-        log::add('teleinfo', 'info', 'Service OK');
-        log::add('teleinfo', 'info', '---------------------------------------------');
-    }
-
-    /**
-     *
-     * @param type $_debug
-     * @param type $type
-     * @return boolean
-     */
-    public static function runProductionDeamon($debug = false, $type = 'prod')
-    {
-        log::add('teleinfo', 'info', '[Production] Mode local');
-        $teleinfoPath         = realpath(dirname(__FILE__) . '/../../ressources');
-        $modemSerieAddr       = config::byKey('port_production', 'teleinfo');
-        $twoCptCartelectronic = config::byKey('2cpt_cartelectronic_production', 'teleinfo');
-        $linky                = config::byKey('linky_prod', 'teleinfo');
-        $modemVitesse         = config::byKey('modem_vitesse_production', 'teleinfo');
-        if ($modemSerieAddr == "serie") {
-            $port = config::byKey('modem_serie_production_addr', 'teleinfo');
-        } else {
-            $port = jeedom::getUsbMapping(config::byKey('port_production', 'teleinfo'));
-            if ($twoCptCartelectronic == 1) {
-                $port = '/dev/ttyUSB1';
-            } else {
-                if (!file_exists($port)) {
-                    log::add('teleinfo', 'error', '[Production] Le port n\'existe pas');
-                    return false;
-                }
-            }
-        }
+        log::add('teleinfo', 'info', '[' . $type . '] Démarrage compteur ');
+        $teleinfoPath         	  = realpath(dirname(__FILE__) . '/../../ressources');
+		
+		if ($type == 'conso') {
+			$twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
+			$linky                = config::byKey('linky', 'teleinfo');
+			$modemVitesse         = config::byKey('modem_vitesse', 'teleinfo');
+			$socketPort			  = config::byKey('socketport', 'teleinfo', '55062');
+			if (config::byKey('port', 'teleinfo') == "serie") {
+				$port = config::byKey('modem_serie_addr', 'teleinfo');
+			}
+			else {
+				$port = jeedom::getUsbMapping(config::byKey('port', 'teleinfo'));
+				if ($twoCptCartelectronic == 1) {
+					$port = '/dev/ttyUSB1';
+				} else {
+					if (!file_exists($port)) {
+						log::add('teleinfo', 'error', '[' . $type . '] Le port n\'existe pas');
+						return false;
+					}
+				}
+			}
+		}
+		else{
+			$twoCptCartelectronic = config::byKey('2cpt_cartelectronic_production', 'teleinfo');
+			$linky                = config::byKey('linky_prod', 'teleinfo');
+			$modemVitesse         = config::byKey('modem_vitesse_production', 'teleinfo');
+			$socketPort			  = config::byKey('socketport', 'teleinfo', '55062') + 1;
+			if (config::byKey('port_production', 'teleinfo') == "serie") {
+				$port = config::byKey('modem_serie_production_addr', 'teleinfo');
+			} else {
+				$port = jeedom::getUsbMapping(config::byKey('port_production', 'teleinfo'));
+				if ($twoCptCartelectronic == 1) {
+					$port = '/dev/ttyUSB1';
+				} else {
+					if (!file_exists($port)) {
+						log::add('teleinfo', 'error', '[' . $type . '] Le port n\'existe pas');
+						return false;
+					}
+				}
+			}
+		}
 
         if ($linky == 1) {
             $mode = 'standard';
@@ -287,42 +264,36 @@ class teleinfo extends eqLogic
             }
         }
 
+		exec('sudo chmod 777 ' . $port . ' > /dev/null 2>&1');
+
         log::add('teleinfo', 'info', '---------- Informations de lancement ---------');
         log::add('teleinfo', 'info', 'Port modem : ' . $port);
-        log::add('teleinfo', 'info', 'Socket : ' . config::byKey('socketport', 'teleinfo', '55062') + 1);
+        log::add('teleinfo', 'info', 'Socket : ' . $socketPort);
         log::add('teleinfo', 'info', 'Type : ' . $type);
         log::add('teleinfo', 'info', 'Mode : ' . $mode);
         log::add('teleinfo', 'info', '---------------------------------------------');
 
         if ($twoCptCartelectronic == 1) {
-            log::add('teleinfo', 'info', '[Production] Fonctionnement en mode 2 compteur');
+            log::add('teleinfo', 'info', '[' . $type . '] Fonctionnement en mode 2 compteur');
             $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo_2_cpt.py';
-            $cmd         .= ' --port ' . $port;
-            $cmd         .= ' --vitesse ' . $modemVitesse;
-            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
-            $cmd         .= ' --mode ' . $mode;
-            $cmd         .= ' --socketport ' . (config::byKey('socketport', 'teleinfo', '55062') + 1);
-            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
-            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-            $cmd         .= ' --loglevel debug'; // . log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
-        } else {
-            log::add('teleinfo', 'info', '[Production] Fonctionnement en mode 1 compteur');
+        } 
+		else {
+            log::add('teleinfo', 'info', '[' . $type . '] Fonctionnement en mode 1 compteur');
             $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
-            $cmd         .= ' --port ' . $port;
-            $cmd         .= ' --vitesse ' . $modemVitesse;
-            $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
             $cmd         .= ' --type ' . $type;
-            $cmd         .= ' --mode ' . $mode;
-            $cmd         .= ' --socketport ' . (config::byKey('socketport', 'teleinfo', '55062') + 1);
-            $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
-            $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-            $cmd         .= ' --loglevel debug'; //. log::convertLogLevel(log::getLogLevel('teleinfo'));
-            $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
         }
+		$cmd         .= ' --port ' . $port;
+        $cmd         .= ' --vitesse ' . $modemVitesse;
+        $cmd         .= ' --apikey ' . jeedom::getApiKey('teleinfo');
+        $cmd         .= ' --mode ' . $mode;
+        $cmd         .= ' --socketport ' . $socketPort;
+        $cmd         .= ' --cycle ' . config::byKey('cycle', 'teleinfo','0.3');
+        $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
+        $cmd         .= ' --loglevel debug';
+        $cmd         .= ' --cyclesommeil ' . config::byKey('cycle_sommeil', 'teleinfo', '0.5');
 
-        log::add('teleinfo', 'info', '[Production] Exécution du service : ' . $cmd);
-        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_prod') . ' 2>&1 &');
+        log::add('teleinfo', 'info', '[' . $type . '] Exécution du service : ' . $cmd);
+        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_' . $type) . ' 2>&1 &');
         if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
             log::add('teleinfo', 'error', $result);
             return false;
@@ -331,12 +302,12 @@ class teleinfo extends eqLogic
         if (!self::deamonRunning()) {
             sleep(10);
             if (!self::deamonRunning()) {
-                log::add('teleinfo', 'error', '[Production] Impossible de lancer le démon téléinfo, vérifiez la configuration', 'unableStartDeamon');
+                log::add('teleinfo', 'error', '[' . $type . '] Impossible de lancer le démon téléinfo, vérifiez la configuration.', 'unableStartDeamon');
                 return false;
             }
         }
         message::removeAll('teleinfo', 'unableStartDeamon');
-        log::add('teleinfo', 'info', '[Production] Service OK');
+        log::add('teleinfo', 'info', '[' . $type . '] Service OK');
         log::add('teleinfo', 'info', '---------------------------------------------');
     }
 
@@ -410,10 +381,10 @@ class teleinfo extends eqLogic
         $productionActivated = config::byKey('activation_production', 'teleinfo');
         if (config::byKey('port', 'teleinfo') != "") {    // Si un port est sélectionné
             if (!self::deamonRunning()) {
-                self::runDeamon($debug);
+                self::runDeamon($debug, 'conso');
             }
             if ($productionActivated == 1) {
-                self::runProductionDeamon($debug);
+                self::runDeamon($debug, 'prod');
             }
             message::removeAll('teleinfo', 'noTeleinfoPort');
         } else {

@@ -162,6 +162,9 @@ try {
             $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
             ajax::success($return);
         break;
+		case 'findModemType':
+			ajax::success(teleinfo::findModemType(init('port')));
+		break;
         case 'diagnostic_step1':
             $return = array();
 

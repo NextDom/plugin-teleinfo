@@ -17,6 +17,7 @@
 
  var liste_donnees = [{etiquette:"ADCO",name:"Adresse du compteur",unite:""},
 {etiquette:"OPTARIF",name:"Option tarifaire choisie",unite:""},
+{etiquette:"VTIC",name:"Version de la TIC",unite:""},
 {etiquette:"ISOUSC",name:"Intensité souscrite",unite:"A"},
 {etiquette:"BASE",name:"Index Base",unite:"Wh"},
 {etiquette:"HCHC",name:"Index Heures Creuses",unite:"Wh"},
