@@ -184,13 +184,13 @@ class teleinfo extends eqLogic
             exec('stty -F ' . $port . ' 9600 sane evenp parenb cs7 -crtscts');
 			passthru('timeout 5 sed -n 5,8p ' . $port, $return['data']);
 			if ($return['data'] > 5){
-				$return['result'] = '1';
+				$return['state'] = 'ok';
 				$return['type'] = 'standard';
 				$return['vitesse'] = '9600';
 				$return['message'] = 'Il s\'agit d\'un compteur en mode standard.';
 			}
 			else {
-				$return['result'] = '0';
+				$return['state'] = 'nok';
 				$return['type'] = '';
 				$return['vitesse'] = '';
 				$return['message'] = 'Impossible de détecter le type de compteur';
