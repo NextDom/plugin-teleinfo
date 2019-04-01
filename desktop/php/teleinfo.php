@@ -162,7 +162,8 @@ switch ($controlerState) {
                       <div class="form-group">
                           <label class="col-lg-3 control-label pull-left">{{Votre abonnement :}}</label>
                           <div class="col-lg-4">
-                              <select class="eqLogicAttr form-control tooltips" title="{{Abonnement présent sur le compteur}}" data-l1key="configuration" data-l2key="abonnement">
+                              <span class="eqLogicAttr" data-l1key="configuration" data-l2key="abonnement" id="typeAbonnement" style="position: relative;top: 7px;"></span>
+                              <!--<select class="eqLogicAttr form-control tooltips" title="{{Abonnement présent sur le compteur}}" data-l1key="configuration" data-l2key="abonnement">
                                   <option value="">Aucun</option>
                                   <option value="base">Base (HP)</option>
                                   <option value="basetri">Base triphasé</option>
@@ -170,7 +171,7 @@ switch ($controlerState) {
                                   <option value="bleutri">Bleu triphasé</option>
                                   <option value="tempo">Tempo / EJP</option>
                                   <option value="tempotri">Tempo triphasé</option>
-                              </select>
+                              </select>-->
                           </div>
                           <div class="col-lg-5">
                           </div>

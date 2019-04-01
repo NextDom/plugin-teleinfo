@@ -192,6 +192,7 @@ class Teleinfo:
         while(1):
             raz_calcul = datetime.now() - raz_time
             if raz_calcul.seconds > 60:
+                logging.info("TELEINFO------HEARTBEAT")
                 raz_time = datetime.now()
                 for cle, valeur in data.items():
                     data.pop(cle)

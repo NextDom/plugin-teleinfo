@@ -163,7 +163,7 @@ try {
             ajax::success($return);
         break;
 		case 'findModemType':
-			ajax::success(teleinfo::findModemType(init('port')));
+			ajax::success(teleinfo::findModemType(init('port'),init('type')));
 		break;
         case 'diagnostic_step1':
             $return = array();

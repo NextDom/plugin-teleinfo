@@ -95,7 +95,7 @@ if (!isConnect('admin')) {
                 <div class="col-lg-5">
                     <div class="input-group">
                         <?php
-            			$indexProduction = config::byKey('indexProduction', 'teleinfo', '');
+            			$indexProduction = config::byKey('indexProduction', 'teleinfo', 'EAIT');
                         echo '<input id="indexProduction" type="text" value="'.$indexProduction.'" data-role="tagsinput"/>';
               			?>
             		</div>

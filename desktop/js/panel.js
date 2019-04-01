@@ -1,4 +1,3 @@
-
 /* This file is part of Jeedom.
  *
  * Jeedom is free software: you can redistribute it and/or modify
@@ -66,142 +65,172 @@ $.ajax({
             handleAjaxError(request, status, error);
         },
         success: function (data) {
-            console.log("[loadData] Objet téléinfo récupéré :");
+            console.log("[loadData] Objet téléinfo récupéré : " + globalEqLogic);
             if (data.state != 'ok') {
                 $('#div_alert').showAlert({message: data.result, level: 'danger'});
                 return;
             }
             var serie0 = 0, serie1 = 1;
-            for(eqLogic in data.result)
-            {
-                console.log("[loadData] => " + data.result[eqLogic].name);
-                try {
-                    var chart = $('#div_graphGlobalIndex').highcharts();
-                    for(cmd in data.result[eqLogic].cmd)
-                    {
-                        try{
-                            switch(data.result[eqLogic].cmd[cmd].logicalId)
-                            {
-                                case "STAT_YESTERDAY":
-                                    break;
-                                case "SINSTS":
-                                case "PAPP":
-                                    commandesPuissance.push({"id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
-                                    console.log("[loadData][PAPP] " + data.result[eqLogic].cmd[cmd].id);
-                                    getObjectHistory('div_graphGlobalPower', 'Simple', data.result[eqLogic].cmd[cmd]);
-                                    break;
-                                case "STAT_TODAY":
-                                    console.log("[loadData][STAT_TODAY] " + data.result[eqLogic].cmd[cmd].value);
-                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
-                                    $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text((data.result[eqLogic].cmd[cmd].value)/1000);
-                                    getDailyHistory('div_graphGlobalJournalier',data.result[eqLogic].cmd[cmd])
-                                    break;
-                                case "STAT_MONTH":
-                                    console.log("[loadData][STAT_MONTH] " + data.result[eqLogic].cmd[cmd].value);
-                                    $('.teleinfoAttr[data-l1key=conso][data-l2key=month]').text((data.result[eqLogic].cmd[cmd].value)/1000);
-                                    break;
-                                case "STAT_MONTH_LAST_YEAR":
-                                    console.log("[loadData][STAT_MONTH_LAST_YEAR] " + data.result[eqLogic].cmd[cmd].value);
-                                    $('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]').text((data.result[eqLogic].cmd[cmd].value)/1000);
-                                    break;
-                                case "STAT_YEAR_LAST_YEAR":
-                                    console.log("[loadData][STAT_YEAR_LAST_YEAR] " + data.result[eqLogic].cmd[cmd].value);
-                                    $('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]').text((data.result[eqLogic].cmd[cmd].value)/1000);
-                                    break;
-                                case "STAT_YEAR":
-                                    console.log("[loadData][STAT_YEAR] " + data.result[eqLogic].cmd[cmd].value);
-                                    //console.log(data.result[eqLogic].cmd[cmd]);
-                                    $('.teleinfoAttr[data-l1key=conso][data-l2key=year]').text((data.result[eqLogic].cmd[cmd].value)/1000);
-                                    break;
-                                case "STAT_JAN_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 0, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_JAN_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 0, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_FEV_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 1, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_FEV_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 1, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_MAR_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 2, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_MAR_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 2, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_AVR_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 3, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_AVR_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 3, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_MAI_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 4, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_MAI_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 4, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_JUIN_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 5, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_JUIN_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 5, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_JUI_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 6, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_JUI_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 6, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_AOU_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 7, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_AOU_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 7, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_SEP_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 8, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_SEP_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 8, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_OCT_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 9, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_OCT_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 9, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_NOV_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 10, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_NOV_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 10, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_DEC_HP":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 11, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_DEC_HC":
-                                    if(data.result[eqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 11, y: (data.result[eqLogic].cmd[cmd].value)/1000 },true);}
-                                    break;
-                                case "STAT_YESTERDAY_PROD":
-                                    console.log("[loadData][STAT_YESTERDAY_PROD] " + data.result[eqLogic].cmd[cmd].value);
-                                    commandesStat.push({"graph":"div_graphGlobalProdJournalier", "id":data.result[eqLogic].cmd[cmd].id,"name":data.result[eqLogic].cmd[cmd].name});
-                                    getDailyHistory('div_graphGlobalProdJournalier',data.result[eqLogic].cmd[cmd])
-                                    break;
-                            }
-                        }
-                        catch(err) {
-                            console.log("Exception dans le remplissage evolution de la consommation : " + err);
+            var compteurProd = false;
+            console.log("[loadData] => " + data.result[globalEqLogic].name);
+            if(data.result[globalEqLogic].configuration.abonnement){
+                $('.teleinfoAttr[data-l1key=abonnement][data-l2key=type]').text(data.result[globalEqLogic].configuration.abonnement);
+                if (data.result[globalEqLogic].configuration.abonnement.includes("PROD")){
+                    compteurProd = true;
+                    $('#spanTitreResume').html('<i style="font-size: initial;" class="icon fas fa-leaf"></i> Ma Production');
+                }
+                else{
+                    $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Consommation');
+                }
+            }
+
+            try {
+                var chart = $('#div_graphGlobalIndex').highcharts();
+                console.log(data.result[globalEqLogic].cmd);
+                for(cmd in data.result[globalEqLogic].cmd)
+                {
+                    try{
+                        switch(data.result[globalEqLogic].cmd[cmd].logicalId)
+                        {
+                            case "STAT_YESTERDAY":
+                                break;
+                            case "SINSTI":
+                                if(compteurProd){
+                                    commandesPuissance.push({"id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
+                                    console.log("[loadData][PAPP] " + data.result[globalEqLogic].cmd[cmd].id);
+                                    getObjectHistory('div_graphGlobalPower', 'Simple', data.result[globalEqLogic].cmd[cmd]);
+                                }
+                                break;
+                            case "SINSTS":
+                            case "PAPP":
+                                if(!compteurProd){
+                                    commandesPuissance.push({"id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
+                                    console.log("[loadData][PAPP] " + data.result[globalEqLogic].cmd[cmd].id);
+                                    getObjectHistory('div_graphGlobalPower', 'Simple', data.result[globalEqLogic].cmd[cmd]);
+                                }
+                                break;
+                            case "STAT_TODAY":
+                                if(!compteurProd){
+                                    console.log("[loadData][STAT_TODAY] " + data.result[globalEqLogic].cmd[cmd].value);
+                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
+                                    $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
+                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd])
+                                }
+                                break;
+                            case "STAT_TODAY_PROD":
+                                if(compteurProd){
+                                    console.log("[loadData][STAT_TODAY_PROD] " + data.result[globalEqLogic].cmd[cmd].value);
+                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
+                                    $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
+                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd])
+                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd])
+                                }
+                                break;
+                            case "STAT_MONTH":
+                                console.log("[loadData][STAT_MONTH] " + data.result[globalEqLogic].cmd[cmd].value);
+                                $('.teleinfoAttr[data-l1key=conso][data-l2key=month]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
+                                break;
+                            case "STAT_MONTH_LAST_YEAR":
+                                console.log("[loadData][STAT_MONTH_LAST_YEAR] " + data.result[globalEqLogic].cmd[cmd].value);
+                                $('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
+                                break;
+                            case "STAT_YEAR_LAST_YEAR":
+                                console.log("[loadData][STAT_YEAR_LAST_YEAR] " + data.result[globalEqLogic].cmd[cmd].value);
+                                $('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
+                                break;
+                            case "STAT_YEAR":
+                                console.log("[loadData][STAT_YEAR] " + data.result[globalEqLogic].cmd[cmd].value);
+                                $('.teleinfoAttr[data-l1key=conso][data-l2key=year]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
+                                break;
+                            case "STAT_JAN_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 0, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_JAN_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 0, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_FEV_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 1, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_FEV_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 1, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_MAR_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 2, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_MAR_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 2, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_AVR_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 3, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_AVR_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 3, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_MAI_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 4, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_MAI_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 4, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_JUIN_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 5, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_JUIN_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 5, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_JUI_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 6, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_JUI_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 6, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_AOU_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 7, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_AOU_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 7, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_SEP_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 8, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_SEP_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 8, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_OCT_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 9, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_OCT_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 9, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_NOV_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 10, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_NOV_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 10, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_DEC_HP":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 11, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
+                            case "STAT_DEC_HC":
+                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 11, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
+                                break;
                         }
                     }
-                    serie0 += 2;
-                    serie1 += 2;
+                    catch(err) {
+                        console.log("Exception dans le remplissage evolution de la consommation : " + err);
+                    }
                 }
-                catch(err) {
-                    console.log("Exception dans le traitement des commandes : " + err);
-                }
+                serie0 += 2;
+                serie1 += 2;
+            }
+            catch(err) {
+                console.log("Exception dans le traitement des commandes : " + err);
+            }
+
+            for(globalEqLogic in data.result)
+            {
+                console.log("[loadData] => " + data.result[globalEqLogic].name);
+
             }
         }
     });
@@ -258,16 +287,12 @@ function getTeleinfoObjectHistory(div, type, object) {
 
 function getObjectHistory(div, type, object, action = 'none') {
     dailyHistoryChart[div] = null;
-    //$('#div_graphGlobalPower').attr( "cmd_id", object.id );
-    //$('#div_graphGlobalPower').attr( "cmd_name", object.name );
     if(action === 'refresh'){
         startDate = $('#in_startDate').value()
     }else {
         startDate = $('#in_endDate').value()
     }
     console.log("[getObjectHistory] Récupération de l'historique pour la commande " + object.name);
-
-
     teleinfoDrawChart({
                     cmd_id: object.id,
                     el: div,
@@ -336,6 +361,30 @@ function getDailyHistory(div,  object) {
         }
     });
 }
+
+function getMonthlyHistory(div,  object) {
+    dailyHistoryChart[div] = null;
+    console.log("[getMonthlyHistory] Récupération de l'historique pour la commande " + object.name);
+    teleinfoDrawChart({
+                    cmd_id: object.id,
+                    el: div,
+                    dateRange : 'all',
+                    dateStart: $('#in_startDate').value(),
+                    dateEnd: $('#in_endDate').value(),
+                    showNavigator : false,
+                    option: {
+                        graphColor: '#7cb5ec',
+                        derive : 0,
+                        graphStep: 1,
+                        graphScale : 1,
+                        graphType : 'column',
+                        graphZindex :1,
+                        groupingType:"high::month"
+                    },
+                    divide:1000,
+                });
+}
+
 
 function drawPieChart(_el, _data, _title) {
     new Highcharts.Chart({
