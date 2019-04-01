@@ -24,7 +24,7 @@ if (!isConnect('admin')) {
 <div id='div_OptionsAlert' style=""></div>
 <div class="input-group pull-right" style="display:inline-flex">
   <span class="pull-right">
-    <a class="btn btn-success pull-right" id="btOptionsSave"><i class="fa fa-check-circle"></i> {{Enregistrer}}</a>
+    <a class="btn btn-success pull-right" id="btOptionsSave"><i class="fas fa-check-circle"></i> {{Enregistrer}}</a>
   </span>
 </div>
 
@@ -45,7 +45,7 @@ if (!isConnect('admin')) {
             			}
               			?>
             			<span class="input-group-btn">
-            				<a class="btn btn-default btn-sm cursor" id="bt_selectoutsideTemp" title="{{Choisir une commande}}"><i class="fa fa-list-alt"></i></a>
+            				<a class="btn btn-default btn-sm cursor" id="bt_selectoutsideTemp" title="{{Choisir une commande}}"><i class="fas fa-list-alt"></i></a>
             			</span>
             		</div>
                 </div>

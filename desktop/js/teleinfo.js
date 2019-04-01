@@ -205,9 +205,11 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="STAT_TODAY_HC">Conso HC Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_PROD">Production Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_MONTH">Conso Mois en cours</option>';
+        selRequestType += '<option value="STAT_MONTH_PROD">Production Mois en cours</option>';
         selRequestType += '<option value="STAT_MONTH_LAST_YEAR">Conso Mois en cours année précédente</option>';
         selRequestType += '<option value="STAT_YEAR_LAST_YEAR">Conso Année précédente au même jour</option>';
         selRequestType += '<option value="STAT_YEAR">Conso Année en cours</option>';
+        selRequestType += '<option value="STAT_YEAR_PROD">Production Année en cours</option>';
         selRequestType += '<option value="STAT_LASTMONTH">Conso Mois dernier</option>';
         selRequestType += '<option value="STAT_JAN_HP">Conso Janvier HP</option>';
         selRequestType += '<option value="STAT_FEV_HP">Conso Février HP</option>';
@@ -258,10 +260,10 @@ function addCmdToTable(_cmd) {
         }
     }
     else if (init(_cmd.configuration['type']) == 'stat'){
-        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="background-color: aliceblue;">';
+        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
     }
     else{
-        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="background-color: #f2fff2;">';
+        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
     }
     if(init(_cmd.configuration['type']) != 'health'){
         tr += '<td>';

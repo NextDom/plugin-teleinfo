@@ -4,14 +4,15 @@ Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https
 
 ### 4.4.0 (04-04-2019)
 
-* Détection automatique du type d'abonnement
+* Détection automatique du type d'abonnement.
 * Détection automatique du compteur depuis la configuration (non disponible pour le modem Cartelectronic 2 compteurs).
-* Déclaration index production
+* Déclaration index production.
+* Correction du diagnostique.
 
 ### 4.3.2 (01-04-2019)
 
-* Stat de production
-* Augmentation du délais du passage des logs normal au démarrage du démon
+* Stat de production.
+* Augmentation du délais du passage des logs normal au démarrage du démon.
 * Changement pour le niveau de log, création du socket oublié pour la prod.
 * Bug sur le calcul de la consommation moyenne.
 

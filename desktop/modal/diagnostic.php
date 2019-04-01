@@ -41,7 +41,7 @@ if (!isConnect('admin')) {
                     <center><h3>{{Vérifier la configuration du plugin}}</h3></center></br>
                     <div class="form-group">
                         <div class="row">
-                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="1"><i class="fa fa-check-square-o"></i> {{Démarrer}}</a></span></center>
+                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="1"><i class="fas fa-play-circle"></i> {{Démarrer}}</a></span></center>
                         </div>
                         <div class="row" style="margin-top:10px">
                         	<center><span class="result1" style=""></span></center>
@@ -52,7 +52,7 @@ if (!isConnect('admin')) {
                         <br>
                     </div>
                     <div style="background-color: #ccc;height:2px;margin-bottom:5px"></div>
-                    <button id="toStep2" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fa fa-fast-forward"></i> {{Suivant}}</button>
+                    <button id="toStep2" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fas fa-fast-forward"></i> {{Suivant}}</button>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@ if (!isConnect('admin')) {
                     <center><h3>{{Modem connecté}}</h3></center></br>
                     <div class="form-group">
                         <div class="row">
-                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="2"><i class="fa fa-check-square-o"></i> {{Démarrer}}</a></span></center>
+                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="2"><i class="fas fa-play-circle"></i> {{Démarrer}}</a></span></center>
                         </div>
                         <div class="row" style="margin-top:10px">
                         	<center><span class="result2" style=""></span></center>
@@ -73,7 +73,7 @@ if (!isConnect('admin')) {
                         <br>
                     </div>
                     <div style="background-color: #ccc;height:2px;margin-bottom:5px"></div>
-                    <button id="toStep3" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fa fa-fast-forward"></i> {{Suivant}}</button>
+                    <button id="toStep3" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fas fa-fast-forward"></i> {{Suivant}}</button>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@ if (!isConnect('admin')) {
                     <center><h3>{{Accès au Modem}}</h3></center></br>
                     <div class="form-group">
                         <div class="row">
-                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="3"><i class="fa fa-check-square-o"></i> {{Démarrer}}</a></span></center>
+                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="3"><i class="fas fa-play-circle"></i> {{Démarrer}}</a></span></center>
                         </div>
                         <div class="row" style="margin-top:10px">
                         	<center><span class="result3" style=""></span></center>
@@ -94,7 +94,7 @@ if (!isConnect('admin')) {
                         <br>
                     </div>
                     <div style="background-color: #ccc;height:2px;margin-bottom:5px"></div>
-                    <button id="toStep4" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fa fa-fast-forward"></i> {{Suivant}}</button>
+                    <button id="toStep4" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fas fa-fast-forward"></i> {{Suivant}}</button>
                 </div>
             </div>
         </div>
@@ -104,7 +104,7 @@ if (!isConnect('admin')) {
                     <center><h3>{{Lecture des données}}</h3></center></br>
                     <div class="form-group">
                         <div class="row">
-                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="4"><i class="fa fa-check-square-o"></i> {{Démarrer}}</a></span></center>
+                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="4"><i class="fas fa-play-circle"></i> {{Démarrer}}</a></span></center>
                         </div>
                         <div class="row" style="margin-top:10px">
                         	<center><span class="result4" style=""></span></center>
@@ -115,7 +115,7 @@ if (!isConnect('admin')) {
                         <br>
                     </div>
                     <div style="background-color: #ccc;height:2px;margin-bottom:5px"></div>
-                    <button id="toStep5" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fa fa-fast-forward"></i> {{Suivant}}</button>
+                    <button id="toStep5" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fas fa-fast-forward"></i> {{Suivant}}</button>
                 </div>
             </div>
         </div>
@@ -125,7 +125,7 @@ if (!isConnect('admin')) {
                     <center><h3>{{Intégritée des données}}</h3></center></br>
                     <div class="form-group">
                         <div class="row">
-                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="5"><i class="fa fa-check-square-o"></i> {{Démarrer}}</a></span></center>
+                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="5"><i class="fas fa-play-circle"></i> {{Démarrer}}</a></span></center>
                         </div>
                         <div class="row" style="margin-top:10px">
                         	<center><span class="result5" style=""></span></center>
@@ -136,7 +136,7 @@ if (!isConnect('admin')) {
                         <br>
                     </div>
                     <div style="background-color: #ccc;height:2px;margin-bottom:5px"></div>
-                    <button id="toStep6" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fa fa-fast-forward"></i> {{Suivant}}</button>
+                    <button id="toStep6" class="btn btn-primary nextBtn btn-lg pull-right" type="button" ><i class="fas fa-fast-forward"></i> {{Suivant}}</button>
                 </div>
             </div>
         </div>
@@ -146,7 +146,7 @@ if (!isConnect('admin')) {
                     <center><h3>{{Package de logs}}</h3></center></br>
                     <div class="form-group">
                         <div class="row">
-                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="6"><i class="fa fa-check-square-o"></i> {{Démarrer}}</a></span></center>
+                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="6"><i class="fas fa-play-circle"></i> {{Démarrer}}</a></span></center>
                         </div>
 
                         <div class="row" style="margin-top:10px">

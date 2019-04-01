@@ -41,19 +41,19 @@ switch ($controlerState) {
 		<legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
 		<div class="eqLogicThumbnailContainer">
 			<div class="cursor logoSecondary" id="bt_info_daemon">
-				<i class="fa fa-heartbeat"></i>
+				<i class="fas fa-heartbeat"></i>
                 <br/>
                 <span>{{Info Modem}}</span>
 			</div>
 
 			<div class="cursor logoSecondary eqLogicAction" data-action="gotoPluginConf">
-			    <i class="fa fa-wrench"></i>
+			    <i class="fas fa-wrench"></i>
                 <br/>
                 <span>{{Configuration}}</span>
 			</div>
 
 			<div class="cursor logoSecondary" id="bt_options">
-				<i class="fa fa-list-alt"></i>
+				<i class="fas fa-list-alt"></i>
                 <br/>
                 <span>{{Options}}</span>
             </div>
@@ -62,17 +62,15 @@ switch ($controlerState) {
         <legend>{{Mes Modules de Téléinformation}}</legend>
             <div class="eqLogicThumbnailContainer">
 
-				<div class="cursor eqLogicAction" style="color:#33b8cc;" data-action="add">
-					<i class="fa fa-plus-circle" style="padding-top: 15px;"></i>
-                    <br/>
-					<span>Ajouter</span>
+				<div class="eqLogicDisplayCard cursor eqLogicAction" style="color:#33b8cc;" data-action="add">
+					<i class="fas fa-plus-circle" style="margin-top: 33px;"></i>
+					<span class="name">Ajouter</span>
 				</div>
                 <?php
 			    foreach ($eqLogics as $eqLogic) {
 				    $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
 				    echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-logical-id="' . $eqLogic->getLogicalId() . '" data-eqLogic_id="' . $eqLogic->getId() . '" >';
     				echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
-    				echo '<br/>';
     				echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
     				echo '</div>';
 			    }
@@ -83,14 +81,14 @@ switch ($controlerState) {
 
 
     <div class="col-xs-12 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
-		<a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
-		<a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fa fa-minus-circle"></i> {{Supprimer}}</a>
-    <a class="btn btn-default eqLogicAction pull-right" data-action="configure"><i class="fa fa-cogs"></i> Configuration avancée</a>
+		<a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fas fa-check-circle"></i> {{Sauvegarder}}</a>
+		<a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fas fa-minus-circle"></i> {{Supprimer}}</a>
+    <a class="btn btn-default eqLogicAction pull-right" data-action="configure"><i class="fas fa-cogs"></i> Configuration avancée</a>
 
 		<ul class="nav nav-tabs" role="tablist">
-      <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
-			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> Equipement</a></li>
-			<li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> Commandes</a></li>
+      <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fas fa-arrow-circle-left"></i></a></li>
+			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer"></i> Equipement</a></li>
+			<li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fas fa-list-alt"></i> Commandes</a></li>
 		</ul>
 
 		<div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
@@ -177,7 +175,7 @@ switch ($controlerState) {
                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="col-lg-3 control-label pull-left">{{Création des commandes}} <sup><i class="fa fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                          <label class="col-lg-3 control-label pull-left">{{Création des commandes}} <sup><i class="fas fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
                           <div class="col-lg-7 tooltips">
                               <input type="checkbox" id="AutoCreateFromCompteur" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>
                               <label for="AutoCreateFromCompteur">  </label>
@@ -186,18 +184,18 @@ switch ($controlerState) {
                           </div>
                           <!--<div class="col-md-2">
                           <input class="eqLogicAttr" style="display:none" type="checkbox"  data-l1key="configuration" data-l2key="AutoGenerateFields" id="checkbox-autocreate"/>
-                          <a class="btn btn-info btn-sm eqLogicAction tooltips"  id="create_data_teleinfo" title="{{Permet de créer automatiquement les commandes nécessaires.}}" id="createcmd"><i class="fa fa-plus-circle"></i> {{Créer}}</a><br/><br/>
+                          <a class="btn btn-info btn-sm eqLogicAction tooltips"  id="create_data_teleinfo" title="{{Permet de créer automatiquement les commandes nécessaires.}}" id="createcmd"><i class="fas fa-plus-circle"></i> {{Créer}}</a><br/><br/>
                           </div>-->
                       </div>
                       <div class="form-group">
-                          <label class="col-lg-3 control-label pull-left">{{Vérifier}} <sup><i class="fa fa-question-circle tooltips" title="{{Obtenir des informations sur la réception des données}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                          <label class="col-lg-3 control-label pull-left">{{Vérifier}} <sup><i class="fas fa-question-circle tooltips" title="{{Obtenir des informations sur la réception des données}}" style="font-size : 1em;color:grey;"></i></sup></label>
                           <div class="col-lg-3">
-                              <a class="btn btn-info tooltips"  id="bt_teleinfoHealth"><i class="fa fa-medkit"></i>{{ Santé}}</a>
+                              <a class="btn btn-info tooltips"  id="bt_teleinfoHealth"><i class="fas fa-medkit"></i>{{ Santé}}</a>
                           </div>
                           <div class="col-lg-6">
                           </div>
                           <!--<div class="col-md-2">
-                          <a class="btn btn-info btn-sm eqLogicAction tooltips"  data-action="save" title="{{Applique le template}}"><i class="fa fa-plus-circle"></i> {{Appliquer}}</a><br/><br/>
+                          <a class="btn btn-info btn-sm eqLogicAction tooltips"  data-action="save" title="{{Applique le template}}"><i class="fas fa-plus-circle"></i> {{Appliquer}}</a><br/><br/>
                           </div>-->
                       </div>
                       <div class="form-group">
@@ -212,8 +210,8 @@ switch ($controlerState) {
   </div>
   <div role="tabpanel" class="tab-pane" id="commandtab">
   </br>
-  <a class="btn btn-success btn-sm cmdAction" id="addDataToTable"><i class="fa fa-plus-circle"></i> {{Ajouter une donnée}}</a> &nbsp;
-  <a class="btn btn-info btn-sm cmdAction expertModeVisible" id="addStatToTable"><i class="fa fa-plus-circle"></i> {{Ajouter une statistique}}</a><br/><br/>
+  <a class="btn btn-success btn-sm cmdAction" id="addDataToTable"><i class="fas fa-plus-circle"></i> {{Ajouter une donnée}}</a> &nbsp;
+  <a class="btn btn-info btn-sm cmdAction expertModeVisible" id="addStatToTable"><i class="fas fa-plus-circle"></i> {{Ajouter une statistique}}</a><br/><br/>
   <table id="table_cmd" class="table table-bordered table-condensed">
       <thead>
           <tr>
@@ -240,5 +238,5 @@ switch ($controlerState) {
 </div>
 
 <?php include_file('desktop', 'teleinfo', 'js', 'teleinfo'); ?>
-<?php include_file('desktop', 'teleinfo', 'css', 'teleinfo'); ?>
+<?php /*include_file('desktop', 'teleinfo', 'css', 'teleinfo');*/ ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
