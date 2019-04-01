@@ -70,7 +70,7 @@ usb_port = [0x00, 0x11, 0x22]
 baud_rate = 1200
 
 # TELEINFO settings
-frame_length = 400  # Nb chars to read to ensure to get a least one complete raw frame
+frame_length = 3000  # Nb chars to read to ensure to get a least one complete raw frame
 
 # Misc
 stx = 0x02  # start of text
@@ -197,16 +197,19 @@ class Teleinfo(object):
     def __init__(self, ftdi_):
         """
         """
-        logging.info("Initialisation de la teleinfo")
+        logging.info("TELEINFO------Initialisation de la teleinfo")
+        logging.info("TELEINFO------FTDI TYPE : " + str(ftdi_type))
         if ftdi_type == 0:
-            self.context = ""
+            globals.ftdi_context = ""
             super(Teleinfo, self).__init__()
             self.__ftdi = ftdi_
         else:
-            self.context = ftdi.new()
-            ret = ftdi.usb_open(self.context, 0x0403, 0x6001)
-            ftdi.set_baudrate(self.context, 1200)
-            ftdi.set_line_property(self.context, ftdi.BITS_8, ftdi.EVEN, ftdi.STOP_BIT_1)
+            globals.ftdi_context = ftdi.new()
+            ret = ftdi.usb_open(globals.ftdi_context, 0x0403, 0x6001)
+            if ret < 0:
+                logging.error("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            #ftdi.set_baudrate(globals.ftdi_context, 1200)
+            #ftdi.set_line_property(globals.ftdi_context, ftdi.BITS_8, ftdi.EVEN, ftdi.STOP_BIT_1)
 
     def __selectMeter(self, num):
         """ Select giver meter
@@ -214,20 +217,20 @@ class Teleinfo(object):
         if ftdi_type == 0:
             self.__ftdi.selectPort(usb_port[num])
         else:
-            err = ftdi.set_bitmode(self.context, usb_port[num], ftdi.BITMODE_CBUS)
+            err = ftdi.set_bitmode(globals.ftdi_context, usb_port[num], ftdi.BITMODE_CBUS)
             if err < 0:
-                logging.error("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(self.context)))
-                raise FtdiError("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+                logging.error("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
+                raise FtdiError("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
             time.sleep(0.1)
 
     def __readOne(self):
         """ read 1 char from usb
         """
-        err, buf = ftdi.read_data(self.context, 0x1)
+        err, buf = ftdi.read_data(globals.ftdi_context, 0x1)
         if err < 0:
-            logging.error("Can't read data (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+            logging.error("Can't read data (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
             self.close()
-            raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+            raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
         if err:
             #c = unichr(ord(buf) % 0x80)  # Clear bit 7
             c = chr(ord(buf) & 0x07f)
@@ -244,15 +247,16 @@ class Teleinfo(object):
         if ftdi_type == 0:
             raw = self.__ftdi.read(frame_length)
         else:
-            err = ftdi.usb_purge_buffers(self.context)
+            err = ftdi.usb_purge_buffers(globals.ftdi_context)
             if err < 0:
-                logging.error("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(self.context)))
-                raise FtdiError("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(self.context)))
+                logging.error("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
+                raise FtdiError("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
             raw = u""
             while len(raw) < frame_length:
                 err, c = self.__readOne()
                 if c is not None and c != '\x00':
                     raw += c
+                    #logging.debug(c)
         return raw
 
     def __frameToDatas(self, frame):
@@ -265,9 +269,10 @@ class Teleinfo(object):
             try:
                 checksum = line[-1]
                 header, value = line[:-2].split()
-                data = {'header': header.encode(), 'value': value.encode(), 'checksum': checksum}
-                self.__checkData(data)
-                Content[header.encode()] = value.encode()
+                #data = {'header': header.encode(), 'value': value.encode(), 'checksum': checksum}
+                logging.debug('TELEINFO------name : ' + header.encode() + ' value : ' + value.encode() + ' checksum : ' + checksum)
+                if self.__checkData(line):
+                    Content[header.encode()] = value.encode()
             except:
                 pass
                 #datas.append(data)
@@ -276,18 +281,25 @@ class Teleinfo(object):
     def __checkData(self, data):
         """ Check if data is ok (checksum)
         """
-
-        # Check entry
-        sum = 0x20  # Space between header and value
-        for s in (data['header'], data['value']):
-            for c in s:
-                sum += ord(c)
-        sum %= 0x40  # Checksum on 6 bits
-        sum += 0x20  # Ensure printable char
-
-        if sum != ord(data['checksum']):
-            data = null
-        #raise TeleinfoError("Corrupted data found (%s)" % data)
+        if globals.mode == "standard":
+            #Gestion des champs horodates
+            if len(data.split('\x09')) == 4:
+                datas = '\x09'.join(data.split('\x09')[0:3])
+            else:
+                datas = '\x09'.join(data.split('\x09')[0:2])
+            my_sum = 0
+            for cks in datas:
+                my_sum = my_sum + ord(cks)
+            computed_checksum = ((my_sum - 0x01) & int("111111", 2)) + 0x20
+        else:
+            #print "Check checksum : f = %s, chk = %s" % (frame, checksum)
+            datas = ' '.join(data.split()[0:2])
+            my_sum = 0
+            for cks in datas:
+                my_sum = my_sum + ord(cks)
+            computed_checksum = (my_sum & int("111111", 2)) + 0x20
+            #print "computed_checksum = %s" % chr(computed_checksum)
+        return chr(computed_checksum) == data[-1]
 
     def extractDatas(self, raw):
         """ Extract datas from raw frame
@@ -339,6 +351,7 @@ class Teleinfo(object):
             raw = self.__readRawFrame()
             self.__selectMeter(0)
             datas = self.extractDatas(raw)
+            logging.debug(datas)
 
             if num_compteur == 1:
                 for cle, valeur in datas.items():
@@ -383,15 +396,17 @@ class Teleinfo(object):
                 if PENDING_CHANGES :
                     if num_compteur == 1:
                         if globals.mode == "standard": # Zone linky standard
-                            send_data["device"] = cpt1_data_temp["ADSC"]
-                            globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADSC"],send_data)
+                            if not cpt1_data_temp["ADSC"] == '':
+                                send_data["device"] = cpt1_data_temp["ADSC"]
+                                globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADSC"],send_data)
                         else:
                             send_data["device"] = cpt1_data_temp["ADCO"]
                             globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADCO"],send_data)
                     elif num_compteur == 2:
                         if globals.mode == "standard": # Zone linky standard
-                            send_data["device"] = cpt2_data_temp["ADSC"]
-                            globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADSC"],send_data)
+                            if not cpt2_data_temp["ADSC"] == '':
+                                send_data["device"] = cpt2_data_temp["ADSC"]
+                                globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADSC"],send_data)
                         else:
                             send_data["device"] = cpt2_data_temp["ADCO"]
                             globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADCO"],send_data)
@@ -476,11 +491,20 @@ def listen():
                 globals.TELEINFO = Teleinfo(ftdi_)
             else:
                 globals.TELEINFO = Teleinfo("")
+            thread.start_new_thread( log_starting,(globals.cycle,))
             globals.TELEINFO.readMeter()
         except Exception as e:
             print("Error:")
             print(e)
             shutdown()
+
+def log_starting(cycle):
+	time.sleep(30)
+	logging.info('GLOBAL------Passage des logs en normal')
+	log = logging.getLogger()
+	for hdlr in log.handlers[:]:
+		log.removeHandler(hdlr)
+	jeedom_utils.set_log_level('error')
 
 def handler(signum=None, frame=None):
     logging.debug("Signal %i caught, exiting..." % int(signum))

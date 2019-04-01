@@ -15,6 +15,111 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
+ var liste_donnees = [{etiquette:"ADCO",name:"Adresse du compteur",unite:""},
+{etiquette:"OPTARIF",name:"Option tarifaire choisie",unite:""},
+{etiquette:"ISOUSC",name:"Intensité souscrite",unite:"A"},
+{etiquette:"BASE",name:"Index Base",unite:"Wh"},
+{etiquette:"HCHC",name:"Index Heures Creuses",unite:"Wh"},
+{etiquette:"HCHP",name:"Index Heures Pleines",unite:"Wh"},
+{etiquette:"EJPHN",name:"Index EJP Heures Normales",unite:"Wh"},
+{etiquette:"EJPHPM",name:"Index EJP Heures de Pointe Mobile",unite:"Wh"},
+{etiquette:"BBRHCJB",name:"Index Tempo Heures Creuses Jours Bleus",unite:"Wh"},
+{etiquette:"BBRHPJB",name:"Index Tempo Heures Pleines Jours Bleus",unite:"Wh"},
+{etiquette:"BBRHCJW",name:"Index Tempo Heures Creuses Jours Blancs",unite:"Wh"},
+{etiquette:"BBRHPJW",name:"Index Tempo Heures Pleines Jours Blancs",unite:"Wh"},
+{etiquette:"BBRHCJR",name:"Index Tempo Heures Creuses Jours Rouges",unite:"Wh"},
+{etiquette:"BBRHPJR",name:"Index Tempo Heures Pleines Jours Rouges",unite:"Wh"},
+{etiquette:"PEJP",name:"Préavis Début EJP (30 min)",unite:"min"},
+{etiquette:"PTEC",name:"Période Tarifaire en cours",unite:""},
+{etiquette:"DEMAIN",name:"Couleur du lendemain",unite:""},
+{etiquette:"IINST",name:"Intensité Instantanée",unite:"A"},
+{etiquette:"IINST1",name:"Intensité Instantanée phases 1",unite:"A"},
+{etiquette:"IINST2",name:"Intensité Instantanée phases 2",unite:"A"},
+{etiquette:"IINST3",name:"Intensité Instantanée phases 3",unite:"A"},
+{etiquette:"ADPS",name:"Avertissement de Dépassement De Puissance Souscrite",unite:"A"},
+{etiquette:"ADIR1",name:"Avertissement de Dépassement d'intensité de réglage phase 1",unite:"A"},
+{etiquette:"ADIR2",name:"Avertissement de Dépassement d'intensité de réglage phase 2",unite:"A"},
+{etiquette:"ADIR3",name:"Avertissement de Dépassement d'intensité de réglage phase 3",unite:"A"},
+{etiquette:"IMAX",name:"Intensité maximale appelée",unite:"A"},
+{etiquette:"IMAX1",name:"Intensité maximale phase 1",unite:"A"},
+{etiquette:"IMAX2",name:"Intensité maximale phase 2",unite:"A"},
+{etiquette:"IMAX3",name:"Intensité maximale phase 3",unite:"A"},
+{etiquette:"PAPP",name:"Puissance apparente",unite:"VA"},
+{etiquette:"HHPHC",name:"Horaire Heures Pleines Heures Creuses",unite:""},
+{etiquette:"MOTDETAT",name:"Mot d'état du compteur",unite:""},
+{etiquette:"PMAX",name:"Puissance maximale triphasée atteinte",unite:"W"},
+{etiquette:"PPOT",name:"Présence des potentiels",unite:""},
+{etiquette:"ADSC",name:"Adresse Secondaire du Compteur",unite:""},
+{etiquette:"NGTF",name:"Nom du calendrier tarifaire fournisseur",unite:""},
+{etiquette:"LTARF",name:"Libellé tarif fournisseur en cours",unite:""},
+{etiquette:"EAST",name:"Energie active soutirée totale",unite:"Wh"},
+{etiquette:"EASF01",name:"Energie active soutirée Fournisseur, index 01",unite:"Wh"},
+{etiquette:"EASF02",name:"Energie active soutirée Fournisseur, index 02",unite:"Wh"},
+{etiquette:"EASF03",name:"Energie active soutirée Fournisseur, index 03",unite:"Wh"},
+{etiquette:"EASF04",name:"Energie active soutirée Fournisseur, index 04",unite:"Wh"},
+{etiquette:"EASF05",name:"Energie active soutirée Fournisseur, index 05",unite:"Wh"},
+{etiquette:"EASF06",name:"Energie active soutirée Fournisseur, index 06",unite:"Wh"},
+{etiquette:"EASF07",name:"Energie active soutirée Fournisseur, index 07",unite:"Wh"},
+{etiquette:"EASF08",name:"Energie active soutirée Fournisseur, index 08",unite:"Wh"},
+{etiquette:"EASF09",name:"Energie active soutirée Fournisseur, index 09",unite:"Wh"},
+{etiquette:"EASF10",name:"Energie active soutirée Fournisseur, index 10",unite:"Wh"},
+{etiquette:"EASD01",name:"Energie active soutirée Distributeur, index 01",unite:"Wh"},
+{etiquette:"EASD02",name:"Energie active soutirée Distributeur, index 02",unite:"Wh"},
+{etiquette:"EASD03",name:"Energie active soutirée Distributeur, index 03",unite:"Wh"},
+{etiquette:"EASD04",name:"Energie active soutirée Distributeur, index 04",unite:"Wh"},
+{etiquette:"EAIT",name:"Energie active injectée totale",unite:"Wh"},
+{etiquette:"ERQ1",name:"Energie réactive Q1 totale",unite:"VArh"},
+{etiquette:"ERQ2",name:"Energie réactive Q2 totale",unite:"VArh"},
+{etiquette:"ERQ3",name:"Energie réactive Q3 totale",unite:"VArh"},
+{etiquette:"ERQ4",name:"Energie réactive Q4 totale",unite:"VArh"},
+{etiquette:"IRMS1",name:"Courant efficace, phase 1",unite:"A"},
+{etiquette:"IRMS2",name:"Courant efficace, phase 2",unite:"A"},
+{etiquette:"IRMS3",name:"Courant efficace, phase 3",unite:"A"},
+{etiquette:"URMS1",name:"Tension efficace, phase 1",unite:"V"},
+{etiquette:"URMS2",name:"Tension efficace, phase 2",unite:"V"},
+{etiquette:"URMS3",name:"Tension efficace, phase 3",unite:"V"},
+{etiquette:"PREF",name:"Puissance app. de référence",unite:"kVA"},
+{etiquette:"PCOUP",name:"Puissance app. de coupure",unite:"kVA"},
+{etiquette:"SINSTS",name:"Puissance app. Instantanée soutirée",unite:"VA"},
+{etiquette:"SINSTS1",name:"Puissance app. Instantanée soutirée phase 1",unite:"VA"},
+{etiquette:"SINSTS2",name:"Puissance app. Instantanée soutirée phase 2",unite:"VA"},
+{etiquette:"SINSTS3",name:"Puissance app. Instantanée soutirée phase 3",unite:"VA"},
+{etiquette:"SMAXSN",name:"Puissance app. max. soutirée n",unite:"VA"},
+{etiquette:"SMAXSN1",name:"Puissance app. max. soutirée n phase 1",unite:"VA"},
+{etiquette:"SMAXSN2",name:"Puissance app. max. soutirée n phase 2",unite:"VA"},
+{etiquette:"SMAXSN3",name:"Puissance app. max. soutirée n phase 3",unite:"VA"},
+{etiquette:"SMAXSN-1",name:"Puissance app max. soutirée n-1",unite:"VA"},
+{etiquette:"SMAXSN1-1",name:"Puissance app max. soutirée n-1 phase 1",unite:"VA"},
+{etiquette:"SMAXSN2-1",name:"Puissance app max. soutirée n-1 phase 2",unite:"VA"},
+{etiquette:"SMAXSN3-1",name:"Puissance app max. soutirée n-1 phase 3",unite:"VA"},
+{etiquette:"SINSTI",name:"Puissance app. Instantanée injectée",unite:"VA"},
+{etiquette:"SMAXIN",name:"Puissance app. max. injectée n",unite:"VA"},
+{etiquette:"SMAXIN-1",name:"Puissance app max. injectée n-1",unite:"VA"},
+{etiquette:"CCASN",name:"Point n de la courbe de charge active soutirée",unite:"W"},
+{etiquette:"CCASN-1",name:"Point n-1 de la courbe de charge active soutirée",unite:"W"},
+{etiquette:"CCAIN",name:"Point n de la courbe de charge active injectée",unite:"W"},
+{etiquette:"CCAIN-1",name:"Point n-1 de la courbe de charge active injectée",unite:"W"},
+{etiquette:"UMOY1",name:"Tension moy. ph. 1",unite:"V"},
+{etiquette:"UMOY2",name:"Tension moy. ph. 2",unite:"V"},
+{etiquette:"UMOY3",name:"Tension moy. ph. 3",unite:"V"},
+{etiquette:"STGE",name:"Registre de Statuts",unite:""},
+{etiquette:"DPM1",name:"Début Pointe Mobile 1",unite:""},
+{etiquette:"FPM1",name:"Fin Pointe Mobile 1",unite:""},
+{etiquette:"DPM2",name:"Début Pointe Mobile 2",unite:""},
+{etiquette:"FPM2",name:"Fin Pointe Mobile 2",unite:""},
+{etiquette:"DPM3",name:"Début Pointe Mobile 3",unite:""},
+{etiquette:"FPM3",name:"Fin Pointe Mobile 3",unite:""},
+{etiquette:"MSG1",name:"Message court",unite:""},
+{etiquette:"MSG2",name:"Message Ultra court",unite:""},
+{etiquette:"PRM",name:"PRM",unite:""},
+{etiquette:"RELAIS",name:"Relais",unite:""},
+{etiquette:"NTARF",name:"Numéro de l’index tarifaire en cours",unite:""},
+{etiquette:"NJOURF",name:"Numéro du jour en cours calendrier fournisseur",unite:""},
+{etiquette:"NJOURF+1",name:"Numéro du prochain jour calendrier fournisseur",unite:""},
+{etiquette:"PJOURF+1",name:"Profil du prochain jour calendrier fournisseur",unite:""},
+{etiquette:"PPOINTE",name:"Profil du prochain jour de pointe",unite:""}];
+
+
 $('#bt_stopTeleinfoDaemon').on('click', function() {
     stopTeleinfoDeamon();
 });
@@ -92,9 +197,11 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="STAT_YESTERDAY">Conso totale hier</option>';
         selRequestType += '<option value="STAT_YESTERDAY_HP">Conso HP hier</option>';
         selRequestType += '<option value="STAT_YESTERDAY_HC">Conso HC hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_PROD">Production hier</option>';
         selRequestType += '<option value="STAT_TODAY">Conso totale Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_HP">Conso HP Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_HC">Conso HC Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_PROD">Production Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_MONTH">Conso Mois en cours</option>';
         selRequestType += '<option value="STAT_MONTH_LAST_YEAR">Conso Mois en cours année précédente</option>';
         selRequestType += '<option value="STAT_YEAR_LAST_YEAR">Conso Année précédente au même jour</option>';
@@ -131,80 +238,9 @@ function addCmdToTable(_cmd) {
     }
     else{
         selRequestType = '<select style="width : 220px;" class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="info_conso">';
-        selRequestType += '<option value="ADIR1">ADIR1 - Alerte dépassement phase 1</option>';
-        selRequestType += '<option value="ADIR2">ADIR2 - Alerte dépassement phase 2</option>';
-        selRequestType += '<option value="ADIR3">ADIR3 - Alerte dépassement phase 3</option>';
-        selRequestType += '<option value="ADPS">ADPS - Alerte dépassement</option>';
-        selRequestType += '<option value="BASE">BASE - Index</option>';
-        selRequestType += '<option value="BBRHCJB">BBRHCJB - Index Heures Creuses Jour Bleu EJP</option>';
-        selRequestType += '<option value="BBRHPJB">BBRHPJB - Index Heures Pleines Jour Bleu EJP</option>';
-        selRequestType += '<option value="BBRHCJW">BBRHCJW - Index Heures Creuses Jour Blanc EJP</option>';
-        selRequestType += '<option value="BBRHPJW">BBRHPJW - Index Heures Pleines Jour Blanc EJP</option>';
-        selRequestType += '<option value="BBRHCJR">BBRHCJR - Index Heures Creuses Jour Rouge EJP</option>';
-        selRequestType += '<option value="BBRHPJR">BBRHPJR - Index Heures Pleines Jour Rouge EJP</option>';
-        selRequestType += '<option value="DEMAIN">DEMAIN - Couleur lendemain tempo</option>';
-        selRequestType += '<option value="EJPHN">EJPHN- Index Heures normales EJP</option>';
-        selRequestType += '<option value="EJPHPM">EJPHPM - Index Heures de pointe mobile EJP</option>';
-        selRequestType += '<option value="HCHP">HCHP - Index heures pleines (BLEU) </option>';
-        selRequestType += '<option value="HCHC">HCHC - Index heures creuses (BLEU)</option>';
-        selRequestType += '<option value="HHPHC">HHPHC - Horaires heures pleines et creuses</option>';
-        selRequestType += '<option value="IINST">IINST - Intensité instantanée</option>';
-        selRequestType += '<option value="IINST1">IINST1 - Intensité instantanée phase 1</option>';
-        selRequestType += '<option value="IINST2">IINST2 - Intensité instantanée phase 2</option>';
-        selRequestType += '<option value="IINST3">IINST3 - Intensité instantanée phase 3</option>';
-        selRequestType += '<option value="ISOUSC">ISOUSC - Intensité souscrite</option>';
-        selRequestType += '<option value="IMAX">IMAX - Intensité maximale</option>';
-        selRequestType += '<option value="IMAX1">IMAX1 - Intensité maximale phase 1</option>';
-        selRequestType += '<option value="IMAX2">IMAX2 - Intensité maximale phase 2</option>';
-        selRequestType += '<option value="IMAX3">IMAX3 - Intensité maximale phase 3</option>';
-        selRequestType += '<option value="MOTDETAT">MOTDETAT - Mot d\'état du compteur</option>';
-        selRequestType += '<option value="OPTARIF">OPTARIF - Type d\'abonnement</option>';
-        selRequestType += '<option value="PAPP">PAPP - Puissance apparente instantanée</option>';
-        selRequestType += '<option value="PEJP">PEJP - Préavis (30 min avant)</option>';
-        selRequestType += '<option value="PMAX">PMAX - Puissance maximale triphasé</option>';
-        selRequestType += '<option value="PPOT">PPOT - Présence des potentiels (triphasé)</option>';
-        selRequestType += '<option value="PTEC">PTEC - Tranche tarifaire</option>';
-        selRequestType += '<option value="VTIC">VTIC</option>';
-        selRequestType += '<option value="DATE">DATE</option>';
-        selRequestType += '<option value="NGTF">NGTF</option>';
-        selRequestType += '<option value="LTARF">LTARF</option>';
-        selRequestType += '<option value="EAST">EAST</option>';
-        selRequestType += '<option value="EASF01">EASF01</option>';
-        selRequestType += '<option value="EASF02">EASF02</option>';
-        selRequestType += '<option value="EASF03">EASF03</option>';
-        selRequestType += '<option value="EASF04">EASF04</option>';
-        selRequestType += '<option value="EASF05">EASF05</option>';
-        selRequestType += '<option value="EASF06">EASF06</option>';
-        selRequestType += '<option value="EASF07">EASF07</option>';
-        selRequestType += '<option value="EASF08">EASF08</option>';
-        selRequestType += '<option value="EASF09">EASF09</option>';
-        selRequestType += '<option value="EASF10">EASF10</option>';
-        selRequestType += '<option value="EASD01">EASD01</option>';
-        selRequestType += '<option value="EASD02">EASD02</option>';
-        selRequestType += '<option value="EASD03">EASD03</option>';
-        selRequestType += '<option value="EASD04">EASD04</option>';
-        selRequestType += '<option value="EAIT">EAIT</option>';
-        selRequestType += '<option value="PREF">PREF</option>';
-        selRequestType += '<option value="PCOUP">PCOUP</option>';
-        selRequestType += '<option value="SINSTS">SINSTS</option>';
-        selRequestType += '<option value="SMAXSN">SMAXSN</option>';
-        selRequestType += '<option value="SMAXSN-1">SMAXSN-1</option>';
-        selRequestType += '<option value="CCASN">CCASN</option>';
-        selRequestType += '<option value="CCASN-1">CCASN-1</option>';
-        selRequestType += '<option value="UMOY1">UMOY1</option>';
-        selRequestType += '<option value="STGE">STGE</option>';
-        selRequestType += '<option value="MSG1">MSG1</option>';
-        selRequestType += '<option value="MSG2">MSG2</option>';
-        selRequestType += '<option value="PRM">PRM</option>';
-        selRequestType += '<option value="RELAIS">RELAIS</option>';
-        selRequestType += '<option value="NTARF">NTARF</option>';
-        selRequestType += '<option value="NJOURF">NJOURF</option>';
-        selRequestType += '<option value="NJOURF+1">NJOURF+1</option>';
-        selRequestType += '<option value="PJOURF+1">PJOURF+1</option>';
-        selRequestType += '<option value="PPOINTE">PPOINTE</option>';
-        selRequestType += '<option value="SINSTI">SINSTI</option>';
-        selRequestType += '<option value="IRMS1">IRMS1</option>';
-        selRequestType += '<option value="URMS1">URMS1</option>';
+        liste_donnees.forEach(function(element) {
+            selRequestType += '<option value="' + element.etiquette + '">' + element.name + '</option>';
+        });
         selRequestType += '</select>';
     }
 
