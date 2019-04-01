@@ -17,6 +17,8 @@
 
  var liste_donnees = [{etiquette:"ADCO",name:"Adresse du compteur",unite:""},
 {etiquette:"OPTARIF",name:"Option tarifaire choisie",unite:""},
+{etiquette:"DATE",name:"Date",unite:""},
+{etiquette:"VTIC",name:"Version de la TIC",unite:""},
 {etiquette:"ISOUSC",name:"Intensité souscrite",unite:"A"},
 {etiquette:"BASE",name:"Index Base",unite:"Wh"},
 {etiquette:"HCHC",name:"Index Heures Creuses",unite:"Wh"},
@@ -157,7 +159,7 @@ $('#bt_options').on('click', function() {
 
 $('#bt_info_daemon').on('click', function() {
     $('#md_modal').dialog({title: "{{Informations du modem}}"});
-    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=info_daemon&plugin_id=teleinfo_deamon&slave_id=0').dialog('open');
+    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=info_daemon&plugin_id=teleinfo_deamon_conso&slave_id=0').dialog('open');
 });
 
 $('.bt_info_external_daemon').on('click', function() {
@@ -203,9 +205,11 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="STAT_TODAY_HC">Conso HC Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_PROD">Production Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_MONTH">Conso Mois en cours</option>';
+        selRequestType += '<option value="STAT_MONTH_PROD">Production Mois en cours</option>';
         selRequestType += '<option value="STAT_MONTH_LAST_YEAR">Conso Mois en cours année précédente</option>';
         selRequestType += '<option value="STAT_YEAR_LAST_YEAR">Conso Année précédente au même jour</option>';
         selRequestType += '<option value="STAT_YEAR">Conso Année en cours</option>';
+        selRequestType += '<option value="STAT_YEAR_PROD">Production Année en cours</option>';
         selRequestType += '<option value="STAT_LASTMONTH">Conso Mois dernier</option>';
         selRequestType += '<option value="STAT_JAN_HP">Conso Janvier HP</option>';
         selRequestType += '<option value="STAT_FEV_HP">Conso Février HP</option>';
@@ -248,6 +252,12 @@ function addCmdToTable(_cmd) {
         var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="display:none">';
     }else if(init(_cmd.configuration['type']) == 'health'){
         var tr = '';
+        if(_cmd.configuration['NGTF']){
+            $("#typeAbonnement").html(_cmd.configuration['NGTF'].value);
+        }
+        else if (_cmd.configuration['OPTARIF']){
+            $("#typeAbonnement").html(_cmd.configuration['OPTARIF'].value);
+        }
     }
     else if (init(_cmd.configuration['type']) == 'stat'){
         var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="background-color: aliceblue;">';
