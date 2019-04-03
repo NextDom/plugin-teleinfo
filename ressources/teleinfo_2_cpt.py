@@ -50,6 +50,7 @@ import signal
 import globals
 import argparse
 import thread
+import json
 try:
     import ftdi
     ftdi_type = 0
@@ -339,6 +340,7 @@ class Teleinfo(object):
             if raz_time > 1:
                 raz_time = raz_time - 1
             else:
+                logging.info("TELEINFO------HEARTBEAT")
                 raz_time = 600
                 for cle, valeur in cpt1_data.items():
                     cpt1_data.pop(cle)

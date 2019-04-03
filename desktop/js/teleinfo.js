@@ -260,10 +260,10 @@ function addCmdToTable(_cmd) {
         }
     }
     else if (init(_cmd.configuration['type']) == 'stat'){
-        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="background-color: aliceblue;">';
+        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
     }
     else{
-        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="background-color: #f2fff2;">';
+        var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
     }
     if(init(_cmd.configuration['type']) != 'health'){
         tr += '<td>';
