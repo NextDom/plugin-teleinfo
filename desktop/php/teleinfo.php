@@ -26,7 +26,7 @@ switch ($controlerState) {
             break;
         }
 		event::add('jeedom::alert', array(
-			'level' => 'danger',
+			'level' => 'warning',
 			'page' => 'teleinfo',
 			'message' => __('Le deamon téléinfo ne semble pas démaré, vérifiez la configuration du port.', __FILE__),
 		));
@@ -62,8 +62,9 @@ switch ($controlerState) {
         <legend>{{Mes Modules de Téléinformation}}</legend>
             <div class="eqLogicThumbnailContainer">
 
-				<div class="eqLogicDisplayCard cursor eqLogicAction" style="color:#33b8cc;" data-action="add">
-					<i class="fas fa-plus-circle" style="margin-top: 33px;"></i>
+				<div class="eqLogicDisplayCard cursor eqLogicAction logoPrimaryTeleinfo" data-action="add">
+					<i class="fas fa-plus-circle logoPlusEqlogic"></i>
+                    </br>
 					<span class="name">Ajouter</span>
 				</div>
                 <?php
@@ -71,6 +72,7 @@ switch ($controlerState) {
 				    $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
 				    echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-logical-id="' . $eqLogic->getLogicalId() . '" data-eqLogic_id="' . $eqLogic->getId() . '" >';
     				echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
+                    echo '</br>';
     				echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
     				echo '</div>';
 			    }
@@ -80,15 +82,18 @@ switch ($controlerState) {
 
 
 
-    <div class="col-xs-12 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
-		<a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fas fa-check-circle"></i> {{Sauvegarder}}</a>
-		<a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fas fa-minus-circle"></i> {{Supprimer}}</a>
-    <a class="btn btn-default eqLogicAction pull-right" data-action="configure"><i class="fas fa-cogs"></i> Configuration avancée</a>
-
+    <div class="col-xs-12 eqLogic" style="display: none;">
+        <div class="input-group pull-right" style="display:inline-flex">
+			<span class="input-group-btn">
+				<a class="btn btn-default eqLogicAction btn-sm roundedLeft" data-action="configure"><i class="fas fa-cogs"></i> {{Configuration avancée}}</a>
+                <a class="btn btn-sm btn-success eqLogicAction" data-action="save"><i class="fas fa-check-circle"></i> {{Sauvegarder}}</a>
+                <a class="btn btn-danger btn-sm eqLogicAction roundedRight" data-action="remove"><i class="fas fa-minus-circle"></i> {{Supprimer}}</a>
+			</span>
+		</div>
 		<ul class="nav nav-tabs" role="tablist">
       <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fas fa-arrow-circle-left"></i></a></li>
-			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer"></i> Equipement</a></li>
-			<li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fas fa-list-alt"></i> Commandes</a></li>
+			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
+			<li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fas fa-list-alt"></i> {{Commandes}}</a></li>
 		</ul>
 
 		<div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
@@ -158,9 +163,9 @@ switch ($controlerState) {
                   <fieldset>
                       <!--<legend>{{Paramètres}}</legend>-->
                       <div class="form-group">
-                          <label class="col-lg-3 control-label pull-left">{{Votre abonnement :}}</label>
+                          <label class="col-lg-3 control-label pull-left">{{Votre abonnement }}</label>
                           <div class="col-lg-4">
-                              <span class="eqLogicAttr" data-l1key="configuration" data-l2key="abonnement" id="typeAbonnement" style="position: relative;top: 7px;"></span>
+                              <span class="eqLogicAttr" data-l1key="configuration" data-l2key="abonnement" id="typeAbonnement">Aucun</span>
                               <!--<select class="eqLogicAttr form-control tooltips" title="{{Abonnement présent sur le compteur}}" data-l1key="configuration" data-l2key="abonnement">
                                   <option value="">Aucun</option>
                                   <option value="base">Base (HP)</option>
@@ -175,24 +180,21 @@ switch ($controlerState) {
                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="col-lg-3 control-label pull-left">{{Création des commandes}} <sup><i class="fas fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                          <label class="col-lg-3 control-label pull-left">{{Création des commandes}} <sup><i class="fas fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}"></i></sup></label>
                           <div class="col-lg-7 tooltips">
                               <input type="checkbox" id="AutoCreateFromCompteur" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>
                               <label for="AutoCreateFromCompteur">  </label>
                           </div>
                           <div class="col-lg-2">
                           </div>
-                          <!--<div class="col-md-2">
-                          <input class="eqLogicAttr" style="display:none" type="checkbox"  data-l1key="configuration" data-l2key="AutoGenerateFields" id="checkbox-autocreate"/>
-                          <a class="btn btn-info btn-sm eqLogicAction tooltips"  id="create_data_teleinfo" title="{{Permet de créer automatiquement les commandes nécessaires.}}" id="createcmd"><i class="fas fa-plus-circle"></i> {{Créer}}</a><br/><br/>
-                          </div>-->
                       </div>
                       <div class="form-group">
-                          <label class="col-lg-3 control-label pull-left">{{Vérifier}} <sup><i class="fas fa-question-circle tooltips" title="{{Obtenir des informations sur la réception des données}}" style="font-size : 1em;color:grey;"></i></sup></label>
-                          <div class="col-lg-3">
-                              <a class="btn btn-info tooltips"  id="bt_teleinfoHealth"><i class="fas fa-medkit"></i>{{ Santé}}</a>
+                          <label class="col-lg-3 control-label pull-left"></label>
+                          <div class="col-lg-4">
+                              <a class="btn btn-info tooltips"  id="btTeleinfoHealth"><i class="fas fa-medkit"></i>{{ Santé}}</a>
+                              <a class="btn btn-info tooltips"  id="btTeleinfoMaintenance"><i class="fas fa-medkit"></i>{{ Maintenance}}</a>
                           </div>
-                          <div class="col-lg-6">
+                          <div class="col-lg-5">
                           </div>
                           <!--<div class="col-md-2">
                           <a class="btn btn-info btn-sm eqLogicAction tooltips"  data-action="save" title="{{Applique le template}}"><i class="fas fa-plus-circle"></i> {{Appliquer}}</a><br/><br/>
@@ -200,7 +202,7 @@ switch ($controlerState) {
                       </div>
                       <div class="form-group">
                           <div class="col-lg-12">
-                              <div class="alert alert-info globalRemark" style="">{{Attention, il est nécessaire d'activer l'historisation des index pour utiliser les statistiques}}</div>
+                              <div class="alert alert-info globalRemark">{{Attention, il est nécessaire d'activer l'historisation des index pour utiliser les statistiques}}</div>
                           </div>
                       </div>
                   </fieldset>
@@ -238,5 +240,5 @@ switch ($controlerState) {
 </div>
 
 <?php include_file('desktop', 'teleinfo', 'js', 'teleinfo'); ?>
-<?php /*include_file('desktop', 'teleinfo', 'css', 'teleinfo');*/ ?>
+<?php include_file('desktop', 'teleinfo', 'css', 'teleinfo'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>

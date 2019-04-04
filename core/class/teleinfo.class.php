@@ -1034,7 +1034,7 @@ class teleinfo extends eqLogic
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                         $cmd->setDisplay('icon', '<i class=\"fa fa-tachometer\"><\/i>');
                     }
-					$cmd->setConfiguration('historizeMode', 'none');
+					$cmd->setConfiguration('historizeMode', 'avg');
                     $cmd->save();
                     $cmd->refresh();
                     break;

@@ -30,17 +30,8 @@ try {
             ajax::success();
         break;
         case 'restartDeamon':
-            $port                 = config::byKey('port', 'teleinfo', 'none');
-            $_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
-            if ($port == 'none') {
-                ajax::success();
-            }
             teleinfo::deamon_stop();
-            if (teleinfo::deamonRunning()) {
-                throw new \Exception(__('Impossible d\'arrêter le démon', __FILE__));
-            }
-            log::clear('teleinfocmd');
-            teleinfo::cron();
+            teleinfo::deamon_start();
             ajax::success();
         break;
         case 'changeLogLive':
@@ -157,13 +148,34 @@ try {
             $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
             ajax::success($return);
         break;
-        case 'getCout':
-            $return = array();
-            $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
-            ajax::success($return);
-        break;
 		case 'findModemType':
 			ajax::success(teleinfo::findModemType(init('port'),init('type')));
+		break;
+        case 'countArchive':
+            $return = array();
+			if (init('id') !== '') {
+                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId';
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['count'] = $sqlResult;
+
+                $sql = 'SELECT MIN(datetime) as oldest FROM historyArch WHERE cmd_id =:cmdId';
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['oldest'] = $sqlResult;
+                ajax::success($return);
+            }
+		break;
+        case 'optimizeArchive':
+			if (init('id') !== '') {
+                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId';
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+                ajax::success(DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL));
+                //ajax::success();
+            }
 		break;
         case 'diagnostic_step1':
             $return = array();

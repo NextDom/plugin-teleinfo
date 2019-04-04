@@ -174,9 +174,14 @@ $('#bt_config').on('click', function() {
     $('#md_modal').load('index.php?v=d&p=plugin&ajax=1&id=rfxcom').dialog('open');
 });
 
-$('#bt_teleinfoHealth').on('click', function() {
+$('#btTeleinfoHealth').on('click', function() {
     $('#md_modal').dialog({title: "{{Santé Téléinformation}}"});
     $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=health').dialog('open');
+});
+
+$('#btTeleinfoMaintenance').on('click', function() {
+    $('#md_modal').dialog({title: "{{Maintenance Téléinformation}}"});
+    $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=maintenance').dialog('open');
 });
 
 
