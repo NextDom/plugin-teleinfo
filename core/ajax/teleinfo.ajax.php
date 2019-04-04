@@ -167,13 +167,63 @@ try {
                 ajax::success($return);
             }
 		break;
-        case 'optimizeArchive':
+		case 'countArchiveNotZero':
+            $return = array();
 			if (init('id') !== '') {
-                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId';
+                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId AND MINUTE(datetime) <> "0"';
                 $values = array(
 			                 'cmdId' => init('id'),
 		        );
-                ajax::success(DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL));
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['count'] = $sqlResult;
+                ajax::success($return);
+            }
+		break;
+        case 'optimizeArchive':
+			$return = array();
+			$valuesClean = 0;
+			if (init('id') !== '') {
+				
+				// Plus ancienne valeur différente de heure fixe
+                $sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+				$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+				
+				while ($oldest['oldest'] !== null) {
+					// Récupération de la valeur max sur l heure
+					$sql = "SELECT MAX(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
+					$values = array(
+								 'cmdId' => init('id'),
+								 'oldest' => $oldest['oldest'],
+					);
+					$maxValue = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+					
+					$sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:value";
+					$values = array(
+								'cmdId' => init('id'),
+								'newDatetime' => date('Y-m-d H:00:00', strtotime($oldest['oldest']) + 300),
+								'value' => $maxValue['value'],
+					);
+					$return['replaceValue'] = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+
+					// Nettoyage de toutes les valeurs autres qu a heure fixe
+					$sql = "DELETE FROM historyArch WHERE addtime(datetime,'-01:00:00')< :oldest AND cmd_id=:cmdId AND MINUTE(datetime) <> '0';";
+					$values = array(
+								 'cmdId' => init('id'),
+								 'oldest' => $oldest['oldest'],
+					);
+					$deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+					$sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
+					$values = array(
+			                 'cmdId' => init('id'),
+					);
+					$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+					$valuesClean+=1;
+				}
+				$return['valuesClean'] = $valuesClean;
+                ajax::success($return);
                 //ajax::success();
             }
 		break;

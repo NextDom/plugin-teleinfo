@@ -199,7 +199,7 @@ function addCmdToTable(_cmd) {
     var type_of_data = init(_cmd.configuration['type']);
     //alert(type_of_data);
     if(init(_cmd.configuration['type']) == 'stat' || init(_cmd.configuration['type']) == 'panel'){
-        selRequestType = '<select style="width : 220px;" class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="info_conso">';
+        selRequestType = '<select class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="info_conso">';
         selRequestType += '<option value="AUCUN">Aucune</option>';
         selRequestType += '<option value="STAT_YESTERDAY">Conso totale hier</option>';
         selRequestType += '<option value="STAT_YESTERDAY_HP">Conso HP hier</option>';
@@ -246,7 +246,7 @@ function addCmdToTable(_cmd) {
         selRequestType += '</select>';
     }
     else{
-        selRequestType = '<select style="width : 220px;" class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="info_conso">';
+        selRequestType = '<select class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="info_conso">';
         liste_donnees.forEach(function(element) {
             selRequestType += '<option value="' + element.etiquette + '">' + element.name + '</option>';
         });
@@ -275,11 +275,11 @@ function addCmdToTable(_cmd) {
         tr += '<span class="cmdAttr expertModeVisible" data-l1key="id"></span>';
         tr += '</td>';
         tr += '<td>';
-        tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" style="width : 140px;" placeholder="{{Nom}}"></td>';
+        tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" placeholder="{{Nom}}"></td>';
         tr += '</td>';
         tr += '<td>';
         tr += '<input class="cmdAttr form-control input-sm" data-l1key="type" value="info" disabled>';
-        tr += '<select style="width : 120px;margin-top : 5px;" class="cmdAttr form-control input-sm tooltips" title="{{Numérique pour les indexs et nombres, Autre pour les chaines de caractères (Tranche tarifaire par exemple.}}" data-l1key="subType"><option value="numeric">Numérique</option><option value="binary">Binaire</option><option value="string">Autre</option></select>';
+        tr += '<select style="margin-top : 5px;" class="cmdAttr form-control input-sm tooltips" title="{{Numérique pour les indexs et nombres, Autre pour les chaines de caractères (Tranche tarifaire par exemple.}}" data-l1key="subType"><option value="numeric">Numérique</option><option value="binary">Binaire</option><option value="string">Autre</option></select>';
         tr += '</td>';
         tr += '<td>';
         tr +=  selRequestType;
@@ -290,14 +290,14 @@ function addCmdToTable(_cmd) {
         tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isHistorized" checked/>{{Historiser}}</label></span> ';
 
         if(init(_cmd.configuration['info_conso']) == 'TENDANCE_DAY'){
-            tr += '<span><input type="checkbox" class="cmdAttr tooltips" title="Spécifie si le calcul de la tendance se fait sur la journée entière ou sur la plage jusqu\'à l\'heure actuelle." data-l1key="configuration" data-l2key="type_calcul_tendance"/> {{Journée entière}}<br/></span>';
+            tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr tooltips checkbox-inline" title="Spécifie si le calcul de la tendance se fait sur la journée entière ou sur la plage jusqu\'à l\'heure actuelle." data-l1key="configuration" data-l2key="type_calcul_tendance"/> {{Journée entière}}</label></span>';
         }
 
-        tr += '<input class="cmdAttr form-control tooltips input-sm" data-l1key="unite" style="width : 100px;" placeholder="Unité" title="{{Unité de la donnée (Wh, A, kWh...) pour plus d\'informations aller voir le wiki}}">';
+        tr += '</br><input class="cmdAttr form-control tooltips input-sm" data-l1key="unite" style="margin-left:10px;width: 20%;display: inline-block;" placeholder="Unité" title="{{Unité de la donnée (Wh, A, kWh...) pour plus d\'informations aller voir le wiki}}">';
 
-        tr += '<input style="width : 150px;" class="tooltips cmdAttr form-control expertModeVisible input-sm" data-l1key="cache" data-l2key="lifetime" placeholder="{{Lifetime cache}}">';
-        tr += '<input class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="minValue" placeholder="{{Min}}" title="{{Borne minimum de la valeur}}" style="width : 40%;display : inline-block;"> ';
-        tr += '<input class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="maxValue" placeholder="{{Max}}" title="{{Borne maximum de la valeur}}" style="width : 40%;display : inline-block;">';
+        tr += '<input style="margin-left:10px;width: 20%;display: inline-block;" class="tooltips cmdAttr form-control expertModeVisible input-sm" data-l1key="cache" data-l2key="lifetime" placeholder="{{Lifetime cache}}">';
+        tr += '<input style="margin-left:10px;width: 20%;display: inline-block;" class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="minValue" placeholder="{{Min}}" title="{{Borne minimum de la valeur}}" > ';
+        tr += '<input style="margin-left:10px;width: 20%;display: inline-block;" class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="maxValue" placeholder="{{Max}}" title="{{Borne maximum de la valeur}}" >';
 
         if(init(_cmd.configuration['info_conso']) == 'ADPS' || init(_cmd.configuration['info_conso']) == 'ADIR1' || init(_cmd.configuration['info_conso']) == 'ADIR2' || init(_cmd.configuration['info_conso']) == 'ADIR3'){
             //tr += '<input class="cmdAttr form-control input-sm" data-l1key="logicalId" value="0">';

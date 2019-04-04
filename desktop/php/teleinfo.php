@@ -148,7 +148,7 @@ switch ($controlerState) {
                               ?>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group etatObjet">
                           <label class="col-lg-4 control-label">{{Etat de l'objet}} :</label>
                           <div class="col-lg-8">
                               <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
@@ -162,43 +162,28 @@ switch ($controlerState) {
               <form class="form-horizontal">
                   <fieldset>
                       <!--<legend>{{Paramètres}}</legend>-->
-                      <div class="form-group">
+                      <div class="form-group infoAbonnement">
                           <label class="col-lg-3 control-label pull-left">{{Votre abonnement }}</label>
                           <div class="col-lg-4">
                               <span class="eqLogicAttr" data-l1key="configuration" data-l2key="abonnement" id="typeAbonnement">Aucun</span>
-                              <!--<select class="eqLogicAttr form-control tooltips" title="{{Abonnement présent sur le compteur}}" data-l1key="configuration" data-l2key="abonnement">
-                                  <option value="">Aucun</option>
-                                  <option value="base">Base (HP)</option>
-                                  <option value="basetri">Base triphasé</option>
-                                  <option value="bleu">Bleu (HP/HC)</option>
-                                  <option value="bleutri">Bleu triphasé</option>
-                                  <option value="tempo">Tempo / EJP</option>
-                                  <option value="tempotri">Tempo triphasé</option>
-                              </select>-->
                           </div>
                           <div class="col-lg-5">
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group creationCommandes">
                           <label class="col-lg-3 control-label pull-left">{{Création des commandes}} <sup><i class="fas fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}"></i></sup></label>
                           <div class="col-lg-7 tooltips">
                               <input type="checkbox" id="AutoCreateFromCompteur" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>
-                              <label for="AutoCreateFromCompteur">  </label>
-                          </div>
-                          <div class="col-lg-2">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-lg-3 control-label pull-left"></label>
                           <div class="col-lg-4">
                               <a class="btn btn-info tooltips"  id="btTeleinfoHealth"><i class="fas fa-medkit"></i>{{ Santé}}</a>
-                              <a class="btn btn-info tooltips"  id="btTeleinfoMaintenance"><i class="fas fa-medkit"></i>{{ Maintenance}}</a>
+                              <a class="btn btn-warning tooltips"  id="btTeleinfoMaintenance"><i class="fas fa-hospital"></i>{{ Maintenance}}</a>
                           </div>
                           <div class="col-lg-5">
                           </div>
-                          <!--<div class="col-md-2">
-                          <a class="btn btn-info btn-sm eqLogicAction tooltips"  data-action="save" title="{{Applique le template}}"><i class="fas fa-plus-circle"></i> {{Appliquer}}</a><br/><br/>
-                          </div>-->
                       </div>
                       <div class="form-group">
                           <div class="col-lg-12">
@@ -217,12 +202,12 @@ switch ($controlerState) {
   <table id="table_cmd" class="table table-bordered table-condensed">
       <thead>
           <tr>
-              <th style="width: 50px;">#</th>
-              <th style="width: 150px;">{{Nom}}</th>
-              <th style="width: 110px;">{{Sous-Type}}</th>
-              <th style="width: 200px;">{{Donnée}}</th>
-              <th style="width: 150px;">{{Paramètres}}</th>
-              <th style="width: 150px;"></th>
+              <th>#</th>
+              <th style="width: 15%">{{Nom}}</th>
+              <th style="width: 15%;">{{Sous-Type}}</th>
+              <th style="width: 30%;">{{Donnée}}</th>
+              <th>{{Paramètres}}</th>
+              <th></th>
           </tr>
       </thead>
       <tbody>
@@ -240,5 +225,5 @@ switch ($controlerState) {
 </div>
 
 <?php include_file('desktop', 'teleinfo', 'js', 'teleinfo'); ?>
-<?php include_file('desktop', 'teleinfo', 'css', 'teleinfo'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
+<?php include_file('desktop', 'teleinfo', 'css', 'teleinfo'); ?>

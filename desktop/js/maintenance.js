@@ -1,4 +1,4 @@
-
+var start = Date.now();
 jeedom.eqLogic.getCmd({
     id: $('.eqLogicAttr[data-l1key=id]').value(),
     error: function (error) {
@@ -13,6 +13,9 @@ jeedom.eqLogic.getCmd({
             tbody +=    '</td>';
             tbody +=    '<td>';
             tbody +=    '<span  class="cmdMaintenanceAttr " type="count"></span>';
+            tbody +=    '</td>';
+			tbody +=    '<td>';
+            tbody +=    '<span  class="cmdMaintenanceAttr " type="countcleanable"></span>';
             tbody +=    '</td>';
             tbody +=    '<td>';
             tbody +=    '<span  class="cmdMaintenanceAttr " type="olddate"></span>';
@@ -51,6 +54,65 @@ function miseEnForme(texte){
     return texte;
 }
 
+function optimize(cmd_id){
+	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').attr('disabled','disabled');
+	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').removeClass("btn-info").addClass("btn-warning");
+	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').html('<i class="fas fa-spinner"></i>  En cours...');
+	start = Date.now();
+	$.ajax({
+            type: 'POST',
+            url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+            data: {
+                action:'optimizeArchive',
+                id: cmd_id,
+                },
+            dataType: 'json',
+            error: function (request, status, error) {
+                handleAjaxError(request, status, error);
+            },
+            success: function (data) {
+				console.log(data);
+                
+            }
+	});	
+	refresh = setTimeout("refreshCount("+cmd_id+")",2000);
+	
+	
+	
+}
+
+function refreshCount(cmdId){
+	$.ajax({
+            type: 'POST',
+            url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+            data: {
+                action:'countArchiveNotZero',
+                id: cmdId,
+                },
+            dataType: 'json',
+            error: function (request, status, error) {
+                handleAjaxError(request, status, error);
+            },
+            success: function (data) {
+                $('.cmdMaintenance[cmd_id='+cmdId+']').find(".cmdMaintenanceAttr[type=countcleanable]").text(data.result.count[0].count);
+				
+				if (data.result.count[0].count == 0){
+					window.clearTimeout(refresh); 
+					$('.btTeleinfoMaintenance[cmd_id='+cmdId+']').attr('disabled','disabled');
+					$('.btTeleinfoMaintenance[cmd_id='+cmdId+']').removeClass("btn-warning").addClass("btn-success");
+					$('.btTeleinfoMaintenance[cmd_id='+cmdId+']').html('<i class="fas fa-check"></i>  Ok');
+				}else{
+					if((Date.now() - start) < 60000){
+						refresh = setTimeout("refreshCount("+cmdId+")",2000);
+					}
+				}
+            }
+	});	
+}
+
+
+
+
 $('#table_maintenance .cmdMaintenance').each(function( index ) {
     var tempcount = $(this);
     $.ajax({
@@ -65,13 +127,27 @@ $('#table_maintenance .cmdMaintenance').each(function( index ) {
                 handleAjaxError(request, status, error);
             },
             success: function (data) {
-                console.log(data);
                 tempcount.find(".cmdMaintenanceAttr[type=count]").text(data.result.count[0].count);
                 if (data.result.oldest.length  > 0){
-                    tempcount.find(".cmdMaintenanceAttr[type=olddate]").text(data.result.oldest[0].datetime);
+                    tempcount.find(".cmdMaintenanceAttr[type=olddate]").text(data.result.oldest[0].oldest);
                 }
-                if(data.result.count[0].count > 20){
-                    tempcount.find(".cmdMaintenanceAttr[type=optimize]").html('<a class="btn btn-sm btn-info tooltips"  id="btTeleinfoMaintenance"><i class="fas fa-terminal"></i>{{}}</a>');
+            }
+    });
+	$.ajax({
+            type: 'POST',
+            url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+            data: {
+                action:'countArchiveNotZero',
+                id: $(this).attr( "cmd_id" ),
+                },
+            dataType: 'json',
+            error: function (request, status, error) {
+                handleAjaxError(request, status, error);
+            },
+            success: function (data) {
+                tempcount.find(".cmdMaintenanceAttr[type=countcleanable]").text(data.result.count[0].count);
+				if(data.result.count[0].count > 1000){
+                    tempcount.find(".cmdMaintenanceAttr[type=optimize]").html('<a class="btn btn-sm btn-info tooltips btTeleinfoMaintenance" cmd_id="' + tempcount.attr( "cmd_id" ) + '" onclick="optimize(' + tempcount.attr( "cmd_id" ) + ')" ><i class="fas fa-terminal"></i>{{ Optimiser}}</a>');
                 }
             }
     });

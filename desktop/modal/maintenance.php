@@ -23,31 +23,32 @@ $date = array(
 	'start' => date('Y-m-d', strtotime(config::byKey('history::defautShowPeriod') . ' ' . date('Y-m-d'))),
 	'end' => date('Y-m-d'),
 );
-//$archiveDatetime = date('Y-m-d H:i:s', strtotime('- 1 months'));
-$archiveDatetime = (config::byKey('historyArchiveTime') < 1) ? date('Y-m-d H:i:s', strtotime('- 1 hours')) : date('Y-m-d H:i:s', strtotime('- ' . config::byKey('historyArchiveTime', 'core', 1) . ' hours'));
+$archiveDatetime = date('Y-m-d H:i:s', strtotime('- 1 months'));
 
 ?>
 
 
 <div id='div_MaintenanceAlert' style="display: none;"></div>
 <div class='row'>
-    <label class="col-md-3 control-label">{{Antérieur à }} <?php
-
-    echo $archiveDatetime . '</br>';
-    echo config::byKey('historyArchivePackage') . '</br>';
-    echo $archiveDatetime;?></label>
+	<div class="alert alert-danger globalRemark col-md-8 col-md-offset-2">Attention, cette page permet de ne garder que la valeur maximale rencontrée par interval horaire dans l'historique.
+	</br>
+	Si un nettoyage est nécessaire alors un bouton s'affichera sur la commande. 	
+	</div>
 
 </div>
 <div class='row'>
+	<div class='col-md-2'>
+	</div>
     <div class='col-md-8'>
         <table class="table table-condensed tablesorter" id="table_maintenance">
         	<thead>
         		<tr>
         			<th class='col-md-2'>{{Donnée}}</th>
                     <th class='col-md-2'>{{Nombre en base}}</th>
+                    <th class='col-md-2'>{{A lisser}}</th>
         			<th class='col-md-2'>{{Plus ancienne valeur}}</th>
                     <th class='col-md-2'>{{Lissage}}</th>
-        			<th class='col-md-6'></th>
+        			<th class='col-md-4'></th>
         		</tr>
         	</thead>
         	<tbody>
@@ -56,7 +57,7 @@ $archiveDatetime = (config::byKey('historyArchiveTime') < 1) ? date('Y-m-d H:i:s
         </table>
     </div>
 
-    <div class='col-md-4'>
+    <div class='col-md-2'>
         <!-- <input id="in_endDate" class="pull-right form-control input-sm in_datepicker" style="display : inline-block; width: 100px;" value="<?php echo $date['end']?>"/>
         <input id="in_startDate" class="pull-right form-control input-sm in_datepicker" style="display : inline-block; width: 100px;" value="<?php echo $date['start']?>"/> -->
 

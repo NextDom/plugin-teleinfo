@@ -15,7 +15,6 @@ and open the template in the editor.
     color:#33b8cc;
 }
 
-
 .logoPlusEqlogic{
     margin-top: 33px;
 }
@@ -27,6 +26,18 @@ and open the template in the editor.
 .bootstrap-tagsinput input{
     background-color: var(--form-bg-color);
 }
+
+.creationCommandes>div{
+	margin-top: 0.3rem;
+}
+
+.etatObjet>div, .infoAbonnement>div{
+	margin-top: 0.6rem;
+}
+
+
+
+
 /* [type="checkbox"][data-l1key="configuration"]:not(:checked),
 	[type="checkbox"][data-l1key="configuration"]:checked {
 		display:none;
