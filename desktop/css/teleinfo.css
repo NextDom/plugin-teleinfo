@@ -7,7 +7,41 @@ and open the template in the editor.
     Created on : 29 nov. 2017, 09:30:59
     Author     : ticed
 */
-[type="checkbox"][data-l1key="configuration"]:not(:checked),
+
+.logoPrimary{
+    color:#33b8cc;
+}
+.logoPrimaryTeleinfo{
+    color:#33b8cc;
+}
+
+.logoPlusEqlogic{
+    margin-top: 33px;
+}
+
+.bootstrap-tagsinput{
+    background-color: var(--form-bg-color);
+}
+
+.bootstrap-tagsinput input{
+    background-color: var(--form-bg-color);
+}
+
+.creationCommandes>div{
+	margin-top: 0.3rem;
+}
+
+.etatObjet>div, .infoAbonnement>div{
+	margin-top: 0.6rem;
+}
+
+.inputAddCmd{
+    margin: 5px;
+}
+
+
+
+/* [type="checkbox"][data-l1key="configuration"]:not(:checked),
 	[type="checkbox"][data-l1key="configuration"]:checked {
 		display:none;
 	}
@@ -48,7 +82,7 @@ and open the template in the editor.
 	}
 
 	/* on checked */
-	[type="checkbox"][data-l1key="configuration"]:checked + label:before {
+	/*[type="checkbox"][data-l1key="configuration"]:checked + label:before {
 		background:#DDDDDD;
 	}
 	[type="checkbox"][data-l1key="configuration"]:checked + label:after {
@@ -86,4 +120,4 @@ and open the template in the editor.
 		-ms-box-sizing: border-box;
 		box-sizing: border-box;
 		margin-top: -1px;
-	}
+	} */

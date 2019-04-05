@@ -21,7 +21,7 @@ if (!isConnect('admin')) {
 }
 
 ?>
-<div id='div_OptionsAlert' style=""></div>
+<div id='div_OptionsAlert'></div>
 <div class="input-group pull-right" style="display:inline-flex">
   <span class="pull-right">
     <a class="btn btn-success pull-right" id="btOptionsSave"><i class="fas fa-check-circle"></i> {{Enregistrer}}</a>
@@ -109,7 +109,9 @@ if (!isConnect('admin')) {
 
 
 <?php
-include_file('desktop', 'options', 'js', 'teleinfo');
+
 include_file('3rdparty', 'bootstrap-tagsinput/bootstrap-tagsinput', 'js', 'teleinfo');
 include_file('3rdparty', 'bootstrap-tagsinput/bootstrap-tagsinput', 'css', 'teleinfo');
+include_file('desktop', 'options', 'js', 'teleinfo');
+include_file('desktop', 'teleinfo', 'css', 'teleinfo');
 ?>

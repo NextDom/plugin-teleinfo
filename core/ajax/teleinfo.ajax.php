@@ -30,17 +30,8 @@ try {
             ajax::success();
         break;
         case 'restartDeamon':
-            $port                 = config::byKey('port', 'teleinfo', 'none');
-            $_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
-            if ($port == 'none') {
-                ajax::success();
-            }
             teleinfo::deamon_stop();
-            if (teleinfo::deamonRunning()) {
-                throw new \Exception(__('Impossible d\'arrêter le démon', __FILE__));
-            }
-            log::clear('teleinfocmd');
-            teleinfo::cron();
+            teleinfo::deamon_start();
             ajax::success();
         break;
         case 'changeLogLive':
@@ -157,14 +148,172 @@ try {
             $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
             ajax::success($return);
         break;
-        case 'getCout':
-            $return = array();
-            $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
-            ajax::success($return);
-        break;
 		case 'findModemType':
 			ajax::success(teleinfo::findModemType(init('port'),init('type')));
 		break;
+        case 'countArchive':
+            $return = array();
+			if (init('id') !== '') {
+                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId';
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['count'] = $sqlResult;
+
+                $sql = 'SELECT MIN(datetime) as oldest FROM historyArch WHERE cmd_id =:cmdId';
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['oldest'] = $sqlResult;
+                ajax::success($return);
+            }
+		break;
+		case 'countArchiveNotZero':
+            $return = array();
+			if (init('id') !== '') {
+                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId AND MINUTE(datetime) <> "0"';
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['count'] = $sqlResult;
+                ajax::success($return);
+            }
+		break;
+        case 'optimizeArchive':
+			$return = array();
+			$valuesClean = 0;
+			if (init('id') !== '') {
+
+				// Plus ancienne valeur différente de heure fixe
+                $sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+				$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+
+				while ($oldest['oldest'] !== null) {
+					// Récupération de la valeur max sur l heure
+                    if(substr($oldest['oldest'],-8,2) == "00" && init('type') != "AVG"){
+                        $sql = "SELECT MIN(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
+                    }
+                    else{
+                        $sql = "SELECT ". init('type') . "(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
+                    }
+
+                    $values = array(
+								 'cmdId' => init('id'),
+								 'oldest' => $oldest['oldest'],
+					);
+					$maxValue = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+
+					$sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:value";
+					$values = array(
+								'cmdId' => init('id'),
+								'newDatetime' => date('Y-m-d H:00:00', strtotime($oldest['oldest']) + 300),
+								'value' => $maxValue['value'],
+					);
+					$return['replaceValue'] = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+
+					// Nettoyage de toutes les valeurs autres qu a heure fixe
+					$sql = "DELETE FROM historyArch WHERE addtime(datetime,'-01:00:00')< :oldest AND cmd_id=:cmdId AND MINUTE(datetime) <> '0';";
+					$values = array(
+								 'cmdId' => init('id'),
+								 'oldest' => $oldest['oldest'],
+					);
+					$deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+					$sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
+					$values = array(
+			                 'cmdId' => init('id'),
+					);
+					$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+					$valuesClean+=1;
+				}
+				$return['valuesClean'] = $valuesClean;
+                ajax::success($return);
+                //ajax::success();
+            }
+		break;
+        case 'regenerateMonthlyStat':
+            $return = array();
+            cache::set('teleinfo::regenerateMonthlyStat', '1', 86400);
+            $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+            $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+            $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+
+            foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+
+                $startDay = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+                $endDay   = (new DateTime())->setTimestamp(mktime(23, 59, 59, date("m"), date("d"), date("Y")));
+                $statHpToCumul       = array();
+                $statHcToCumul       = array();
+                $statProdToCumul     = array();
+
+                foreach ($eqLogic->getCmd('info') as $cmd) {
+                    if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
+                        if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHpToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHcToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statProdToCumul, $cmd->getId());
+                        }
+                    }
+                }
+
+                for($i=1; $i < 366; $i++){
+                    $statHc     = 0;
+                    $statHp     = 0;
+                    $statProd   = 0;
+                    $startDay->sub(new DateInterval('P1D'));
+                    $endDay->sub(new DateInterval('P1D'));
+
+
+                    foreach ($statHcToCumul as $key => $value) {
+                        $cmd    = cmd::byId($value);
+                        $statHc += intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+                    foreach ($statHpToCumul as $key => $value) {
+                        $cmd    = cmd::byId($value);
+                        $statHp += intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+
+                    foreach ($statProdToCumul as $key => $value) {
+                        $cmd        = cmd::byId($value);
+                        $statProd 	+= intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+
+                    foreach ($eqLogic->getCmd('info') as $cmd) {
+                        if ($cmd->getConfiguration('type') == "stat" || $cmd->getConfiguration('type') == "panel") {
+                            $history = new history();
+                            $history->setCmd_id($cmd->getId());
+                            $history->setDatetime($startDay->format('Y-m-d 00:00:00'));
+                            $history->setTableName('historyArch');
+                            switch ($cmd->getConfiguration('info_conso')) {
+                                case "STAT_YESTERDAY_HP":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique HP   ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statHp)) ;
+				                    $history->setValue(intval($statHp));
+				                    $history->save();
+                                    break;
+                                case "STAT_YESTERDAY_HC":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique HC   ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statHc)) ;
+                                    $history->setValue(intval($statHc));
+				                    $history->save();
+                                    break;
+                                case "STAT_YESTERDAY_PROD":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique PROD ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statProd)) ;
+                                    $history->setValue(intval($statProd));
+				                    $history->save();
+                                    break;
+                            }
+                        }
+                    }
+
+                }
+            }
+            ajax::success($return);
+        break;
         case 'diagnostic_step1':
             $return = array();
 

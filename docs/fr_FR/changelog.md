@@ -8,6 +8,7 @@ Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https
 * Détection automatique du compteur depuis la configuration (non disponible pour le modem Cartelectronic 2 compteurs).
 * Déclaration index production.
 * Correction du diagnostique.
+* Maintenance de l'historique des index.
 
 ### 4.3.2 (01-04-2019)
 
