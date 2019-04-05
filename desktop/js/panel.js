@@ -31,7 +31,7 @@ $('#bt_teleinfoPanelSante').on('click', function() {
 $( "#eqlogic_select" ).change(function() {
     globalEqLogic = $( "#eqlogic_select option:selected" ).val();
     initHistoryTrigger();
-    //drawStackColumnChart('div_graphGlobalIndex', null);
+    drawStackColumnChart('div_graphGlobalIndex', null);
     loadData();
 });
 
@@ -48,7 +48,7 @@ $('#bt_validChangeDate').on('click',function(){
 initHistoryTrigger();
 
 //displayTeleinfo(object_id);
-//drawStackColumnChart('div_graphGlobalIndex', null);
+drawStackColumnChart('div_graphGlobalIndex', null);
 
 loadData();
 
@@ -85,18 +85,14 @@ $.ajax({
             }
 
             try {
-                //var chart = $('#div_graphGlobalIndex').highcharts();
+                var chart = $('#div_graphGlobalIndex').highcharts();
                 console.log(data.result[globalEqLogic].cmd);
                 for(cmd in data.result[globalEqLogic].cmd)
                 {
                     try{
                         switch(data.result[globalEqLogic].cmd[cmd].logicalId)
                         {
-                            case "STAT_YESTERDAY_HC":
-                                getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd])
-                                break;
-                            case "STAT_YESTERDAY_HP":
-                                getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd])
+                            case "STAT_YESTERDAY":
                                 break;
                             case "SINSTI":
                                 if(compteurProd){
@@ -146,7 +142,7 @@ $.ajax({
                                 console.log("[loadData][STAT_YEAR] " + data.result[globalEqLogic].cmd[cmd].value);
                                 $('.teleinfoAttr[data-l1key=conso][data-l2key=year]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
                                 break;
-                            /*case "STAT_JAN_HP":
+                            case "STAT_JAN_HP":
                                 if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 0, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
                                 break;
                             case "STAT_JAN_HC":
@@ -217,7 +213,7 @@ $.ajax({
                                 break;
                             case "STAT_DEC_HC":
                                 if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 11, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;*/
+                                break;
                         }
                     }
                     catch(err) {

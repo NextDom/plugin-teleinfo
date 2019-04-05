@@ -35,12 +35,13 @@ $archiveDatetime = date('Y-m-d H:i:s', strtotime('- 1 months'));
     </div>
     <div class='col-md-8 col-md-offset-2 center'>
         <?php
-            if((cache::byKey('teleinfo::regenerateMonthlyStat', false))->getValue() != '1'){
-                echo '<a class="btn btn-sm btn-success eqLogicAction" data-action="regenerateMonthlyStat"><i class="fas fa-check-circle"></i> {{Regénérer les stats mensuelles}}</a>';
-            }
-            else{
-                echo '<a class="btn btn-sm btn-success eqLogicAction" data-action="regenerateMonthlyStat" disabled><i class="fas fa-check-circle"></i> {{Regénérer les stats mensuelles}}</a>';
-            }
+            $regenerateMonthlyStat = cache::byKey('teleinfo::regenerateMonthlyStat', '0');
+                if($regenerateMonthlyStat->getValue() != '1'){
+                    echo '<a class="btn btn-sm btn-success eqLogicAction" data-action="regenerateMonthlyStat"><i class="fas fa-check-circle"></i> {{Regénérer les stats mensuelles}}</a>';
+                }
+                else{
+                    echo '<a class="btn btn-sm btn-success eqLogicAction" data-action="regenerateMonthlyStat" disabled><i class="fas fa-check-circle"></i> {{Regénérer les stats mensuelles}}</a>';
+                }
         ?>
 	</div>
 

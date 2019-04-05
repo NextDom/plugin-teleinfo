@@ -286,18 +286,25 @@ try {
 
                     foreach ($eqLogic->getCmd('info') as $cmd) {
                         if ($cmd->getConfiguration('type') == "stat" || $cmd->getConfiguration('type') == "panel") {
+                            $history = new history();
+                            $history->setCmd_id($cmd->getId());
+                            $history->setDatetime($startDay->format('Y-m-d 00:00:00'));
+                            $history->setTableName('historyArch');
                             switch ($cmd->getConfiguration('info_conso')) {
                                 case "STAT_YESTERDAY_HP":
                                     log::add('teleinfo', 'debug', 'Mise à jour de la statistique HP   ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statHp)) ;
-                                    $cmd->event(intval($statHp));
+				                    $history->setValue(intval($statHp));
+				                    $history->save();
                                     break;
                                 case "STAT_YESTERDAY_HC":
                                     log::add('teleinfo', 'debug', 'Mise à jour de la statistique HC   ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statHc)) ;
-                                    $cmd->event(intval($statHc));
+                                    $history->setValue(intval($statHc));
+				                    $history->save();
                                     break;
                                 case "STAT_YESTERDAY_PROD":
                                     log::add('teleinfo', 'debug', 'Mise à jour de la statistique PROD ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statProd)) ;
-                                    $cmd->event(intval($statProd));
+                                    $history->setValue(intval($statProd));
+				                    $history->save();
                                     break;
                             }
                         }
