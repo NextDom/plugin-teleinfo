@@ -5,9 +5,10 @@ jeedom.eqLogic.getCmd({
         console.log(error);
     },
     success: function (data) {
+        console.log(data);
         var tbody = '';
         data.forEach(function(element) {
-            tbody += '<tr class="cmdMaintenance" cmd_id='+element.id+'>';
+            tbody += '<tr class="cmdMaintenance" cmd_id='+element.id+' logicalId='+element.logicalId+'>';
             tbody +=    '<td>';
             tbody +=    '<span  class="cmdMaintenanceAttr " style="font-size : 1em;">'+element.name+'</span>';
             tbody +=    '</td>';
@@ -54,7 +55,7 @@ function miseEnForme(texte){
     return texte;
 }
 
-function optimize(cmd_id){
+function optimize(cmd_id, type){
 	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').attr('disabled','disabled');
 	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').removeClass("btn-info").addClass("btn-warning");
 	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').html('<i class="fas fa-spinner"></i>  En cours...');
@@ -65,6 +66,7 @@ function optimize(cmd_id){
             data: {
                 action:'optimizeArchive',
                 id: cmd_id,
+                type: type,
                 },
             dataType: 'json',
             error: function (request, status, error) {
@@ -72,13 +74,13 @@ function optimize(cmd_id){
             },
             success: function (data) {
 				console.log(data);
-                
+
             }
-	});	
+	});
 	refresh = setTimeout("refreshCount("+cmd_id+")",2000);
-	
-	
-	
+
+
+
 }
 
 function refreshCount(cmdId){
@@ -95,9 +97,9 @@ function refreshCount(cmdId){
             },
             success: function (data) {
                 $('.cmdMaintenance[cmd_id='+cmdId+']').find(".cmdMaintenanceAttr[type=countcleanable]").text(data.result.count[0].count);
-				
+
 				if (data.result.count[0].count == 0){
-					window.clearTimeout(refresh); 
+					window.clearTimeout(refresh);
 					$('.btTeleinfoMaintenance[cmd_id='+cmdId+']').attr('disabled','disabled');
 					$('.btTeleinfoMaintenance[cmd_id='+cmdId+']').removeClass("btn-warning").addClass("btn-success");
 					$('.btTeleinfoMaintenance[cmd_id='+cmdId+']').html('<i class="fas fa-check"></i>  Ok');
@@ -107,7 +109,7 @@ function refreshCount(cmdId){
 					}
 				}
             }
-	});	
+	});
 }
 
 
@@ -147,7 +149,12 @@ $('#table_maintenance .cmdMaintenance').each(function( index ) {
             success: function (data) {
                 tempcount.find(".cmdMaintenanceAttr[type=countcleanable]").text(data.result.count[0].count);
 				if(data.result.count[0].count > 1000){
-                    tempcount.find(".cmdMaintenanceAttr[type=optimize]").html('<a class="btn btn-sm btn-info tooltips btTeleinfoMaintenance" cmd_id="' + tempcount.attr( "cmd_id" ) + '" onclick="optimize(' + tempcount.attr( "cmd_id" ) + ')" ><i class="fas fa-terminal"></i>{{ Optimiser}}</a>');
+                    if(tempcount.attr( "logicalId" ).includes("PAPP") || tempcount.attr( "logicalId" ).includes("SINSTS")){
+                        tempcount.find(".cmdMaintenanceAttr[type=optimize]").html('<a class="btn btn-sm btn-info tooltips btTeleinfoMaintenance" cmd_id="' + tempcount.attr( "cmd_id" ) + '" onclick="optimize(' + tempcount.attr( "cmd_id" ) + ',\'AVG\')" ><i class="fas fa-terminal"></i>{{ Optimiser (AVG)}}</a>');
+                    }
+                    else {
+                        tempcount.find(".cmdMaintenanceAttr[type=optimize]").html('<a class="btn btn-sm btn-info tooltips btTeleinfoMaintenance" cmd_id="' + tempcount.attr( "cmd_id" ) + '" onclick="optimize(' + tempcount.attr( "cmd_id" ) + ',\'MAX\')" ><i class="fas fa-terminal"></i>{{ Optimiser}}</a>');
+                    }
                 }
             }
     });

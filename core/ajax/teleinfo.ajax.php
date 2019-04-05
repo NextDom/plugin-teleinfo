@@ -183,23 +183,29 @@ try {
 			$return = array();
 			$valuesClean = 0;
 			if (init('id') !== '') {
-				
+
 				// Plus ancienne valeur différente de heure fixe
                 $sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
                 $values = array(
 			                 'cmdId' => init('id'),
 		        );
 				$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
-				
+
 				while ($oldest['oldest'] !== null) {
 					// Récupération de la valeur max sur l heure
-					$sql = "SELECT MAX(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
-					$values = array(
+                    if(substr($oldest['oldest'],-8,2) == "00" && init('type') != "AVG"){
+                        $sql = "SELECT MIN(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
+                    }
+                    else{
+                        $sql = "SELECT ". init('type') . "(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
+                    }
+
+                    $values = array(
 								 'cmdId' => init('id'),
 								 'oldest' => $oldest['oldest'],
 					);
 					$maxValue = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
-					
+
 					$sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:value";
 					$values = array(
 								'cmdId' => init('id'),
