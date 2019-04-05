@@ -233,6 +233,80 @@ try {
                 //ajax::success();
             }
 		break;
+        case 'regenerateMonthlyStat':
+            $return = array();
+            cache::set('teleinfo::regenerateMonthlyStat', '1', 86400);
+            $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+            $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+            $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+
+            foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+
+                $startDay = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+                $endDay   = (new DateTime())->setTimestamp(mktime(23, 59, 59, date("m"), date("d"), date("Y")));
+                $statHpToCumul       = array();
+                $statHcToCumul       = array();
+                $statProdToCumul     = array();
+
+                foreach ($eqLogic->getCmd('info') as $cmd) {
+                    if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
+                        if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHpToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHcToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statProdToCumul, $cmd->getId());
+                        }
+                    }
+                }
+
+                for($i=1; $i < 366; $i++){
+                    $statHc     = 0;
+                    $statHp     = 0;
+                    $statProd   = 0;
+                    $startDay->sub(new DateInterval('P1D'));
+                    $endDay->sub(new DateInterval('P1D'));
+
+
+                    foreach ($statHcToCumul as $key => $value) {
+                        $cmd    = cmd::byId($value);
+                        $statHc += intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+                    foreach ($statHpToCumul as $key => $value) {
+                        $cmd    = cmd::byId($value);
+                        $statHp += intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+
+                    foreach ($statProdToCumul as $key => $value) {
+                        $cmd        = cmd::byId($value);
+                        $statProd 	+= intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+
+                    foreach ($eqLogic->getCmd('info') as $cmd) {
+                        if ($cmd->getConfiguration('type') == "stat" || $cmd->getConfiguration('type') == "panel") {
+                            switch ($cmd->getConfiguration('info_conso')) {
+                                case "STAT_YESTERDAY_HP":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique HP   ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statHp)) ;
+                                    $cmd->event(intval($statHp));
+                                    break;
+                                case "STAT_YESTERDAY_HC":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique HC   ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statHc)) ;
+                                    $cmd->event(intval($statHc));
+                                    break;
+                                case "STAT_YESTERDAY_PROD":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique PROD ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statProd)) ;
+                                    $cmd->event(intval($statProd));
+                                    break;
+                            }
+                        }
+                    }
+
+                }
+            }
+            ajax::success($return);
+        break;
         case 'diagnostic_step1':
             $return = array();
 

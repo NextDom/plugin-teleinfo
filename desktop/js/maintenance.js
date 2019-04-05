@@ -5,7 +5,6 @@ jeedom.eqLogic.getCmd({
         console.log(error);
     },
     success: function (data) {
-        console.log(data);
         var tbody = '';
         data.forEach(function(element) {
             tbody += '<tr class="cmdMaintenance" cmd_id='+element.id+' logicalId='+element.logicalId+'>';
@@ -78,10 +77,26 @@ function optimize(cmd_id, type){
             }
 	});
 	refresh = setTimeout("refreshCount("+cmd_id+")",2000);
-
-
-
 }
+
+
+$('.eqLogicAction[data-action=regenerateMonthlyStat]').on('click', function() {
+    $.ajax({
+            type: 'POST',
+            url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+            data: {
+                action:'regenerateMonthlyStat',
+                },
+            dataType: 'json',
+            error: function (request, status, error) {
+                handleAjaxError(request, status, error);
+            },
+            success: function (data) {
+                console.log(data);
+                //$('.cmdMaintenance[cmd_id='+cmdId+']').find(".cmdMaintenanceAttr[type=countcleanable]").text(data.result.count[0].count);
+            }
+	});
+});
 
 function refreshCount(cmdId){
 	$.ajax({

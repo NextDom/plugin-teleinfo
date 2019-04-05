@@ -91,7 +91,7 @@ switch ($controlerState) {
 			</span>
 		</div>
 		<ul class="nav nav-tabs" role="tablist">
-      <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fas fa-arrow-circle-left"></i></a></li>
+      <li role="presentation"><a href="#" class="eqLogicAction cursor" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fas fa-arrow-circle-left"></i></a></li>
 			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
 			<li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fas fa-list-alt"></i> {{Commandes}}</a></li>
 		</ul>
@@ -196,9 +196,13 @@ switch ($controlerState) {
       </div>
   </div>
   <div role="tabpanel" class="tab-pane" id="commandtab">
-  </br>
-  <a class="btn btn-success btn-sm cmdAction" id="addDataToTable"><i class="fas fa-plus-circle"></i> {{Ajouter une donnée}}</a> &nbsp;
-  <a class="btn btn-info btn-sm cmdAction expertModeVisible" id="addStatToTable"><i class="fas fa-plus-circle"></i> {{Ajouter une statistique}}</a><br/><br/>
+  <div class="input-group pull-right inputAddCmd" style="display:inline-flex">
+			<span class="input-group-btn">
+                <a class="btn btn-success btn-sm cmdAction roundedLeft" id="addDataToTable"><i class="fas fa-plus-circle"></i> {{Ajouter une donnée}}</a> &nbsp;
+                <a class="btn btn-info btn-sm cmdAction roundedRight" id="addStatToTable"><i class="fas fa-plus-circle"></i> {{Ajouter une statistique}}</a>
+            </span>
+  </div>
+
   <table id="table_cmd" class="table table-bordered table-condensed">
       <thead>
           <tr>
@@ -206,7 +210,7 @@ switch ($controlerState) {
               <th style="width: 15%">{{Nom}}</th>
               <th style="width: 15%;">{{Sous-Type}}</th>
               <th style="width: 30%;">{{Donnée}}</th>
-              <th>{{Paramètres}}</th>
+              <th style="width: 30%;">{{Paramètres}}</th>
               <th></th>
           </tr>
       </thead>

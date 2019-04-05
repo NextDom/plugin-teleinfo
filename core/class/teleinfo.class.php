@@ -37,6 +37,7 @@ class teleinfo extends eqLogic
     public static function cronHourly()
     {
         self::moyLastHour();
+        cache::set('teleinfo::regenerateMonthlyStat', '0');
     }
 
     public static function changeLogLive($level)
@@ -878,11 +879,6 @@ class teleinfo extends eqLogic
                     }
                 }
             }
-
-
-
-
-
         }
     }
 
@@ -1128,7 +1124,7 @@ class teleinfo extends eqLogic
                 $cmd->save();
             }
         }
-        $array = array("STAT_TODAY", "STAT_MONTH", "STAT_YEAR","STAT_TODAY_PROD","STAT_YESTERDAY_PROD","STAT_MONTH_PROD","STAT_YEAR_PROD");
+        $array = array("STAT_TODAY", "STAT_MONTH", "STAT_YEAR","STAT_TODAY_PROD","STAT_YESTERDAY_HC","STAT_YESTERDAY_HP","STAT_YESTERDAY_PROD","STAT_MONTH_PROD","STAT_YEAR_PROD");
         foreach ($array as $value){
             $cmd = $this->getCmd('info', $value);
             log::add('teleinfo', 'debug', '=> ' . $value);

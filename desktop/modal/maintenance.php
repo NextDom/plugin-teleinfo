@@ -30,36 +30,55 @@ $archiveDatetime = date('Y-m-d H:i:s', strtotime('- 1 months'));
 
 <div id='div_MaintenanceAlert' style="display: none;"></div>
 <div class='row'>
-	<div class="alert alert-danger globalRemark col-md-8 col-md-offset-2">Attention, cette page permet de ne garder que la valeur maximale rencontrée par interval horaire dans l'historique.
-	</br>
-	Si un nettoyage est nécessaire alors un bouton s'affichera sur la commande. 	
+    <div class='col-md-12'>
+        <center><h4>Statistiques</h4></center>
+    </div>
+    <div class='col-md-8 col-md-offset-2 center'>
+        <?php
+            if((cache::byKey('teleinfo::regenerateMonthlyStat', false))->getValue() != '1'){
+                echo '<a class="btn btn-sm btn-success eqLogicAction" data-action="regenerateMonthlyStat"><i class="fas fa-check-circle"></i> {{Regénérer les stats mensuelles}}</a>';
+            }
+            else{
+                echo '<a class="btn btn-sm btn-success eqLogicAction" data-action="regenerateMonthlyStat" disabled><i class="fas fa-check-circle"></i> {{Regénérer les stats mensuelles}}</a>';
+            }
+        ?>
 	</div>
+
+
 
 </div>
-<div class='row'>
-	<div class='col-md-2'>
-	</div>
-    <div class='col-md-8'>
-        <table class="table table-condensed tablesorter" id="table_maintenance">
-        	<thead>
-        		<tr>
-        			<th class='col-md-2'>{{Donnée}}</th>
-                    <th class='col-md-2'>{{Nombre en base}}</th>
-                    <th class='col-md-2'>{{A lisser}}</th>
-        			<th class='col-md-2'>{{Plus ancienne valeur}}</th>
-                    <th class='col-md-2'>{{Lissage}}</th>
-        			<th class='col-md-4'></th>
-        		</tr>
-        	</thead>
-        	<tbody>
+<div class='row' style="padding-top:10px;">
+    <div class='col-md-8 col-md-offset-2'>
+        <div class='col-md-12'>
+            <center><h4>Optimisations</h4></center>
+        </div>
+        <div class='col-md-12'>
+            <div class="alert alert-danger globalRemark col-md-12">Attention, ce tableau permet de ne garder que la valeur maximale rencontrée par interval horaire dans l'historique.
+        	</br>
+        	Si un nettoyage est nécessaire alors un bouton s'affichera sur la commande.
+        	</div>
+    	</div>
 
-        	</tbody>
-        </table>
+        <div class='col-md-12'>
+            <table class="table table-striped table-condensed" id="table_maintenance">
+                <thead>
+                    <tr>
+                        <th class='col-md-2'>{{Donnée}}</th>
+                        <th class='col-md-2'>{{Nombre en base}}</th>
+                        <th class='col-md-2'>{{A lisser}}</th>
+                        <th class='col-md-2'>{{Plus ancienne valeur}}</th>
+                        <th class='col-md-2'>{{Lissage}}</th>
+                        <th class='col-md-4'></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class='col-md-2'>
-        <!-- <input id="in_endDate" class="pull-right form-control input-sm in_datepicker" style="display : inline-block; width: 100px;" value="<?php echo $date['end']?>"/>
-        <input id="in_startDate" class="pull-right form-control input-sm in_datepicker" style="display : inline-block; width: 100px;" value="<?php echo $date['start']?>"/> -->
 
     </div>
 

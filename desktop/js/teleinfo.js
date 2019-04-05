@@ -301,17 +301,21 @@ function addCmdToTable(_cmd) {
 
         if(init(_cmd.configuration['info_conso']) == 'ADPS' || init(_cmd.configuration['info_conso']) == 'ADIR1' || init(_cmd.configuration['info_conso']) == 'ADIR2' || init(_cmd.configuration['info_conso']) == 'ADIR3'){
             //tr += '<input class="cmdAttr form-control input-sm" data-l1key="logicalId" value="0">';
-            tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="returnStateValue" placeholder="{{Valeur retour d\'état}}" style="margin-top : 5px;">';
-            tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="returnStateTime" placeholder="{{Durée avant retour d\'état (min)}}" style="margin-top : 5px;">';
+            tr += '</br><input style="margin-left:10px;width: 20%;display: inline-block;" class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="returnStateValue" placeholder="{{Valeur retour d\'état}}">';
+            tr += '<input style="margin-left:10px;width: 20%;display: inline-block;" class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="returnStateTime" placeholder="{{Durée avant retour d\'état (min)}}">';
         }
 
         tr += '</td>';
         tr += '<td>';
+
+        tr += '<div class="input-group pull-right" style="display:inline-flex"><span class="input-group-btn">';
+
         if (is_numeric(_cmd.id)) {
-        tr += '<a class="btn btn-default btn-xs cmdAction expertModeVisible" data-action="configure"><i class="fa fa-cogs"></i></a> ';
+        tr += '<a class="btn btn-default btn-xs cmdAction roundedLeft" data-action="configure"><i class="fa fa-cogs"></i></a>';
         tr += '<a class="btn btn-default btn-xs cmdAction tooltips" title="Attention, ne sert qu\'a afficher la dernière valeur reçu." data-action="test"><i class="fa fa-rss"></i> {{Tester}}</a>';
         }
-        tr += '<i class="fa fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i></td>';
+        tr += '<a class="btn btn-danger btn-xs cmdAction roundedRight" data-action="remove"><i class="fas fa-minus-circle"></i></a> ';
+        tr += '</span></div>';
         tr += '</tr>';
 
         if (isset(_cmd.configuration.info_conso)) {
