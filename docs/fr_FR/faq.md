@@ -74,3 +74,28 @@ Le lissage des historiques Jeedom peut induire des valeurs statistiques erronée
 - Aller sur l'onglet Configuration Avancée
 - Dans la zone historique choisir Aucun pour le mode de lissage.
 - Enregistrer
+
+>Je souhaite déporter le démon de téléinformation
+
+Dans certaine installation, il peut-être utile de déporter le daemon de téléinformation
+
+Configuration de Jeedom
+- Inutile d'installer les dépendances
+- Désactivez la gestion automatique du Démon
+- Allez dans la configuration du plugin et indiquer l'adresse IP du serveur hébergant le daemon dans le champ 'Adresse IP socket interne (modification dangereuse)'
+
+Configuration de votre serveur hébergeant le démon
+- Installez le démon
+```
+wget http://IP-JEEDOM/plugins/teleinfo/ressources/globals.py
+wget http://IP-JEEDOM/plugins/teleinfo/ressources/teleinfo.py
+mkdir jeedom
+cd jeedom
+wget http://IP-JEEDOM/plugins/teleinfo/ressources/jeedom/__init__.py
+wget http://IP-JEEDOM/plugins/teleinfo/ressources/jeedom/jeedom.py
+```
+- Executez le démon en ajustant les paramètres (insérez le à votre script de démarrage)
+```
+python /root/teleinfo/teleinfo.py --port /dev/ttyUSB0 --apikey API-KEY-JEEDOM-TELEINFO --callback http://IP-JEEDOM/plugins/teleinfo/core/php/jeeTeleinfo.php --loglevel debug --cyclesommeil 15 --pidfile /tmp/teleinfo --sockethost IP-SERVEUR-DEMON >> /tmp/teleinfo.log 2>&1 &
+```
+- Remarque : il peut-être nécéssaire d'installer des dépendances Python (inspirez-vous du fichier http://IP-JEEDOM/plugins/teleinfo/ressources/install_apt.sh)

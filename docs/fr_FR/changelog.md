@@ -23,7 +23,7 @@ Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https
 
 ### 4.3.0 (18-03-2019)
 
-* Modifications pour deport du daemon (@jlayec)
+* Modifications pour deport du daemon - cf faq pour utilisation
 
 ### 4.2.4 (15-03-2019)
 
