@@ -20,7 +20,7 @@ sendVarToJs('slave_id', init('slave_id'));
 
 <div id='div_updatePluginDependancyAlert' style="display: none;"></div>
 
-<a class="btn btn-warning pull-right" data-state="1" id="bt_pluginDeamonLogStopStart"><i class="fa fa-pause"></i> {{Pause}}</a>
+<a class="btn btn-warning pull-right" data-state="1" id="bt_pluginDeamonLogStopStart"><i class="fas fa-pause"></i> {{Pause}}</a>
 <input class="form-control pull-right" id="in_pluginDeamonLogSearch" style="width : 300px;" placeholder="{{Rechercher}}" />
 <br/><br/><br/>
 <pre id='pre_pluginDeamonLogUpdate' style='overflow: auto; height: 90%;with:90%;'></pre>

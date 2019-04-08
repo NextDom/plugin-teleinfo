@@ -30,17 +30,8 @@ try {
             ajax::success();
         break;
         case 'restartDeamon':
-            $port                 = config::byKey('port', 'teleinfo', 'none');
-            $_2cpt_cartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
-            if ($port == 'none') {
-                ajax::success();
-            }
             teleinfo::deamon_stop();
-            if (teleinfo::deamonRunning()) {
-                throw new \Exception(__('Impossible d\'arrêter le démon', __FILE__));
-            }
-            log::clear('teleinfocmd');
-            teleinfo::cron();
+            teleinfo::deamon_start();
             ajax::success();
         break;
         case 'changeLogLive':
@@ -157,9 +148,170 @@ try {
             $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
             ajax::success($return);
         break;
-        case 'getCout':
+		case 'findModemType':
+			ajax::success(teleinfo::findModemType(init('port'),init('type')));
+		break;
+        case 'countArchive':
             $return = array();
-            $return = history::byCmdIdDatetime(init('id'), date('Y-m-d H:i:s'));
+			if (init('id') !== '') {
+                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId';
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['count'] = $sqlResult;
+
+                $sql = 'SELECT MIN(datetime) as oldest FROM historyArch WHERE cmd_id =:cmdId';
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['oldest'] = $sqlResult;
+                ajax::success($return);
+            }
+		break;
+		case 'countArchiveNotZero':
+            $return = array();
+			if (init('id') !== '') {
+                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId AND MINUTE(datetime) <> "0"';
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+                $sqlResult = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                $return['count'] = $sqlResult;
+                ajax::success($return);
+            }
+		break;
+        case 'optimizeArchive':
+			$return = array();
+			$valuesClean = 0;
+			if (init('id') !== '') {
+
+				// Plus ancienne valeur différente de heure fixe
+                $sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+				$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+
+				while ($oldest['oldest'] !== null) {
+					// Récupération de la valeur max sur l heure
+                    if(substr($oldest['oldest'],-8,2) == "00" && init('type') != "AVG"){
+                        $sql = "SELECT MIN(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
+                    }
+                    else{
+                        $sql = "SELECT ". init('type') . "(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
+                    }
+
+                    $values = array(
+								 'cmdId' => init('id'),
+								 'oldest' => $oldest['oldest'],
+					);
+					$maxValue = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+
+					$sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:value";
+					$values = array(
+								'cmdId' => init('id'),
+								'newDatetime' => date('Y-m-d H:00:00', strtotime($oldest['oldest']) + 300),
+								'value' => $maxValue['value'],
+					);
+					$return['replaceValue'] = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+
+					// Nettoyage de toutes les valeurs autres qu a heure fixe
+					$sql = "DELETE FROM historyArch WHERE addtime(datetime,'-01:00:00')< :oldest AND cmd_id=:cmdId AND MINUTE(datetime) <> '0';";
+					$values = array(
+								 'cmdId' => init('id'),
+								 'oldest' => $oldest['oldest'],
+					);
+					$deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+					$sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
+					$values = array(
+			                 'cmdId' => init('id'),
+					);
+					$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+					$valuesClean+=1;
+				}
+				$return['valuesClean'] = $valuesClean;
+                ajax::success($return);
+                //ajax::success();
+            }
+		break;
+        case 'regenerateMonthlyStat':
+            $return = array();
+            cache::set('teleinfo::regenerateMonthlyStat', '1', 86400);
+            $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+            $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+            $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+
+            foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+
+                $startDay = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+                $endDay   = (new DateTime())->setTimestamp(mktime(23, 59, 59, date("m"), date("d"), date("Y")));
+                $statHpToCumul       = array();
+                $statHcToCumul       = array();
+                $statProdToCumul     = array();
+
+                foreach ($eqLogic->getCmd('info') as $cmd) {
+                    if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
+                        if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHpToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHcToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statProdToCumul, $cmd->getId());
+                        }
+                    }
+                }
+
+                for($i=1; $i < 366; $i++){
+                    $statHc     = 0;
+                    $statHp     = 0;
+                    $statProd   = 0;
+                    $startDay->sub(new DateInterval('P1D'));
+                    $endDay->sub(new DateInterval('P1D'));
+
+
+                    foreach ($statHcToCumul as $key => $value) {
+                        $cmd    = cmd::byId($value);
+                        $statHc += intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+                    foreach ($statHpToCumul as $key => $value) {
+                        $cmd    = cmd::byId($value);
+                        $statHp += intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+
+                    foreach ($statProdToCumul as $key => $value) {
+                        $cmd        = cmd::byId($value);
+                        $statProd 	+= intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                    }
+
+                    foreach ($eqLogic->getCmd('info') as $cmd) {
+                        if ($cmd->getConfiguration('type') == "stat" || $cmd->getConfiguration('type') == "panel") {
+                            $history = new history();
+                            $history->setCmd_id($cmd->getId());
+                            $history->setDatetime($startDay->format('Y-m-d 00:00:00'));
+                            $history->setTableName('historyArch');
+                            switch ($cmd->getConfiguration('info_conso')) {
+                                case "STAT_YESTERDAY_HP":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique HP   ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statHp)) ;
+				                    $history->setValue(intval($statHp));
+				                    $history->save();
+                                    break;
+                                case "STAT_YESTERDAY_HC":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique HC   ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statHc)) ;
+                                    $history->setValue(intval($statHc));
+				                    $history->save();
+                                    break;
+                                case "STAT_YESTERDAY_PROD":
+                                    log::add('teleinfo', 'debug', 'Mise à jour de la statistique PROD ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statProd)) ;
+                                    $history->setValue(intval($statProd));
+				                    $history->save();
+                                    break;
+                            }
+                        }
+                    }
+
+                }
+            }
             ajax::success($return);
         break;
         case 'diagnostic_step1':
@@ -264,7 +416,6 @@ try {
                 $return['message'] = 'NOK';
             }
             try {
-                //$diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
                 $diagnosticFile = jeedom::getTmpFolder("teleinfo") . '/teleinfo_diag.txt';
                 file_put_contents($diagnosticFile, serialize('||STEP_4||'), FILE_APPEND | LOCK_EX);
                 file_put_contents($diagnosticFile, serialize($return), FILE_APPEND | LOCK_EX);
@@ -274,10 +425,8 @@ try {
         case 'diagnostic_step5':
             $return = array();
             $return['message'] = '';
-            //$return['launch_url'] = parse_url(config::byKey('internalProtocol', 'core', 'http://') . config::byKey('internalAddr', 'core', '127.0.0.1') . ":" . config::byKey('internalPort', 'core', '80') . config::byKey('internalComplement', 'core'));
             $return['result'] = '1';
             try {
-                //$diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
                 $diagnosticFile = jeedom::getTmpFolder("teleinfo") . '/teleinfo_diag.txt';
                 file_put_contents($diagnosticFile, serialize('||STEP_5||'), FILE_APPEND | LOCK_EX);
                 file_put_contents($diagnosticFile, serialize($return), FILE_APPEND | LOCK_EX);
@@ -286,18 +435,14 @@ try {
         break;
         case 'diagnostic_step6':
             $return = array();
-            //$monfichier = dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt';
             $monfichier = jeedom::getTmpFolder("teleinfo") . '/teleinfo_export.txt';
-            //$diagnosticFile = dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
             $diagnosticFile = jeedom::getTmpFolder("teleinfo") . '/teleinfo_diag.txt';
             exec('rm ' . $monfichier);
             file_put_contents($monfichier, serialize(date('Y-m-d H:i:s')), FILE_APPEND | LOCK_EX);
             foreach (eqLogic::byType('teleinfo') as $eqLogic) {
-                //file_put_contents($monfichier, $eqLogic->getConfiguration(), FILE_APPEND | LOCK_EX);
                 file_put_contents($monfichier, serialize('||EQLOGIC_NEW||'), FILE_APPEND | LOCK_EX);
                 file_put_contents($monfichier, $eqLogic->getName() . ";", FILE_APPEND | LOCK_EX);
                 file_put_contents($monfichier, serialize($eqLogic->getConfiguration()), FILE_APPEND | LOCK_EX);
-                //file_put_contents($monfichier, serialize('\r\n'), FILE_APPEND | LOCK_EX);
                 foreach ($eqLogic->getCmd() as $cmd) {
                     file_put_contents($monfichier, serialize('||CMD_NEW||'), FILE_APPEND | LOCK_EX);
                     file_put_contents($monfichier, serialize($cmd), FILE_APPEND | LOCK_EX);
@@ -305,16 +450,11 @@ try {
                 }
                 file_put_contents($monfichier, serialize('||EQLOGIC_END||'), FILE_APPEND | LOCK_EX);
             }
-            //$return["files"] = log::getPathToLog('teleinfo'). " " . log::getPathToLog('teleinfo_deamon'). " " . log::getPathToLog('teleinfo_update') . " " . dirname(__FILE__) . '/../../plugin_info/info.json'. " " . dirname(__FILE__) . '/../../../../tmp/teleinfo_export.txt' . " " . dirname(__FILE__) . '/../../../../tmp/teleinfo_diag.txt';
-            $return["files"] = log::getPathToLog('teleinfo'). " " . log::getPathToLog('teleinfo_deamon'). " " . log::getPathToLog('teleinfo_update') . " " . dirname(__FILE__) . '/../../plugin_info/info.json'. " " . $diagnosticFile  . " " . $monfichier;
-            $return["path"] = dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar';
-            //$return["path"] = jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar';
-            exec('rm ' . dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar');
-            //exec('rm ' . jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar');
-            $return["compress"] = exec('tar -cvf ' . dirname(__FILE__) . '/../../../../tmp/teleinfolog.tar ' . $return["files"]);
-            //$return["compress"] = exec('tar -cvf ' . jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar ' . $return["files"]);
-            $return['message'] = '<a class="btn btn-success" href="core/php/downloadFile.php?pathfile=tmp/teleinfolog.tar" target="_blank">Télécharger le package</a>';
-            //$return['message'] = '<a class="btn btn-success" href="core/php/downloadFile.php?pathfile='.jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar" target="_blank">Télécharger le package</a>';
+            $return["files"] = log::getPathToLog('teleinfo'). " " . log::getPathToLog('teleinfo_deamon_conso'). " " . log::getPathToLog('teleinfo_update') . " " . dirname(__FILE__) . '/../../plugin_info/info.json'. " " . $diagnosticFile  . " " . $monfichier;
+            $return["path"] = jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar';
+            exec('rm ' . jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar');
+            $return["compress"] = exec('tar -cvf ' . jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar ' . $return["files"]);
+            $return['message'] = '<a class="btn btn-success" href="plugins/teleinfo/core/php/jeeDownload.php" target="_blank">Télécharger le package</a>';
             $return['result'] = '2';
             ajax::success($return);
         break;

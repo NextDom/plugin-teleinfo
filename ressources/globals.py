@@ -13,6 +13,8 @@ type = 'local'
 socketport = 55062
 sockethost = '127.0.0.1'
 ftdi_context = ''
+# TELEINFO settings
+frame_length = 3000  # Nb chars to read to ensure to get a least one complete raw frame
 
 # Device name
 port = '/dev/ttyUSB0'
