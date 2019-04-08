@@ -261,7 +261,12 @@ function addCmdToTable(_cmd) {
             $("#typeAbonnement").html(_cmd.configuration['NGTF'].value);
         }
         else if (_cmd.configuration['OPTARIF']){
-            $("#typeAbonnement").html(_cmd.configuration['OPTARIF'].value);
+            if(_cmd.configuration['OPTARIF'].value.includes('HC')) {
+                $("#typeAbonnement").html("Heures Creuses");
+            }
+            else {
+                $("#typeAbonnement").html(_cmd.configuration['OPTARIF'].value);
+            }
         }
     }
     else if (init(_cmd.configuration['type']) == 'stat'){
