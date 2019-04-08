@@ -385,7 +385,7 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'info', '[deamon_start] Démarrage du service');
         $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
         //$productionActivated = config::byKey('activation_production', 'teleinfo');
-        if (config::byKey('port', 'teleinfo') != "") {    // Si un port est sélectionné
+        if (config::byKey('port', 'teleinfo') != "" || config::byKey('2cpt_cartelectronic', 'teleinfo')) {    // Si un port est sélectionné
             if (!self::deamonRunning()) {
                 self::runDeamon($debug, 'conso');
             }

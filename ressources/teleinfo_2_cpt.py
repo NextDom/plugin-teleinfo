@@ -70,9 +70,6 @@ usb_product = 0x6001
 usb_port = [0x00, 0x11, 0x22]
 baud_rate = 1200
 
-# TELEINFO settings
-frame_length = 3000  # Nb chars to read to ensure to get a least one complete raw frame
-
 # Misc
 stx = 0x02  # start of text
 etx = 0x03  # end of text
@@ -184,7 +181,7 @@ class Ftdi(object):
         self.purgeBuffers()
 
         raw = u""
-        while len(raw) < frame_length:
+        while len(raw) < globals.frame_length:
             c = self.readOne()
             if c is not None and c != '\x00':
                 raw += c
@@ -209,7 +206,9 @@ class Teleinfo(object):
             ret = ftdi.usb_open(globals.ftdi_context, 0x0403, 0x6001)
             if ret < 0:
                 logging.error("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
-            #ftdi.set_baudrate(globals.ftdi_context, 1200)
+            ftdi.set_baudrate(globals.ftdi_context, int(globals.vitesse))
+        if globals.mode == "historique":
+            globals.frame_length = 500
             #ftdi.set_line_property(globals.ftdi_context, ftdi.BITS_8, ftdi.EVEN, ftdi.STOP_BIT_1)
 
     def __selectMeter(self, num):
@@ -246,14 +245,14 @@ class Teleinfo(object):
         # to read at the start of a frame. So, we read enough chars to retreive a complete frame
         logging.debug("Lecture des donnees")
         if ftdi_type == 0:
-            raw = self.__ftdi.read(frame_length)
+            raw = self.__ftdi.read(globals.frame_length)
         else:
             err = ftdi.usb_purge_buffers(globals.ftdi_context)
             if err < 0:
                 logging.error("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
                 raise FtdiError("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
             raw = u""
-            while len(raw) < frame_length:
+            while len(raw) < globals.frame_length:
                 err, c = self.__readOne()
                 if c is not None and c != '\x00':
                     raw += c
@@ -402,16 +401,18 @@ class Teleinfo(object):
                                 send_data["device"] = cpt1_data_temp["ADSC"]
                                 globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADSC"],send_data)
                         else:
-                            send_data["device"] = cpt1_data_temp["ADCO"]
-                            globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADCO"],send_data)
+                            if not cpt1_data_temp["ADCO"] == '':
+                                send_data["device"] = cpt1_data_temp["ADCO"]
+                                globals.JEEDOM_COM.add_changes('device::'+cpt1_data_temp["ADCO"],send_data)
                     elif num_compteur == 2:
                         if globals.mode == "standard": # Zone linky standard
                             if not cpt2_data_temp["ADSC"] == '':
                                 send_data["device"] = cpt2_data_temp["ADSC"]
                                 globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADSC"],send_data)
                         else:
-                            send_data["device"] = cpt2_data_temp["ADCO"]
-                            globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADCO"],send_data)
+                            if not cpt2_data_temp["ADCO"] == '':
+                                send_data["device"] = cpt2_data_temp["ADCO"]
+                                globals.JEEDOM_COM.add_changes('device::'+cpt2_data_temp["ADCO"],send_data)
             except Exception:
                 errorCom = "Connection error"
                 logging.error(errorCom)
