@@ -584,44 +584,6 @@ class teleinfo extends eqLogic
         $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
         $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
-        //$startdateyesterday     = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
-        //$enddateyesterday       = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
-        // $startdateyear          = date("Y-m-d H:i:s", mktime(0, 0, 0, 1, 1, date("Y")));
-        // $enddateyear            = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
-        // $startdatemonth         = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), 1, date("Y")));
-        // $enddatemonth           = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
-        // $startdatelastmonth     = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
-        // $enddatelastmonth       = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m") - 1, date("t", mktime(0, 0, 0, date("m") - 1, date("d"), date("Y"))), date("Y")));
-        // $startdatemonthlastyear = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), 1, date("Y") - 1));
-        // $enddatemonthlastyear   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d"), date("Y") - 1));
-        // $startdateyearlastyear  = date("Y-m-d H:i:s", mktime(0, 0, 0, 1, 1, date("Y") - 1));
-        // $enddateyearlastyear    = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y") - 1));
-
-        // $startdate_jan  = date("Y-m-d H:i:s", mktime(0, 0, 0, 1, 1, date("Y")));
-        // $enddate_jan    = date("Y-m-d H:i:s", mktime(23, 59, 59, 1, 31, date("Y")));
-        // $startdate_fev  = date("Y-m-d H:i:s", mktime(0, 0, 0, 2, 1, date("Y")));
-        // $enddate_fev    = date("Y-m-d H:i:s", mktime(23, 59, 59, 2, 28, date("Y")));
-        // $startdate_mar  = date("Y-m-d H:i:s", mktime(0, 0, 0, 3, 1, date("Y")));
-        // $enddate_mar    = date("Y-m-d H:i:s", mktime(23, 59, 59, 3, 31, date("Y")));
-        // $startdate_avr  = date("Y-m-d H:i:s", mktime(0, 0, 0, 4, 1, date("Y")));
-        // $enddate_avr    = date("Y-m-d H:i:s", mktime(23, 59, 59, 4, 30, date("Y")));
-        // $startdate_mai  = date("Y-m-d H:i:s", mktime(0, 0, 0, 5, 1, date("Y")));
-        // $enddate_mai    = date("Y-m-d H:i:s", mktime(23, 59, 59, 5, 31, date("Y")));
-        // $startdate_juin = date("Y-m-d H:i:s", mktime(0, 0, 0, 6, 1, date("Y")));
-        // $enddate_juin   = date("Y-m-d H:i:s", mktime(23, 59, 59, 6, 30, date("Y")));
-        // $startdate_jui  = date("Y-m-d H:i:s", mktime(0, 0, 0, 7, 1, date("Y")));
-        // $enddate_jui    = date("Y-m-d H:i:s", mktime(23, 59, 59, 7, 31, date("Y")));
-        // $startdate_aou  = date("Y-m-d H:i:s", mktime(0, 0, 0, 8, 1, date("Y")));
-        // $enddate_aou    = date("Y-m-d H:i:s", mktime(23, 59, 59, 8, 31, date("Y")));
-        // $startdate_sep  = date("Y-m-d H:i:s", mktime(0, 0, 0, 9, 1, date("Y")));
-        // $enddate_sep    = date("Y-m-d H:i:s", mktime(23, 59, 59, 9, 30, date("Y")));
-        // $startdate_oct  = date("Y-m-d H:i:s", mktime(0, 0, 0, 10, 1, date("Y")));
-        // $enddate_oct    = date("Y-m-d H:i:s", mktime(23, 59, 59, 10, 31, date("Y")));
-        // $startdate_nov  = date("Y-m-d H:i:s", mktime(0, 0, 0, 11, 1, date("Y")));
-        // $enddate_nov    = date("Y-m-d H:i:s", mktime(23, 59, 59, 11, 30, date("Y")));
-        // $startdate_dec  = date("Y-m-d H:i:s", mktime(0, 0, 0, 12, 1, date("Y")));
-        // $enddate_dec    = date("Y-m-d H:i:s", mktime(23, 59, 59, 12, 31, date("Y")));
-
         log::add('teleinfo', 'info', '----- Calcul des statistiques de la journée -----');
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             $startDay            = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
@@ -631,39 +593,6 @@ class teleinfo extends eqLogic
             $statYesterdayHc     = 0;
             $statYesterdayHp     = 0;
             $statYesterdayProd   = 0;
-            // $statLastMonth       = 0;
-            // $statMonthLastYearHc = 0;
-            // $statMonthLastYearHp = 0;
-            // $statYearLastYearHc  = 0;
-            // $statYearLastYearHp  = 0;
-            // $statMonth           = 0;
-            // $statMonthProd       = 0;
-            // $statYear            = 0;
-            // $statYearProd        = 0;
-            // $statJanHp           = 0;
-            // $statJanHc           = 0;
-            // $statFevHp           = 0;
-            // $statFevHc           = 0;
-            // $statMarHp  = 0;
-            // $statMarHc  = 0;
-            // $statAvrHp  = 0;
-            // $statAvrHc  = 0;
-            // $statMaiHp  = 0;
-            // $statMaiHc  = 0;
-            // $statJuinHp = 0;
-            // $statJuinHc = 0;
-            // $statJuiHp  = 0;
-            // $statJuiHc  = 0;
-            // $statAouHp  = 0;
-            // $statAouHc  = 0;
-            // $statSepHp  = 0;
-            // $statSepHc  = 0;
-            // $statOctHp  = 0;
-            // $statOctHc  = 0;
-            // $statNovHp  = 0;
-            // $statNovHc  = 0;
-            // $statDecHp  = 0;
-            // $statDecHc           = 0;
             $statHpToCumul       = array();
             $statHcToCumul       = array();
             $statProdToCumul     = array();
@@ -686,54 +615,18 @@ class teleinfo extends eqLogic
             foreach ($statHcToCumul as $key => $value) {
                 log::add('teleinfo', 'debug', 'Commande HC N°' . $value);
                 $cmd               = cmd::byId($value);
-                $statYesterdayHc	 += intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $enddateyesterday)['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
-                // $statMonth           += intval($cmd->getStatistique($startdatemonth, $enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth, $enddatemonth)['min']);
-                // $statYear            += intval($cmd->getStatistique($startdateyear, $enddateyear)['max']) - intval($cmd->getStatistique($startdateyear, $enddateyear)['min']);
-                // $statLastMonth       += intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['max']) - intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['min']);
-                // $statMonthLastYearHp += intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['max']) - intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['min']);
-                // $statYearLastYearHp  += intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['max']) - intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['min']);
-                // $statJanHc  		 += intval($cmd->getStatistique($startdate_jan, $enddate_jan)['max']) - intval($cmd->getStatistique($startdate_jan, $enddate_jan)['min']);
-                // $statFevHc  		 += intval($cmd->getStatistique($startdate_fev, $enddate_fev)['max']) - intval($cmd->getStatistique($startdate_fev, $enddate_fev)['min']);
-                // $statMarHc  		 += intval($cmd->getStatistique($startdate_mar, $enddate_mar)['max']) - intval($cmd->getStatistique($startdate_mar, $enddate_mar)['min']);
-                // $statAvrHc  		 += intval($cmd->getStatistique($startdate_avr, $enddate_avr)['max']) - intval($cmd->getStatistique($startdate_avr, $enddate_avr)['min']);
-                // $statMaiHc  		 += intval($cmd->getStatistique($startdate_mai, $enddate_mai)['max']) - intval($cmd->getStatistique($startdate_mai, $enddate_mai)['min']);
-                // $statJuinHc 		 += intval($cmd->getStatistique($startdate_juin, $enddate_juin)['max']) - intval($cmd->getStatistique($startdate_juin, $enddate_juin)['min']);
-                // $statJuiHc  		 += intval($cmd->getStatistique($startdate_jui, $enddate_jui)['max']) - intval($cmd->getStatistique($startdate_jui, $enddate_jui)['min']);
-                // $statAouHc  		 += intval($cmd->getStatistique($startdate_aou, $enddate_aou)['max']) - intval($cmd->getStatistique($startdate_aou, $enddate_aou)['min']);
-                // $statSepHc  		 += intval($cmd->getStatistique($startdate_sep, $enddate_sep)['max']) - intval($cmd->getStatistique($startdate_sep, $enddate_sep)['min']);
-                // $statOctHc  		 += intval($cmd->getStatistique($startdate_oct, $enddate_oct)['max']) - intval($cmd->getStatistique($startdate_oct, $enddate_oct)['min']);
-                // $statNovHc  		 += intval($cmd->getStatistique($startdate_nov, $enddate_nov)['max']) - intval($cmd->getStatistique($startdate_nov, $enddate_nov)['min']);
-                // $statDecHc  		 += intval($cmd->getStatistique($startdate_dec, $enddate_dec)['max']) - intval($cmd->getStatistique($startdate_dec, $enddate_dec)['min']);
+                $statYesterdayHc	 += intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
             }
             foreach ($statHpToCumul as $key => $value) {
                 log::add('teleinfo', 'debug', 'Commande HP N°' . $value);
                 $cmd               = cmd::byId($value);
                 $statYesterdayHp 	 += intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
-                // $statMonth       	 += intval($cmd->getStatistique($startdatemonth, $enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth, $enddatemonth)['min']);
-                // $statYear        	 += intval($cmd->getStatistique($startdateyear, $enddateyear)['max']) - intval($cmd->getStatistique($startdateyear, $enddateyear)['min']);
-                // $statLastMonth   	 += intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['max']) - intval($cmd->getStatistique($startdatelastmonth, $enddatelastmonth)['min']);
-                // $statMonthLastYearHc += intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['max']) - intval($cmd->getStatistique($startdatemonthlastyear, $enddatemonthlastyear)['min']);
-                // $statYearLastYearHp  += intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['max']) - intval($cmd->getStatistique($startdateyearlastyear, $enddateyearlastyear)['min']);
-                // $statJanHp 			 += intval($cmd->getStatistique($startdate_jan, $enddate_jan)['max']) - intval($cmd->getStatistique($startdate_jan, $enddate_jan)['min']);
-                // $statFevHp 			 += intval($cmd->getStatistique($startdate_fev, $enddate_fev)['max']) - intval($cmd->getStatistique($startdate_fev, $enddate_fev)['min']);
-                // $statMarHp 			 += intval($cmd->getStatistique($startdate_mar, $enddate_mar)['max']) - intval($cmd->getStatistique($startdate_mar, $enddate_mar)['min']);
-                // $statAvrHp 			 += intval($cmd->getStatistique($startdate_avr, $enddate_avr)['max']) - intval($cmd->getStatistique($startdate_avr, $enddate_avr)['min']);
-                // $statMaiHp 			 += intval($cmd->getStatistique($startdate_mai, $enddate_mai)['max']) - intval($cmd->getStatistique($startdate_mai, $enddate_mai)['min']);
-                // $statJuinHp			 += intval($cmd->getStatistique($startdate_juin, $enddate_juin)['max']) - intval($cmd->getStatistique($startdate_juin, $enddate_juin)['min']);
-                // $statJuiHp 			 += intval($cmd->getStatistique($startdate_jui, $enddate_jui)['max']) - intval($cmd->getStatistique($startdate_jui, $enddate_jui)['min']);
-                // $statAouHp 			 += intval($cmd->getStatistique($startdate_aou, $enddate_aou)['max']) - intval($cmd->getStatistique($startdate_aou, $enddate_aou)['min']);
-                // $statSepHp 			 += intval($cmd->getStatistique($startdate_sep, $enddate_sep)['max']) - intval($cmd->getStatistique($startdate_sep, $enddate_sep)['min']);
-                // $statOctHp 			 += intval($cmd->getStatistique($startdate_oct, $enddate_oct)['max']) - intval($cmd->getStatistique($startdate_oct, $enddate_oct)['min']);
-                // $statNovHp 			 += intval($cmd->getStatistique($startdate_nov, $enddate_nov)['max']) - intval($cmd->getStatistique($startdate_nov, $enddate_nov)['min']);
-                // $statDecHp 			 += intval($cmd->getStatistique($startdate_dec, $enddate_dec)['max']) - intval($cmd->getStatistique($startdate_dec, $enddate_dec)['min']);
             }
 
             foreach ($statProdToCumul as $key => $value) {
                 log::add('teleinfo', 'debug', 'Commande Prod N°' . $value);
                 $cmd                  = cmd::byId($value);
                 $statYesterdayProd 	 += intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
-                //$statMonthProd     	 += intval($cmd->getStatistique($startdatemonth, $enddatemonth)['max']) - intval($cmd->getStatistique($startdatemonth, $enddatemonth)['min']);
-                //$statYearProd     	 += intval($cmd->getStatistique($startdateyear, $enddateyear)['max']) - intval($cmd->getStatistique($startdateyear, $enddateyear)['min']);
             }
 
             foreach ($eqLogic->getCmd('info') as $cmd) {
@@ -763,130 +656,6 @@ class teleinfo extends eqLogic
                             $history->setValue(intval($statYesterdayProd));
                             $history->save();
                             break;
-                        // case "STAT_MONTH_LAST_YEAR":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois an -1 ==> ' . intval($statMonthLastYearHc) + intval($statMonthLastYearHp));
-                        //     $cmd->event(intval($statMonthLastYearHc) + intval($statMonthLastYearHp));
-                        //     break;
-                        // case "STAT_YEAR_LAST_YEAR":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique an-1 ==> ' . intval($statYearLastYearHc) + intval($statYearLastYearHp));
-                        //     $cmd->event(intval($statYearLastYearHc) + intval($statYearLastYearHp));
-                        //     break;
-                        // case "STAT_LASTMONTH":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois dernier ==> ' . intval($statLastMonth));
-                        //     $cmd->event(intval($statLastMonth));
-                        //     break;
-                        // case "STAT_MONTH":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique mois en cours ==> ' . intval($statMonth));
-                        //     $cmd->event(intval($statMonth));
-                        //     break;
-                        // case "STAT_MONTH_PROD":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique mensuelle prod ==> ' . intval($statMonthProd));
-                        //     $cmd->event(intval($statMonthProd));
-                        //     break;
-                        // case "STAT_YEAR":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique anuelle ==> ' . intval($statYear));
-                        //     $cmd->event(intval($statYear));
-                        //     break;
-                        // case "STAT_YEAR_PROD":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique anuelle prod ==> ' . intval($statYearProd));
-                        //     $cmd->event(intval($statYearProd));
-                        //     break;
-                        // case "STAT_JAN_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique janvier (HP) ==> ' . intval($statJanHp));
-                        //     $cmd->event(intval($statJanHp));
-                        //     break;
-                        // case "STAT_JAN_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique janvier (HC) ==> ' . intval($statJanHc));
-                        //     $cmd->event(intval($statJanHc));
-                        //     break;
-                        // case "STAT_FEV_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique février (HP) ==> ' . intval($statFevHp));
-                        //     $cmd->event(intval($statFevHp));
-                        //     break;
-                        // case "STAT_FEV_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique février (HC) ==> ' . intval($statFevHc));
-                        //     $cmd->event(intval($statFevHc));
-                        //     break;
-                        // case "STAT_MAR_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique mars (HP) ==> ' . intval($statMarHp));
-                        //     $cmd->event(intval($statMarHp));
-                        //     break;
-                        // case "STAT_MAR_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique mars (HC) ==> ' . intval($statMarHc));
-                        //     $cmd->event(intval($statMarHc));
-                        //     break;
-                        // case "STAT_AVR_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique avril (HP) ==> ' . intval($statAvrHp));
-                        //     $cmd->event(intval($statAvrHp));
-                        //     break;
-                        // case "STAT_AVR_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique avril (HC) ==> ' . intval($statAvrHc));
-                        //     $cmd->event(intval($statAvrHc));
-                        //     break;
-                        // case "STAT_MAI_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique mai (HP) ==> ' . intval($statMaiHp));
-                        //     $cmd->event(intval($statMaiHp));
-                        //     break;
-                        // case "STAT_MAI_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique mai (HC) ==> ' . intval($statMaiHc));
-                        //     $cmd->event(intval($statMaiHc));
-                        //     break;
-                        // case "STAT_JUIN_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique juin (HP) ==> ' . intval($statJuinHp));
-                        //     $cmd->event(intval($statJuinHp));
-                        //     break;
-                        // case "STAT_JUIN_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique juin (HC) ==> ' . intval($statJuinHc));
-                        //     $cmd->event(intval($statJuinHc));
-                        //     break;
-                        // case "STAT_JUI_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique juillet (HP) ==> ' . intval($statJuiHp));
-                        //     $cmd->event(intval($statJuiHp));
-                        //     break;
-                        // case "STAT_JUI_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique juillet (HC) ==> ' . intval($statJuiHc));
-                        //     $cmd->event(intval($statJuiHc));
-                        //     break;
-                        // case "STAT_AOU_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique août (HP) ==> ' . intval($statAouHp));
-                        //     $cmd->event(intval($statAouHp));
-                        //     break;
-                        // case "STAT_AOU_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique août (HC) ==> ' . intval($statAouHc));
-                        //     $cmd->event(intval($statAouHc));
-                        //     break;
-                        // case "STAT_SEP_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique septembre (HP) ==> ' . intval($statSepHp));
-                        //     $cmd->event(intval($statSepHp));
-                        //     break;
-                        // case "STAT_SEP_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique septembre (HC) ==> ' . intval($statSepHc));
-                        //     $cmd->event(intval($statSepHc));
-                        //     break;
-                        // case "STAT_OCT_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique octobre (HP) ==> ' . intval($statOctHp));
-                        //     $cmd->event(intval($statOctHp));
-                        //     break;
-                        // case "STAT_OCT_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique octobre (HC) ==> ' . intval($statOctHc));
-                        //     $cmd->event(intval($statOctHc));
-                        //     break;
-                        // case "STAT_NOV_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique novembre (HP) ==> ' . intval($statNovHp));
-                        //     $cmd->event(intval($statNovHp));
-                        //     break;
-                        // case "STAT_NOV_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique novembre (HC) ==> ' . intval($statNovHc));
-                        //     $cmd->event(intval($statNovHc));
-                        //     break;
-                        // case "STAT_DEC_HP":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique décembre (HP) ==> ' . intval($statDecHp));
-                        //     $cmd->event(intval($statDecHp));
-                        //     break;
-                        // case "STAT_DEC_HC":
-                        //     log::add('teleinfo', 'debug', 'Mise à jour de la statistique décembre (HC) ==> ' . intval($statDecHc));
-                        //     $cmd->event(intval($statDecHc));
-                        //     break;
                     }
                 }
             }
@@ -1244,7 +1013,7 @@ class teleinfo extends eqLogic
                 $cmd->save();
             }
         }
-        $array = array("STAT_TODAY", "STAT_MONTH", "STAT_YEAR","STAT_TODAY_PROD","STAT_YESTERDAY","STAT_YESTERDAY_HC","STAT_YESTERDAY_HP","STAT_YESTERDAY_PROD","STAT_MONTH_PROD","STAT_YEAR_PROD");
+        $array = array("STAT_TODAY","STAT_TODAY_HC", "STAT_TODAY_HP", "STAT_TODAY_PROD","STAT_YESTERDAY","STAT_YESTERDAY_HC","STAT_YESTERDAY_HP","STAT_YESTERDAY_PROD");
         foreach ($array as $value){
             $cmd = $this->getCmd('info', $value);
             log::add('teleinfo', 'debug', '=> ' . $value);
