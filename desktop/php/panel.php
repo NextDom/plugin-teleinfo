@@ -148,4 +148,5 @@ $eqLogics = eqLogic::byType('teleinfo');
         </div>
     </div>
 
+<?php include_file('3rdparty', 'moment/moment-with-locales.min', 'js', 'teleinfo'); ?>
 <?php include_file('desktop', 'panel', 'js', 'teleinfo'); ?>
