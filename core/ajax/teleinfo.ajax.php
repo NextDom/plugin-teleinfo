@@ -241,12 +241,26 @@ try {
             $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
 
             foreach (eqLogic::byType('teleinfo') as $eqLogic) {
-
                 $startDay = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
                 $endDay   = (new DateTime())->setTimestamp(mktime(23, 59, 59, date("m"), date("d"), date("Y")));
                 $statHpToCumul       = array();
                 $statHcToCumul       = array();
                 $statProdToCumul     = array();
+
+                try{
+                    $cmdYesterdayHP     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_HP');
+                    $cmdYesterdayHC     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_HC');
+                    $cmdYesterdayProd   = $eqLogic->getCmd('info', 'STAT_YESTERDAY_PROD');
+                    $sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdIdHP OR cmd_id=:cmdIdHC OR cmd_id=:cmdIdPROD)";
+                    $values = array(
+                        'cmdIdHP' => $cmdYesterdayHP->getId(),
+                        'cmdIdHC' => $cmdYesterdayHC->getId(),
+                        'cmdIdPROD' => $cmdYesterdayProd->getId(),
+                    );
+                    DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                } catch (\Exception $e) {
+                    log::add('teleinfo', 'error', $e) ;
+                }
 
                 foreach ($eqLogic->getCmd('info') as $cmd) {
                     if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
