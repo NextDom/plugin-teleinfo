@@ -104,6 +104,7 @@ $.ajax({
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]'), 'yearlastyear' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yesterday]'), 'yesterday' , data.result[globalEqLogic].cmd[cmd]);
                                     commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
                                     getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd]);
                                 }
@@ -403,10 +404,26 @@ function getMonthlyHistory(div,  object) {
                         graphZindex : 1,
                         groupingType:"sum::month"
                     },
-                    tooltipSeries: {
-                        valueDecimals: 2,
-                        shared: true,
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} kWh</b><br/>Total: {point.stackTotal} kWh',
+                    tooltip : {
+                        stacking : 'normal',
+                        shared : true,
+                        valueSuffix: ' kWh',
+                        //pointFormat: '{series.name}<b>{point.y} kWh</b><br/>',
+                    },
+                    plotOptions : {
+                        column: {
+                            stacking: 'normal',
+                            dataLabels: {
+                                enabled: true,
+                                color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                                style: {
+                                    textShadow: '0 0 3px black',
+                                    fontSize: '10px',
+
+                                },
+                                format: "{point.y:.2f}",
+                            }
+                        }
                     },
                     divide:1000,
     });
@@ -430,6 +447,10 @@ function getCommandHistoryValue(div, type , object) {
     else if (type == 'year'){
         from = moment().startOf('year').format('YYYY-MM-DD 00:00:00');
         to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
+    }
+    else if (type == 'yesterday'){
+        from = moment().subtract(1, 'days').startOf('day').format('YYYY-MM-DD 00:00:00');
+        to = moment().subtract(1, 'days').endOf('day').format('YYYY-MM-DD 23:59:59');
     }
 
     dailyHistoryChart[div] = null;
@@ -857,7 +878,24 @@ function teleinfoDrawChart(_params) {
         _params.tooltip = {pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>', valueDecimals: 2, };
       }
       if (init(_params.tooltipSeries) == '') {
-        _params.tooltip = {valueDecimals: 2, };
+        _params.tooltipSeries = {valueDecimals: 2, };
+      }
+
+      if (init(_params.plotOptions) == '') {
+        _params.plotOptions = {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+              }
+            },
+            showInLegend: true
+          },
+      };
       }
 
       if (init(_params.legend) == '') {
@@ -916,20 +954,7 @@ function teleinfoDrawChart(_params) {
               enabled: _params.enableExport || ($.mobile) ? false : true
             },
             tooltip: _params.tooltip,
-            plotOptions: {
-              pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                  enabled: true,
-                  format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                  style: {
-                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                  }
-                },
-                showInLegend: true
-              },
-            },
+            plotOptions: _params.plotOptions,
             series: [series]
           });
         }else {
@@ -1073,25 +1098,31 @@ function teleinfoDrawChart(_params) {
               enabled: _params.showTimeSelector
             },
             legend: legend,
-            tooltip: _params.tooltip,
             yAxis: [{
-                                  format: '{value}',
-                                  showEmpty: false,
-                                  minPadding: 0.001,
-                                  maxPadding: 0.001,
-                                  showLastLabel: true,
-                                }, {
-                                  opposite: false,
-                                  format: '{value}',
-                                  showEmpty: false,
-                                  gridLineWidth: 1,
-                                  minPadding: 0.001,
-                                  maxPadding: 0.001,
-                                  labels: {
-                                    align: 'left',
-                                    x: 2
-                                  }
-                              }],
+                            format: '{value}',
+                            showEmpty: false,
+                            minPadding: 0.001,
+                            maxPadding: 0.001,
+                            showLastLabel: true,
+                          }, {
+                            opposite: false,
+                            format: '{value}',
+                            showEmpty: false,
+                            gridLineWidth: 1,
+                            minPadding: 0.001,
+                            maxPadding: 0.001,
+                            labels: {
+                              align: 'left',
+                              x: 2
+                          },
+                          stackLabels: {
+                              enabled: true,
+                              style: {
+                                  fontWeight: 'bold',
+                                  color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                              }
+                          },
+                        }],
             xAxis: {
               type: 'datetime',
               ordinal: false,
@@ -1110,6 +1141,8 @@ function teleinfoDrawChart(_params) {
               trackBorderColor: '#CCC',
               enabled: _params.showScrollbar
             },
+            plotOptions: _params.plotOptions,
+            tooltip: _params.tooltip,
             series: [series]
           });
         } else {

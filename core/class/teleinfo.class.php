@@ -671,7 +671,7 @@ class teleinfo extends eqLogic
         event::add('jeedom::alert', array(
 				'level' => 'warning',
 				'page' => 'teleinfo',
-				'message' => __('Les statistiques sont en cours de regénérations, veuillez patienter.', __FILE__),
+				'message' => __('Les statistiques sont en cours de regénérations, cela peut prendre un peu de temps veuillez patienter ...', __FILE__),
 		));
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             $startDay = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
@@ -715,6 +715,14 @@ class teleinfo extends eqLogic
                 $statProd   = 0;
                 $startDay->sub(new DateInterval('P1D'));
                 $endDay->sub(new DateInterval('P1D'));
+
+                if (($i % 20) == 0){
+                    event::add('jeedom::alert', array(
+                            'level' => 'warning',
+                            'page' => 'teleinfo',
+                            'message' => __('Les statistiques sont en cours de regénérations, cela peut prendre un peu de temps veuillez patienter ... ('. intval($i/4) .' %)', __FILE__),
+                    ));
+                }
 
 
                 foreach ($statHcToCumul as $key => $value) {
@@ -875,11 +883,35 @@ class teleinfo extends eqLogic
 
     public function preSave()
     {
+        log::add('teleinfo', 'debug', '-------- PRESAVE --------');
         $this->setCategory('energy', 1);
         $cmd = $this->getCmd('info', 'HEALTH');
         if (is_object($cmd)) {
             $cmd->remove();
-            $cmd->save();
+        }
+
+        $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC");
+        foreach ($array as $value){
+            log::add('teleinfo', 'debug', 'Recherche de => ' . $value);
+            $cmd = $this->getCmd('info', $value);
+            if (is_object($cmd)) {
+                log::add('teleinfo', 'debug', 'Suppression de => ' . $value);
+                cache::set('teleinfo::needRegenerateMonthlyStat', '1');
+                $cmd->remove();
+                //$cmd->save();
+            }
+        }
+
+        $array = array("STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR","STAT_MONTH","STAT_MONTH_PROD", "STAT_YEAR", "STAT_YEAR_PROD", "STAT_LASTMONTH");
+        foreach ($array as $value){
+            log::add('teleinfo', 'debug', 'Recherche de => ' . $value);
+            $cmd = $this->getCmd('info', $value);
+            if (is_object($cmd)) {
+                log::add('teleinfo', 'debug', 'Suppression de => ' . $value);
+                cache::set('teleinfo::needRegenerateMonthlyStat', '1');
+                $cmd->remove();
+                //$cmd->save();
+            }
         }
     }
 
@@ -954,6 +986,12 @@ class teleinfo extends eqLogic
         $this->createOtherCmd();
 
         $this->createPanelStats();
+
+        if (cache::byKey('teleinfo::needRegenerateMonthlyStat', '0')->getValue() == '1'){
+            cache::set('teleinfo::needRegenerateMonthlyStat', '0');
+            $this->regenerateMonthlyStat();
+        }
+
     }
 
     public function preRemove()
@@ -963,19 +1001,19 @@ class teleinfo extends eqLogic
 
     public function createOtherCmd()
     {
+        log::add('teleinfo', 'debug', '-------- Santé --------');
         $array = array("HEALTH");
-        for ($ii = 0; $ii < 1; $ii++) {
-            $cmd = $this->getCmd('info', $array[$ii]);
-            if ($cmd === false) {
+        foreach ($array as $value){
+            $cmd = $this->getCmd('info', $value);
+            if (!is_object($cmd)) {
                 $cmd = new teleinfoCmd();
-                $cmd->setName($array[$ii]);
+                $cmd->setName($value);
                 $cmd->setEqLogic_id($this->id);
-                $cmd->setLogicalId($array[$ii]);
+                $cmd->setLogicalId($value);
                 $cmd->setType('info');
-                $cmd->setConfiguration('info_conso', $array[$ii]);
+                $cmd->setConfiguration('info_conso', $value);
                 $cmd->setConfiguration('type', 'health');
-                $cmd->setSubType('numeric');
-                $cmd->setUnite('Wh');
+                $cmd->setSubType('string');
                 $cmd->setIsHistorized(0);
                 $cmd->setEventOnly(1);
                 $cmd->setIsVisible(0);
@@ -986,38 +1024,13 @@ class teleinfo extends eqLogic
 
     public function createPanelStats()
     {
-        log::add('teleinfo', 'debug', '-------- Commandes des stats --------');
-        $array = array("STAT_JAN_HP", "STAT_JAN_HC", "STAT_FEV_HP", "STAT_FEV_HC", "STAT_MAR_HP", "STAT_MAR_HC", "STAT_AVR_HP", "STAT_AVR_HC", "STAT_MAI_HP", "STAT_MAI_HC", "STAT_JUIN_HP", "STAT_JUIN_HC", "STAT_JUI_HP", "STAT_JUI_HC", "STAT_AOU_HP", "STAT_AOU_HC", "STAT_SEP_HP", "STAT_SEP_HC", "STAT_OCT_HP", "STAT_OCT_HC", "STAT_NOV_HP", "STAT_NOV_HC", "STAT_DEC_HP", "STAT_DEC_HC", "STAT_MONTH_LAST_YEAR", "STAT_YEAR_LAST_YEAR");
-        foreach ($array as $value){
-            $cmd = $this->getCmd('info', $value);
-            log::add('teleinfo', 'debug', '=> ' . $value);
-            if ($cmd === false) {
-                $cmd = new teleinfoCmd();
-                $cmd->setName($value);
-                $cmd->setEqLogic_id($this->id);
-                $cmd->setLogicalId($value);
-                $cmd->setType('info');
-                $cmd->setConfiguration('info_conso', $value);
-                $cmd->setConfiguration('type', 'panel');
-                $cmd->setConfiguration('historizeMode', 'none');
-                $cmd->setDisplay('generic_type', 'DONT');
-                $cmd->setSubType('numeric');
-                $cmd->setUnite('Wh');
-                $cmd->setIsHistorized(0);
-                $cmd->setEventOnly(1);
-                $cmd->setIsVisible(0);
-                $cmd->save();
-            } else {
-                $cmd->setDisplay('generic_type', 'DONT');
-                $cmd->setConfiguration('historizeMode', 'none');
-                $cmd->save();
-            }
-        }
+        log::add('teleinfo', 'debug', '-------- Commandes des stats ---------');
         $array = array("STAT_TODAY","STAT_TODAY_HC", "STAT_TODAY_HP", "STAT_TODAY_PROD","STAT_YESTERDAY","STAT_YESTERDAY_HC","STAT_YESTERDAY_HP","STAT_YESTERDAY_PROD");
         foreach ($array as $value){
             $cmd = $this->getCmd('info', $value);
-            log::add('teleinfo', 'debug', '=> ' . $value);
+
             if ($cmd === false) {
+                log::add('teleinfo', 'debug', 'Nouvelle => ' . $value);
                 $cmd = new teleinfoCmd();
                 $cmd->setName($value);
                 $cmd->setEqLogic_id($this->id);
@@ -1035,6 +1048,7 @@ class teleinfo extends eqLogic
                 $cmd->save();
                 $cmd->refresh();
             } else {
+                log::add('teleinfo', 'debug', 'Ancienne => ' . $value);
                 $cmd->setIsHistorized(1);
                 $cmd->setConfiguration('type', 'stat');
                 $cmd->setConfiguration('historizeMode', 'none');
