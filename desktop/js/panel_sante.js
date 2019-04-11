@@ -1,4 +1,4 @@
-var populate = [{id:"STAT_TODAY",name:"Conso totale Aujourd'hui"},{id:"STAT_MONTH",name:"Conso Mois en cours"},{id:"STAT_YEAR",name:"Conso Année en cours"},{id:"PAPP",name:"Puissance apparente instantanée compteur normal",commentaire:"Nécessaire seulement si la puissance apparente instantanée linky est nok"},{id:"SINSTS",name:"Puissance apparente instantanée linky",commentaire:"Nécessaire seulement si la puissance apparente instantanée normal est nok"},{id:"STAT_MONTH_LAST_YEAR",name:"Statistique consommation du mois l'année dernière"},{id:"STAT_YEAR_LAST_YEAR",name:"Statistique consommation de l'année dernière"}];
+var populate = [{id:"STAT_TODAY",name:"Conso totale Aujourd'hui"},{id:"STAT_YESTERDAY",name:"Hier"},{id:"STAT_YESTERDAY_HC",name:"Hier HC"},{id:"STAT_YESTERDAY_HP",name:"Hier HP"},{id:"STAT_YESTERDAY_PROD",name:"Hier Prod"},{id:"PAPP",name:"Puissance apparente instantanée compteur normal",commentaire:"Nécessaire seulement si la puissance apparente instantanée linky est nok"},{id:"SINSTS",name:"Puissance apparente instantanée linky",commentaire:"Nécessaire seulement si la puissance apparente instantanée normal est nok"}];
 
 $.ajax({
         type: 'POST',
@@ -21,21 +21,9 @@ $.ajax({
 			{
 				for(cmd in data.result[eqLogic].cmd)
 				{
-					//console.log(data.result[eqLogic].cmd[cmd].logicalId);
-					switch(data.result[eqLogic].cmd[cmd].logicalId)
-					{
-						case "PAPP":
-                        case "SINSTS":
-                        case "STAT_YEAR_LAST_YEAR":
-                        case "STAT_MONTH_LAST_YEAR":
-                        case "STAT_TODAY":
-                        case "STAT_MONTH":
-                        case "STAT_YEAR":
-							var result = $.grep(populate, function(e){ return e.id == data.result[eqLogic].cmd[cmd].logicalId; });
-							if (result.length == 1) {
-								result[0].found = 1;
-							}
-						break;
+					var result = $.grep(populate, function(e){ return e.id == data.result[eqLogic].cmd[cmd].logicalId; });
+					if (result.length == 1) {
+						result[0].found = 1;
 					}
 				}
 			}
@@ -55,11 +43,11 @@ function populate_table(){
 		tbody += '</td>';
 
 		if(populate[i].found == 1){
-			tbody += '<td class="alert alert-success">OK';
+			tbody += '<td> <span class="label label-success">OK</span>';
 			tbody += '</td>';
             tbody += '<td></td></tr>';
 		}else{
-			tbody += '<td class="alert alert-danger">NOK';
+			tbody += '<td><span class="label label-danger">Nok</span>';
 			tbody += '</td>';
             tbody += '<td>'+ populate[i].commentaire +'</td></tr>';
 		}

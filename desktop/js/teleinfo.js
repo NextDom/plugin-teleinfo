@@ -298,7 +298,7 @@ function addCmdToTable(_cmd) {
             tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr tooltips checkbox-inline" title="Spécifie si le calcul de la tendance se fait sur la journée entière ou sur la plage jusqu\'à l\'heure actuelle." data-l1key="configuration" data-l2key="type_calcul_tendance"/> {{Journée entière}}</label></span>';
         }
 
-        tr += '</br><input class="cmdAttr form-control tooltips input-sm" data-l1key="unite" style="margin-left:10px;width: 20%;display: inline-block;" placeholder="Unité" title="{{Unité de la donnée (Wh, A, kWh...) pour plus d\'informations aller voir le wiki}}">';
+        tr += '</br><input class="cmdAttr form-control tooltips input-sm" data-l1key="unite" style="margin-top: 10px;width: 20%;display: inline-block;" placeholder="Unité" title="{{Unité de la donnée (Wh, A, kWh...) pour plus d\'informations aller voir le wiki}}">';
 
         tr += '<input style="margin-left:10px;width: 20%;display: inline-block;" class="tooltips cmdAttr form-control expertModeVisible input-sm" data-l1key="cache" data-l2key="lifetime" placeholder="{{Lifetime cache}}">';
         tr += '<input style="margin-left:10px;width: 20%;display: inline-block;" class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="minValue" placeholder="{{Min}}" title="{{Borne minimum de la valeur}}" > ';
