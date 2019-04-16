@@ -163,26 +163,22 @@ switch ($controlerState) {
                   <fieldset>
                       <!--<legend>{{Paramètres}}</legend>-->
                       <div class="form-group infoAbonnement">
-                          <label class="col-lg-3 control-label pull-left">{{Votre abonnement }}</label>
-                          <div class="col-lg-4">
+                          <label class="col-lg-4 control-label pull-left">{{Votre abonnement }}</label>
+                          <div class="col-lg-7">
                               <span class="eqLogicAttr" data-l1key="configuration" data-l2key="abonnement" id="typeAbonnement">Aucun</span>
-                          </div>
-                          <div class="col-lg-5">
                           </div>
                       </div>
                       <div class="form-group creationCommandes">
-                          <label class="col-lg-3 control-label pull-left">{{Création des commandes}} <sup><i class="fas fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}"></i></sup></label>
+                          <label class="col-lg-4 control-label pull-left">{{Création des commandes}} <sup><i class="fas fa-question-circle tooltips" title="{{Créer automatiquement les commandes envoyées par le compteur}}"></i></sup></label>
                           <div class="col-lg-7 tooltips">
                               <input type="checkbox" id="AutoCreateFromCompteur" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="AutoCreateFromCompteur"/>
                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="col-lg-3 control-label pull-left"></label>
-                          <div class="col-lg-4">
+                          <label class="col-lg-4 control-label pull-left"></label>
+                          <div class="col-lg-7">
                               <a class="btn btn-info tooltips"  id="btTeleinfoHealth"><i class="fas fa-medkit"></i>{{ Santé}}</a>
                               <a class="btn btn-warning tooltips"  id="btTeleinfoMaintenance"><i class="fas fa-hospital"></i>{{ Maintenance}}</a>
-                          </div>
-                          <div class="col-lg-5">
                           </div>
                       </div>
                       <div class="form-group">

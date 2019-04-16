@@ -42,13 +42,23 @@ $eqLogics = eqLogic::byType('teleinfo');
 
                         </div>
                         <div class="">
-						<label class="control-label" style="font-size: 1em;">{{Journée}}</label>
+						    <label class="control-label" style="font-size: 1em;">{{Journée}}</label>
+                            <div>
+                                <span class='' style="font-size: 1.3em;">
+                                    <span class="teleinfoAttr" data-l1key="conso" data-l2key="day"></span>
+                                    kWh
+                                </span>
+                            </div>
 						</div>
 						<div class="">
-							<span class='' style="font-size: 1.3em;">
-								<span class="teleinfoAttr" data-l1key="conso" data-l2key="day"></span>
-								kWh
-							</span>
+                            <label class="control-label" style="font-size: 1em;">{{Hier}}</label>
+                            <div>
+                                <span class='' style="font-size: 1.3em;">
+                                    <span class="teleinfoAttr" data-l1key="conso" data-l2key="yesterday"></span>
+                                    kWh
+                                </span>
+                            </div>
+
 						</div>
 					</div>
 					<div class="form-group col-md-4" style="">
@@ -148,4 +158,5 @@ $eqLogics = eqLogic::byType('teleinfo');
         </div>
     </div>
 
+<?php include_file('3rdparty', 'moment/moment-with-locales.min', 'js', 'teleinfo'); ?>
 <?php include_file('desktop', 'panel', 'js', 'teleinfo'); ?>

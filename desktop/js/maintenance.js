@@ -55,47 +55,41 @@ function miseEnForme(texte){
 }
 
 function optimize(cmd_id, type){
-	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').attr('disabled','disabled');
-	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').removeClass("btn-info").addClass("btn-warning");
-	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').html('<i class="fas fa-spinner"></i>  En cours...');
-	start = Date.now();
-	$.ajax({
-            type: 'POST',
-            url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
-            data: {
-                action:'optimizeArchive',
-                id: cmd_id,
-                type: type,
-                },
-            dataType: 'json',
-            error: function (request, status, error) {
-                handleAjaxError(request, status, error);
-            },
-            success: function (data) {
-				console.log(data);
-
-            }
-	});
-	refresh = setTimeout("refreshCount("+cmd_id+")",2000);
+    if ($('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').attr('disabled') != "disabled"){
+        $('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').attr('disabled','disabled');
+    	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').removeClass("btn-info").addClass("btn-warning");
+    	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').html('<i class="fas fa-spinner"></i>  En cours...');
+    	start = Date.now();
+    	$.ajax({
+                type: 'POST',
+                url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+                async : true,
+                data: {
+                    action:'optimizeArchive',
+                    id: cmd_id,
+                    type: type,
+                    },
+                dataType: 'json',
+    	});
+        $.hideLoading();
+    	refresh = setTimeout("refreshCount("+cmd_id+")",2000);
+    }
 }
 
 
 $('.eqLogicAction[data-action=regenerateMonthlyStat]').on('click', function() {
-    $.ajax({
-            type: 'POST',
-            url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
-            data: {
-                action:'regenerateMonthlyStat',
-                },
-            dataType: 'json',
-            error: function (request, status, error) {
-                handleAjaxError(request, status, error);
-            },
-            success: function (data) {
-                console.log(data);
-                //$('.cmdMaintenance[cmd_id='+cmdId+']').find(".cmdMaintenanceAttr[type=countcleanable]").text(data.result.count[0].count);
-            }
-	});
+    if ($(this).attr( "disabled" ) != "disabled"){
+        $(this).attr('disabled','disabled');
+        $.ajax({
+                type: 'POST',
+                url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+                data: {
+                    action:'regenerateMonthlyStat',
+                    },
+                dataType: 'json',
+    	});
+        $.hideLoading();
+    }
 });
 
 function refreshCount(cmdId){
@@ -111,6 +105,7 @@ function refreshCount(cmdId){
                 handleAjaxError(request, status, error);
             },
             success: function (data) {
+                $.hideLoading();
                 $('.cmdMaintenance[cmd_id='+cmdId+']').find(".cmdMaintenanceAttr[type=countcleanable]").text(data.result.count[0].count);
 
 				if (data.result.count[0].count == 0){
@@ -119,12 +114,14 @@ function refreshCount(cmdId){
 					$('.btTeleinfoMaintenance[cmd_id='+cmdId+']').removeClass("btn-warning").addClass("btn-success");
 					$('.btTeleinfoMaintenance[cmd_id='+cmdId+']').html('<i class="fas fa-check"></i>  Ok');
 				}else{
-					if((Date.now() - start) < 60000){
+					if((Date.now() - start) < 300000){
 						refresh = setTimeout("refreshCount("+cmdId+")",2000);
 					}
 				}
+                $.hideLoading();
             }
 	});
+    $.hideLoading();
 }
 
 

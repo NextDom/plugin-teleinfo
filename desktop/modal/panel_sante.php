@@ -25,7 +25,7 @@ if (!isConnect('admin')) {
 
 <div id='div_HealthAlert' style="display: none;"></div>
 <div>
-	<table class="table table-condensed table-bordered" id="table_health">
+	<table class="table table-condensed" id="table_health">
 		<thead>
 			<tr>
 				<th class="col-md-3">{{Donnée}}</th>
@@ -38,5 +38,7 @@ if (!isConnect('admin')) {
 		</tbody>
 	</table>
 </div>
+<div class="center">
 Si un statut est nok veuillez enregistrer votre objet de nouveau puis attendre 24h.
+</div>
 <?php include_file('desktop', 'panel_sante', 'js', 'teleinfo');?>

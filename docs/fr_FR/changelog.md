@@ -14,6 +14,7 @@ Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https
 * Déclaration index production.
 * Correction du diagnostique.
 * Maintenance de l'historique des index.
+* Nettoyage des statistiques. 
 
 ### 4.3.2 (01-04-2019)
 

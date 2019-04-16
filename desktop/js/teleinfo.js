@@ -209,40 +209,40 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="STAT_TODAY_HP">Conso HP Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_HC">Conso HC Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_PROD">Production Aujourd\'hui</option>';
-        selRequestType += '<option value="STAT_MONTH">Conso Mois en cours</option>';
-        selRequestType += '<option value="STAT_MONTH_PROD">Production Mois en cours</option>';
-        selRequestType += '<option value="STAT_MONTH_LAST_YEAR">Conso Mois en cours année précédente</option>';
-        selRequestType += '<option value="STAT_YEAR_LAST_YEAR">Conso Année précédente au même jour</option>';
-        selRequestType += '<option value="STAT_YEAR">Conso Année en cours</option>';
-        selRequestType += '<option value="STAT_YEAR_PROD">Production Année en cours</option>';
-        selRequestType += '<option value="STAT_LASTMONTH">Conso Mois dernier</option>';
-        selRequestType += '<option value="STAT_JAN_HP">Conso Janvier HP</option>';
-        selRequestType += '<option value="STAT_FEV_HP">Conso Février HP</option>';
-        selRequestType += '<option value="STAT_MAR_HP">Conso Mars HP</option>';
-        selRequestType += '<option value="STAT_AVR_HP">Conso Avril HP</option>';
-        selRequestType += '<option value="STAT_MAI_HP">Conso Mai HP</option>';
-        selRequestType += '<option value="STAT_JUIN_HP">Conso Juin HP</option>';
-        selRequestType += '<option value="STAT_JUI_HP">Conso Juillet HP</option>';
-        selRequestType += '<option value="STAT_AOU_HP">Conso Août HP</option>';
-        selRequestType += '<option value="STAT_SEP_HP">Conso Septembre HP</option>';
-        selRequestType += '<option value="STAT_OCT_HP">Conso Octobre HP</option>';
-        selRequestType += '<option value="STAT_NOV_HP">Conso Novembre HP</option>';
-        selRequestType += '<option value="STAT_DEC_HP">Conso Décembre HP</option>';
-        selRequestType += '<option value="STAT_JAN_HC">Conso Janvier HC</option>';
-        selRequestType += '<option value="STAT_FEV_HC">Conso Février HC</option>';
-        selRequestType += '<option value="STAT_MAR_HC">Conso Mars HC</option>';
-        selRequestType += '<option value="STAT_AVR_HC">Conso Avril HC</option>';
-        selRequestType += '<option value="STAT_MAI_HC">Conso Mai HC</option>';
-        selRequestType += '<option value="STAT_JUIN_HC">Conso Juin HC</option>';
-        selRequestType += '<option value="STAT_JUI_HC">Conso Juillet HC</option>';
-        selRequestType += '<option value="STAT_AOU_HC">Conso Août HC</option>';
-        selRequestType += '<option value="STAT_SEP_HC">Conso Septembre HC</option>';
-        selRequestType += '<option value="STAT_OCT_HC">Conso Octobre HC</option>';
-        selRequestType += '<option value="STAT_NOV_HC">Conso Novembre HC</option>';
-        selRequestType += '<option value="STAT_DEC_HC">Conso Décembre HC</option>';
         selRequestType += '<option value="TENDANCE_DAY">Tendance journalière de consommation</option>';
         selRequestType += '<option value="PPAP_MANUELLE">Conso moy dernière minute</option>';
         selRequestType += '<option value="STAT_MOY_LAST_HOUR">Conso moy dernière heure</option>';
+        selRequestType += '<option value="STAT_MONTH">[obsolete] Conso Mois en cours</option>';
+        selRequestType += '<option value="STAT_MONTH_PROD">[obsolete] Production Mois en cours</option>';
+        selRequestType += '<option value="STAT_MONTH_LAST_YEAR">[obsolete] Conso Mois en cours année précédente</option>';
+        selRequestType += '<option value="STAT_YEAR_LAST_YEAR">[obsolete] Conso Année précédente au même jour</option>';
+        selRequestType += '<option value="STAT_YEAR">[obsolete] Conso Année en cours</option>';
+        selRequestType += '<option value="STAT_YEAR_PROD">[obsolete] Production Année en cours</option>';
+        selRequestType += '<option value="STAT_LASTMONTH">[obsolete] Conso Mois dernier</option>';
+        selRequestType += '<option value="STAT_JAN_HP">[obsolete] Conso Janvier HP</option>';
+        selRequestType += '<option value="STAT_FEV_HP">[obsolete] Conso Février HP</option>';
+        selRequestType += '<option value="STAT_MAR_HP">[obsolete] Conso Mars HP</option>';
+        selRequestType += '<option value="STAT_AVR_HP">[obsolete] Conso Avril HP</option>';
+        selRequestType += '<option value="STAT_MAI_HP">[obsolete] Conso Mai HP</option>';
+        selRequestType += '<option value="STAT_JUIN_HP">[obsolete] Conso Juin HP</option>';
+        selRequestType += '<option value="STAT_JUI_HP">[obsolete] Conso Juillet HP</option>';
+        selRequestType += '<option value="STAT_AOU_HP">[obsolete] Conso Août HP</option>';
+        selRequestType += '<option value="STAT_SEP_HP">[obsolete] Conso Septembre HP</option>';
+        selRequestType += '<option value="STAT_OCT_HP">[obsolete] Conso Octobre HP</option>';
+        selRequestType += '<option value="STAT_NOV_HP">[obsolete] Conso Novembre HP</option>';
+        selRequestType += '<option value="STAT_DEC_HP">[obsolete] Conso Décembre HP</option>';
+        selRequestType += '<option value="STAT_JAN_HC">[obsolete] Conso Janvier HC</option>';
+        selRequestType += '<option value="STAT_FEV_HC">[obsolete] Conso Février HC</option>';
+        selRequestType += '<option value="STAT_MAR_HC">[obsolete] Conso Mars HC</option>';
+        selRequestType += '<option value="STAT_AVR_HC">[obsolete] Conso Avril HC</option>';
+        selRequestType += '<option value="STAT_MAI_HC">[obsolete] Conso Mai HC</option>';
+        selRequestType += '<option value="STAT_JUIN_HC">[obsolete] Conso Juin HC</option>';
+        selRequestType += '<option value="STAT_JUI_HC">[obsolete] Conso Juillet HC</option>';
+        selRequestType += '<option value="STAT_AOU_HC">[obsolete] Conso Août HC</option>';
+        selRequestType += '<option value="STAT_SEP_HC">[obsolete] Conso Septembre HC</option>';
+        selRequestType += '<option value="STAT_OCT_HC">[obsolete] Conso Octobre HC</option>';
+        selRequestType += '<option value="STAT_NOV_HC">[obsolete] Conso Novembre HC</option>';
+        selRequestType += '<option value="STAT_DEC_HC">[obsolete] Conso Décembre HC</option>';
         selRequestType += '</select>';
     }
     else{
@@ -261,7 +261,12 @@ function addCmdToTable(_cmd) {
             $("#typeAbonnement").html(_cmd.configuration['NGTF'].value);
         }
         else if (_cmd.configuration['OPTARIF']){
-            $("#typeAbonnement").html(_cmd.configuration['OPTARIF'].value);
+            if(_cmd.configuration['OPTARIF'].value.includes('HC')) {
+                $("#typeAbonnement").html("Heures Creuses");
+            }
+            else {
+                $("#typeAbonnement").html(_cmd.configuration['OPTARIF'].value);
+            }
         }
     }
     else if (init(_cmd.configuration['type']) == 'stat'){
@@ -293,7 +298,7 @@ function addCmdToTable(_cmd) {
             tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr tooltips checkbox-inline" title="Spécifie si le calcul de la tendance se fait sur la journée entière ou sur la plage jusqu\'à l\'heure actuelle." data-l1key="configuration" data-l2key="type_calcul_tendance"/> {{Journée entière}}</label></span>';
         }
 
-        tr += '</br><input class="cmdAttr form-control tooltips input-sm" data-l1key="unite" style="margin-left:10px;width: 20%;display: inline-block;" placeholder="Unité" title="{{Unité de la donnée (Wh, A, kWh...) pour plus d\'informations aller voir le wiki}}">';
+        tr += '</br><input class="cmdAttr form-control tooltips input-sm" data-l1key="unite" style="margin-top: 10px;width: 20%;display: inline-block;" placeholder="Unité" title="{{Unité de la donnée (Wh, A, kWh...) pour plus d\'informations aller voir le wiki}}">';
 
         tr += '<input style="margin-left:10px;width: 20%;display: inline-block;" class="tooltips cmdAttr form-control expertModeVisible input-sm" data-l1key="cache" data-l2key="lifetime" placeholder="{{Lifetime cache}}">';
         tr += '<input style="margin-left:10px;width: 20%;display: inline-block;" class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="minValue" placeholder="{{Min}}" title="{{Borne minimum de la valeur}}" > ';

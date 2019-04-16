@@ -22,7 +22,6 @@
  var dailyHistoryChart = [];
 $(".in_datepicker").datepicker();
 
-
 $('#bt_teleinfoPanelSante').on('click', function() {
     $('#md_modal').dialog({title: "{{Santé}}"});
     $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=panel_sante').dialog('open');
@@ -31,7 +30,7 @@ $('#bt_teleinfoPanelSante').on('click', function() {
 $( "#eqlogic_select" ).change(function() {
     globalEqLogic = $( "#eqlogic_select option:selected" ).val();
     initHistoryTrigger();
-    drawStackColumnChart('div_graphGlobalIndex', null);
+    //drawStackColumnChart('div_graphGlobalIndex', null);
     loadData();
 });
 
@@ -48,7 +47,7 @@ $('#bt_validChangeDate').on('click',function(){
 initHistoryTrigger();
 
 //displayTeleinfo(object_id);
-drawStackColumnChart('div_graphGlobalIndex', null);
+//drawStackColumnChart('div_graphGlobalIndex', null);
 
 loadData();
 
@@ -85,14 +84,41 @@ $.ajax({
             }
 
             try {
-                var chart = $('#div_graphGlobalIndex').highcharts();
-                console.log(data.result[globalEqLogic].cmd);
+                //var chart = $('#div_graphGlobalIndex').highcharts();
+                //console.log(data.result[globalEqLogic].cmd);
                 for(cmd in data.result[globalEqLogic].cmd)
                 {
                     try{
                         switch(data.result[globalEqLogic].cmd[cmd].logicalId)
                         {
+                            case "STAT_YESTERDAY_HC":
+                                getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd] );
+                            break;
+                            case "STAT_YESTERDAY_HP":
+                                getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd] );
+                            break;
                             case "STAT_YESTERDAY":
+                                if(!compteurProd){
+                                    console.log("[loadData][STAT_YESTERDAY] " + data.result[globalEqLogic].cmd[cmd].id);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]'), 'monthlastyear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]'), 'yearlastyear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yesterday]'), 'yesterday' , data.result[globalEqLogic].cmd[cmd]);
+                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
+                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd]);
+                                }
+                                break;
+                            case "STAT_YESTERDAY_PROD":
+                                if(compteurProd){
+                                    console.log("[loadData][STAT_YESTERDAY_PROD] " + data.result[globalEqLogic].cmd[cmd].id);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]'), 'monthlastyear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]'), 'yearlastyear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
+                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
+                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd]);
+                                }
                                 break;
                             case "SINSTI":
                                 if(compteurProd){
@@ -112,37 +138,16 @@ $.ajax({
                             case "STAT_TODAY":
                                 if(!compteurProd){
                                     console.log("[loadData][STAT_TODAY] " + data.result[globalEqLogic].cmd[cmd].value);
-                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
                                     $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
-                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd])
                                 }
                                 break;
                             case "STAT_TODAY_PROD":
                                 if(compteurProd){
                                     console.log("[loadData][STAT_TODAY_PROD] " + data.result[globalEqLogic].cmd[cmd].value);
-                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
                                     $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
-                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd])
-                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd])
                                 }
                                 break;
-                            case "STAT_MONTH":
-                                console.log("[loadData][STAT_MONTH] " + data.result[globalEqLogic].cmd[cmd].value);
-                                $('.teleinfoAttr[data-l1key=conso][data-l2key=month]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
-                                break;
-                            case "STAT_MONTH_LAST_YEAR":
-                                console.log("[loadData][STAT_MONTH_LAST_YEAR] " + data.result[globalEqLogic].cmd[cmd].value);
-                                $('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
-                                break;
-                            case "STAT_YEAR_LAST_YEAR":
-                                console.log("[loadData][STAT_YEAR_LAST_YEAR] " + data.result[globalEqLogic].cmd[cmd].value);
-                                $('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
-                                break;
-                            case "STAT_YEAR":
-                                console.log("[loadData][STAT_YEAR] " + data.result[globalEqLogic].cmd[cmd].value);
-                                $('.teleinfoAttr[data-l1key=conso][data-l2key=year]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
-                                break;
-                            case "STAT_JAN_HP":
+                            /*case "STAT_JAN_HP":
                                 if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 0, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
                                 break;
                             case "STAT_JAN_HC":
@@ -213,7 +218,7 @@ $.ajax({
                                 break;
                             case "STAT_DEC_HC":
                                 if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 11, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
+                                break;*/
                         }
                     }
                     catch(err) {
@@ -237,53 +242,54 @@ $.ajax({
 }
 
 
-function getTeleinfoObjectHistory(div, type, object) {
-    $.ajax({
-        type: 'POST',
-        async:true,
-        url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
-        data: {
-            action:'getHistory',
-            id:object.id,
-            dateRange:'7 days',
-            dateStart:'',
-            dateEnd:'',
-            derive:0,
-            allowZero:1
-            },
-        dataType: 'json',
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-            switch(type)
-            {
-                case 'Simple':
-                    var Series = [{
-                        step: true,
-                        name: '{{'+object.name+'}}',
-                        data: data.result.data,
-                        type: 'line',
-                        tooltip: {
-                            valueDecimals: 2
-                        },
-                    }];
-                    drawSimpleGraph(div, Series);
-                break;
-                case 'Stack':
-                    drawStackGraph(div, Series);
-                break;
-                case 'StackColumn':
-                    console.log(data);
-                    drawStackColumnChart(div, Series);
-                break;
-                case 'Pie':
-                    drawPieChart(div, Series, '{{'+object.name+'}}');
-                break;
-            }
-        }
-    });
-}
+// function getTeleinfoObjectHistory(div, type, object) {
+//     console.log('[getTeleinfoObjectHistory]');
+//     $.ajax({
+//         type: 'POST',
+//         async:true,
+//         url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+//         data: {
+//             action:'getHistory',
+//             id:object.id,
+//             dateRange:'7 days',
+//             dateStart:'',
+//             dateEnd:'',
+//             derive:0,
+//             allowZero:1
+//             },
+//         dataType: 'json',
+//         error: function (request, status, error) {
+//             handleAjaxError(request, status, error);
+//         },
+//         success: function (data) {
+//             switch(type)
+//             {
+//                 case 'Simple':
+//                     var Series = [{
+//                         step: true,
+//                         name: '{{'+object.name+'}}',
+//                         data: data.result.data,
+//                         type: 'line',
+//                         tooltip: {
+//                             valueDecimals: 2
+//                         },
+//                     }];
+//                     drawSimpleGraph(div, Series);
+//                 break;
+//                 case 'Stack':
+//                     drawStackGraph(div, Series);
+//                 break;
+//                 case 'StackColumn':
+//                     console.log(data);
+//                     drawStackColumnChart(div, Series);
+//                 break;
+//                 case 'Pie':
+//                     drawPieChart(div, Series, '{{'+object.name+'}}');
+//                 break;
+//             }
+//         }
+//     });
+// }
 
 function getObjectHistory(div, type, object, action = 'none') {
     dailyHistoryChart[div] = null;
@@ -310,14 +316,22 @@ function getObjectHistory(div, type, object, action = 'none') {
 }
 
 function getDailyHistory(div,  object) {
+    var from = moment($('#in_startDate').value(), "YYYY-MM-DD").format('YYYY-MM-DD');
+    if (moment().format('DD') === $('#in_endDate').value().substr(-2,2)) {
+        var to = moment($('#in_endDate').value(), "YYYY-MM-DD").subtract(1, 'days').format('YYYY-MM-DD');
+    }else {
+        var to = moment($('#in_endDate').value(), "YYYY-MM-DD").format('YYYY-MM-DD');
+    }
+
+
     dailyHistoryChart[div] = null;
     console.log("[getDailyHistory] Récupération de l'historique pour la commande " + object.name);
     teleinfoDrawChart({
                     cmd_id: object.id,
                     el: div,
                     dateRange : 'all',
-                    dateStart: $('#in_startDate').value(),
-                    dateEnd: $('#in_endDate').value(),
+                    dateStart: from,
+                    dateEnd: to,
                     showNavigator : false,
                     option: {
                         graphColor: '#7cb5ec',
@@ -326,7 +340,14 @@ function getDailyHistory(div,  object) {
                         graphScale : 1,
                         graphType : 'column',
                         graphZindex :1,
-                        groupingType:"high::day"
+                        groupingType:"high::day",
+                    },
+                    tooltip : {
+                        valueDecimals: 2,
+                    },
+                    tooltipSeries: {
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> kWh<br/>',
+                        shared: true
                     },
                     divide:1000,
                 });
@@ -346,6 +367,10 @@ function getDailyHistory(div,  object) {
                                 dateStart: $('#in_startDate').value(),
                                 dateEnd: $('#in_endDate').value(),
                                 showNavigator : false,
+                                tooltipSeries: {
+                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+                                    shared: true
+                                },
                                 option: {
                                     graphType : 'line',
                                     graphColor: '#87b125',
@@ -363,28 +388,93 @@ function getDailyHistory(div,  object) {
 }
 
 function getMonthlyHistory(div,  object) {
-    dailyHistoryChart[div] = null;
+    var color = '#7cb5ec';
+    var from = moment().subtract(12, 'months').startOf('month').format('YYYY-MM-DD 00:00:00');
+    var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
+    if (object.logicalId.includes("HC")){
+        color = '#ed9448';
+    }
     console.log("[getMonthlyHistory] Récupération de l'historique pour la commande " + object.name);
     teleinfoDrawChart({
                     cmd_id: object.id,
                     el: div,
                     dateRange : 'all',
-                    dateStart: $('#in_startDate').value(),
-                    dateEnd: $('#in_endDate').value(),
+                    dateStart: from,
+                    dateEnd: to,
                     showNavigator : false,
                     option: {
-                        graphColor: '#7cb5ec',
+                        graphColor: color,
                         derive : 0,
                         graphStep: 1,
                         graphScale : 1,
+                        graphStack : 1,
                         graphType : 'column',
-                        graphZindex :1,
-                        groupingType:"high::month"
+                        graphZindex : 1,
+                        groupingType:"sum::month"
+                    },
+                    tooltip : {
+                        stacking : 'normal',
+                        shared : true,
+                        valueSuffix: ' kWh',
+                        //pointFormat: '{series.name}<b>{point.y} kWh</b><br/>',
+                    },
+                    plotOptions : {
+                        column: {
+                            stacking: 'normal',
+                            dataLabels: {
+                                enabled: true,
+                                color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                                style: {
+                                    textShadow: '0 0 3px black',
+                                    fontSize: '10px',
+
+                                },
+                                format: "{point.y:.2f}",
+                            }
+                        }
                     },
                     divide:1000,
-                });
+    });
 }
 
+function getCommandHistoryValue(div, type , object) {
+    var from = moment().format('YYYY-MM-DD 00:00:00');
+    var to = moment().format('YYYY-MM-DD 23:59:59');
+    if (type == 'monthlastyear'){
+        from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
+        to = moment().subtract(1, 'years').endOf('month').format('YYYY-MM-DD 23:59:59');
+    }
+    else if (type == 'yearlastyear'){
+        from = moment().subtract(1, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
+        to = moment().subtract(1, 'years').endOf('year').format('YYYY-MM-DD 23:59:59');
+    }
+    else if (type == 'month'){
+        from = moment().startOf('month').format('YYYY-MM-DD 00:00:00');
+        to = moment().endOf('month').format('YYYY-MM-DD 23:59:59');
+    }
+    else if (type == 'year'){
+        from = moment().startOf('year').format('YYYY-MM-DD 00:00:00');
+        to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
+    }
+    else if (type == 'yesterday'){
+        from = moment().subtract(1, 'days').startOf('day').format('YYYY-MM-DD 00:00:00');
+        to = moment().subtract(1, 'days').endOf('day').format('YYYY-MM-DD 23:59:59');
+    }
+
+    dailyHistoryChart[div] = null;
+    console.log("[getCommandHistoryValue] Récupération de la valeur " + type);
+    jeedom.history.get({
+        cmd_id: object.id,
+        dateStart : from,
+        dateEnd : to,
+        error: function (error) {
+        },
+        success: function (myCommandHistory) {
+            //console.log(myCommandHistory);
+            div.text(myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000);
+        }
+    });
+}
 
 function drawPieChart(_el, _data, _title) {
     new Highcharts.Chart({
@@ -795,8 +885,30 @@ function teleinfoDrawChart(_params) {
       if (init(_params.tooltip) == '') {
         _params.tooltip = {pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>', valueDecimals: 2, };
       }
+      if (init(_params.tooltipSeries) == '') {
+        _params.tooltipSeries = {valueDecimals: 2, };
+      }
 
-      var legend = {borderColor: 'black',borderWidth: 2,shadow: true};
+      if (init(_params.plotOptions) == '') {
+        _params.plotOptions = {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+              }
+            },
+            showInLegend: true
+          },
+      };
+      }
+
+      if (init(_params.legend) == '') {
+        var legend = {borderColor: 'black',borderWidth: 2,shadow: true};
+      }
       legend.enabled = init(_params.showLegend, true);
       if(isset(_params.newGraph) && _params.newGraph == true){
         delete dailyHistoryChart[_params.el];
@@ -850,20 +962,7 @@ function teleinfoDrawChart(_params) {
               enabled: _params.enableExport || ($.mobile) ? false : true
             },
             tooltip: _params.tooltip,
-            plotOptions: {
-              pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                  enabled: true,
-                  format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                  style: {
-                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                  }
-                },
-                showInLegend: true
-              }
-            },
+            plotOptions: _params.plotOptions,
             series: [series]
           });
         }else {
@@ -902,28 +1001,6 @@ function teleinfoDrawChart(_params) {
             cursor: 'pointer',
             y : -30 - 25*(nbTimeline - 1),
             point: {
-              events: {
-                click: function (event) {
-                  var deviceInfo = getDeviceType();
-                  if ($.mobile || deviceInfo.type == 'tablet' || deviceInfo.type == 'phone') {
-                    return
-                  }
-                  if($('#md_modal2').is(':visible')){
-                    return;
-                  }
-                  if($('#md_modal1').is(':visible')){
-                    return;
-                  }
-                  var id = this.series.userOptions.id;
-                  var datetime = Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x);
-                  var value = this.y;
-                  bootbox.prompt("{{Edition de la série :}} <b>" + this.series.name + "</b> {{et du point de}} <b>" + datetime + "</b> ({{valeur :}} <b>" + value + "</b>) ? {{Ne rien mettre pour supprimer la valeur}}", function (result) {
-                    if (result !== null) {
-                      jeedom.history.changePoint({cmd_id: id, datetime: datetime,oldValue:value, value: result});
-                    }
-                  });
-                }
-              }
             }
           }
           for(var i in data.result.data){
@@ -945,30 +1022,8 @@ function teleinfoDrawChart(_params) {
             step: _params.option.graphStep,
             yAxis: _params.option.graphScale,
             stacking : stacking,
-            tooltip: _params.tooltip,
+            tooltip: _params.tooltipSeries,
             point: {
-              events: {
-                click: function (event) {
-                  var deviceInfo = getDeviceType();
-                  if ($.mobile || deviceInfo.type == 'tablet' || deviceInfo.type == 'phone') {
-                    return
-                  }
-                  if($('#md_modal2').is(':visible')){
-                    return;
-                  }
-                  if($('#md_modal1').is(':visible')){
-                    return;
-                  }
-                  var id = this.series.userOptions.id;
-                  var datetime = Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x);
-                  var value = this.y;
-                  bootbox.prompt("{{Edition de la série :}} <b>" + this.series.name + "</b> {{et du point de}} <b>" + datetime + "</b> ({{valeur :}} <b>" + value + "</b>) ? {{Ne rien mettre pour supprimer la valeur}}", function (result) {
-                    if (result !== null) {
-                      jeedom.history.changePoint({cmd_id: id, datetime: datetime,oldValue:value, value: result});
-                    }
-                  });
-                }
-              }
             }
           };
         }
@@ -1051,25 +1106,31 @@ function teleinfoDrawChart(_params) {
               enabled: _params.showTimeSelector
             },
             legend: legend,
-            tooltip: _params.tooltip,
             yAxis: [{
-                                  format: '{value}',
-                                  showEmpty: false,
-                                  minPadding: 0.001,
-                                  maxPadding: 0.001,
-                                  showLastLabel: true,
-                                }, {
-                                  opposite: false,
-                                  format: '{value}',
-                                  showEmpty: false,
-                                  gridLineWidth: 0,
-                                  minPadding: 0.001,
-                                  maxPadding: 0.001,
-                                  labels: {
-                                    align: 'left',
-                                    x: 2
-                                  }
-                              }],
+                            format: '{value}',
+                            showEmpty: false,
+                            minPadding: 0.001,
+                            maxPadding: 0.001,
+                            showLastLabel: true,
+                          }, {
+                            opposite: false,
+                            format: '{value}',
+                            showEmpty: false,
+                            gridLineWidth: 1,
+                            minPadding: 0.001,
+                            maxPadding: 0.001,
+                            labels: {
+                              align: 'left',
+                              x: 2
+                          },
+                          stackLabels: {
+                              enabled: true,
+                              style: {
+                                  fontWeight: 'bold',
+                                  color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                              }
+                          },
+                        }],
             xAxis: {
               type: 'datetime',
               ordinal: false,
@@ -1088,6 +1149,8 @@ function teleinfoDrawChart(_params) {
               trackBorderColor: '#CCC',
               enabled: _params.showScrollbar
             },
+            plotOptions: _params.plotOptions,
+            tooltip: _params.tooltip,
             series: [series]
           });
         } else {
