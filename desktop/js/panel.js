@@ -316,14 +316,22 @@ function getObjectHistory(div, type, object, action = 'none') {
 }
 
 function getDailyHistory(div,  object) {
+    var from = moment($('#in_startDate').value(), "YYYY-MM-DD").format('YYYY-MM-DD');
+    if (moment().format('DD') === $('#in_endDate').value().substr(-2,2)) {
+        var to = moment($('#in_endDate').value(), "YYYY-MM-DD").subtract(1, 'days').format('YYYY-MM-DD');
+    }else {
+        var to = moment($('#in_endDate').value(), "YYYY-MM-DD").format('YYYY-MM-DD');
+    }
+
+
     dailyHistoryChart[div] = null;
     console.log("[getDailyHistory] Récupération de l'historique pour la commande " + object.name);
     teleinfoDrawChart({
                     cmd_id: object.id,
                     el: div,
                     dateRange : 'all',
-                    dateStart: $('#in_startDate').value(),
-                    dateEnd: $('#in_endDate').value(),
+                    dateStart: from,
+                    dateEnd: to,
                     showNavigator : false,
                     option: {
                         graphColor: '#7cb5ec',
