@@ -2,6 +2,11 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.5.0 (16-04-2019)
+
+* Refonte des statistiques
+* Ajout d'une dépendance manquante
+
 ### 4.4.0 (04-04-2019)
 
 * Détection automatique du type d'abonnement.
