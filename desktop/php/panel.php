@@ -14,7 +14,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 
 <div class="row" id="div_teleinfo">
     <div class="row">
-        <div class="col-lg-8 col-lg-offset-2" style="height: 320px;padding-top:10px;">
+        <div class="col-lg-8 col-lg-offset-2" style="height: 340px;padding-top:10px;">
 
 			<form class="form-horizontal">
 				<fieldset style="border: 1px solid #e5e5e5; border-radius: 5px 5px 0px 5px;background-color:#f8f8f8">
@@ -74,13 +74,19 @@ $eqLogics = eqLogic::byType('teleinfo');
 							</div>
 						</div>
 						<div class="">
-							<label class="control-label" style="font-size: 1em;">{{Mois N-1}} <sup><i class="fas fa-question-circle tooltips" title="{{Du 1er Janvier au même jour au même jour qu'aujourd'hui}}" style="font-size : 1em;color:grey;"></i></sup></label>
+							<label class="control-label" style="font-size: 1em;">{{Mois N-1}}</label>
 							<div>
 							<span class='' style="font-size: 1.3em;">
-								<span class="teleinfoAttr" data-l1key="conso" data-l2key="monthlastyear"></span>
+								<span class="teleinfoAttr" data-l1key="conso" data-l2key="monthLastYear"></span>
 								kWh
 							</span>
 							</div>
+                            <div>
+                            <span class='' style="font-size: 0.9em;">
+                                (Partiel <span class="teleinfoAttr" data-l1key="conso" data-l2key="monthLastYearPartial"></span>
+                                kWh)
+                            </span>
+                            </div>
 						</div>
 					</div>
 					<div class="form-group col-md-4" style="">
@@ -97,12 +103,20 @@ $eqLogics = eqLogic::byType('teleinfo');
 						</div>
 						<div class="">
                             <div class="">
-    						<label class="control-label" style="font-size: 1em;">{{Année N-1}} <sup><i class="fas fa-question-circle tooltips" title="{{Du 1er Janvier au même jour au même jour qu'aujourd'hui}}" style="font-size : 1em;color:grey;"></i></sup></label>
+    						<label class="control-label" style="font-size: 1em;">{{Année N-1}}</label>
     						</div>
+                            <div>
 							<span class='' style="font-size: 1.3em;">
-								<span class="teleinfoAttr" data-l1key="conso" data-l2key="yearlastyear"></span>
+								<span class="teleinfoAttr" data-l1key="conso" data-l2key="yearLastYear"></span>
 								kWh
 							</span>
+                            </div>
+                            <div>
+                            <span class='' style="font-size: 0.9em;">
+                                (Partiel <span class="teleinfoAttr" data-l1key="conso" data-l2key="yearLastYearPartial"></span>
+                                kWh)
+                            </span>
+                            </div>
 						</div>
 					</div>
 

@@ -100,8 +100,10 @@ $.ajax({
                             case "STAT_YESTERDAY":
                                 if(!compteurProd){
                                     console.log("[loadData][STAT_YESTERDAY] " + data.result[globalEqLogic].cmd[cmd].id);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]'), 'monthlastyear' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]'), 'yearlastyear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthLastYear]'), 'monthLastYear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYear]'), 'yearLastYear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yesterday]'), 'yesterday' , data.result[globalEqLogic].cmd[cmd]);
@@ -112,8 +114,10 @@ $.ajax({
                             case "STAT_YESTERDAY_PROD":
                                 if(compteurProd){
                                     console.log("[loadData][STAT_YESTERDAY_PROD] " + data.result[globalEqLogic].cmd[cmd].id);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthlastyear]'), 'monthlastyear' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearlastyear]'), 'yearlastyear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthLastYear]'), 'monthLastYear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYear]'), 'yearLastYear' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
                                     commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
@@ -147,78 +151,6 @@ $.ajax({
                                     $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text((data.result[globalEqLogic].cmd[cmd].value)/1000);
                                 }
                                 break;
-                            /*case "STAT_JAN_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 0, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_JAN_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 0, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_FEV_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 1, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_FEV_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 1, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_MAR_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 2, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_MAR_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 2, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_AVR_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 3, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_AVR_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 3, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_MAI_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 4, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_MAI_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 4, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_JUIN_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 5, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_JUIN_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 5, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_JUI_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 6, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_JUI_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 6, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_AOU_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 7, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_AOU_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 7, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_SEP_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 8, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_SEP_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 8, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_OCT_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 9, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_OCT_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 9, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_NOV_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 10, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_NOV_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 10, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_DEC_HP":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie0].addPoint({x: 11, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;
-                            case "STAT_DEC_HC":
-                                if(data.result[globalEqLogic].cmd[cmd].configuration['type'] == 'panel'){chart.series[serie1].addPoint({x: 11, y: (data.result[globalEqLogic].cmd[cmd].value)/1000 },true);}
-                                break;*/
                         }
                     }
                     catch(err) {
@@ -240,56 +172,6 @@ $.ajax({
         }
     });
 }
-
-
-// function getTeleinfoObjectHistory(div, type, object) {
-//     console.log('[getTeleinfoObjectHistory]');
-//     $.ajax({
-//         type: 'POST',
-//         async:true,
-//         url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
-//         data: {
-//             action:'getHistory',
-//             id:object.id,
-//             dateRange:'7 days',
-//             dateStart:'',
-//             dateEnd:'',
-//             derive:0,
-//             allowZero:1
-//             },
-//         dataType: 'json',
-//         error: function (request, status, error) {
-//             handleAjaxError(request, status, error);
-//         },
-//         success: function (data) {
-//             switch(type)
-//             {
-//                 case 'Simple':
-//                     var Series = [{
-//                         step: true,
-//                         name: '{{'+object.name+'}}',
-//                         data: data.result.data,
-//                         type: 'line',
-//                         tooltip: {
-//                             valueDecimals: 2
-//                         },
-//                     }];
-//                     drawSimpleGraph(div, Series);
-//                 break;
-//                 case 'Stack':
-//                     drawStackGraph(div, Series);
-//                 break;
-//                 case 'StackColumn':
-//                     console.log(data);
-//                     drawStackColumnChart(div, Series);
-//                 break;
-//                 case 'Pie':
-//                     drawPieChart(div, Series, '{{'+object.name+'}}');
-//                 break;
-//             }
-//         }
-//     });
-// }
 
 function getObjectHistory(div, type, object, action = 'none') {
     dailyHistoryChart[div] = null;
@@ -389,7 +271,7 @@ function getDailyHistory(div,  object) {
 
 function getMonthlyHistory(div,  object) {
     var color = '#7cb5ec';
-    var from = moment().subtract(12, 'months').startOf('month').format('YYYY-MM-DD 00:00:00');
+    var from = moment().subtract(18, 'months').startOf('month').format('YYYY-MM-DD 00:00:00');
     var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
     if (object.logicalId.includes("HC")){
         color = '#ed9448';
@@ -440,29 +322,39 @@ function getMonthlyHistory(div,  object) {
 function getCommandHistoryValue(div, type , object) {
     var from = moment().format('YYYY-MM-DD 00:00:00');
     var to = moment().format('YYYY-MM-DD 23:59:59');
-    if (type == 'monthlastyear'){
-        from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
-        to = moment().subtract(1, 'years').endOf('month').format('YYYY-MM-DD 23:59:59');
-    }
-    else if (type == 'yearlastyear'){
-        from = moment().subtract(1, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
-        to = moment().subtract(1, 'years').endOf('year').format('YYYY-MM-DD 23:59:59');
-    }
-    else if (type == 'month'){
-        from = moment().startOf('month').format('YYYY-MM-DD 00:00:00');
-        to = moment().endOf('month').format('YYYY-MM-DD 23:59:59');
-    }
-    else if (type == 'year'){
-        from = moment().startOf('year').format('YYYY-MM-DD 00:00:00');
-        to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
-    }
-    else if (type == 'yesterday'){
-        from = moment().subtract(1, 'days').startOf('day').format('YYYY-MM-DD 00:00:00');
-        to = moment().subtract(1, 'days').endOf('day').format('YYYY-MM-DD 23:59:59');
+    switch (type){
+        case 'monthLastYear':
+            from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
+            to = moment().subtract(1, 'years').endOf('month').format('YYYY-MM-DD 23:59:59');
+        break;
+        case 'yearLastYear':
+            from = moment().subtract(1, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
+            to = moment().subtract(1, 'years').endOf('year').format('YYYY-MM-DD 23:59:59');
+        break;
+        case 'month':
+            from = moment().startOf('month').format('YYYY-MM-DD 00:00:00');
+            to = moment().endOf('month').format('YYYY-MM-DD 23:59:59');
+        break;
+        case 'year':
+            from = moment().startOf('year').format('YYYY-MM-DD 00:00:00');
+            to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
+        break;
+        case 'yesterday':
+            from = moment().subtract(1, 'days').startOf('day').format('YYYY-MM-DD 00:00:00');
+            to = moment().subtract(1, 'days').endOf('day').format('YYYY-MM-DD 23:59:59');
+        break;
+        case 'monthLastYearPartial':
+            from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
+            to = moment().subtract(1, 'years').format('YYYY-MM-DD 23:59:59');
+        break;
+        case 'yearLastYearPartial':
+            from = moment().subtract(1, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
+            to = moment().subtract(1, 'years').format('YYYY-MM-DD 23:59:59');
+        break;
     }
 
+
     dailyHistoryChart[div] = null;
-    console.log("[getCommandHistoryValue] Récupération de la valeur " + type);
     jeedom.history.get({
         cmd_id: object.id,
         dateStart : from,
@@ -472,6 +364,7 @@ function getCommandHistoryValue(div, type , object) {
         success: function (myCommandHistory) {
             //console.log(myCommandHistory);
             div.text(myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000);
+            console.log("[getCommandHistoryValue] " + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000);
         }
     });
 }

@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.5.1 (En cours)
+
+* Correction de l'affichage partiel sur le panel
+
 ### 4.5.0 (16-04-2019)
 
 * Refonte des statistiques
@@ -14,7 +18,7 @@ Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https
 * Déclaration index production.
 * Correction du diagnostique.
 * Maintenance de l'historique des index.
-* Nettoyage des statistiques. 
+* Nettoyage des statistiques.
 
 ### 4.3.2 (01-04-2019)
 
