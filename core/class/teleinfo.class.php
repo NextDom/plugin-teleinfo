@@ -631,30 +631,34 @@ class teleinfo extends eqLogic
 
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "stat" || $cmd->getConfiguration('type') == "panel") {
-                    $history = new history();
-                    $history->setCmd_id($cmd->getId());
-                    $history->setDatetime($startDay->format('Y-m-d 00:00:00'));
-                    $history->setTableName('historyArch');
+                    //$history = new history();
+                    //$history->setCmd_id($cmd->getId());
+                    //$history->setDatetime($startDay->format('Y-m-d 00:00:00'));
+                    //$history->setTableName('historyArch');
                     switch ($cmd->getConfiguration('info_conso')) {
                         case "STAT_YESTERDAY":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier ==> ' . intval($statYesterdayHc) + intval($statYesterdayHp));
-                            $history->setValue(intval($statYesterdayHc) + intval($statYesterdayHp));
-                            $history->save();
+                            $cmd->event((intval($statYesterdayHc) + intval($statYesterdayHp)), $startDay->format('Y-m-d 00:00:00'));
+                            //$history->setValue(intval($statYesterdayHc) + intval($statYesterdayHp));
+                            //$history->save();
                             break;
                         case "STAT_YESTERDAY_HP":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HP) ==> ' . intval($statYesterdayHp));
-                            $history->setValue(intval($statYesterdayHp));
-                            $history->save();
+                            $cmd->event((intval($statYesterdayHp)), $startDay->format('Y-m-d 00:00:00'));
+                            //$history->setValue(intval($statYesterdayHp));
+                            //$history->save();
                             break;
                         case "STAT_YESTERDAY_HC":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HC) ==> ' . intval($statYesterdayHc));
-                            $history->setValue(intval($statYesterdayHc));
-                            $history->save();
+                            $cmd->event((intval($statYesterdayHc)), $startDay->format('Y-m-d 00:00:00'));
+                            //$history->setValue(intval($statYesterdayHc));
+                            //$history->save();
                             break;
                         case "STAT_YESTERDAY_PROD":
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (PROD) ==> ' . intval($statYesterdayProd));
-                            $history->setValue(intval($statYesterdayProd));
-                            $history->save();
+                            $cmd->event((intval($statYesterdayProd)), $startDay->format('Y-m-d 00:00:00'));
+                            //$history->setValue(intval($statYesterdayProd));
+                            //$history->save();
                             break;
                     }
                 }
