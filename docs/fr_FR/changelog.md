@@ -2,9 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
-### 4.5.1 (En cours)
+### 4.5.1 (01-05-2019)
 
 * Correction de l'affichage partiel sur le panel
+* BugFix sur le calcul des historique (Jeedom double la dernière valeur).
 
 ### 4.5.0 (16-04-2019)
 

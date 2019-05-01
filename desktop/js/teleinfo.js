@@ -264,6 +264,9 @@ function addCmdToTable(_cmd) {
             if(_cmd.configuration['OPTARIF'].value.includes('HC')) {
                 $("#typeAbonnement").html("Heures Creuses");
             }
+            else if (_cmd.configuration['OPTARIF'].value.includes('BBR')){
+                $("#typeAbonnement").html("Tempo");
+            }
             else {
                 $("#typeAbonnement").html(_cmd.configuration['OPTARIF'].value);
             }
