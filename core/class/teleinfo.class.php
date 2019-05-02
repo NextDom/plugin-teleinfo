@@ -695,6 +695,8 @@ class teleinfo extends eqLogic
                     'cmdIdPROD' => $cmdYesterdayProd->getId(),
                 );
                 DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+				$sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdIdHP OR cmd_id=:cmdIdHC OR cmd_id=:cmdIdPROD) AND SECOND(datetime) <> '0'";
+				DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
             } catch (\Exception $e) {
                 log::add('teleinfo', 'error', $e) ;
             }

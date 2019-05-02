@@ -198,7 +198,8 @@ try {
 				while ($oldest['oldest'] !== null) {
 					// Récupération de la valeur max sur l heure
                     if(substr($oldest['oldest'],-8,2) == "00" && init('type') != "AVG"){
-                        $sql = "SELECT MIN(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
+                        $sql = "SELECT MIN(value) as value FROM historyArch WHERE MINUTE(datetime) <> '0' AND cmd_id=:cmdId AND datetime > :oldest";
+                        //$sql = "SELECT MIN(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
                     }
                     else{
                         $sql = "SELECT ". init('type') . "(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
@@ -218,14 +219,17 @@ try {
 					);
 					$return['replaceValue'] = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
 
-					// Nettoyage de toutes les valeurs autres qu a heure fixe
+					// Nettoyage de toutes les valeurs autres qu a heure fixe (minutes)
 					$sql = "DELETE FROM historyArch WHERE addtime(datetime,'-01:00:00')< :oldest AND cmd_id=:cmdId AND MINUTE(datetime) <> '0';";
 					$values = array(
 								 'cmdId' => init('id'),
 								 'oldest' => $oldest['oldest'],
 					);
 					$deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
-					$sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
+					// Nettoyage de toutes les valeurs autres qu a heure fixe (secondes)
+					$sql = "DELETE FROM historyArch WHERE addtime(datetime,'-01:00:00')< :oldest AND cmd_id=:cmdId AND SECOND(datetime) <> '0';";
+					$deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+					$sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND cmd_id=:cmdId";
 					$values = array(
 			                 'cmdId' => init('id'),
 					);
