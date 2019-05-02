@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.6.0 (**-05-2019)
+
+* Ajout coût sur le panel
+
 ### 4.5.1 (01-05-2019)
 
 * Correction de l'affichage partiel sur le panel

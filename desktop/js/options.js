@@ -1,4 +1,3 @@
-
 $("body").delegate("#bt_selectoutsideTemp", 'click', function() {
      jeedom.cmd.getSelectModal({cmd: {type: 'info', subtype: 'binary'}}, function(result) {
          $('#outsideTemp').value(result.human);
@@ -52,5 +51,39 @@ console.log($("#indexConsoHP").val());
 
         }
     }));
+
+    console.log($("#coutHP").val());
+        console.log(jeedom.config.save({
+          plugin: "teleinfo",
+          configuration: {"coutHP" : $("#coutHP").val()},
+    		error: function (error) {
+    		$('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
+    		},
+    		success: function (data) {
+
+    		}
+        }));
+    console.log($("#coutHC").val());
+        console.log(jeedom.config.save({
+          plugin: "teleinfo",
+          configuration: {"coutHC" : $("#coutHC").val()},
+            error: function (error) {
+            $('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
+            },
+            success: function (data) {
+
+            }
+        }));
+    console.log($("#coutProd").val());
+        console.log(jeedom.config.save({
+          plugin: "teleinfo",
+          configuration: {"coutProd" : $("#coutProd").val()},
+            error: function (error) {
+            $('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
+            },
+            success: function (data) {
+
+            }
+        }));
 
 });

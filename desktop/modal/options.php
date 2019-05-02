@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 /* This file is part of Jeedom.
  *
  * Jeedom is free software: you can redistribute it and/or modify
@@ -97,6 +97,61 @@ if (!isConnect('admin')) {
                         <?php
             			$indexProduction = config::byKey('indexProduction', 'teleinfo', 'EAIT');
                         echo '<input id="indexProduction" type="text" value="'.$indexProduction.'" data-role="tagsinput"/>';
+              			?>
+            		</div>
+                </div>
+                <div class="col-lg-5">
+                </div>
+            </div>
+    </form>
+</div>
+
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">{{Prix kWh HP}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <?php
+            			$coutHP = config::byKey('coutHP', 'teleinfo', '0');
+                        echo '<input class="form-control" type="number" step="0.001" id="coutHP" type="text" value="'.$coutHP.'" />';
+              			?>
+            		</div>
+                </div>
+                <div class="col-lg-5">
+                </div>
+            </div>
+    </form>
+</div>
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">{{Prix kWh HC}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <?php
+            			$coutHC = config::byKey('coutHC', 'teleinfo', '0');
+                        echo '<input class="form-control" type="number" step="0.001" id="coutHC" type="text" value="'.$coutHC.'" />';
+              			?>
+            		</div>
+                </div>
+                <div class="col-lg-5">
+                </div>
+            </div>
+    </form>
+</div>
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">{{Prix kWh Prod}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <?php
+            			$coutProd = config::byKey('coutProd', 'teleinfo', '0');
+                        echo '<input class="form-control" type="number" step="0.001" id="coutProd" type="text" value="'.$coutProd.'" />';
               			?>
             		</div>
                 </div>

@@ -19,7 +19,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 			<form class="form-horizontal">
 				<fieldset style="border: 1px solid #e5e5e5; border-radius: 5px 5px 0px 5px;background-color:#f8f8f8">
 					<div style="padding-top:10px;padding-left:24px;color: #333;font-size: 1.5em;"> <span id="spanTitreResume">Ma consommation</span>
-                        <select id="eqlogic_select" style="color: #555;font-size: 16px;border-radius: 3px;border:1px solid #ccc;">
+                        <select id="eqlogic_select" style="color: #555;font-size: 15px;border-radius: 3px;border:1px solid #ccc;">
                 						<?php
                 						foreach ($eqLogics as $eqLogic) {
                 							echo '<option value="' . $eqLogic->getId() . '">"' . $eqLogic->getHumanName(true) . '"</option>';
@@ -27,10 +27,11 @@ $eqLogics = eqLogic::byType('teleinfo');
                 						?>
                 		</select>
 
-                        <a class="btn btn-default btn-sm pull-right tooltips" style="margin-right:10px;" id="bt_teleinfoPanelSante" title="Vérifier l'intégrité des données"><i class="fas fa-check-circle"></i> Vérifier </a>
+                        <a class="btn btn-default btn-sm pull-right tooltips" style="margin-right:10px;" id="bt_teleinfoCout" title="Vérifier l'intégrité des données"><i class="fas fa-euro-sign"></i></a>
+                        <a class="btn btn-default btn-sm pull-right tooltips" id="bt_teleinfoPanelSante" title="Vérifier l'intégrité des données"><i class="fas fa-check-circle"></i></a>
                         <a style="margin-right:5px;" class="pull-right btn btn-success btn-sm tooltips" id='bt_validChangeDate' title="{{Attention une trop grande plage de dates peut mettre très longtemps à être calculée ou même ne pas s'afficher}}">{{Ok}}</a>
-                        <input id="in_endDate" class="pull-right form-control input-sm in_datepicker" style="display : inline-block; width: 100px;" value="<?php echo $date['end']?>"/>
-                        <input id="in_startDate" class="pull-right form-control input-sm in_datepicker" style="display : inline-block; width: 100px;" value="<?php echo $date['start']?>"/>
+                        <input id="in_endDate" class="pull-right form-control input-sm in_datepicker" style="display : inline-block; width: 87px;" value="<?php echo $date['end']?>"/>
+                        <input id="in_startDate" class="pull-right form-control input-sm in_datepicker" style="display : inline-block; width: 87px;" value="<?php echo $date['start']?>"/>
 
 
                     </div>
@@ -38,11 +39,11 @@ $eqLogics = eqLogic::byType('teleinfo');
 					<div class="form-group col-md-4" style="left:25px;">
                         <div class="">
                             <label class="control-label" style="font-size: 1em;">
-                                {{Abonnement : }}</label><span class="teleinfoAttr" data-l1key="abonnement" data-l2key="type"></span>
+                                {{Abonnement : }} </label><span class="teleinfoAttr" data-l1key="abonnement" data-l2key="type"></span>
 
                         </div>
                         <div class="">
-						    <label class="control-label" style="font-size: 1em;">{{Journée}}</label>
+						    <label class="control-label" style="font-size: 1em;">{{Journée}}</label><span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="day"></span>
                             <div>
                                 <span class='' style="font-size: 1.3em;">
                                     <span class="teleinfoAttr" data-l1key="conso" data-l2key="day"></span>
@@ -51,7 +52,7 @@ $eqLogics = eqLogic::byType('teleinfo');
                             </div>
 						</div>
 						<div class="">
-                            <label class="control-label" style="font-size: 1em;">{{Hier}}</label>
+                            <label class="control-label" style="font-size: 1em;">{{Hier}}</label><span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="yesterday"></span>
                             <div>
                                 <span class='' style="font-size: 1.3em;">
                                     <span class="teleinfoAttr" data-l1key="conso" data-l2key="yesterday"></span>
@@ -65,7 +66,7 @@ $eqLogics = eqLogic::byType('teleinfo');
                         <div style="min-height: 27px;">
                         </div>
 						<div class="">
-    						<label class="control-label" style="font-size: 1em;">{{Mois}}</label>
+    						<label class="control-label" style="font-size: 1em;">{{Mois}}</label><span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="month"></span>
 							<div>
 							<span class='' style="font-size: 1.3em;">
 								<span class="teleinfoAttr" data-l1key="conso" data-l2key="month"></span>
@@ -74,7 +75,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 							</div>
 						</div>
 						<div class="">
-							<label class="control-label" style="font-size: 1em;">{{Mois N-1}}</label>
+							<label class="control-label" style="font-size: 1em;">{{Mois N-1}}</label><span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="monthLastYear"></span>
 							<div>
 							<span class='' style="font-size: 1.3em;">
 								<span class="teleinfoAttr" data-l1key="conso" data-l2key="monthLastYear"></span>
@@ -94,7 +95,7 @@ $eqLogics = eqLogic::byType('teleinfo');
                         </div>
 						<div class="">
                             <div class="">
-    						<label class="control-label" style="font-size: 1em;">{{Année}}</label>
+    						<label class="control-label" style="font-size: 1em;">{{Année}}</label><span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="year"></span>
     						</div>
 							<span class='' style="font-size: 1.3em;">
 								<span class="teleinfoAttr" data-l1key="conso" data-l2key="year"></span>
@@ -103,7 +104,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 						</div>
 						<div class="">
                             <div class="">
-    						<label class="control-label" style="font-size: 1em;">{{Année N-1}}</label>
+    						<label class="control-label" style="font-size: 1em;">{{Année N-1}}</label><span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="yearLastYear"></span>
     						</div>
                             <div>
 							<span class='' style="font-size: 1.3em;">
