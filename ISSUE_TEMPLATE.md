@@ -17,4 +17,4 @@
 * **Compteur standard ou historique**:
 
 ## Logs
-Merci de joindre les fichiers de logs (Bouton télécharger en haut à droite sur Jeedom).
+Merci de joindre les fichiers de logs où bien directement le package du diagnostique.
