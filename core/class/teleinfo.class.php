@@ -715,7 +715,7 @@ class teleinfo extends eqLogic
                 }
             }
 
-            for($i=1; $i < 400; $i++){
+            for($i=1; $i < 730; $i++){
                 $statHc     = 0;
                 $statHp     = 0;
                 $statProd   = 0;
@@ -726,7 +726,7 @@ class teleinfo extends eqLogic
                     event::add('jeedom::alert', array(
                             'level' => 'warning',
                             'page' => 'teleinfo',
-                            'message' => __('Les statistiques sont en cours de regénérations, cela peut prendre un peu de temps veuillez patienter ... ('. intval($i/4) .' %)', __FILE__),
+                            'message' => __('Les statistiques sont en cours de regénérations, cela peut prendre un peu de temps veuillez patienter ... ('. intval($i/7.3) .' %)', __FILE__),
                     ));
                 }
 
