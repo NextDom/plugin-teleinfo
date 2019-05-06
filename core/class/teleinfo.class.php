@@ -722,7 +722,7 @@ class teleinfo extends eqLogic
                 $startDay->sub(new DateInterval('P1D'));
                 $endDay->sub(new DateInterval('P1D'));
 
-                if (($i % 20) == 0){
+                if (($i % 40) == 0){
                     event::add('jeedom::alert', array(
                             'level' => 'warning',
                             'page' => 'teleinfo',
