@@ -146,7 +146,7 @@ if (!isConnect('admin')) {
                     <center><h3>{{Package de logs}}</h3></center></br>
                     <div class="form-group">
                         <div class="row">
-                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="6"><i class="fas fa-play-circle"></i> {{Démarrer}}</a></span></center>
+                        	<center><span style="font-size : 1em;"><a class="btn btn-sm btn-success" btnid="6"><i class="fas fa-play-circle"></i> {{Télécharger}}</a></span></center>
                         </div>
 
                         <div class="row" style="margin-top:10px">
