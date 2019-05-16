@@ -162,7 +162,7 @@ $.ajax({
                                     getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd]);
                                 }
                                 break;
-                            case "SINSTI":
+                            case "SINST1":
                                 if(compteurProd){
                                     commandesPuissance.push({"id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
                                     console.log("[loadData][PAPP] " + data.result[globalEqLogic].cmd[cmd].id);

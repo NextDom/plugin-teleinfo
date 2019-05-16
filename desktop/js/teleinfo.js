@@ -94,7 +94,7 @@
 {etiquette:"SMAXSN1-1",name:"Puissance app max. soutirée n-1 phase 1",unite:"VA"},
 {etiquette:"SMAXSN2-1",name:"Puissance app max. soutirée n-1 phase 2",unite:"VA"},
 {etiquette:"SMAXSN3-1",name:"Puissance app max. soutirée n-1 phase 3",unite:"VA"},
-{etiquette:"SINSTI",name:"Puissance app. Instantanée injectée",unite:"VA"},
+{etiquette:"SINST1",name:"Puissance app. Instantanée injectée",unite:"VA"},
 {etiquette:"SMAXIN",name:"Puissance app. max. injectée n",unite:"VA"},
 {etiquette:"SMAXIN-1",name:"Puissance app max. injectée n-1",unite:"VA"},
 {etiquette:"CCASN",name:"Point n de la courbe de charge active soutirée",unite:"W"},
