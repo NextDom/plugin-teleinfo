@@ -115,20 +115,24 @@ $.ajax({
                         switch(data.result[globalEqLogic].cmd[cmd].logicalId)
                         {
                             case "STAT_YESTERDAY_HC":
-                                getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd] );
-                                getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-                                getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=month]'), 'month' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-                                getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-                                getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=year]'), 'year' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-                                getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]'), 'yesterday' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
+                                if(!compteurProd){
+                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd] );
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=month]'), 'month' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=year]'), 'year' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]'), 'yesterday' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
+                                }
                             break;
                             case "STAT_YESTERDAY_HP":
-                                getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd] );
-								getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-								getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=month]'), 'month' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=year]'), 'year' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]'), 'yesterday' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
+                                if(!compteurProd){
+                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd] );
+								    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
+								    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=month]'), 'month' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=year]'), 'year' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]'), 'yesterday' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
+                                }
                             break;
                             case "STAT_YESTERDAY":
                                 if(!compteurProd){
@@ -153,6 +157,7 @@ $.ajax({
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yesterday]'), 'yesterday' , data.result[globalEqLogic].cmd[cmd]);
 									getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]'), 'monthLastYear' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
 									getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=month]'), 'month' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
 									getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]'), 'yearLastYear' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
@@ -160,8 +165,10 @@ $.ajax({
 									getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]'), 'yesterday' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
                                     commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
                                     getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd]);
+                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd] );
                                 }
                                 break;
+                            case "SINSTI":
                             case "SINST1":
                                 if(compteurProd){
                                     commandesPuissance.push({"id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name});
@@ -460,7 +467,7 @@ function getCommandHistoryCout(div, type, cout, object) {
         },
         success: function (valeurCout) {
             if (valeurCout != ''){
-                
+
                 jeedom.history.get({
                     cmd_id: object.id,
                     dateStart : from,
@@ -474,13 +481,13 @@ function getCommandHistoryCout(div, type, cout, object) {
 						if(type === "day"){
 							tableCouts[type] = tableCouts[type] + (myCommandHistory.data[myCommandHistory.data.length - 1][1] / 1000) * valeurCout;
 							console.log("[getCommandHistoryCout] " + type + " " + cout + " : " + myCommandHistory.data[myCommandHistory.data.length - 1][1] / 1000 + " * " + valeurCout)
-							
+
 						}else {
 							myCommandHistory.data.splice(-1,1);
 							tableCouts[type] = tableCouts[type] + (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000) * valeurCout;
 							console.log("[getCommandHistoryCout] " + type + " " + cout + " : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000 + " * " + valeurCout)
 						}
-						
+
                         div.text(' (~' + tableCouts[type].toFixed(3) + ' €)');
                     }
                 });
