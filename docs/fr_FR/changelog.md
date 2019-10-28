@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.6.3 (28-10-2019)
+
+* Re-Correction SINSTI
+
 ### 4.6.2 (11-06-2019)
 
 * Mise à jour panel
