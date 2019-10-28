@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.6.4 (28-10-2019)
+
+* Correction affichage SINSTS / PAPP
+
 ### 4.6.3 (28-10-2019)
 
 * Re-Correction SINSTI
