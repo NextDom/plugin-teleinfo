@@ -838,12 +838,12 @@ class teleinfo extends eqLogic
 
     public static function calculatePAPP()
     {
-        $ppapHp  = 0;
-        $ppapHc  = 0;
-        $cmdPpap = null;
         $indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
         $indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+			$ppapHp  = 0;
+			$ppapHc  = 0;
+			$cmdPpap = null;
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == 'stat') {
                     if ($cmd->getConfiguration('info_conso') == 'PPAP_MANUELLE') {
@@ -857,20 +857,20 @@ class teleinfo extends eqLogic
                 foreach ($eqLogic->getCmd('info') as $cmd) {
                     if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
                         if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+							log::add('teleinfo', 'debug', 'HP : ' . $cmd->getId());
                             $ppapHp += $cmd->execCmd();
                         }
                         if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+							log::add('teleinfo', 'debug', 'HC : ' . $cmd->getId());
                             $ppapHc += $cmd->execCmd();
                         }
                     }
                 }
-
-                $cacheHc        = cache::byKey('teleinfo::ppap_manuelle::hc', false);
+                $cacheHc        = cache::byKey('teleinfo::ppap_manuelle::' . $eqLogic->getId() . '::hc', false);
                 $datetimeMesure = date_create($cacheHc->getDatetime());
-                $cacheHp        = cache::byKey('teleinfo::ppap_manuelle::hp', false);
+                $cacheHp        = cache::byKey('teleinfo::ppap_manuelle::' . $eqLogic->getId() . '::hp', false);
                 $cacheHc        = $cacheHc->getValue();
                 $cacheHp        = $cacheHp->getValue();
-
                 $datetimeMesure = $datetimeMesure->getTimestamp();
                 $datetime2      = time();
                 $interval       = $datetime2 - $datetimeMesure;
@@ -878,9 +878,8 @@ class teleinfo extends eqLogic
                 log::add('teleinfo', 'debug', 'Intervale depuis la dernière valeur : ' . $interval);
                 log::add('teleinfo', 'debug', 'Conso calculée : ' . $consoResultat . ' Wh');
                 $cmdPpap->event(intval($consoResultat));
-
-                cache::set('teleinfo::ppap_manuelle::hc', $ppapHc, 150);
-                cache::set('teleinfo::ppap_manuelle::hp', $ppapHp, 150);
+                cache::set('teleinfo::ppap_manuelle::' . $eqLogic->getId() . '::hc', $ppapHc, 150);
+                cache::set('teleinfo::ppap_manuelle::' . $eqLogic->getId() . '::hp', $ppapHp, 150);
             } else {
                 log::add('teleinfo', 'debug', 'Pas de calcul');
             }
