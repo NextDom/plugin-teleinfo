@@ -955,7 +955,7 @@ class teleinfo extends eqLogic
                     log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> papp');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
-                        $cmd->setDisplay('icon', '<i class=\"fa fa-tachometer\"><\/i>');
+                        //$cmd->setDisplay('icon', '<i class=\"fa fa-tachometer\"><\/i>');
                     }
 					$cmd->setConfiguration('historizeMode', 'avg');
                     $cmd->save();
