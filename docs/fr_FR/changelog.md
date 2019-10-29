@@ -2,10 +2,13 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+### 4.6.5 (28-10-2019)
+
+* Correction calcul puissance dernière minute dans le cas de plusieurs compteurs
+
 ### 4.6.4 (28-10-2019)
 
 * Correction affichage SINSTS / PAPP
-* Correction calcul puissance dernière minute dans le cas de plusieurs compteurs
 
 ### 4.6.3 (28-10-2019)
 
