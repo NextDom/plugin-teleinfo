@@ -44,9 +44,6 @@ $archiveDatetime = date('Y-m-d H:i:s', strtotime('- 1 months'));
                 }
         ?>
 	</div>
-
-
-
 </div>
 <div class='row' style="padding-top:10px;">
     <div class='col-md-8 col-md-offset-2'>
@@ -54,7 +51,7 @@ $archiveDatetime = date('Y-m-d H:i:s', strtotime('- 1 months'));
             <center><h4>Optimisations</h4></center>
         </div>
         <div class='col-md-12'>
-            <div class="alert alert-danger globalRemark col-md-12">Attention, ce tableau permet de ne garder que la valeur maximale rencontrée par interval horaire dans l'historique.
+            <div class="alert alert-danger globalRemark col-md-12">Attention, ce tableau permet de ne garder que la valeur maximale rencontrée par intervalle horaire dans l'historique.
         	</br>
         	Si un nettoyage est nécessaire alors un bouton s'affichera sur la commande.
         	</div>
@@ -83,13 +80,7 @@ $archiveDatetime = date('Y-m-d H:i:s', strtotime('- 1 months'));
 
     </div>
 
-
-
 </div>
 
 
-
-
-
-
-<?php include_file('desktop', 'maintenance', 'js', 'teleinfo');?>
+<?php include_file('desktop', 'maintenance', 'js', 'teleinfo');
