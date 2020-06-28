@@ -417,10 +417,14 @@ function getCommandHistoryValue(div, type , object) {
         error: function (error) {
         },
         success: function (myCommandHistory) {
-            //console.log(myCommandHistory);
-            myCommandHistory.data.splice(-1,1);
-            div.text(myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000);
-            console.log("[getCommandHistoryValue] " + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000);
+            if(myCommandHistory.data.length == 1){
+              div.text(myCommandHistory.maxValue / 1000)
+              console.log("[getCommandHistoryValue] " + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.maxValue / 1000);
+            }else {
+              myCommandHistory.data.splice(-1,1);
+              div.text(myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000);
+              console.log("[getCommandHistoryValue] " + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000);
+            }
         }
     });
 }
@@ -483,9 +487,15 @@ function getCommandHistoryCout(div, type, cout, object) {
 							console.log("[getCommandHistoryCout] " + type + " " + cout + " : " + myCommandHistory.data[myCommandHistory.data.length - 1][1] / 1000 + " * " + valeurCout)
 
 						}else {
-							myCommandHistory.data.splice(-1,1);
+                          if(myCommandHistory.data.length == 1){
+                            tableCouts[type] = tableCouts[type] + (myCommandHistory.maxValue / 1000) * valeurCout;
+                            console.log("[getCommandHistoryCout] " + type + " " + cout + " : " + (myCommandHistory.maxValue / 1000) * valeurCout);
+                          }
+                          else {
+                            myCommandHistory.data.splice(-1,1);
 							tableCouts[type] = tableCouts[type] + (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000) * valeurCout;
 							console.log("[getCommandHistoryCout] " + type + " " + cout + " : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000 + " * " + valeurCout)
+                          }
 						}
 
                         div.text(' (~' + tableCouts[type].toFixed(3) + ' €)');
