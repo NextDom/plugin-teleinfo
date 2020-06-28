@@ -37,7 +37,7 @@ $eqLogics = eqLogic::byType('teleinfo');
                     </div>
 
 					<div class="form-group col-md-4" style="left:25px;">
-                        <div class="">
+                        <div class="" style="min-height: 27px;">
                             <label class="control-label" style="font-size: 1em;">
                                 {{Abonnement : }} </label><span class="teleinfoAttr" data-l1key="abonnement" data-l2key="type"></span>
 
@@ -91,7 +91,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 						</div>
 					</div>
 					<div class="form-group col-md-4" style="">
-                        <div style="min-height: 27px;">
+                        <div >
                         </div>
 						<div class="">
                             <div class="">
