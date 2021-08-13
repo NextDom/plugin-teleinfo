@@ -490,14 +490,16 @@ class teleinfo extends eqLogic
 
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
-                    if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
-                        array_push($statHpToCumul, $cmd->getId());
-                    }
-                    if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
-                        array_push($statHcToCumul, $cmd->getId());
-                    }
-                    if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
-                        array_push($statProdToCumul, $cmd->getId());
+                    if (!empty($cmd->getConfiguration('info_conso'))) {
+                        if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHpToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHcToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statProdToCumul, $cmd->getId());
+                        }
                     }
                 }
                 if ($cmd->getConfiguration('info_conso') == "TENDANCE_DAY") {
