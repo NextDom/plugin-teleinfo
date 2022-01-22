@@ -106,6 +106,26 @@
 {etiquette:"UMOY2",name:"Tension moy. ph. 2",unite:"V"},
 {etiquette:"UMOY3",name:"Tension moy. ph. 3",unite:"V"},
 {etiquette:"STGE",name:"Registre de Statuts",unite:""},
+{etiquette:"contact_sec",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"organe_de_coupure",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"etat_du_cache_bornes",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"non_utilise_toujours_a_0",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"surtension",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"depassement_de_P_reference",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"producteur_consommateur",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"sens_energie_active",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"tarif_en_cours_fourniture",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"tarif_en_cours_distrib",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"mode_degrade_horloge",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"etat_sortie_teleinfo",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"non_utilise",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"etat_sortie_comm_euridis",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"statut_CPL",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"synchro_CPL",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"couleur_jour_Tempo",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"couleur_demain_Tempo",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"preavis_pointe_mobile",name:"Traduction registre de Statuts",unite:""},
+{etiquette:"pointe_mobile",name:"Traduction registre de Statuts",unite:""},
 {etiquette:"DPM1",name:"Début Pointe Mobile 1",unite:""},
 {etiquette:"FPM1",name:"Fin Pointe Mobile 1",unite:""},
 {etiquette:"DPM2",name:"Début Pointe Mobile 2",unite:""},
@@ -121,7 +141,6 @@
 {etiquette:"NJOURF+1",name:"Numéro du prochain jour calendrier fournisseur",unite:""},
 {etiquette:"PJOURF+1",name:"Profil du prochain jour calendrier fournisseur",unite:""},
 {etiquette:"PPOINTE",name:"Profil du prochain jour de pointe",unite:""}];
-
 
 $('#bt_stopTeleinfoDaemon').on('click', function() {
     stopTeleinfoDeamon();

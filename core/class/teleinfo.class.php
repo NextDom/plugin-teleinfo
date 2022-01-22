@@ -126,6 +126,28 @@ class teleinfo extends eqLogic
                 case "NGTF":
                 case "LTARF":
                 case "STGE":
+				// debut pour traduction code STGE
+                case "contact_sec":
+                case "organe_de_coupure":
+                case "etat_du_cache_bornes":
+                case "non_utilise_toujours_a_0":
+                case "surtension":
+                case "depassement_de_P_reference":
+                case "producteur_consommateur":
+                case "sens_energie_active":
+                case "tarif_en_cours_fourniture":
+                case "tarif_en_cours_distrib":
+                case "mode_degrade_horloge":
+                case "etat_sortie_teleinfo":
+                case "non_utilise":
+                case "etat_sortie_comm_euridis":
+                case "statut_CPL":
+                case "synchro_CPL":
+                case "couleur_jour_Tempo":
+                case "couleur_demain_Tempo":
+                case "preavis_pointe_mobile":
+                case "pointe_mobile":
+				// fin pour traduction code STGE
                 case "DPM1":
                 case "FPM1":
                 case "DPM2":
@@ -156,6 +178,27 @@ class teleinfo extends eqLogic
             return $cmd;
         }
     }
+/*
+                case "contact sec":
+                case "organe de coupure":
+                case "état du cache bornes":
+                case "non utilisé (toujours à 0)":
+                case "surtension":
+                case "dépassement de P référence":
+                case "producteur consommateur":
+                case "sens énergie active":
+                case "tarif en cours fourniture":
+                case "tarif en cours distrib":
+                case "mode dégradé horloge":
+                case "état sortie téléinfo":
+                case "non utilisé":
+                case "état sortie comm euridis":
+                case "statut CPL":
+                case "synchro CPL":
+                case "couleur jour Tempo":
+                case "couleur demain Tempo":
+                case "préavis pointe mobile":
+                case "pointe mobile":
 
 
 	/**
