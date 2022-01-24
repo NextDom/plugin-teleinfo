@@ -1,5 +1,6 @@
 # coding: utf-8
 JEEDOM_COM = ''
+TELEINFO = ''
 TELEINFO_SERIAL = ''
 TELEINFO_FTDI = ''
 TELEINFO_FTDI_CONTEXT = ''
