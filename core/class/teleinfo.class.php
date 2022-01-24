@@ -157,7 +157,15 @@ class teleinfo extends eqLogic
                 case "MSG1":
                 case "MSG2":
                 case "PRM":
-                case "RELAIS":
+                // case "RELAIS":
+                case "Relais_1":
+                case "Relais_2":
+                case "Relais_3":
+                case "Relais_4":
+                case "Relais_5":
+                case "Relais_6":
+                case "Relais_7":
+                case "Relais_8":
                 case "NJOURF":
                 case "NJOURF+1":
                 case "PJOURF+1":
