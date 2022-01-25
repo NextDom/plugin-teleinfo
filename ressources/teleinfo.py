@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
@@ -136,8 +136,7 @@ class Teleinfo:
                                     content[name] = message
                                     logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
                                     name = 'tarif_en_cours_fourniture'
-                                    message = switch_mot9(
-                                        int(str(bits[14]) + str(bits[13]) + str(bits[12]) + str(bits[11]), 2))
+                                    message = switch_mot9(int(str(bits[14]) + str(bits[13]) + str(bits[12]) + str(bits[11]), 2))
                                     content[name] = message
                                     logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
                                     name = 'tarif_en_cours_distrib'
@@ -185,6 +184,52 @@ class Teleinfo:
                                     content[name] = message
                                     logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
                                     logging.debug('TELEINFO------trad STGE : ' + str(content))
+                                    logging.debug('TELEINFO------len stgebin ' + str(longueur))
+                                if name == 'RELAIS':
+                                    logging.debug('TELEINFO------name : RELAIS value : ' + value + ' checksum : ' + checksum)
+                                    relais = bin(int(value))
+                                    relais = relais[2::]
+                                    logging.debug('TELEINFO-------relais ' + str(relais))
+                                    bitsrelais = [relais]
+                                    longueur = len(relais)
+                                    # print ('bits 1 ', bits)
+                                    for i in range(32):
+                                        if i > longueur - 1:
+                                            bitsrelais += '0'
+                                        else:
+                                            bitsrelais += [relais[longueur - 1 - i:longueur - i]]
+                                    name = 'Relais1'
+                                    message = switch_mot20(int(str(bitsrelais[1])))
+                                    content[name] = message
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
+                                    name = 'Relais2'
+                                    message = switch_mot20(int(str(bitsrelais[2])))
+                                    content[name] = message
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
+                                    name = 'Relais3'
+                                    message = switch_mot20(int(str(bitsrelais[3])))
+                                    content[name] = message
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
+                                    name = 'Relais4'
+                                    message = switch_mot20(int(str(bitsrelais[4])))
+                                    content[name] = message
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
+                                    name = 'Relais5'
+                                    message = switch_mot20(int(str(bitsrelais[5])))
+                                    content[name] = message
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
+                                    name = 'Relais6'
+                                    message = switch_mot20(int(str(bitsrelais[6])))
+                                    content[name] = message
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
+                                    name = 'Relais7'
+                                    message = switch_mot20(int(str(bitsrelais[7])))
+                                    content[name] = message
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
+                                    name = 'Relais8'
+                                    message = switch_mot20(int(str(bitsrelais[8])))
+                                    content[name] = message
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
                             else:
                                 logging.error(
                                     'TELEINFO------ ** DONNEES HS ! ** sur trame : ' + resp + ' checksum : ' + checksum)
@@ -628,6 +673,14 @@ def switch_mot19(argument):
         1: "Preavis PM1",
         2: "Preavis PM2",
         3: "Preavis PM3",
+    }
+    return switcher.get(argument, "Invalide")
+
+#DEFINITION DE LA SIGNIFICATION DES BITS RELAIS
+def switch_mot20(argument):
+    switcher = {
+        0: "Ouvert",
+        1: "Ferme",
     }
     return switcher.get(argument, "Invalide")
 
