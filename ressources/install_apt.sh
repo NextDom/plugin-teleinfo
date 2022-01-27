@@ -4,17 +4,9 @@ PROGRESS_FILE=$1
 touch ${PROGRESS_FILE}
 echo 0 > ${PROGRESS_FILE}
 function apt_install {
-  sudo apt-get -y install "$@"
+  sudo apt get -y install "$@"
   if [ $? -ne 0 ]; then
     echo "could not install $1 - abort"
-    rm ${PROGRESS_FILE}
-    exit 1
-  fi
-}
-function pip_install {
-  sudo pip install "$@"
-  if [ $? -ne 0 ]; then
-    echo "could not install $p - abort"
     rm ${PROGRESS_FILE}
     exit 1
   fi
