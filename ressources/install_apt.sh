@@ -4,7 +4,7 @@ PROGRESS_FILE=$1
 touch ${PROGRESS_FILE}
 echo 0 > ${PROGRESS_FILE}
 function apt_install {
-  sudo apt get -y install "$@"
+  sudo apt -y install "$@"
   if [ $? -ne 0 ]; then
     echo "could not install $1 - abort"
     rm ${PROGRESS_FILE}
@@ -17,10 +17,10 @@ echo 10 > ${PROGRESS_FILE}
 #apt_install python3-pip
 echo "Lancement de l'installation/mise à jour des dépendances Téléinfo"
 echo "Raffraichissement du système"
-sudo apt-get update
+sudo apt update
 echo 20 > ${PROGRESS_FILE}
 echo "Installation de la librairie ftdi pour modem 2 compteurs"
-sudo apt get -y install python3-ftdi1
+sudo apt -y install python3-ftdi1
 echo 30 > ${PROGRESS_FILE}
 echo "Installation de la librairie serial"
 #pip_install serial
