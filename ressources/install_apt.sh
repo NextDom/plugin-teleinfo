@@ -23,9 +23,11 @@ echo "Installation de la librairie ftdi pour modem 2 compteurs"
 sudo apt -y install python3-ftdi1
 echo 30 > ${PROGRESS_FILE}
 echo "Installation de la librairie serial"
-#pip_install serial
 sudo apt install python3-serial
 echo 40 > ${PROGRESS_FILE}
+echo "Installation de la librairie pyudev"
+sudo apt -y install python3-pyudev
+echo 50 > ${PROGRESS_FILE}
 echo "Mise à jour de cmdline ou inittab suivant système"
 if [ -e /dev/ttyAMA0 ];  then
     sed -i 's/console=ttyAMA0,115200//; s/kgdboc=ttyAMA0,115200//' /boot/cmdline.txt
