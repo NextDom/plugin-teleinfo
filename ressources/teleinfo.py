@@ -5,12 +5,12 @@
 """ Read one teleinfo frame and output the frame
 """
 
+
 import _thread
 import argparse
 import json
 import sys
 import traceback
-
 import globals
 
 try:
@@ -21,7 +21,6 @@ except ImportError as ex:
     sys.exit(1)
 import serial
 from datetime import datetime
-
 
 # ----------------------------------------------------------------------------
 # Teleinfo core
@@ -432,14 +431,14 @@ def read_socket(cycle):
                     log = logging.getLogger()
                     for hdlr in log.handlers[:]:
                         log.removeHandler(hdlr)
-                    jeedom_utils.set_log_level('debug')
+                    JeedomUtils.set_log_level('debug')
                     logging.debug('SOCKET-READ------<----- La preuve ;)')
                 elif message['cmd'] == 'lognormal':
                     logging.info('SOCKET-READ------Passage du demon en mode de log normal')
                     log = logging.getLogger()
                     for hdlr in log.handlers[:]:
                         log.removeHandler(hdlr)
-                    jeedom_utils.set_log_level('error')
+                    JeedomUtils.set_log_level('error')
         except Exception as e:
             logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
             logging.debug(traceback.format_exc())
@@ -452,7 +451,7 @@ def log_starting(cycle):
     log = logging.getLogger()
     for hdlr in log.handlers[:]:
         log.removeHandler(hdlr)
-    jeedom_utils.set_log_level('error')
+    JeedomUtils.set_log_level('error')
 
 
 def listen():
@@ -489,7 +488,7 @@ def shutdown():
     log = logging.getLogger()
     for hdlr in log.handlers[:]:
         log.removeHandler(hdlr)
-    jeedom_utils.set_log_level('debug')
+    JeedomUtils.set_log_level('debug')
     logging.info("GLOBAL------Shutdown")
     logging.info("Removing PID file " + str(globals.pidfile))
     try:
@@ -733,7 +732,7 @@ globals.socketport = int(globals.socketport)
 globals.cycle = float(globals.cycle)
 globals.cycle_sommeil = float(globals.cycle_sommeil)
 
-jeedom_utils.set_log_level(globals.log_level)
+JeedomUtils.set_log_level(globals.log_level)
 logging.info('GLOBAL------Start teleinfod')
 logging.info('GLOBAL------Cycle Sommeil : ' + str(globals.cycle_sommeil))
 logging.info('GLOBAL------Socket port : ' + str(globals.socketport))
@@ -749,8 +748,8 @@ logging.info('GLOBAL------Mode : ' + str(globals.mode))
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
 globals.pidfile = globals.pidfile + "_" + globals.type + ".pid"
-jeedom_utils.write_pid(str(globals.pidfile))
-globals.JEEDOM_COM = jeedom_com(apikey=globals.apikey, url=globals.callback, cycle=globals.cycle)
+JeedomUtils.write_pid(str(globals.pidfile))
+globals.JEEDOM_COM = JeedomCom(apikey=globals.apikey, url=globals.callback, cycle=globals.cycle)
 if not globals.JEEDOM_COM.test():
     logging.error('GLOBAL------Network communication issues. Please fix your Jeedom network configuration.')
     shutdown()
