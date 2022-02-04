@@ -99,6 +99,8 @@ class Teleinfo:
                             if self._is_valid(resp, checksum):
                                 logging.debug('TELEINFO------ ** DECODAGE Checksum de la ligne ci dessous OK')
                                 content[name] = value;
+                                if name == 'ADSC':
+                                    content['ADSC_'] = value
                                 if name == 'STGE':
                                     logging.debug('TELEINFO------name : STGE value : ' + value + ' checksum : ' + checksum)
                                     stgebin = bin(int(value, 16))
@@ -194,6 +196,7 @@ class Teleinfo:
                                 # traduction RELAIS
                                 if name == 'RELAIS':
                                     logging.debug('TELEINFO------name : RELAIS : ' + value)
+                                    # value = str(140)
                                     relais = bin(int(value))
                                     relais = relais [2::]
                                     bitsrelais = [relais]
@@ -205,35 +208,35 @@ class Teleinfo:
  	                                    else:
 		                                    bitsrelais += [relais[longueur -1 -i:longueur -i]]
                                     name = 'Relais_1'
-                                    message = switch_mot20(int(bitsrelais[0]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_2'
                                     message = switch_mot20(int(bitsrelais[1]))
                                     content[name] = message;
                                     logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_3'
+                                    name = 'Relais_2'
                                     message = switch_mot20(int(bitsrelais[2]))
                                     content[name] = message;
                                     logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_4'
+                                    name = 'Relais_3'
                                     message = switch_mot20(int(bitsrelais[3]))
                                     content[name] = message;
                                     logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_5'
+                                    name = 'Relais_4'
                                     message = switch_mot20(int(bitsrelais[4]))
                                     content[name] = message;
                                     logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_6'
+                                    name = 'Relais_5'
                                     message = switch_mot20(int(bitsrelais[5]))
                                     content[name] = message;
                                     logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_7'
+                                    name = 'Relais_6'
                                     message = switch_mot20(int(bitsrelais[6]))
                                     content[name] = message;
                                     logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_8'
+                                    name = 'Relais_7'
                                     message = switch_mot20(int(bitsrelais[7]))
+                                    content[name] = message;
+                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
+                                    name = 'Relais_8'
+                                    message = switch_mot20(int(bitsrelais[8]))
                                     content[name] = message;
                                     logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
                             else:

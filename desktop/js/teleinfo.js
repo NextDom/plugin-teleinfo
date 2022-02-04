@@ -16,6 +16,7 @@
  */
 
  var liste_donnees = [{etiquette:"ADCO",name:"Adresse du compteur",unite:""},
+{etiquette:"ADSC_",name:"ADresse Secondaire du Compteur",unite:""},
 {etiquette:"OPTARIF",name:"Option tarifaire choisie",unite:""},
 {etiquette:"DATE",name:"Date",unite:""},
 {etiquette:"VTIC",name:"Version de la TIC",unite:""},
@@ -167,10 +168,10 @@ function stopTeleinfoDeamon() {
         },
         success: function(data) { // si l'appel a bien fonctionné
             if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
-            $('#div_alert').showAlert({message: 'Le démon a été correctement arrêté : il se relancera automatiquement dans 1 minute', level: 'success'});
+            $.fn.showAlert({message: 'Le démon a été correctement arrêté : il se relancera automatiquement dans 1 minute', level: 'success'});
         }
     });
 }

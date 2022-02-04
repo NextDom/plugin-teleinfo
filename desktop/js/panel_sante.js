@@ -14,7 +14,7 @@ $.ajax({
         success: function (data) {
 
 			if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
 			for(eqLogic in data.result)

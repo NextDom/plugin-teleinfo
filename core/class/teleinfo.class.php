@@ -148,6 +148,10 @@ class teleinfo extends eqLogic
                 case "preavis_pointe_mobile":
                 case "pointe_mobile":
 				// fin pour traduction code STGE
+                // debut pour integration champs ADSC_ et passage de VTIC en type autre
+                case "ADSC_":
+                case "VTIC":
+                // fin ADSC_ et VTIC
                 case "DPM1":
                 case "FPM1":
                 case "DPM2":
@@ -1071,7 +1075,7 @@ class teleinfo extends eqLogic
                 $cmd->setConfiguration('type', 'health');
                 $cmd->setSubType('string');
                 $cmd->setIsHistorized(0);
-                $cmd->setEventOnly(1);
+                //$cmd->setEventOnly(1);
                 $cmd->setIsVisible(0);
                 $cmd->save();
             }
@@ -1099,7 +1103,7 @@ class teleinfo extends eqLogic
                 $cmd->setSubType('numeric');
                 $cmd->setUnite('Wh');
                 $cmd->setIsHistorized(1);
-                $cmd->setEventOnly(1);
+                //$cmd->setEventOnly(1);
                 $cmd->setIsVisible(0);
                 $cmd->save();
                 $cmd->refresh();
