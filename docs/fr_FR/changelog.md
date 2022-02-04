@@ -2,6 +2,10 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+## 4.7 (04-02-2022)
+
+Ajout des modifications pour la compatibilité Jeedom 4.2. Merci à Noyax37
+
 ### 4.6.5 (28-10-2019)
 
 * Correction calcul puissance dernière minute dans le cas de plusieurs compteurs
