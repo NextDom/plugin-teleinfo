@@ -89,7 +89,7 @@ $.ajax({
         success: function (data) {
             console.log("[loadData] Objet téléinfo récupéré : " + globalEqLogic);
             if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
             var serie0 = 0, serie1 = 1;
@@ -873,7 +873,7 @@ function teleinfoDrawChart(_params) {
         }
 
       if (data.state != 'ok') {
-        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+        $.fn.showAlert({message: data.result, level: 'danger'});
         return;
       }
       if (data.result.data.length < 1) {
@@ -887,7 +887,7 @@ function teleinfoDrawChart(_params) {
           } else {
             message += (init(data.result.dateEnd) != '') ? ' {{jusqu\'au}} ' + data.result.dateEnd:'';
           }
-          $('#div_alert').showAlert({message: message, level: 'danger'});
+          $.fn.showAlert({message: message, level: 'danger'});
         }
         return;
       }

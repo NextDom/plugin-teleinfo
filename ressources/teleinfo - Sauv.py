@@ -73,176 +73,30 @@ class Teleinfo:
         if globals.mode == "standard": # Zone linky standard
             resp = globals.TELEINFO_SERIAL.readline()
             is_ok = False
-            premtrame = True
             content = {}
             while not is_ok:
                 try:
                     while 'ADSC' not in resp:
-                        if premtrame:
-                            premtrame = False
-                        else:
-                            resp = globals.TELEINFO_SERIAL.readline()
+                        resp = globals.TELEINFO_SERIAL.readline()
                         if len(resp.replace('\r', '').replace('\n', '').split('\x09')) == 4:
                             name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
-                            #checksum = ' '
-                            #content[name] = value;
-                            if self._is_valid(resp, checksum):
-                                logging.debug('TELEINFO------ ** DECODAGE Checksum de la ligne ci dessous OK')
-                                content[name] = value;
-                            else:
-                                logging.error("TELEINFO------ ** DONNEES HS ! ** sur trame : " + resp + ' checksum : ' + checksum)
-                            logging.debug('TELEINFO------name : ' + name + ' value : ' + value + ' Horodate : ' + horodate + ' checksum : ' + checksum)
+                            checksum = ' '
+                            content[name] = value;
+                            logging.debug('TELEINFO------name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
                         else:
                             name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
-                            #logging.debug('Nombre de champs : ' + champs)
-                            #content[name] = value;
-                            if self._is_valid(resp, checksum):
-                                logging.debug('TELEINFO------ ** DECODAGE Checksum de la ligne ci dessous OK')
-                                content[name] = value;
-                                if name == 'ADSC':
-                                    content['ADSC_'] = value
-                                if name == 'STGE':
-                                    logging.debug('TELEINFO------name : STGE value : ' + value + ' checksum : ' + checksum)
-                                    stgebin = bin(int(value, 16))
-                                    stgebin = stgebin [2::]
-                                    bits = [stgebin]
-                                    longueur = len(stgebin)
-                                    for i in range(32):
-	                                    if i > longueur - 1:
-		                                    bits += '0'
-	                                    else:
-		                                    bits += [stgebin[longueur -1 -i:longueur -i]]
-                                    #print ('bits 2 ', bits)
-                                    name = 'contact_sec'
-                                    message = switch_mot1(int(bits[1]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'organe_de_coupure'
-                                    message = switch_mot2(int(bits[4]+bits[3]+bits[2],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'etat_du_cache_bornes'
-                                    message = switch_mot3(int(bits[5]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'non_utilise_toujours_a_0'
-                                    message = switch_mot4(int(bits[6]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'surtension'
-                                    message = switch_mot5(int(bits[7]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'depassement_de_P_reference'
-                                    message = switch_mot6(int(bits[8]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'producteur_consommateur'
-                                    message = switch_mot7(int(bits[9]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'sens_energie_active'
-                                    message = switch_mot8(int(bits[10]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'tarif_en_cours_fourniture'
-                                    message = switch_mot9(int(bits[14]+bits[13]+bits[12]+bits[11],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'tarif_en_cours_distrib'
-                                    message = switch_mot10(int(bits[16]+bits[15],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'mode_degrade_horloge'
-                                    message = switch_mot11(int(bits[17]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'etat_sortie_teleinfo'
-                                    message = switch_mot12(int(bits[18]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'non_utilise'
-                                    message = switch_mot13(int(bits[19]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'etat_sortie_comm_euridis'
-                                    message = switch_mot14(int(bits[21]+bits[20],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'statut_CPL'
-                                    message = switch_mot15(int(bits[23]+bits[22],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'synchro_CPL'
-                                    message = switch_mot16(int(bits[24]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'couleur_jour_Tempo'
-                                    message = switch_mot17(int(bits[26]+bits[25],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'couleur_demain_Tempo'
-                                    message = switch_mot17(int(bits[28]+bits[27],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'preavis_pointe_mobile'
-                                    message = switch_mot19(int(bits[30]+bits[29],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                    name = 'pointe_mobile'
-                                    message = switch_mot19(int(bits[32]+bits[31],2))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
-                                # traduction RELAIS
-                                if name == 'RELAIS':
-                                    logging.debug('TELEINFO------name : RELAIS : ' + value)
-                                    # value = str(140)
-                                    relais = bin(int(value))
-                                    relais = relais [2::]
-                                    bitsrelais = [relais]
-                                    longueur = len(relais)
-                                    #print ('bits 1 ', bits)
-                                    for i in range(8):
-	                                    if i > longueur - 1:
-		                                    bitsrelais += '0'
- 	                                    else:
-		                                    bitsrelais += [relais[longueur -1 -i:longueur -i]]
-                                    name = 'Relais_1'
-                                    message = switch_mot20(int(bitsrelais[1]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_2'
-                                    message = switch_mot20(int(bitsrelais[2]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_3'
-                                    message = switch_mot20(int(bitsrelais[3]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_4'
-                                    message = switch_mot20(int(bitsrelais[4]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_5'
-                                    message = switch_mot20(int(bitsrelais[5]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_6'
-                                    message = switch_mot20(int(bitsrelais[6]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_7'
-                                    message = switch_mot20(int(bitsrelais[7]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                                    name = 'Relais_8'
-                                    message = switch_mot20(int(bitsrelais[8]))
-                                    content[name] = message;
-                                    logging.debug('TELEINFO---traduction RELAIS : ' + name + ' value : ' + message)
-                            else:
-                                logging.error('TELEINFO------ ** DONNEES HS ! ** sur trame : ' + resp + ' checksum : ' + checksum)
+                            content[name] = value;
                             logging.debug('TELEINFO------name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     is_ok = True
+                    if len(resp.replace('\r', '').replace('\n', '').split('\x09')) == 4:
+                        name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
+                        checksum = ' '
+                        content[name] = value;
+                        logging.debug('TELEINFO------name : ' + name + ' value : ' + value + ' checksum : ' + checksum + ' Horodate : ' + horodate)
+                    else:
+                        name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
+                        content[name] = value;
+                        logging.debug('TELEINFO------name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                 except ValueError:
                     checksum = ' '
         else: # Zone historique
@@ -314,10 +168,6 @@ class Teleinfo:
             for cks in datas:
                 my_sum = my_sum + ord(cks)
             computed_checksum = ((my_sum + 0x09) & int("111111", 2)) + 0x20
-            if chr(computed_checksum) != checksum[0:1]:
-                logging.error('checksum non concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
-            else:
-                logging.debug('TELEINFO------ ** checksum concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
         else:
             #print "Check checksum : f = %s, chk = %s" % (frame, checksum)
             datas = ' '.join(frame.split()[0:2])
@@ -326,7 +176,7 @@ class Teleinfo:
                 my_sum = my_sum + ord(cks)
             computed_checksum = (my_sum & int("111111", 2)) + 0x20
             #print "computed_checksum = %s" % chr(computed_checksum)
-        return chr(computed_checksum) == checksum[0:1]
+        return chr(computed_checksum) == checksum
 
     def run(self):
         """ Main function
@@ -482,174 +332,6 @@ def shutdown():
 	logging.debug("Exit 0")
 	sys.stdout.flush()
 	os._exit(0)
-
-#------------------------------------------------------------------------------
-# Ajout pour traduction code STGE
-#------------------------------------------------------------------------------
-
-#DEFINITION DE LA SIGNIFICATION DES BITS
-def switch_mot1(argument):
-	switcher = {
-		0: "Ferme",
-		1: "Ouvert",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot2(argument):
-	switcher = {
-		0: "Ferme",
-		1: "Ouvert sur surpuissance",
-		2: "ouvert sur surtension",
-		3: "Ouvert sur delestage",
-		4: "Ouvert sur ordre CPL ou Euridis",
-		5: "Ouvert sur surchauffe avec I > Imax",
-		6: "Ouvert sur surchauffe avec I < Imax",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot3(argument):
-	switcher = {
-		0: "Ferme",
-		1: "Ouvert",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot4(argument):
-	switcher = {
-		0: "Toujours a 0",
-		1: "Anormal",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot5(argument):
-	switcher = {
-		0: "Pas de surtension",
-		1: "Surtension",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot6(argument):
-	switcher = {
-		0: "Pas de depassement",
-		1: "Depassement en cours",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot7(argument):
-	switcher = {
-		0: "Consommateur",
-		1: "Producteur",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot8(argument):
-	switcher = {
-		0: "Positive",
-		1: "Negative",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot9(argument):
-	switcher = {
-		0: "Ventile sur index 1",
-		1: "Ventile sur index 2",
-		2: "Ventile sur index 3",
-		3: "Ventile sur index 4",
-		4: "Ventile sur index 5",
-		5: "Ventile sur index 6",
-		6: "Ventile sur index 7",
-		7: "Ventile sur index 8",
-		8: "Ventile sur index 9",
-		9: "Ventile sur index 10",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot10(argument):
-	switcher = {
-		0: "Ventile sur index 1",
-		1: "Ventile sur index 2",
-		2: "Ventile sur index 3",
-		3: "Ventile sur index 4",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot11(argument):
-	switcher = {
-		0: "Correct",
-		1: "Degrade",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot12(argument):
-	switcher = {
-		0: "Historique",
-		1: "Standard",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot13(argument):
-	switcher = {
-		0: "Non utilise",
-		1: "Non utilise",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot14(argument):
-	switcher = {
-		0: "Desactivee",
-		1: "Activee sans secu",
-		2: "Invalide",
-		3: "Activee avec secu",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot15(argument):
-	switcher = {
-		0: "New/unlock",
-		1: "New/lock",
-		2: "Registered",
-		3: "Invalide",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot16(argument):
-	switcher = {
-		0: "Non synchro",
-		1: "synchro",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot17(argument):
-	switcher = {
-		0: "Contrat non Tempo",
-		1: "Bleu",
-		2: "Blanc",
-		3: "Rouge",
-	}
-	return switcher.get(argument, "Invalide")
-
-def switch_mot19(argument):
-	switcher = {
-		0: "Pas de preavis",
-		1: "Preavis PM1",
-		2: "Preavis PM2",
-		3: "Preavis PM3",
-	}
-	return switcher.get(argument, "Invalide")
-
-#------------------------------------------------------------------------------
-# Ajout pour traduction code RELAIS
-#------------------------------------------------------------------------------
-
-#DEFINITION DE LA SIGNIFICATION DES BITS
-def switch_mot20(argument):
-	switcher = {
-		0: "Ouvert",
-		1: "Ferme",
-	}
-	return switcher.get(argument, "Invalide")
-
-
 #------------------------------------------------------------------------------
 # MAIN
 #------------------------------------------------------------------------------
