@@ -4,7 +4,7 @@
 	"description" : "Plugin pour utiliser les modems téléinformation USB / Série",
 	"licence" : "AGPL",
 	"author" : "Cédric GUINE",
-	"require" : "4.2",
+	"require" : "4.0",
 	"category" : "automation protocol",
 	"display" : "panel",
 	"hasDependency" : true,
