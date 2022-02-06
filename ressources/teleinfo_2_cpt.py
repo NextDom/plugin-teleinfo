@@ -420,7 +420,7 @@ class Teleinfo(object):
             time.sleep(globals.cycle_sommeil)
             #logging.debug("TELEINFO------WAITING : " + str(globals.TELEINFO_SERIAL.inWaiting()) + " octets dans la file apres sleep ")
             #if globals.TELEINFO_SERIAL.inWaiting() > 1500:
-            #    globals.TELEINFO_SERIAL.flushInput()
+            #    globals.TELEINFO_SERIAL.flush_input()
             #    logging.info("TELEINFO------BUFFER OVERFLOW => FLUSH")
             #    logging.debug(str(globals.TELEINFO_SERIAL.inWaiting()) + "octets dans la file apres flush ")
             if num_compteur == 1:
@@ -480,7 +480,7 @@ def read_socket(cycle):
 
 def listen():
     globals.PENDING_ACTION=False
-    jeedom_socket.open()
+    JeedomSocket.open()
     logging.info("GLOBAL------Start listening...")
     #globals.TELEINFO = Teleinfo()
     logging.info("GLOBAL------Preparing Teleinfo...")
@@ -525,7 +525,7 @@ def shutdown():
     except:
         pass
     try:
-        jeedom_socket.close()
+        JeedomSocket.close()
     except:
         pass
     logging.debug("Exit 0")
@@ -600,6 +600,6 @@ globals.JEEDOM_COM = jeedom_com(apikey = globals.apikey,url = globals.callback,c
 if not globals.JEEDOM_COM.test():
     logging.error('GLOBAL------Network communication issues. Please fix your Jeedom network configuration.')
     shutdown()
-jeedom_socket = jeedom_socket(port=globals.socketport,address=globals.sockethost)
+jeedom_socket = JeedomSocket(port=globals.socketport, address=globals.sockethost)
 listen()
 sys.exit()

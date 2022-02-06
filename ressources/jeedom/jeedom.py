@@ -177,12 +177,12 @@ class JeedomUtils:
         return hex(dec)[2:]
 
     @staticmethod
-    def testBit(int_type, offset):
+    def test_bit(int_type, offset):
         mask = 1 << offset
         return int_type & mask
 
     @staticmethod
-    def clearBit(int_type, offset):
+    def clear_bit(int_type, offset):
         mask = ~(1 << offset)
         return int_type & mask
 
@@ -229,8 +229,8 @@ class JeedomSerial:
             return False
         if not self.port.isOpen():
             self.port.open()
-        self.flushOutput()
-        self.flushInput()
+        self.flush_output()
+        self.flush_input()
         return True
 
     def close(self):
@@ -247,13 +247,13 @@ class JeedomSerial:
         logging.debug("Write data to serial port : " + str(JeedomUtils.byte_to_hex(data)))
         self.port.write(data)
 
-    def flushOutput(self, ):
-        logging.debug("flushOutput serial port ")
-        self.port.flushOutput()
+    def flush_output(self, ):
+        logging.debug("flush_output serial port ")
+        self.port.flush_output()
 
-    def flushInput(self):
-        logging.debug("flushInput serial port ")
-        self.port.flushInput()
+    def flush_input(self):
+        logging.debug("flush_input serial port ")
+        self.port.flush_input()
 
     def read(self):
         try:
@@ -281,7 +281,7 @@ class JeedomSerial:
 JEEDOM_SOCKET_MESSAGE = Queue()
 
 
-class jeedom_socket_handler(StreamRequestHandler):
+class JeedomSocketHandler(StreamRequestHandler):
     def handle(self):
         global JEEDOM_SOCKET_MESSAGE
         logging.debug("Client connected to [%s:%d]" % self.client_address)
@@ -292,7 +292,7 @@ class jeedom_socket_handler(StreamRequestHandler):
         logging.debug("Client disconnected from [%s:%d]" % self.client_address)
 
 
-class jeedom_socket:
+class JeedomSocket:
 
     def __init__(self, address='localhost', port=55000):
         self.message = None
@@ -301,14 +301,14 @@ class jeedom_socket:
         socketserver.TCPServer.allow_reuse_address = True
 
     def open(self):
-        self.netAdapter = TCPServer((self.address, self.port), jeedom_socket_handler)
+        self.netAdapter = TCPServer((self.address, self.port), JeedomSocketHandler)
         if self.netAdapter:
             logging.debug("Socket interface started")
-            threading.Thread(target=self.loopNetServer, args=()).start()
+            threading.Thread(target=self.loop_net_server, args=()).start()
         else:
             logging.debug("Cannot start socket interface")
 
-    def loopNetServer(self):
+    def loop_net_server(self):
         logging.debug("LoopNetServer Thread started")
         logging.debug("Listening on: [%s:%d]" % (self.address, self.port))
         self.netAdapter.serve_forever()
@@ -317,7 +317,7 @@ class jeedom_socket:
     def close(self):
         self.netAdapter.shutdown()
 
-    def getMessage(self):
+    def get_message(self):
         return self.message
 
 # ------------------------------------------------------------------------------

@@ -5,7 +5,6 @@
 """ Read one teleinfo frame and output the frame
 """
 
-
 import _thread
 import argparse
 import json
@@ -21,6 +20,7 @@ except ImportError as ex:
     sys.exit(1)
 import serial
 from datetime import datetime
+
 
 # ----------------------------------------------------------------------------
 # Teleinfo core
@@ -135,7 +135,8 @@ class Teleinfo:
                                     content[name] = message
                                     logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
                                     name = 'tarif_en_cours_fourniture'
-                                    message = switch_mot9(int(str(bits[14]) + str(bits[13]) + str(bits[12]) + str(bits[11]), 2))
+                                    message = switch_mot9(
+                                        int(str(bits[14]) + str(bits[13]) + str(bits[12]) + str(bits[11]), 2))
                                     content[name] = message
                                     logging.debug('TELEINFO---traduction STGE : ' + name + ' value : ' + message)
                                     name = 'tarif_en_cours_distrib'
@@ -185,7 +186,8 @@ class Teleinfo:
                                     logging.debug('TELEINFO------trad STGE : ' + str(content))
                                     logging.debug('TELEINFO------len stgebin ' + str(longueur))
                                 if name == 'RELAIS':
-                                    logging.debug('TELEINFO------name : RELAIS value : ' + value + ' checksum : ' + checksum)
+                                    logging.debug(
+                                        'TELEINFO------name : RELAIS value : ' + value + ' checksum : ' + checksum)
                                     relais = bin(int(value))
                                     relais = relais[2::]
                                     logging.debug('TELEINFO-------relais ' + str(relais))
@@ -389,7 +391,7 @@ class Teleinfo:
             logging.debug("TELEINFO------WAITING : " + str(
                 globals.TELEINFO_SERIAL.inWaiting()) + " octets dans la file apres sleep ")
             if globals.TELEINFO_SERIAL.inWaiting() > 1500:
-                globals.TELEINFO_SERIAL.flushInput()
+                globals.TELEINFO_SERIAL.flush_input()
                 logging.info("TELEINFO------BUFFER OVERFLOW => FLUSH")
                 logging.debug(str(globals.TELEINFO_SERIAL.inWaiting()) + "octets dans la file apres flush ")
         self.terminate()
@@ -456,7 +458,7 @@ def log_starting(cycle):
 
 def listen():
     globals.PENDING_ACTION = False
-    jeedom_socket.open()
+    JeedomSocket.open()
     logging.info("GLOBAL------Start listening...")
     globals.TELEINFO = Teleinfo()
     logging.info("GLOBAL------Preparing Teleinfo...")
@@ -496,7 +498,7 @@ def shutdown():
     except:
         pass
     try:
-        jeedom_socket.close()
+        JeedomSocket.close()
     except:
         pass
     logging.debug("Exit 0")
@@ -675,7 +677,8 @@ def switch_mot19(argument):
     }
     return switcher.get(argument, "Invalide")
 
-#DEFINITION DE LA SIGNIFICATION DES BITS RELAIS
+
+# DEFINITION DE LA SIGNIFICATION DES BITS RELAIS
 def switch_mot20(argument):
     switcher = {
         0: "Ouvert",
@@ -753,6 +756,6 @@ globals.JEEDOM_COM = JeedomCom(apikey=globals.apikey, url=globals.callback, cycl
 if not globals.JEEDOM_COM.test():
     logging.error('GLOBAL------Network communication issues. Please fix your Jeedom network configuration.')
     shutdown()
-jeedom_socket = jeedom_socket(port=globals.socketport, address=globals.sockethost)
+jeedom_socket = JeedomSocket(port=globals.socketport, address=globals.sockethost)
 listen()
 sys.exit()
