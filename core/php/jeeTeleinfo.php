@@ -65,6 +65,7 @@ $args = array(
     'DEMAIN'   => FILTER_SANITIZE_STRING,
     'MOTDETAT'   => FILTER_SANITIZE_STRING,
     'ADCO'   => FILTER_SANITIZE_STRING,
+    'ADSC'   => FILTER_SANITIZE_STRING,	
     'VTIC'   => FILTER_SANITIZE_STRING,
     'DATE'   => FILTER_SANITIZE_STRING,
     'NGTF'   => FILTER_SANITIZE_STRING,
@@ -106,7 +107,35 @@ $args = array(
     'SINST1'   => FILTER_SANITIZE_STRING,
     'SINSTI'   => FILTER_SANITIZE_STRING,
     'IRMS1'   => FILTER_SANITIZE_STRING,
-    'URMS1'   => FILTER_SANITIZE_STRING
+    'URMS1'   => FILTER_SANITIZE_STRING,
+    'STGE01'   => FILTER_SANITIZE_STRING,
+    'STGE02'   => FILTER_SANITIZE_STRING,
+    'STGE03'   => FILTER_SANITIZE_STRING,
+    'STGE04'   => FILTER_SANITIZE_STRING,
+    'STGE05'   => FILTER_SANITIZE_STRING,
+    'STGE06'   => FILTER_SANITIZE_STRING,
+    'STGE07'   => FILTER_SANITIZE_STRING,
+    'STGE08'   => FILTER_SANITIZE_STRING,
+    'STGE09'   => FILTER_SANITIZE_STRING,
+    'STGE10'   => FILTER_SANITIZE_STRING,
+    'STGE11'   => FILTER_SANITIZE_STRING,
+    'STGE12'   => FILTER_SANITIZE_STRING,
+    'STGE13'   => FILTER_SANITIZE_STRING,
+    'STGE14'   => FILTER_SANITIZE_STRING,
+    'STGE15'   => FILTER_SANITIZE_STRING,
+    'STGE16'   => FILTER_SANITIZE_STRING,
+    'STGE17'   => FILTER_SANITIZE_STRING,
+    'STGE18'   => FILTER_SANITIZE_STRING,
+    'STGE19'   => FILTER_SANITIZE_STRING,
+    'STGE20'   => FILTER_SANITIZE_STRING,
+    'RELAIS01'   => FILTER_SANITIZE_STRING,
+    'RELAIS02'   => FILTER_SANITIZE_STRING,
+    'RELAIS03'   => FILTER_SANITIZE_STRING,
+    'RELAIS04'   => FILTER_SANITIZE_STRING,
+    'RELAIS05'   => FILTER_SANITIZE_STRING,
+    'RELAIS06'   => FILTER_SANITIZE_STRING,
+    'RELAIS07'   => FILTER_SANITIZE_STRING,
+    'RELAIS08'   => FILTER_SANITIZE_STRING
 );
 
 //$message = filter_input(INPUT_GET, 'message', FILTER_SANITIZE_STRING);
@@ -136,7 +165,7 @@ if (isset($result['device'])) {
                 foreach ($flattenResults as $key => $value) {
                     $cmd = $eqlogic->getCmd('info',$key);
                     if ($cmd === false) {
-                        if($key != 'device' && $key != 'ADCO' && $key != 'ADSC'){
+                        if($key != 'device' && $key != 'ADCO'){
                             teleinfo::createCmdFromDef($eqlogic->getLogicalId(), $key, $value);
                             if($healthEnable) {
                                 $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
