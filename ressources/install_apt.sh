@@ -12,7 +12,7 @@ function apt_install {
   fi
 }
 function pip_install {
-  sudo pip3 install "$@"
+  sudo pip3 install --upgrade "$@"
   if [ $? -ne 0 ]; then
     echo "could not install $p - abort"
     rm ${PROGRESS_FILE}
