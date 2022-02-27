@@ -1,0 +1,13 @@
+{
+  "apt" : {
+    "python3-ftdi1" : {}
+  },
+  "pip3" :{
+    "pylibftdi" : {},
+    "six" : {},
+    "pyserial" : {},
+    "setuptools" : {},
+    "requests" : {},
+    "pyudev" : {}
+  }
+}
