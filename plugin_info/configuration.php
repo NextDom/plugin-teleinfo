@@ -281,17 +281,17 @@ try {
                 },
                 success: function (data) { // si l'appel a bien fonctionné
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({message: data.result.message, level: 'danger'});
+                        $.fn.showAlert({message: data.result.message, level: 'danger'});
                         return;
                     }
                     if (data.result.state == 'ok') {
                         console.log(data);
-                        $('#div_alert').showAlert({message: data.result.message + " N'oubliez pas de sauvegarder.", level: 'success'});
+                        $.fn.showAlert({message: data.result.message + " N'oubliez pas de sauvegarder.", level: 'success'});
                         $("#modem_vitesse").val(data.result.vitesse);
                         $("#linky").prop('checked', data.result.linky);
                     }
                     else {
-                        $('#div_alert').showAlert({message: data.result.message, level: 'warning'});
+                        $.fn.showAlert({message: data.result.message, level: 'warning'});
                     }
 				}
             });
@@ -322,16 +322,16 @@ try {
                 success: function (data) { // si l'appel a bien fonctionné
                     console.log(data);
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({message: data.result.message, level: 'danger'});
+                        $.fn.showAlert({message: data.result.message, level: 'danger'});
                         return;
                     }
                     if (data.result.state == 'ok') {
-                        $('#div_alert').showAlert({message: data.result.message + " N'oubliez pas de sauvegarder.", level: 'success'});
+                        $.fn.showAlert({message: data.result.message + " N'oubliez pas de sauvegarder.", level: 'success'});
                         $("#modem_compteur2_vitesse").val(data.result.vitesse);
                         $("#linky_prod").prop('checked', data.result.linky);
                     }
                     else {
-                        $('#div_alert').showAlert({message: data.result.message, level: 'warning'});
+                        $.fn.showAlert({message: data.result.message, level: 'warning'});
                     }
 				}
             });
@@ -352,10 +352,10 @@ try {
                 },
                 success: function (data) { // si l'appel a bien fonctionné
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        $.fn.showAlert({message: data.result, level: 'danger'});
                         return;
                     }
-                    $('#div_alert').showAlert({message: '{{Réussie}}', level: 'success'});
+                    $.fn.showAlert({message: '{{Réussie}}', level: 'success'});
                 }
             });
     });

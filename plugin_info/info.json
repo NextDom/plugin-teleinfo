@@ -4,7 +4,7 @@
 	"description" : "Plugin pour utiliser les modems téléinformation USB / Série",
 	"licence" : "AGPL",
 	"author" : "Cédric GUINE",
-	"require" : "3.0",
+	"require" : "4.0",
 	"category" : "automation protocol",
 	"display" : "panel",
 	"hasDependency" : true,
@@ -15,5 +15,5 @@
 	},
 	"changelog" : "https://NextDom.github.io/plugin-teleinfo/#language#/changelog",
 	"documentation" : "https://NextDom.github.io/plugin-teleinfo/#language#/",
-	"pluginVersion" : "4.6.5"
+	"pluginVersion" : "4.7.1"
 }
