@@ -16,7 +16,7 @@ Repère 2: cochez si vous avez un Linky unique qui fonctionne en mode consommate
 
 Repère 3: cochez si votre abonnement est Heure creuse / heure pleine ou Tempo ou EJP. Les différents abonnements seront traités dans une future mise à jour.
 
-enfin sauvegardez. A partir de ce moment toutes les commandes reçu et non reconnu seront ajoutée automatiquement et l'affichage du pannel sera adapté à votre configuration.
+enfin sauvegardez. A partir de ce moment toutes les commandes reçues et non reconnues seront ajoutées automatiquement et l'affichage du pannel sera adapté à votre configuration.
 
 ![teleinfo52](../images/teleinformation_objet.png)
 
