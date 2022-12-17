@@ -1,4 +1,4 @@
-{% include presentation.md %}
+{% include_relative presentation.md %}
 {% include_relative architecture.md %}
 {% include_relative installation.md %}
 {% include_relative configuration.md %}
