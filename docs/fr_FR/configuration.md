@@ -5,10 +5,18 @@ Configuration
 >![teleinfo51](../images/teleinformation_blocage.png)
 
 
-Le plugin offre la possibilité de créer automatiquement les commandes réceptionnées. Pour cela démarrez le daemon, attendez que les premières trames arrivent puis rendez vous sur Plugin / Protocoles Domotiques / Téléinfo.
+Le plugin offre la possibilité de créer automatiquement les commandes réceptionnées et de définir certains paramètres. Pour cela démarrez le daemon, attendez que les premières trames arrivent puis rendez vous sur Plugin / Protocoles Domotiques / Téléinfo.
 Vous devriez voir apparaitre un objet avec un ID.
 
-Cliquez sur l'objet et sélectionnez "Création automatique des commandes" en haut à droite, enfin sauvegardez. A partir de ce moment toutes les commandes reçu et non reconnu seront ajoutée automatiquement.
+Cliquez sur l'objet puis
+
+Repère 1: cochez si vous voulez une création automatique des commandes, 
+
+Repère 2: cochez si vous avez un Linky unique qui fonctionne en mode consommateur ET producteur,
+
+Repère 3: cochez si votre abonnement est Heure creuse / heure pleine ou Tempo ou EJP. Les différents abonnements seront traités dans une future mise à jour.
+
+enfin sauvegardez. A partir de ce moment toutes les commandes reçues et non reconnues seront ajoutées automatiquement et l'affichage du pannel sera adapté à votre configuration.
 
 ![teleinfo52](../images/teleinformation_objet.png)
 
