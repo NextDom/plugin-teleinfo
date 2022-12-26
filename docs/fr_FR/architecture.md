@@ -28,8 +28,6 @@ Le compteur linky possède 2 modes de téléinformation.
 
 Cas d'utilisation de 2 compteurs
 ===
->Le plugin ne permet pas d'utiliser le modem 2 compteurs cartelectronic avec 2 types de compteurs différents (Historique et Standard).
-Pour ce cas, veuillez utiliser 2 modem séparés. 
 
 ## Utilisation du modem Cartelectronic 2 Compteurs
 Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement de 2 compteurs électrique il est nécessaire d'activer le mode 2 compteurs.
