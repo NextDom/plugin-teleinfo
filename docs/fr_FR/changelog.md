@@ -2,9 +2,33 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+## ??
+Modification du panel:
+- ajout de la courbe des températures dans tous les graphiques sauf jour courant
+- durée de la courbe des consommations instantanées sur l'intégralité de la période sélectionnée et non plus sur seulement le jour en cours
+- ajout de case à cocher pour faire correspondre son abonnement aux courbes à afficher
+- ajout de la courbe de production si 1 seul linky est utilisé en conso avec des panneaux solaire
+- modification d'une erreur dans les stats affichés en haut du panel qui ne prenaient pas en compte le dernier jour de la période
+- prise en compte d'un diviseur si on affiche les stat en kwh par exemple directement dans le compteur
+- reprise de la partie haute du panel
+- ajout courbe pluri annuelle
+- pas mal de corrections de détails
+
+
 ## 4.7 (04-02-2022)
 
 Ajout des modifications pour la compatibilité Jeedom 4.2. Merci à Noyax37
+passage en python3
+
+modem cartelectronic version 2 compteurs =>
+- si cavalier interne modem sur 1 compteur => ok => attirer l'attention sur la doc à ne pas cocher "modem caretelectronic 2 compteurs" dans configuration
+- si cavalier interne modem sur 2 compteurs => aucune idée si ça fonctionne ou pas, normalement oui mais...
+
+un peu de ménage dans les fichiers temporaires
+
+ajout du fichier packages.json pour profiter de l'évolution de la gestion des dépendances liée à jeedom en v4.2 https://blog.jeedom.com/6170-introduction-jeedom-4-2-installation-de-dependance/
+
+je ne sais plus...
 
 ### 4.6.5 (28-10-2019)
 
