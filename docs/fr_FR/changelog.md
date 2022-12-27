@@ -2,7 +2,7 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
-## ??
+## 4.7.1 (27-12-2022)
 Modification du panel:
 - ajout de la courbe des températures dans tous les graphiques sauf jour courant
 - durée de la courbe des consommations instantanées sur l'intégralité de la période sélectionnée et non plus sur seulement le jour en cours
