@@ -1020,7 +1020,7 @@ class teleinfo extends eqLogic
                 $cmd->setConfiguration('type', 'health');
                 $cmd->setSubType('string');
                 $cmd->setIsHistorized(0);
-                $cmd->setEventOnly(1);
+                //$cmd->setEventOnly(1);
                 $cmd->setIsVisible(0);
                 $cmd->save();
             }
@@ -1048,7 +1048,7 @@ class teleinfo extends eqLogic
                 $cmd->setSubType('numeric');
                 $cmd->setUnite('Wh');
                 $cmd->setIsHistorized(1);
-                $cmd->setEventOnly(1);
+                //$cmd->setEventOnly(1);
                 $cmd->setIsVisible(0);
                 $cmd->save();
                 $cmd->refresh();

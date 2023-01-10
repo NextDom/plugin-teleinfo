@@ -2,6 +2,14 @@
 
 Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
 
+## 4.6.5b (provisoire 10-01-2023)
+Aucune modification apportée mais un avis pour ceux qui sont encore avec ce plugin en version stable.
+
+La version 4.7.1 n'apporte aucun changement ni dans le traitement des données ni dans le traitement des statistiques.
+
+Cette mise à jour et ce qui va suivre est expliqué là:
+https://community.jeedom.com/t/plugin-teleinfo-annonce-importante/99198
+
 ### 4.6.5 (28-10-2019)
 
 * Correction calcul puissance dernière minute dans le cas de plusieurs compteurs
