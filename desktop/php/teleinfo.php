@@ -274,11 +274,11 @@ switch ($controlerState) {
 								  <label> au : </label>
 								  <input id="in_endDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 87px;" value="<?php echo $date['end']?>"/>
 							  </div>
-						  <label class="col-sm-5 control-label pull-left">Copier anciennes données  conso totale vers Index00</label>
+<!--						  <label class="col-sm-5 control-label pull-left">Copier anciennes données  conso totale vers Index00</label>
                           <div class="col-sm-6">
                               <a class="btn btn-info tooltips"  id="btIndex00"><i class="fas fa-medkit"></i>{{ Index00}}</a>
                           </div>
-						  </br>
+-->						  </br>
                           <label class="col-sm-5 control-label pull-left">Copier anciennes données vers Index </label>
                           <div class="col-sm-6">
                               <a class="btn btn-info tooltips"  id="btIndex"><i class="fas fa-medkit"></i>{{ Copier}}</a>

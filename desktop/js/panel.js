@@ -338,6 +338,7 @@ $.ajax({
                                     stackGraph = 1;
                                     serie = 3;
 									getMonthlyHistory('div_graphGlobalIndex',datacmd, color[11], stackGraph, diviseur, serie);
+                                    getAnnualHistory('div_graphGlobalAnnual',datacmd, color[11], stackGraph, diviseur, serie);
                                     getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYear]'), 'monthLastYear', datacmd);
                                     getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial', datacmd);
                                     getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=month]'), 'month' , "coutHC", datacmd);
