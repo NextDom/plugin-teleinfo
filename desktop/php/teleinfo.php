@@ -2,6 +2,12 @@
 if (!isConnect('admin')) {
     throw new Exception('Error 401 Unauthorized');
 }
+
+$date = array(
+	'start' => date('Y-m-d', strtotime('2020-01-01')),
+	'end' => date('Y-m-d'),
+);
+
 $plugin = plugin::byId('teleinfo');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
@@ -162,11 +168,70 @@ switch ($controlerState) {
                           </div>
                       </div>
                       <div class="form-group HCHP">
-                          <label class="col-lg-4 control-label pull-left">{{Abonnement HC / HP}} <sup><i class="fas fa-question-circle tooltips" title="{{A cocher si votre abonnement est HC / HP}}"></i></sup></label>
+                          <label class="col-lg-4 control-label pull-left">{{Abo HC / HP (ancienne méthode)}} <sup><i class="fas fa-question-circle tooltips" title="{{Si vous voulez toujours l'ancienne méthode et si votre abonnement est HC / HP}}"></i></sup></label>
                           <div class="col-lg-7 tooltips">
-                              <input type="checkbox" id="HC_HP" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="HCHP" placeholder="{{Abbonnement HC/HP}}"/>
+                              <input type="checkbox" id="HC_HP" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="HCHP" placeholder="{{Abonnement HC/HP}}"/>
                           </div>
                       </div>
+                      <div class="form-group NewIndex">
+                          <label class="col-lg-4 control-label pull-left">{{Utilisation des nouveaux index}} <sup><i class="fas fa-question-circle tooltips" title="{{Si vous voulez utiliser la nouvelle méthode avec les Index ci-dessous}}"></i></sup></label>
+                          <div class="col-lg-7 tooltips">
+                              <input type="checkbox" id="NewMethode" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="newIndex" placeholder="{{Utilisation des index}}"/>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">{{Index}}</label>
+                          <label class="col-sm-2 control-label">{{Libellé tarif}}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <label class="col-sm-2 control-label">{{Champ téléinfo}}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <label class="col-sm-2 control-label">{{Prix kWh}}</label>
+                      </div>
+
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">{{Index Prod}} :</label>
+                          <label class="col-sm-2 control-label">{{Injection Totale}}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <label class="col-sm-2 control-label">{{EAIT}}</label>
+						  <label class="col-sm-1 control-label">{{ }}</label>
+                          <div class="col-sm-2">
+                              <input type="number" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="CoutindexProd" placeholder="{{0}}"/>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">{{Index 00}} :</label>
+                          <label class="col-sm-2 control-label">{{Conso Totale}}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <label class="col-sm-2 control-label">{{BASE ou EAST}}</label>
+						  <label class="col-sm-1 control-label">{{ }}</label>
+                          <div class="col-sm-2">
+                              <input type="number" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="Coutindex00" placeholder="{{Si abo de base sinon 0}}"/>
+                          </div>
+
+                      </div>
+                      
+                      <?php
+							//création du tableau des paramètres des index
+                            $index=array('index01','index02','index03','index04','index05','index06','index07','index08','index09','index10');
+							foreach($index as $numindex){
+								$tableau.='<div class="form-group">';
+									$tableau.='<label class="col-sm-2 control-label">{{Index '.substr($numindex,-2).'}} :</label>';
+									$tableau.='<div class="col-sm-2">';
+									    $tableau.='<input type="text" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="'.$numindex.'_nom" placeholder="{{...}}"/>';
+									$tableau.='</div>';
+									$tableau.='<label class="col-sm-1 control-label">{{ }}</label>';
+									$tableau.='<div class="col-sm-2">';
+										$tableau.='<input type="text" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="'.$numindex.'" placeholder="{{...}}"/>';
+									$tableau.='</div>';
+								    $tableau.='<label class="col-sm-1 control-label">{{ }}</label>';
+									$tableau.='<div class="col-sm-2">';
+                                        $tableau.='<input type="number" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="Cout'.$numindex.'" placeholder="{{0}}"/>';
+                                    $tableau.='</div>';
+                                $tableau.='</div>';
+                                    }
+						?>
+						<?php echo $tableau ?>
+
                   </fieldset>
               </form>
           </div>
@@ -196,6 +261,27 @@ switch ($controlerState) {
                       <div class="form-group">
                           <div class="col-lg-12">
                               <div class="alert alert-info globalRemark">{{Attention, il est nécessaire d'activer l'historisation des index pour utiliser les statistiques}}</div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          </br>
+						  </br>
+						  </br>
+						  </br>
+							  <div> 
+								  <label>Pour la période du (date au format AAA-MM-JJ) : </label>
+								  <input id="in_startDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 87px;" value="<?php echo $date['start']?>"/>
+								  <label> au : </label>
+								  <input id="in_endDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 87px;" value="<?php echo $date['end']?>"/>
+							  </div>
+						  <label class="col-sm-5 control-label pull-left">Copier anciennes données  conso totale vers Index00</label>
+                          <div class="col-sm-6">
+                              <a class="btn btn-info tooltips"  id="btIndex00"><i class="fas fa-medkit"></i>{{ Index00}}</a>
+                          </div>
+						  </br>
+                          <label class="col-sm-5 control-label pull-left">Copier anciennes données vers Index </label>
+                          <div class="col-sm-6">
+                              <a class="btn btn-info tooltips"  id="btIndex"><i class="fas fa-medkit"></i>{{ Copier}}</a>
                           </div>
                       </div>
                   </fieldset>

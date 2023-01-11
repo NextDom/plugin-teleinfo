@@ -32,12 +32,15 @@ class teleinfo extends eqLogic
     public static function cron()
     {
         self::calculatePAPP();
+//        self::calculateOtherStats();
+//        self::calculateTodayStats();
     }
 
     public static function cronHourly()
     {
         self::moyLastHour();
         cache::set('teleinfo::regenerateMonthlyStat', '0');
+        log::add('teleinfo', 'debug', 'cronhourly ');
     }
 
     public static function changeLogLive($level)
@@ -491,15 +494,18 @@ class teleinfo extends eqLogic
         $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
         $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         $indexProduction   = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
+
 
         log::add('teleinfo', 'info', '----- Calcul des statistiques temps réel -----');
         $startDateToday            = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
         $endDateToday              = (new DateTime())->setTimestamp(mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y")));
         log::add('teleinfo', 'info', 'Date de début : ' . $startDateToday->format('Y-m-d 00:00:00'));
         log::add('teleinfo', 'info', 'Date de fin   : ' . $endDateToday->format('Y-m-d H:i:s'));
-        log::add('teleinfo', 'info', 'Liste index HP          : ' . $indexConsoHP);
-        log::add('teleinfo', 'info', 'Liste index HC          : ' . $indexConsoHC);
-        log::add('teleinfo', 'info', 'Liste index Production  : ' . $indexProduction);
+        log::add('teleinfo', 'info', 'Liste index HP            : ' . $indexConsoHP);
+        log::add('teleinfo', 'info', 'Liste index HC            : ' . $indexConsoHC);
+        log::add('teleinfo', 'info', 'Liste index Production    : ' . $indexProduction);
+        log::add('teleinfo', 'info', 'Liste index Conso Totale  : ' . $indexConsoTotales);
 
 
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
@@ -512,9 +518,88 @@ class teleinfo extends eqLogic
             $statYesterdayHp   = 0;
             $statYesterdayHc   = 0;
             $typeTendance      = 0;
+            $statToday         = 0;
+			$index             = '';
+            $statTodayIndex00  = 0;
+            $statTodayIndex01  = 0;
+            $statTodayIndex02  = 0;
+            $statTodayIndex03  = 0;
+            $statTodayIndex04  = 0;
+            $statTodayIndex05  = 0;
+            $statTodayIndex06  = 0;
+            $statTodayIndex07  = 0;
+            $statTodayIndex08  = 0;
+            $statTodayIndex09  = 0;
+            $statTodayIndex10  = 0;
+            $statYesterdayIndex00  = 0;
+            $statYesterdayIndex01  = 0;
+            $statYesterdayIndex02  = 0;
+            $statYesterdayIndex03  = 0;
+            $statYesterdayIndex04  = 0;
+            $statYesterdayIndex05  = 0;
+            $statYesterdayIndex06  = 0;
+            $statYesterdayIndex07  = 0;
+            $statYesterdayIndex08  = 0;
+            $statYesterdayIndex09  = 0;
+            $statYesterdayIndex10  = 0;
             $statHpToCumul     = array();
             $statHcToCumul     = array();
             $statProdToCumul   = array();
+			$statTotalToCumul  = array();
+
+            $index01 = $eqLogic->getConfiguration('index01');
+			$index02 = $eqLogic->getConfiguration('index02');
+			$index03 = $eqLogic->getConfiguration('index03');
+			$index04 = $eqLogic->getConfiguration('index04');
+			$index05 = $eqLogic->getConfiguration('index05');
+			$index06 = $eqLogic->getConfiguration('index06');
+			$index07 = $eqLogic->getConfiguration('index07');
+			$index08 = $eqLogic->getConfiguration('index08');
+			$index09 = $eqLogic->getConfiguration('index09');
+			$index10 = $eqLogic->getConfiguration('index10');
+
+            $Coutkwhindex00 = $eqLogic->getConfiguration('Coutindex00');
+            $Coutkwhindex01 = $eqLogic->getConfiguration('Coutindex01');
+            $Coutkwhindex02 = $eqLogic->getConfiguration('Coutindex02');
+            $Coutkwhindex03 = $eqLogic->getConfiguration('Coutindex03');
+            $Coutkwhindex04 = $eqLogic->getConfiguration('Coutindex04');
+            $Coutkwhindex05 = $eqLogic->getConfiguration('Coutindex05');
+            $Coutkwhindex06 = $eqLogic->getConfiguration('Coutindex06');
+            $Coutkwhindex07 = $eqLogic->getConfiguration('Coutindex07');
+            $Coutkwhindex08 = $eqLogic->getConfiguration('Coutindex08');
+            $Coutkwhindex09 = $eqLogic->getConfiguration('Coutindex09');
+            $Coutkwhindex10 = $eqLogic->getConfiguration('Coutindex10');
+
+			if ($index01 != '') {
+				log::add('teleinfo', 'info', 'Index 01     --> ' . $index01);
+			}
+			if ($index02 != '') {
+				log::add('teleinfo', 'info', 'Index 02     --> ' . $index02);
+			}
+			if ($index03 != '') {
+				log::add('teleinfo', 'info', 'Index 03     --> ' . $index03);
+			}
+			if ($index04 != '') {
+				log::add('teleinfo', 'info', 'Index 04     --> ' . $index04);
+			}
+			if ($index05 != '') {
+				log::add('teleinfo', 'info', 'Index 05     --> ' . $index05);
+			}
+			if ($index06 != '') {
+				log::add('teleinfo', 'info', 'Index 06     --> ' . $index06);
+			}
+			if ($index07 != '') {
+				log::add('teleinfo', 'info', 'Index 07     --> ' . $index07);
+			}
+			if ($index08 != '') {
+				log::add('teleinfo', 'info', 'Index 08     --> ' . $index08);
+			}
+			if ($index09 != '') {
+				log::add('teleinfo', 'info', 'Index 09     --> ' . $index09);
+			}
+			if ($index10 != '') {
+				log::add('teleinfo', 'info', 'Index 10     --> ' . $index10);
+			}
 
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
@@ -528,11 +613,62 @@ class teleinfo extends eqLogic
                         if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
                             array_push($statProdToCumul, $cmd->getId());
                         }
+						if (strpos($indexConsoTotales, $cmd->getConfiguration('info_conso')) !== false) {
+							log::add('teleinfo', 'debug', 'Id Index Global --> ' . $cmd->getId());
+							array_push($statTotalToCumul, $cmd->getId());
+						}
                     }
                 }
                 if ($cmd->getConfiguration('info_conso') == "TENDANCE_DAY") {
                     $typeTendance = $cmd->getConfiguration('type_calcul_tendance');
                 }
+				if (($cmd->getConfiguration('info_conso') == 'BASE') || ($cmd->getConfiguration('info_conso') == 'EAST')) {
+					$index00 = $cmd->getConfiguration('info_conso');
+					$idIndex00 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index 00     --> ' . $index00);
+					log::add('teleinfo', 'debug', 'Id Index00 ' . $idIndex00);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index01) {
+					$idIndex01 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index01 ' . $idIndex01);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index02) {
+					$idIndex02 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index02 ' . $idIndex02);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index03) {
+					$idIndex03 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index03 ' . $idIndex03);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index04) {
+					$idIndex04 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index04 ' . $idIndex04);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index05) {
+					$idIndex05 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index05 ' . $idIndex05);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index06) {
+					$idIndex06 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index06 ' . $idIndex06);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index07) {
+					$idIndex07 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index07 ' . $idIndex07);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index08) {
+					$idIndex08 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index08 ' . $idIndex08);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index09) {
+					$idIndex09 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index09 ' . $idIndex09);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index10) {
+					$idIndex10 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Index10 ' . $idIndex10);
+				}
+				log::add('teleinfo', 'debug', 'liste des donnees' . $cmd->getConfiguration('info_conso'));
             }
 
             $startdateyesterday = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
@@ -542,6 +678,51 @@ class teleinfo extends eqLogic
                 $enddateyesterday = date("Y-m-d H:i:s", mktime(date("H"), date("i"), date("s"), date("m"), date("d") - 1, date("Y")));
             }
 
+            $Coutindex00 = 0;
+			for ($i=0; $i <= 10; $i++){
+				if ($i == 10) {   //affectation des variables index en dynamique
+					$a = 'idIndex' . $i;
+					$b = 'statTodayIndex' . $i;
+					$c = 'statYesterdayIndex' . $i;
+                    $d = 'Coutindex' . $i;
+                    $e = 'Coutkwhindex' . $i;
+				} 
+				else {
+					$a = 'idIndex0' . $i;
+					$b = 'statTodayIndex0' . $i;
+					$c = 'statYesterdayIndex0' . $i;
+                    $d = 'Coutindex0' . $i;
+                    $e = 'Coutkwhindex0' . $i;
+				}
+				if (${$a} >= 1) {
+					log::add('teleinfo', 'debug', 'Index à trouver ' . $i . ' = ' . $a);
+					log::add('teleinfo', 'debug', 'Id Index ' . $i . ' = ' . ${$a});
+					$cmd = cmd::byId(${$a});
+					$statMaxToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['max'];
+					$statMinToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['min'];
+					log::add('teleinfo', 'debug', ' ==> Valeur Index ' . $i . ' MAX : ' . intval($statMaxToday));
+					log::add('teleinfo', 'debug', ' ==> Valeur Index ' . $i . ' MIN : ' . intval($statMinToday));
+					$$b = intval($statMaxToday) - intval($statMinToday);
+					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' --> ' . ${$b});
+                    $$d = $$b * $$e / 1000;
+                    $Coutindex00 += ${$d};
+                    log::add('teleinfo', 'info', 'Coût Index00 ' . $Coutindex00); 
+					log::add('teleinfo', 'info', 'Coût au kWh Index ' . $i . ' --> ' .${$e}. ' coût pour cet index aujourd hui --> ' .${$d});
+				}
+			}
+
+            foreach ($statTotalToCumul as $key => $value) {
+                log::add('teleinfo', 'debug', 'Commande Conso totale N° ' . $value);
+                $cmd            = cmd::byId($value);
+                $statTotalMaxToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['max'];
+                $statTotalMinToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['min'];
+                log::add('teleinfo', 'debug', ' ==> Valeur conso totale MAX : ' . $statTotalMaxToday);
+                log::add('teleinfo', 'debug', ' ==> Valeur consototale MIN : ' . $statTotalMinToday);
+
+                $statTodayTotal     += intval($statTotalMaxToday) - intval($statTotalMinToday);
+                $statYesterdayTotal += intval($cmd->getStatistique($startdateyesterday->format('Y-m-d 00:00:00'), $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday->format('Y-m-d 00:00:00'), $enddateyesterday)['min']);
+                log::add('teleinfo', 'debug', 'Total conso --> ' . $statTodayTotal);
+            }
             foreach ($statHcToCumul as $key => $value) {
                 $cmd            = cmd::byId($value);
                 $statHcMaxToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['max'];
@@ -579,12 +760,19 @@ class teleinfo extends eqLogic
                 log::add('teleinfo', 'debug', 'Total Production --> ' . $statTodayProd);
             }
 
+            
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "stat") {
                     switch ($cmd->getConfiguration('info_conso')) {
                         case "STAT_TODAY":
-                            log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière ==> ' . intval($statTodayHp + $statTodayHc));
-                            $cmd->event(intval($statTodayHp + $statTodayHc));
+                            if (intval($statTodayTotal)!=0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière STAT_TODAY 1 ==> ' . intval($statTodayTotal));
+								$cmd->event(intval($statTodayTotal));
+							}
+							else {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière STAT_TODAY 2 ==> ' . intval($statTodayIndex00));
+								$cmd->event(intval($statTodayIndex00));
+							}								
                             break;
                         case "STAT_TODAY_HP":
                             log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière (HP) ==> ' . intval($statTodayHp));
@@ -598,7 +786,139 @@ class teleinfo extends eqLogic
                             log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière (PROD) ==> ' . intval($statTodayProd));
                             $cmd->event(intval($statTodayProd));
                             break;
-                        case "TENDANCE_DAY":
+                        case "STAT_TODAY_INDEX00":
+							if ($statTodayIndex00 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 00 ==> ' . intval($statTodayIndex00));
+								$cmd->event(intval($statTodayIndex00));
+							}
+							break;
+                        case "STAT_TODAY_INDEX01":
+							if ($statTodayIndex01 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 01 ==> ' . intval($statTodayIndex01));
+								$cmd->event(intval($statTodayIndex01));
+							}
+							break;
+                        case "STAT_TODAY_INDEX02":
+							if ($statTodayIndex02 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 02 ==> ' . intval($statTodayIndex02));
+								$cmd->event(intval($statTodayIndex02));
+							}
+							break;
+                        case "STAT_TODAY_INDEX03":
+							if ($statTodayIndex03 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 03 ==> ' . intval($statTodayIndex03));
+								$cmd->event(intval($statTodayIndex03));
+							}
+							break;
+                        case "STAT_TODAY_INDEX04":
+							if ($statTodayIndex04 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 04 ==> ' . intval($statTodayIndex04));
+								$cmd->event(intval($statTodayIndex04));
+							}
+							break;
+                        case "STAT_TODAY_INDEX05":
+							if ($statTodayIndex05 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 05 ==> ' . intval($statTodayIndex05));
+								$cmd->event(intval($statTodayIndex05));
+							}
+							break;
+                        case "STAT_TODAY_INDEX06":
+							if ($statTodayIndex06 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 06 ==> ' . intval($statTodayIndex06));
+								$cmd->event(intval($statTodayIndex06));
+							}
+							break;
+                        case "STAT_TODAY_INDEX07":
+							if ($statTodayIndex07 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 07 ==> ' . intval($statTodayIndex07));
+								$cmd->event(intval($statTodayIndex07));
+							}
+							break;
+                        case "STAT_TODAY_INDEX08":
+							if ($statTodayIndex08 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 08 ==> ' . intval($statTodayIndex08));
+								$cmd->event(intval($statTodayIndex08));
+							}
+							break;
+                        case "STAT_TODAY_INDEX09":
+							if ($statTodayIndex09 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 09 ==> ' . intval($statTodayIndex09));
+								$cmd->event(intval($statTodayIndex09));
+							}
+							break;
+                        case "STAT_TODAY_INDEX10":
+							if ($statTodayIndex10 > 0) {
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 10 ==> ' . intval($statTodayIndex10));
+								$cmd->event(intval($statTodayIndex10));
+							}
+							break;
+                            case "STAT_TODAY_INDEX00_COUT":
+                                if ($Coutindex00 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 00 ==> ' . round($Coutindex00,2));
+                                    $cmd->event(round($Coutindex00,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX01_COUT":
+                                if ($Coutindex01 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 01 ==> ' . round($Coutindex01,2));
+                                    $cmd->event(round($Coutindex01,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX02_COUT":
+                                if ($Coutindex02 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 02 ==> ' . round($Coutindex02,2));
+                                    $cmd->event(round($Coutindex02,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX03_COUT":
+                                if ($Coutindex03 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 03 ==> ' . round($Coutindex03,2));
+                                    $cmd->event(round($Coutindex03,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX04_COUT":
+                                if ($Coutindex04 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 04 ==> ' . round($Coutindex04,2));
+                                    $cmd->event(round($Coutindex04,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX05_COUT":
+                                if ($Coutindex05 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 05 ==> ' . round($Coutindex05,2));
+                                    $cmd->event(round($Coutindex05,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX06_COUT":
+                                if ($Coutindex06 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 06 ==> ' . round($Coutindex06,2));
+                                    $cmd->event(round($Coutindex06,2,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX07_COUT":
+                                if ($Coutindex07 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 07 ==> ' . round($Coutindex07,2));
+                                    $cmd->event(round($Coutindex07,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX08_COUT":
+                                if ($Coutindex08 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 08 ==> ' . round($Coutindex08,2));
+                                    $cmd->event(round($Coutindex08,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX09_COUT":
+                                if ($Coutindex09 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 09 ==> ' . round($Coutindex09,2));
+                                    $cmd->event(round($Coutindex09,2));
+                                }
+                                break;
+                            case "STAT_TODAY_INDEX10_COUT":
+                                if ($Coutindex10 > 0) {
+                                    log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 10 ==> ' . round($Coutindex10,2));
+                                    $cmd->event(round($Coutindex10,2));
+                                }
+                                break;
+                            case "TENDANCE_DAY":
                             log::add('teleinfo', 'debug', 'Mise à jour de la tendance journalière ==> ' . '(Hier : ' . intval($statYesterdayHc + $statYesterdayHp) . ' Aujourd\'hui : ' . intval($statTodayHc + $statTodayHp) . ' Différence : ' . (intval($statYesterdayHc + $statYesterdayHp) - intval($statTodayHc + $statTodayHp)) . ')');
                             $cmd->event(intval($statYesterdayHc + $statYesterdayHp) - intval($statTodayHc + $statTodayHp));
                             break;
@@ -614,6 +934,7 @@ class teleinfo extends eqLogic
         $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
         $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+        $indexConsoTotales      = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
         log::add('teleinfo', 'info', '----- Calcul des statistiques de la journée -----');
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             $startDay            = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
@@ -626,8 +947,19 @@ class teleinfo extends eqLogic
             $statHpToCumul       = array();
             $statHcToCumul       = array();
             $statProdToCumul     = array();
+            $statTotalToCumul    = array();
             log::add('teleinfo', 'info', 'Objet : ' . $eqLogic->getName());
-
+			$index01 = $eqLogic->getConfiguration('index01');
+			$index02 = $eqLogic->getConfiguration('index02');
+			$index03 = $eqLogic->getConfiguration('index03');
+			$index04 = $eqLogic->getConfiguration('index04');
+			$index05 = $eqLogic->getConfiguration('index05');
+			$index06 = $eqLogic->getConfiguration('index06');
+			$index07 = $eqLogic->getConfiguration('index07');
+			$index08 = $eqLogic->getConfiguration('index08');
+			$index09 = $eqLogic->getConfiguration('index09');
+			$index10 = $eqLogic->getConfiguration('index10');
+            
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
                     if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
@@ -639,9 +971,132 @@ class teleinfo extends eqLogic
                     if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
                         array_push($statProdToCumul, $cmd->getId());
                     }
+                    if (strpos($indexConsoTotales, $cmd->getConfiguration('info_conso')) !== false) {
+                        array_push($statTotalToCumul, $cmd->getId());
+                    }
                 }
+				if (($cmd->getConfiguration('info_conso') == 'BASE') || ($cmd->getConfiguration('info_conso') == 'EAST')) {
+					$index00 = $cmd->getConfiguration('info_conso');
+					$idIndex00 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index 00 --> ' . $index00);
+					log::add('teleinfo', 'debug', 'Id Index00 ' . $idIndex00);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index01) {
+					$idIndex01 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index01 ' . $idIndex01);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index02) {
+					$idIndex02 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index02 ' . $idIndex02);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index03) {
+					$idIndex03 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index03 ' . $idIndex03);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index04) {
+					$idIndex04 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index04 ' . $idIndex04);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index05) {
+					$idIndex05 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index05 ' . $idIndex05);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index06) {
+					$idIndex06 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index06 ' . $idIndex06);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index07) {
+					$idIndex07 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index07 ' . $idIndex07);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index08) {
+					$idIndex08 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index08 ' . $idIndex08);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index09) {
+					$idIndex09 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index09 ' . $idIndex09);
+				}
+				if ($cmd->getConfiguration('info_conso') == $index10) {
+					$idIndex10 = $cmd->getId();
+					log::add('teleinfo', 'info', 'Index10 ' . $idIndex10);
+				}
+				if (($cmd->getLogicalId() == 'STAT_TODAY_INDEX00_COUT')) {
+					$idCoutIndex00 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index00 ' . $idCoutIndex00);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX01_COUT') {
+					$idCoutIndex01 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index01 ' . $idCoutIndex01);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX02_COUT') {
+					$idCoutIndex02 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index02 ' . $idCoutIndex02);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX03_COUT') {
+					$idCoutIndex03 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index03 ' . $idCoutIndex03);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX04_COUT') {
+					$idCoutIndex04 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index04 ' . $idCoutIndex04);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX05_COUT') {
+					$idCoutIndex05 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index05 ' . $idCoutIndex05);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX06_COUT') {
+					$idCoutIndex06 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index06 ' . $idCoutIndex06);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX07_COUT') {
+					$idCoutIndex07 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index07 ' . $idCoutIndex07);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX08_COUT') {
+					$idCoutIndex08 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index08 ' . $idCoutIndex08);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX09_COUT') {
+					$idCoutIndex09 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index09 ' . $idCoutIndex09);
+				}
+				if ($cmd->getLogicalId() == 'STAT_TODAY_INDEX10_COUT') {
+					$idCoutIndex10 = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id Cout Index10 ' . $idCoutIndex10);
+				}
             }
 
+			for ($i=0; $i <= 10; $i++){
+				if ($i == 10) {   //affectation des variables index en dynamique
+					$a = 'idIndex' . $i;
+					$c = 'statYesterdayTotalIndex' . $i;
+                    $d = 'idCoutIndex' . $i;
+                    $e = 'statYesterdayCoutTotalIndex' . $i;
+				}
+				else {
+					$a = 'idIndex0' . $i;
+					$c = 'statYesterdayTotalIndex0' . $i;
+                    $d = 'idCoutIndex0' . $i;
+                    $e = 'statYesterdayCoutTotalIndex0' . $i;
+				}
+				if (${$a} >= 1) {
+					log::add('teleinfo', 'debug', 'Index à trouver ' . $i . ' = ' . $a);
+					log::add('teleinfo', 'debug', 'Id Index ' . $i . ' = ' . ${$a});
+					$cmd = cmd::byId(${$a});
+					$$c = intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
+					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' hier --> ' . ${$c});
+                    $cmd = cmd::byId(${$d});
+                    $$e = (float)($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
+					log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d});
+                }
+			}
+
+            foreach ($statTotalToCumul as $key => $value) {
+                log::add('teleinfo', 'debug', 'Commande Totale N°' . $value);
+                $cmd               = cmd::byId($value);
+                $statYesterdayTotal	 += intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
+            }
             foreach ($statHcToCumul as $key => $value) {
                 log::add('teleinfo', 'debug', 'Commande HC N°' . $value);
                 $cmd               = cmd::byId($value);
@@ -665,43 +1120,349 @@ class teleinfo extends eqLogic
                     //$history->setCmd_id($cmd->getId());
                     //$history->setDatetime($startDay->format('Y-m-d 00:00:00'));
                     //$history->setTableName('historyArch');
-                    switch ($cmd->getConfiguration('info_conso')) {
-                        case "STAT_YESTERDAY":
-                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier ==> ' . intval($statYesterdayHc) + intval($statYesterdayHp));
-                            $cmd->event((intval($statYesterdayHc) + intval($statYesterdayHp)), $startDay->format('Y-m-d 00:00:00'));
+                    $test = $cmd->getConfiguration('info_conso');
+                            switch (true) {
+                        case ($test==="STAT_YESTERDAY"):
+                            log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier ==> ' . intval($statYesterdayTotal));
+                            $cmd->event(intval($statYesterdayTotal), $startDay->format('Y-m-d 00:00:00'));
                             //$history->setValue(intval($statYesterdayHc) + intval($statYesterdayHp));
                             //$history->save();
                             break;
-                        case "STAT_YESTERDAY_HP":
+                        case ($test==="STAT_YESTERDAY_HP"):
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HP) ==> ' . intval($statYesterdayHp));
                             $cmd->event((intval($statYesterdayHp)), $startDay->format('Y-m-d 00:00:00'));
                             //$history->setValue(intval($statYesterdayHp));
                             //$history->save();
                             break;
-                        case "STAT_YESTERDAY_HC":
+                        case ($test==="STAT_YESTERDAY_HC"):
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (HC) ==> ' . intval($statYesterdayHc));
                             $cmd->event((intval($statYesterdayHc)), $startDay->format('Y-m-d 00:00:00'));
                             //$history->setValue(intval($statYesterdayHc));
                             //$history->save();
                             break;
-                        case "STAT_YESTERDAY_PROD":
+                        case ($test==="STAT_YESTERDAY_PROD"):
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (PROD) ==> ' . intval($statYesterdayProd));
                             $cmd->event((intval($statYesterdayProd)), $startDay->format('Y-m-d 00:00:00'));
                             //$history->setValue(intval($statYesterdayProd));
                             //$history->save();
                             break;
+						case ($test==="STAT_YESTERDAY_INDEX00"):
+                            if ($statYesterdayTotalIndex00 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index00) ==> ' . intval($statYesterdayTotalIndex00));
+								$cmd->event((intval($statYesterdayTotalIndex00)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX01"):
+                            if ($statYesterdayTotalIndex01 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index01) ==> ' . intval($statYesterdayTotalIndex01));
+								$cmd->event((intval($statYesterdayTotalIndex01)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX02"):
+                            if ($statYesterdayTotalIndex02 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index02) ==> ' . intval($statYesterdayTotalIndex02));
+								$cmd->event((intval($statYesterdayTotalIndex02)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX03"):
+                            if ($statYesterdayTotalIndex03 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index03) ==> ' . intval($statYesterdayTotalIndex03));
+								$cmd->event((intval($statYesterdayTotalIndex03)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX04"):
+                            if ($statYesterdayTotalIndex04 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index04) ==> ' . intval($statYesterdayTotalIndex04));
+								$cmd->event((intval($statYesterdayTotalIndex04)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX05"):
+                            if ($statYesterdayTotalIndex05 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index05) ==> ' . intval($statYesterdayTotalIndex05));
+								$cmd->event((intval($statYesterdayTotalIndex05)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX06"):
+                            if ($statYesterdayTotalIndex06 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index06) ==> ' . intval($statYesterdayTotalIndex06));
+								$cmd->event((intval($statYesterdayTotalIndex06)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX07"):
+                            if ($statYesterdayTotalIndex07 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index07) ==> ' . intval($statYesterdayTotalIndex07));
+								$cmd->event((intval($statYesterdayTotalIndex07)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX08"):
+                            if ($statYesterdayTotalIndex08 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index08) ==> ' . intval($statYesterdayTotalIndex08));
+								$cmd->event((intval($statYesterdayTotalIndex08)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX09"):
+                            if ($statYesterdayTotalIndex09 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index09) ==> ' . intval($statYesterdayTotalIndex09));
+								$cmd->event((intval($statYesterdayTotalIndex09)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+						case ($test==="STAT_YESTERDAY_INDEX10"):
+                            if ($statYesterdayTotalIndex10 != 0) {
+								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index10) ==> ' . intval($statYesterdayTotalIndex10));
+								$cmd->event((intval($statYesterdayTotalIndex10)), $startDay->format('Y-m-d 00:00:00'));
+							}
+							break;
+                        
+                        case (strpos($test,'YESTERDAY')!=0 && strpos($test,'COUT')!=0):
+                            $indexyy = (int)(substr($test,20,2));
+                            if($statYesterdayCoutTotalIndex00 != 0 && $indexyy == 0){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index00) ==> ' . (float)($statYesterdayCoutTotalIndex00));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex00)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex01 != 0 && $indexyy == 1){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index01) ==> ' . (float)($statYesterdayCoutTotalIndex01));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex01)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex02 != 0 && $indexyy == 2){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index02) ==> ' . (float)($statYesterdayCoutTotalIndex02));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex02)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex03 != 0 && $indexyy == 3){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index03) ==> ' . (float)($statYesterdayCoutTotalIndex03));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex03)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex04 != 0 && $indexyy == 4){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index04) ==> ' . (float)($statYesterdayCoutTotalIndex04));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex04)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex05 != 0 && $indexyy == 5){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index05) ==> ' . (float)($statYesterdayCoutTotalIndex05));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex05)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex06 != 0 && $indexyy == 6){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index06) ==> ' . (float)($statYesterdayCoutTotalIndex06));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex06)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex07 != 0 && $indexyy == 7){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index07) ==> ' . (float)($statYesterdayCoutTotalIndex07));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex07)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex08 != 0 && $indexyy == 8){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index08) ==> ' . (float)($statYesterdayCoutTotalIndex08));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex08)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex09 != 0 && $indexyy == 9){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index09) ==> ' . (float)($statYesterdayCoutTotalIndex09));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex09)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            if($statYesterdayCoutTotalIndex10 != 0 && $indexyy == 10){
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index10) ==> ' . (float)($statYesterdayCoutTotalIndex10));
+								$cmd->event(((float)($statYesterdayCoutTotalIndex10)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                        break;
                     }
                 }
             }
         }
+    log::add('teleinfo', 'info', 'other stats -------------------------------------');
+}
+
+    public static function copyVersIndex00($compteur, $startDate, $endDate, $cout){
+//fonction pour copier les données issues de stat_yesterday vers index00
+		$date1 = new DateTime($startDate);
+		$date2 = new DateTime($endDate);
+		$diff = $date2->diff($date1)->format("%a");
+        $diff += 1;
+		
+		$p1j = new DateInterval('P1D');
+		event::add('jeedom::alert', array(
+				'level' => 'warning',
+				'page' => 'teleinfo',
+				'message' => __($cout.value().' '.' Copie de l index STATE_YESTERDAY vers STAT_YESTERDAY_INDEX00 pour la période du '.$startDate.' au '.$endDate.' soit '.$diff.' jours à traiter, cela peut prendre un peu de temps veuillez patienter ...', __FILE__),
+		));
+		//
+        foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+			if ($compteur == $eqLogic->getlogicalId()){
+
+				$cmdYesterday            = $eqLogic->getCmd('info', 'STAT_YESTERDAY');
+				$cmdYesterdayindex00     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00');
+				$cmdYesterdaycoutindex00     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00_COUT');
+
+                $cmdIdIndex00 = $cmdYesterdayindex00->getId();
+                $cmdIdCoutIndex00 = $cmdYesterdaycoutindex00->getId();
+
+				for($i=1; $i < ($diff+1); $i++){
+
+                    if ($diff > 9){
+                        if (($i % ($diff/10)) == 0){
+                                event::add('jeedom::alert', array(
+                                        'level' => 'warning',
+                                        'page' => 'teleinfo',
+                                        'message' => __('Les statistiques sont en cours de copie, cela peut prendre un peu de temps veuillez patienter ... ('. intval($i/($diff/100)) .' %)', __FILE__),
+                                ));
+                        }
+                    }
+                
+                    $statTotal = intval($cmdYesterday->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max']);
+
+					$history = new history();
+					$history->setCmd_id($cmdIdIndex00);
+					$history->setDatetime($date2->format('Y-m-d 00:00:00'));
+					$history->setTableName('historyArch');
+					$history->setValue(intval($statTotal));
+					$history->save();
+					
+					$historycout = new history();
+					$historycout->setCmd_id($cmdIdCoutIndex00);
+					$historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+					$historycout->setTableName('historyArch');
+					$historycout->setValue(($statTotal * $cout / 1000));
+					$historycout->save();
+					
+					$date2->sub($p1j);
+				}
+					
+			}
+		}
+        event::add('jeedom::alert', array(
+				'level' => 'success',
+				'page' => 'teleinfo',
+				'message' => __('L index00 a bien été constitué.', __FILE__),
+		));
+	}
+
+    public static function copyVersIndex($compteur, $startDate, $endDate,
+                                            $indexcopy01,$indexcopy02,$indexcopy03,$indexcopy04,$indexcopy05,$indexcopy06,$indexcopy07,$indexcopy08,$indexcopy09,$indexcopy10,
+                                            $coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10){
+        //fonction pour copier les données issues des anciens index vers les nouveaux
+        $date1 = new DateTime($startDate);
+        $date2 = new DateTime($endDate);
+        $diff = $date2->diff($date1)->format("%a");
+        
+        $p1j = new DateInterval('P1D');
+
+        event::add('jeedom::alert', array(
+                'level' => 'warning',
+                'page' => 'teleinfo',
+                'message' => __(' Copie des anciennes donnéés vers les nouveaux index pour la période du '.$startDate.' au '.$endDate.' soit '.$diff.' jours à traiter, cela peut prendre un peu de temps veuillez patienter ...', __FILE__),
+        ));
+        $indexcopy = array(' ',$indexcopy01,$indexcopy02,$indexcopy03,$indexcopy04,$indexcopy05,$indexcopy06,$indexcopy07,$indexcopy08,$indexcopy09,$indexcopy10);
+        $coutcopy = array($coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10);
+        
+    foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+        if ($compteur == $eqLogic->getlogicalId()){
+
+            $cmdYesterday            = $eqLogic->getCmd('info', 'STAT_YESTERDAY');
+            $cmdYesterdayindex00     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00');
+            $cmdYesterdaycoutindex00     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00_COUT');
+
+            $cmdIdIndex00 = $cmdYesterdayindex00->getId();
+            $cmdIdCoutIndex00 = $cmdYesterdaycoutindex00->getId();
+
+            $indexdestination = array($eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX01'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX02'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX03'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX04'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX05'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX06'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX07'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX08'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX09'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX10')
+                                    );
+            $coutdestination = array($eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX01_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX02_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX03_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX04_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX05_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX06_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX07_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX08_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX09_COUT'),
+                                        $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX10_COUT')
+                                    );
+            $iddestination = array();
+            $idcoutdest = array();
+            for ($i=0;$i<11;$i++){
+                $iddestination[$i] = $indexdestination[$i]->getId();
+                $idcoutdest[$i] = $coutdestination[$i]->getId();
+            }                        
+                        
+
+            for($i=1; $i < ($diff+1); $i++){
+
+                if ($diff > 9){
+                    if (($i % ($diff/10)) == 0){
+                            event::add('jeedom::alert', array(
+                                    'level' => 'warning',
+                                    'page' => 'teleinfo',
+                                    'message' => __('Les statistiques index00 sont en cours de copie, cela peut prendre un peu de temps veuillez patienter ... ('. intval($i/($diff/100)) .' %)', __FILE__),
+                            ));
+                    }
+                }
+            
+                $statTotal = intval($cmdYesterday->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max']);
+
+                $history = new history();
+                $history->setCmd_id($cmdIdIndex00);
+                $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                $history->setTableName('historyArch');
+                $history->setValue(intval($statTotal));
+                $history->save();
+                    
+                $historycout = new history();
+                $historycout->setCmd_id($cmdIdCoutIndex00);
+                $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                $historycout->setTableName('historyArch');
+                $historycout->setValue(($statTotal * $cout / 1000));
+                $historycout->save();
+
+                for ($j=1;$j<11;$j++){
+                    if ($indexcopy[$j]<>''){
+                        $indexorigine = $eqLogic->getCmd('info', $indexcopy[$j]);
+                        $statTotal = intval($indexorigine->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
+                                     - intval($indexorigine->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
+                        $coutotal = floatval($statTotal) * floatval($coutcopy[$j]) / 1000;
+
+                        $history = new history();
+                        $history->setCmd_id($iddestination[$j]);
+                        $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                        $history->setTableName('historyArch');
+                        $history->setValue(intval($statTotal));
+                        $history->save();
+
+                        $historycout = new history();
+                        $historycout->setCmd_id($idcoutdest[$j]);
+                        $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                        $historycout->setTableName('historyArch');
+                        $historycout->setValue(($coutotal));
+                        $historycout->save();
+                    }
+                    
+                }
+                $date2->sub($p1j);
+            }
+                
+        }
     }
 
+    
+    
+        event::add('jeedom::alert', array(
+            'level' => 'success',
+            'page' => 'teleinfo',
+            'message' => __('Les index ont bien été constitués.', __FILE__),
+        ));
 
+    } 
     public static function regenerateMonthlyStat(){
         cache::set('teleinfo::regenerateMonthlyStat', '1', 86400);
         $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
         $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+        $indexConsoTotales           = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
         event::add('jeedom::alert', array(
 				'level' => 'warning',
 				'page' => 'teleinfo',
@@ -713,19 +1474,21 @@ class teleinfo extends eqLogic
             $statHpToCumul       = array();
             $statHcToCumul       = array();
             $statProdToCumul     = array();
+            $statTotalToCumul    = array();
 
             try{
                 $cmdYesterdayHP     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_HP');
                 $cmdYesterdayHC     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_HC');
                 $cmdYesterdayProd   = $eqLogic->getCmd('info', 'STAT_YESTERDAY_PROD');
-                $sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdIdHP OR cmd_id=:cmdIdHC OR cmd_id=:cmdIdPROD) AND MINUTE(datetime) <> '0'";
+                $cmdYesterdayTotal     = $eqLogic->getCmd('info', 'STAT_YESTERDAY');
+                $sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdIdHP OR cmd_id=:cmdIdHC OR cmd_id=:cmdIdPROD OR cmd_id=:cmdIdTotal) AND MINUTE(datetime) <> '0'";
                 $values = array(
                     'cmdIdHP' => $cmdYesterdayHP->getId(),
                     'cmdIdHC' => $cmdYesterdayHC->getId(),
                     'cmdIdPROD' => $cmdYesterdayProd->getId(),
+					'cmdIdTotal' => $cmdYesterdayTotal->getId(),
                 );
-                DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
-				$sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdIdHP OR cmd_id=:cmdIdHC OR cmd_id=:cmdIdPROD) AND SECOND(datetime) <> '0'";
+				$sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdIdHP OR cmd_id=:cmdIdHC OR cmd_id=:cmdIdPROD OR cmd_id=:cmdIdTotal) AND SECOND(datetime) <> '0'";
 				DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
             } catch (\Exception $e) {
                 log::add('teleinfo', 'error', $e) ;
@@ -738,6 +1501,9 @@ class teleinfo extends eqLogic
                     }
                     if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
                         array_push($statHcToCumul, $cmd->getId());
+                    }
+                    if (strpos($indexConsoTotales, $cmd->getConfiguration('info_conso')) !== false) {
+                        array_push($statTotalToCumul, $cmd->getId());
                     }
                     if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
                         array_push($statProdToCumul, $cmd->getId());
@@ -761,6 +1527,10 @@ class teleinfo extends eqLogic
                 }
 
 
+                foreach ($statTotalToCumul as $key => $value) {
+                    $cmd    = cmd::byId($value);
+                    $statTotal += intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
+                }
                 foreach ($statHcToCumul as $key => $value) {
                     $cmd    = cmd::byId($value);
                     $statHc += intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d H:i:s'), $endDay->format('Y-m-d H:i:s'))['min']);
@@ -798,8 +1568,8 @@ class teleinfo extends eqLogic
                                 $history->save();
                                 break;
                             case "STAT_YESTERDAY":
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique HIER ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . (intval($statHp) + intval($statHc))) ;
-                                $history->setValue(intval($statHp) + intval($statHc));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique HIER ==> ' . $startDay->format('Y-m-d') . " / Valeur : " . intval($statTotal)) ;
+                                $history->setValue(intval($statTotal));
                                 $history->save();
                                 break;
                         }
@@ -822,6 +1592,7 @@ class teleinfo extends eqLogic
         $cmdPpap = null;
         $indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
         $indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+        log::add('teleinfo', 'debug', 'moylasthour ');
 
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             foreach ($eqLogic->getCmd('info') as $cmd) {
@@ -868,6 +1639,7 @@ class teleinfo extends eqLogic
 
     public static function calculatePAPP()
     {
+        log::add('teleinfo', 'debug', 'calculatepapp ');
         $indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
         $indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
@@ -957,6 +1729,7 @@ class teleinfo extends eqLogic
             switch ($cmd->getConfiguration('info_conso')) {
                 case "BASE":
                 case "HCHP":
+                case "HCHC":
                 case "EJPHN":
                 case "BBRHPJB":
                 case "BBRHPJW":
@@ -968,9 +1741,18 @@ class teleinfo extends eqLogic
                 case "EJPHPM":
                 case "EASF01":
                 case "EASF02":
+                case "EASF03":
+                case "EASF04":
+                case "EASF05":
+                case "EASF06":
+                case "EASF07":
+                case "EASF08":
+                case "EASF09":
+                case "EASF10":
                 case "EASD01":
                 case "EASD02":
                 case "EAIT":
+                case "EAST":
                     log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> index');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
@@ -1060,10 +1842,26 @@ class teleinfo extends eqLogic
     public function createPanelStats()
     {
         log::add('teleinfo', 'debug', '-------- Commandes des stats ---------');
-        $array = array("STAT_TODAY","STAT_TODAY_HC", "STAT_TODAY_HP", "STAT_TODAY_PROD","STAT_YESTERDAY","STAT_YESTERDAY_HC","STAT_YESTERDAY_HP","STAT_YESTERDAY_PROD");
+        $array = array("STAT_TODAY","STAT_TODAY_HC", "STAT_TODAY_HP", "STAT_TODAY_PROD",
+                        "STAT_YESTERDAY","STAT_YESTERDAY_HC","STAT_YESTERDAY_HP","STAT_YESTERDAY_PROD",
+                        "STAT_TODAY_INDEX00","STAT_TODAY_INDEX00_COUT","STAT_YESTERDAY_INDEX00","STAT_YESTERDAY_INDEX00_COUT",
+                        "STAT_TODAY_INDEX01","STAT_TODAY_INDEX01_COUT","STAT_YESTERDAY_INDEX01","STAT_YESTERDAY_INDEX01_COUT",
+                        "STAT_TODAY_INDEX02","STAT_TODAY_INDEX02_COUT","STAT_YESTERDAY_INDEX02","STAT_YESTERDAY_INDEX02_COUT",
+                        "STAT_TODAY_INDEX03","STAT_TODAY_INDEX03_COUT","STAT_YESTERDAY_INDEX03","STAT_YESTERDAY_INDEX03_COUT",
+                        "STAT_TODAY_INDEX04","STAT_TODAY_INDEX04_COUT","STAT_YESTERDAY_INDEX04","STAT_YESTERDAY_INDEX04_COUT",
+                        "STAT_TODAY_INDEX05","STAT_TODAY_INDEX05_COUT","STAT_YESTERDAY_INDEX05","STAT_YESTERDAY_INDEX05_COUT",
+                        "STAT_TODAY_INDEX06","STAT_TODAY_INDEX06_COUT","STAT_YESTERDAY_INDEX06","STAT_YESTERDAY_INDEX06_COUT",
+                        "STAT_TODAY_INDEX07","STAT_TODAY_INDEX07_COUT","STAT_YESTERDAY_INDEX07","STAT_YESTERDAY_INDEX07_COUT",
+                        "STAT_TODAY_INDEX08","STAT_TODAY_INDEX08_COUT","STAT_YESTERDAY_INDEX08","STAT_YESTERDAY_INDEX08_COUT",
+                        "STAT_TODAY_INDEX09","STAT_TODAY_INDEX09_COUT","STAT_YESTERDAY_INDEX09","STAT_YESTERDAY_INDEX09_COUT",
+                        "STAT_TODAY_INDEX10","STAT_TODAY_INDEX10_COUT","STAT_YESTERDAY_INDEX10","STAT_YESTERDAY_INDEX10_COUT");
         foreach ($array as $value){
+            if (strpos($value,'COUT')===0){
+                $unite = ('Wh');
+            }else{
+                $unite = ('€');
+            }
             $cmd = $this->getCmd('info', $value);
-
             if ($cmd === false) {
                 log::add('teleinfo', 'debug', 'Nouvelle => ' . $value);
                 $cmd = new teleinfoCmd();
@@ -1071,12 +1869,12 @@ class teleinfo extends eqLogic
                 $cmd->setEqLogic_id($this->id);
                 $cmd->setLogicalId($value);
                 $cmd->setType('info');
+                $cmd->setUnite($unite);
                 $cmd->setConfiguration('info_conso', $value);
                 $cmd->setConfiguration('type', 'stat');
 				$cmd->setConfiguration('historizeMode', 'none');
                 $cmd->setDisplay('generic_type', 'DONT');
                 $cmd->setSubType('numeric');
-                $cmd->setUnite('Wh');
                 $cmd->setIsHistorized(1);
                 //$cmd->setEventOnly(1);
                 $cmd->setIsVisible(0);

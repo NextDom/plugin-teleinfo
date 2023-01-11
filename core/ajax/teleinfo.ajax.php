@@ -246,6 +246,18 @@ try {
                 //ajax::success();
             }
 		break;
+        case 'copyVersIndex00':
+            $return = array();
+            teleinfo::copyVersIndex00(init('compteur'),init('startDate'),init('endDate'),init('cout'));
+            ajax::success();
+        break;
+        case 'copyVersIndex':
+            $return = array();
+            teleinfo::copyVersIndex(init('compteur'),init('startDate'),init('endDate'),
+                        init('indexcopy01'),init('indexcopy02'),init('indexcopy03'),init('indexcopy04'),init('indexcopy05'),init('indexcopy06'),init('indexcopy07'),init('indexcopy08'),init('indexcopy09'),init('indexcopy10'),
+                        init('coutcopy00'),init('coutcopy01'),init('coutcopy02'),init('coutcopy03'),init('coutcopy04'),init('coutcopy05'),init('coutcopy06'),init('coutcopy07'),init('coutcopy08'),init('coutcopy09'),init('coutcopy10'));
+            ajax::success();
+        break;
         case 'regenerateMonthlyStat':
             $return = array();
             teleinfo::regenerateMonthlyStat();
