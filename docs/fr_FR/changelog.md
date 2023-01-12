@@ -1,6 +1,9 @@
 # Changelog
 
-Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
+Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) ou [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
+
+## 4.7.1.b (12-01-2022)
+- correction manque courbe HC sur graph annuel
 
 ## 4.7.1 (27-12-2022)
 Modification du panel:
