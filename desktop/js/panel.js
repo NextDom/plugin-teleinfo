@@ -179,6 +179,7 @@ $.ajax({
                                 if(!compteurProd&&HCHP){
                                     stackGraph = 1
 									color = '#ed9448';
+                                    getAnnualHistory('div_graphGlobalAnnual',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
                                     getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
                                     getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
                                     getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=month]'), 'month' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
