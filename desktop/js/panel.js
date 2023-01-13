@@ -152,6 +152,7 @@ $.ajax({
 			var nomIndex;
 			var commande;
 			var consommation;
+            var colori;
 
             console.log("[loadData] Nom de l'objet => " + data.result[globalEqLogic].name);
 
@@ -453,7 +454,33 @@ $.ajax({
                                     getDailyHistory('div_graphGlobalJournalier',datacmd, color[14], stackGraph, diviseur, serie);
                                 }
                                 break;
-                            case (test.includes("STAT_YESTERDAY_INDEX")&&newIndex):
+                                case (test==="STAT_YESTERDAY_PROD_COUT"):
+                                    console.log("[loadData][STAT_YESTERDAY_PROD_COUT] " + datacmd.id + ' prod? ' + compteurProd + ' ' + prodEtConso);
+                                    if(compteurProd||prodEtConso){
+                                        stackGraph = 0
+                                        if (datacmd.name == 'STAT_YESTERDAY_PROD_COUT'){
+                                            datacmd.name = 'Prod ';
+                                        }
+                                        serie = 14;
+                                        console.log("[loadData][STAT_YESTERDAY_PROD_COUT] " + datacmd.id);
+                                        //if(!prodEtConso){
+                                          if(newIndex){
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYear]'), 'yearLastYear' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=month]'), 'month' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]'), 'year' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]'), 'yesterday' , datacmd);
+                                            
+                                            commandesStat.push({"graph":"div_graphGlobalJournalierCout", "id":datacmd.id,"name":datacmd.name,"color":color[14],"stackGraph":stackGraph,"diviseur":diviseur});
+                                            getAnnualHistory('div_graphGlobalAnnualCout',datacmd, color[14], stackGraph, 1000, serie, 'cout');
+                                            getMonthlyHistory('div_graphGlobalIndexCout',datacmd, color[14], stackGraph, 1000, serie, 'cout');
+                                            getDailyHistory('div_graphGlobalJournalierCout',datacmd, color[14], stackGraph, 1000, serie, 'cout');
+                                        }
+                                    }
+                                    break;
+                                case (test.includes("STAT_YESTERDAY_INDEX")&&newIndex):
                                     var indexEnCours = parseInt(test.substr(20,2));
                                     if (indexEnCours==0){
                                         stackGraph = 0;
@@ -486,6 +513,9 @@ $.ajax({
                                             getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd, 1);
                                             getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=year]'), 'year' ,datacmd, 1);
                                             getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=yesterday]'), 'yesterday' , datacmd, 1);
+                                            getDailyHistory('div_graphGlobalJournalierCout',commande, color[indexEnCours], stackGraph, 1000, serie, 'cout');
+                                            getAnnualHistory('div_graphGlobalAnnualCout',commande, color[indexEnCours], stackGraph, 1000, serie, 'cout');
+                                            getMonthlyHistory('div_graphGlobalIndexCout',commande, color[indexEnCours], stackGraph, 1000, serie, 'cout');
                                             }else{
                                             getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd);
                                             getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd);
@@ -505,17 +535,32 @@ $.ajax({
                                 case (test==="SINST1"):
                                     if(compteurProd||prodEtConso){
                                         commandesPuissance.push({"id":datacmd.id,"name":datacmd.name,"color":color[14]});
-                                        console.log("[loadData][SINST1 ou SINSTI] " + datacmd.id);
+                                        console.log("[loadData][SINST*] " + datacmd.id);
                                         getObjectHistory('div_graphGlobalPower', 'Simple', datacmd, color[14]);
                                     }
                                     break;
                                 case (test==="SINSTS"):
+                                    colori = color[0];
+                                case (test==="SINSTS1"):
+                                    if (test==="SINSTS1"){
+                                        colori = color[1];
+                                    }
+                                case (test==="SINSTS2"):
+                                    if (test==="SINSTS2"){
+                                        colori = color[2];
+                                    }
+                                case (test==="SINSTS3"):
+                                    if (test==="SINSTS3"){
+                                        colori = color[3];
+                                    }
                                 case (test==="PAPP"):
+                                    if (test==="PAPP"){
+                                        colori = color[0];
+                                    }
                                     if(!compteurProd){
-                                        color = '#7cb5ec';
-                                        commandesPuissance.push({"id":datacmd.id,"name":datacmd.name,"color":color[0]});
+                                        commandesPuissance.push({"id":datacmd.id,"name":datacmd.name,"color":colori});
                                         console.log("[loadData][PAPP ou SINSTS] " + datacmd.id);
-                                        getObjectHistory('div_graphGlobalPower', 'Simple', datacmd, color[0]);
+                                        getObjectHistory('div_graphGlobalPower', 'Simple', datacmd, colori);
                                     }
                                     break;
                                 case (test==="STAT_TODAY"&&!newIndex):
@@ -675,7 +720,7 @@ function getObjectHistory(div, type, object, color, action = 'none') {
     }); */
 }
 
-function getDailyHistory(div,  object, color, stackGraph, diviseur, serie) {
+function getDailyHistory(div,  object, color, stackGraph, diviseur, serie, type) {
     var from = moment($('#in_startDate').value(), "YYYY-MM-DD").format('YYYY-MM-DD');
     if (moment().format('DD') === $('#in_endDate').value().substr(-2,2)) {
         var to = moment($('#in_endDate').value(), "YYYY-MM-DD").subtract(1, 'days').format('YYYY-MM-DD');
@@ -686,7 +731,12 @@ function getDailyHistory(div,  object, color, stackGraph, diviseur, serie) {
 //    if (object.logicalId.includes("PROD")){
 //        color = '#ed9448';
 //    }
-    console.log("[getDailyHistory] Commande = " + object.name);
+if (type == 'cout'){
+    symbole = '€';
+}else{
+    symbole = 'kWh';
+}
+console.log("[getDailyHistory] Commande = " + object.name);
     console.log("[getDailyHistory] Récupération de div " + div);
     console.log("[getDailyHistory] Série " + serie);
  
@@ -724,7 +774,7 @@ function getDailyHistory(div,  object, color, stackGraph, diviseur, serie) {
                         valueDecimals: 2,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> kWh<br/>',
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ' + symbole + '<br/>',
                         shared: true
                     },
                     plotOptions : {
@@ -782,7 +832,7 @@ function getDailyHistory(div,  object, color, stackGraph, diviseur, serie) {
     });
 }
 
-function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie) {
+function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie, type) {
 //    var color = '#7cb5ec';
     var from = moment().subtract(18, 'months').startOf('month').format('YYYY-MM-DD 00:00:00');
     var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
@@ -792,7 +842,12 @@ function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie) {
 //    if (object.logicalId.includes("HP")){
 //        color = '#ed9448';
 //    }
-    console.log("[getMonthlyHistory] Récupération de div " + div);
+if (type == 'cout'){
+    symbole = '€';
+}else{
+    symbole = 'kWh';
+}
+console.log("[getMonthlyHistory] Récupération de div " + div);
     console.log("[getMonthlyHistory] Récupération de l'historique pour la période du " + from + " au " + to);
     teleinfoDrawChart({
                     cmd_id: object.id,
@@ -815,7 +870,7 @@ function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie) {
                         displayAlert: false,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> kWh<br/>',
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ' + symbole + '<br/>',
                         shared : true,
                         valueDecimals: 2
                         //pointFormat: '{series.name}</span>: <b>{point.y} kWh</b><br/>',
@@ -883,7 +938,7 @@ function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie) {
 }
 
 
-function getAnnualHistory(div,  object, color, stackGraph, diviseur, serie) {
+function getAnnualHistory(div,  object, color, stackGraph, diviseur, serie, type) {
 //    var color = '#7cb5ec';
     var from = moment().subtract(18, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
     var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
@@ -893,7 +948,12 @@ function getAnnualHistory(div,  object, color, stackGraph, diviseur, serie) {
 //    if (object.logicalId.includes("HP")){
 //        color = '#ed9448';
 //    }
-    console.log("[getAnnualHistory] Récupération de div " + div);
+if (type == 'cout'){
+    symbole = '€';
+}else{
+    symbole = 'kWh';
+}
+console.log("[getAnnualHistory] Récupération de div " + div);
     console.log("[getAnnualHistory] Récupération de l'historique pour la période du " + from + " au " + to);
     teleinfoDrawChart({
                     cmd_id: object.id,
@@ -916,7 +976,7 @@ function getAnnualHistory(div,  object, color, stackGraph, diviseur, serie) {
                         displayAlert: false,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> kWh<br/>',
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ' + symbole + '<br/>',
                         shared : true
                         //pointFormat: '{series.name}</span>: <b>{point.y} kWh</b><br/>',
                     },

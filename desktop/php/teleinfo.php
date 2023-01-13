@@ -269,7 +269,7 @@ switch ($controlerState) {
 						  </br>
 						  </br>
 							  <div> 
-								  <label>Pour la période du (date au format AAA-MM-JJ) : </label>
+								  <label>Pour la période du (date au format AAAA-MM-JJ) : </label>
 								  <input id="in_startDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 87px;" value="<?php echo $date['start']?>"/>
 								  <label> au : </label>
 								  <input id="in_endDate" class="form-control input-sm in_datepicker" style="display : inline-block; width: 87px;" value="<?php echo $date['end']?>"/>

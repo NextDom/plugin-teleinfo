@@ -1267,73 +1267,9 @@ class teleinfo extends eqLogic
     log::add('teleinfo', 'info', 'other stats -------------------------------------');
 }
 
-    public static function copyVersIndex00($compteur, $startDate, $endDate, $cout){
-//fonction pour copier les données issues de stat_yesterday vers index00
-		$date1 = new DateTime($startDate);
-		$date2 = new DateTime($endDate);
-		$diff = $date2->diff($date1)->format("%a");
-        $diff += 1;
-		
-		$p1j = new DateInterval('P1D');
-		event::add('jeedom::alert', array(
-				'level' => 'warning',
-				'page' => 'teleinfo',
-				'message' => __($cout.value().' '.' Copie de l index STATE_YESTERDAY vers STAT_YESTERDAY_INDEX00 pour la période du '.$startDate.' au '.$endDate.' soit '.$diff.' jours à traiter, cela peut prendre un peu de temps veuillez patienter ...', __FILE__),
-		));
-		//
-        foreach (eqLogic::byType('teleinfo') as $eqLogic) {
-			if ($compteur == $eqLogic->getlogicalId()){
-
-				$cmdYesterday            = $eqLogic->getCmd('info', 'STAT_YESTERDAY');
-				$cmdYesterdayindex00     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00');
-				$cmdYesterdaycoutindex00     = $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00_COUT');
-
-                $cmdIdIndex00 = $cmdYesterdayindex00->getId();
-                $cmdIdCoutIndex00 = $cmdYesterdaycoutindex00->getId();
-
-				for($i=1; $i < ($diff+1); $i++){
-
-                    if ($diff > 9){
-                        if (($i % ($diff/10)) == 0){
-                                event::add('jeedom::alert', array(
-                                        'level' => 'warning',
-                                        'page' => 'teleinfo',
-                                        'message' => __('Les statistiques sont en cours de copie, cela peut prendre un peu de temps veuillez patienter ... ('. intval($i/($diff/100)) .' %)', __FILE__),
-                                ));
-                        }
-                    }
-                
-                    $statTotal = intval($cmdYesterday->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max']);
-
-					$history = new history();
-					$history->setCmd_id($cmdIdIndex00);
-					$history->setDatetime($date2->format('Y-m-d 00:00:00'));
-					$history->setTableName('historyArch');
-					$history->setValue(intval($statTotal));
-					$history->save();
-					
-					$historycout = new history();
-					$historycout->setCmd_id($cmdIdCoutIndex00);
-					$historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
-					$historycout->setTableName('historyArch');
-					$historycout->setValue(($statTotal * $cout / 1000));
-					$historycout->save();
-					
-					$date2->sub($p1j);
-				}
-					
-			}
-		}
-        event::add('jeedom::alert', array(
-				'level' => 'success',
-				'page' => 'teleinfo',
-				'message' => __('L index00 a bien été constitué.', __FILE__),
-		));
-	}
-
     public static function copyVersIndex($compteur, $startDate, $endDate,
                                             $indexcopy01,$indexcopy02,$indexcopy03,$indexcopy04,$indexcopy05,$indexcopy06,$indexcopy07,$indexcopy08,$indexcopy09,$indexcopy10,
-                                            $coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10){
+                                            $coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10,$coutcopyprod){
         //fonction pour copier les données issues des anciens index vers les nouveaux
         $date1 = new DateTime($startDate);
         $date2 = new DateTime($endDate);
@@ -1346,8 +1282,13 @@ class teleinfo extends eqLogic
                 'page' => 'teleinfo',
                 'message' => __(' Copie des anciennes donnéés vers les nouveaux index pour la période du '.$startDate.' au '.$endDate.' soit '.$diff.' jours à traiter, cela peut prendre un peu de temps veuillez patienter ...', __FILE__),
         ));
-        $indexcopy = array(' ',$indexcopy01,$indexcopy02,$indexcopy03,$indexcopy04,$indexcopy05,$indexcopy06,$indexcopy07,$indexcopy08,$indexcopy09,$indexcopy10);
-        $coutcopy = array($coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10);
+        $indexcopy = array(' ',$indexcopy01,$indexcopy02,$indexcopy03,$indexcopy04,$indexcopy05,$indexcopy06,$indexcopy07,$indexcopy08,$indexcopy09,$indexcopy10,'EAIT');
+        $coutcopy = array($coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10,$coutcopyprod);
+        if (($coutcopy[0] == 0)||($coutcopy[0] == '')){
+            $indexcout00 = false;
+        }else{
+            $indexcout00 = true;
+        }
         
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             if ($compteur == $eqLogic->getlogicalId()){
@@ -1361,7 +1302,8 @@ class teleinfo extends eqLogic
                                             $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX07'),
                                             $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX08'),
                                             $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX09'),
-                                            $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX10')
+                                            $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX10'),
+                                            $eqLogic->getCmd('info', 'STAT_YESTERDAY_PROD')
                                         );
                 $coutdestination = array($eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX00_COUT'),
                                             $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX01_COUT'),
@@ -1373,16 +1315,24 @@ class teleinfo extends eqLogic
                                             $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX07_COUT'),
                                             $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX08_COUT'),
                                             $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX09_COUT'),
-                                            $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX10_COUT')
+                                            $eqLogic->getCmd('info', 'STAT_YESTERDAY_INDEX10_COUT'),
+                                            $eqLogic->getCmd('info', 'STAT_YESTERDAY_PROD_COUT')
                                         );
                 $iddestination = array();
                 $idcoutdest = array();
-                for ($i=0;$i<11;$i++){
+                for ($i=0;$i<12;$i++){
                     $iddestination[$i] = $indexdestination[$i]->getId();
                     $idcoutdest[$i] = $coutdestination[$i]->getId();
                 }                        
                             
                 $statIndex00 = 0;
+
+                $indexoriginebase=$eqLogic->getCmd('info', 'BASE');
+                $indexorigineeast=$eqLogic->getCmd('info', 'EAST');
+                for ($i=1;$i<12;$i++){
+                    $indexorigine[$i] = $eqLogic->getCmd('info', $indexcopy[$i]);
+                }
+
                 for($i=1; $i < ($diff+1); $i++){
 
                     if ($diff > 9){
@@ -1395,62 +1345,167 @@ class teleinfo extends eqLogic
                         }
                     }
                     
-                    $baseOuEAST = $eqLogic->getCmd('info', 'BASE');
-                    if ($eqLogic->getCmd('info', 'BASE')<>''){
-                        $indexcopy[0]='BASE';
-                    }elseif ($eqLogic->getCmd('info', 'EAST')<>''){
-                        $indexcopy[0]='EAST';
-                    }
-/*                    if ($eqLogic->getCmd('info_conso') == 'BASE'){
-                        $indexcopy[0]='BASE';
-                    }elseif ($eqLogic->getCmd('info_conso') == 'EAST'){
-                        $indexcopy[0]='BASE';
-                    }
-*/
-                        $statTotal2 = 0;
-                        $coutotal2 = 0;
-                        for ($j=0;$j<11;$j++){
-                            if ($indexcopy[$j]<>''){
-                                $indexorigine = $eqLogic->getCmd('info', $indexcopy[$j]);
-                                $statTotal1 = intval($indexorigine->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
-                                            - intval($indexorigine->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
-                                
+                    $statTotal1 = 0;
+                    $coutotal1 = 0;
+                    $statTotal2 = 0;
+                    $coutotal2 = 0;
 
-                                if ($statTotal1 <> 0){ 
-                                    $coutotal = floatval($statTotal1) * floatval($coutcopy[$j]) / 1000;
-                                    //$statTotal2 += $statTotal1;
-                                    $history = new history();
-                                    $history->setCmd_id($iddestination[$j]);
-                                    $history->setDatetime($date2->format('Y-m-d 00:00:00'));
-                                    $history->setTableName('historyArch');
-                                    $history->setValue(intval($statTotal1));
-                                    $history->save();
-                                    if ($coutotal <> 0){ 
-                                        //$coutotal2 += $coutotal;
-                                        $historycout = new history();
-                                        $historycout->setCmd_id($idcoutdest[$j]);
-                                        $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
-                                        $historycout->setTableName('historyArch');
-                                        $historycout->setValue(($coutotal));
-                                        $historycout->save();
-                                    }
-                                }
-                            }
-                            
+                    
+                    //recalcul des idex + coûts base
+                    if ($indexoriginebase<>''){
+                        $statTotal1 = intval($indexoriginebase->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
+                                            - intval($indexoriginebase->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
+                        if ($statTotal1 <> 0){ 
+                            $coutotal1 = floatval($statTotal1) * floatval($coutcopy[0]) / 1000;
                         }
-/*                    $historycout = new history();
-                    $historycout->setCmd_id($idcoutdest[0]);
-                    $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
-                    $historycout->setTableName('historyArch');
-                    $historycout->setValue(($coutotal2));
-                    $historycout->save();
-                    $history = new history();
-                    $history->setCmd_id($iddestination[0]);
-                    $history->setDatetime($date2->format('Y-m-d 00:00:00'));
-                    $history->setTableName('historyArch');
-                    $history->setValue(intval($statTotal2));
-                    $history->save();
-*/
+                    }
+                    if ($indexorigineeast<>''){
+                        $statTotal2 = intval($indexorigineeast->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
+                                            - intval($indexorigineeast->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
+                        if ($statTotal2 <> 0){ 
+                            $coutotal2 = floatval($statTotal2) * floatval($coutcopy[0]) / 1000;
+                        }
+                    }
+                    if (($statTotal1 + $statTotal2) <> 0){
+                        $history = new history();
+                        $history->setCmd_id($iddestination[0]);
+                        $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                        $history->setTableName('historyArch');
+                        $history->setValue(intval($statTotal1 + $statTotal2));
+                        $history->save();
+                        if (($coutotal1 + $coutotal2) <> 0){ 
+                            //$coutotal2 += $coutotal;
+                            
+                            $historycout = new history();
+                            $historycout->setCmd_id($idcoutdest[0]);
+                            $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                            $historycout->setTableName('historyArch');
+                            $historycout->setValue(($coutotal1 + $coutotal2));
+                            $historycout->save();
+                        }else{
+                            $historycout = new history();
+                            $historycout->setCmd_id($idcoutdest[0]);
+                            $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                            $historycout->setTableName('historyArch');
+                            $historycout->setValue('');
+                            $historycout->save();
+                        }
+                    }else{
+                        $history = new history();
+                        $history->setCmd_id($iddestination[0]);
+                        $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                        $history->setTableName('historyArch');
+                        $history->setValue('');
+                        $history->save();
+                    }
+
+
+                    //recalcul des couts prod
+                    $statotal2 = 0;
+                    if ($indexorigine[11]<>''){
+                        $statTotal2 = intval($indexorigine[11]->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
+                                                - intval($indexorigine[11]->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
+                        if ($statTotal2 <> 0){ 
+                            $coutotal2 = floatval($statTotal2) * floatval($coutcopy[11]) / 1000;
+                            $history = new history();
+                            $history->setCmd_id($iddestination[11]);
+                            $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                            $history->setTableName('historyArch');
+                            $history->setValue(intval($statTotal2));
+                            $history->save();
+                            if ($coutotal2 <> 0){ 
+                                //$coutotal2 += $coutotal;
+                                
+                                $historycout = new history();
+                                $historycout->setCmd_id($idcoutdest[11]);
+                                $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                $historycout->setTableName('historyArch');
+                                $historycout->setValue($coutotal2);
+                                $historycout->save();
+                            }else{
+                                $historycout = new history();
+                                $historycout->setCmd_id($idcoutdest[11]);
+                                $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                $historycout->setTableName('historyArch');
+                                $historycout->setValue('');
+                                $historycout->save();
+                            }
+                        }else{
+                            $history = new history();
+                            $history->setCmd_id($iddestination[11]);
+                            $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                            $history->setTableName('historyArch');
+                            $history->setValue('');
+                            $history->save();
+                        }
+                    }
+
+
+
+                    
+                    $statTotal1 = 0;
+                    $coutotal1 = 0;
+                    $statTotal2 = 0;
+                    $coutotal2 = 0;
+
+                    //recalcul des index de 1 à 10
+                    for ($j=1;$j<11;$j++){
+                        if ($indexcopy[$j]<>''){
+                            $statTotal1 = intval($indexorigine[$j]->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
+                                        - intval($indexorigine[$j]->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
+                            
+
+                            if ($statTotal1 <> 0){ 
+                                $coutotal = floatval($statTotal1) * floatval($coutcopy[$j]) / 1000;
+                                $history = new history();
+                                $history->setCmd_id($iddestination[$j]);
+                                $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                $history->setTableName('historyArch');
+                                $history->setValue(intval($statTotal1));
+                                $history->save();
+                                if ($coutotal <> 0){ 
+                                    $coutotal2 += $coutotal;
+                                    $historycout = new history();
+                                    $historycout->setCmd_id($idcoutdest[$j]);
+                                    $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                    $historycout->setTableName('historyArch');
+                                    $historycout->setValue(($coutotal));
+                                    $historycout->save();
+                                }else{
+                                    $historycout = new history();
+                                    $historycout->setCmd_id($idcoutdest[$j]);
+                                    $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                    $historycout->setTableName('historyArch');
+                                    $historycout->setValue('');
+                                    $historycout->save();
+                                }
+                            }else{
+                                $history = new history();
+                                $history->setCmd_id($iddestination[$j]);
+                                $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                $history->setTableName('historyArch');
+                                $history->setValue('');
+                                $history->save();
+                            }
+                        }
+                    }
+                    if (!$indexcout00){
+                        if ($coutotal2 <> 0){
+                            $historycout = new history();
+                            $historycout->setCmd_id($idcoutdest[0]);
+                            $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                            $historycout->setTableName('historyArch');
+                            $historycout->setValue($coutotal2);
+                            $historycout->save();
+                        }else{
+                            $historycout = new history();
+                            $historycout->setCmd_id($idcoutdest[0]);
+                            $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                            $historycout->setTableName('historyArch');
+                            $historycout->setValue('');
+                            $historycout->save();
+                        }
+                    }
                     $date2->sub($p1j);
                 }
             }    
@@ -1854,7 +1909,7 @@ class teleinfo extends eqLogic
     {
         log::add('teleinfo', 'debug', '-------- Commandes des stats ---------');
         $array = array("STAT_TODAY","STAT_TODAY_HC", "STAT_TODAY_HP", "STAT_TODAY_PROD",
-                        "STAT_YESTERDAY","STAT_YESTERDAY_HC","STAT_YESTERDAY_HP","STAT_YESTERDAY_PROD",
+                        "STAT_YESTERDAY","STAT_YESTERDAY_HC","STAT_YESTERDAY_HP","STAT_YESTERDAY_PROD","STAT_YESTERDAY_PROD_COUT",
                         "STAT_TODAY_INDEX00","STAT_TODAY_INDEX00_COUT","STAT_YESTERDAY_INDEX00","STAT_YESTERDAY_INDEX00_COUT",
                         "STAT_TODAY_INDEX01","STAT_TODAY_INDEX01_COUT","STAT_YESTERDAY_INDEX01","STAT_YESTERDAY_INDEX01_COUT",
                         "STAT_TODAY_INDEX02","STAT_TODAY_INDEX02_COUT","STAT_YESTERDAY_INDEX02","STAT_YESTERDAY_INDEX02_COUT",

@@ -213,22 +213,6 @@ $('#btTeleinfoMaintenance').on('click', function() {
     $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=maintenance').dialog('open');
 });
 
-$('#btIndex00').on('click', function() {
-		$.ajax({
-                type: 'POST',
-                url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
-                data: {
-                    action:'copyVersIndex00',
-					compteur: $('.eqLogicAttr[data-l1key=logicalId]').value(),
-					startDate: $('#in_startDate').value(),
-					endDate:  $('#in_endDate').value(),
-					cout:  $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex00]').value(),
-                    },
-                dataType: 'json',
-    	});
-        $.hideLoading();
-    
-});
 
 $('#btIndex').on('click', function() {
     $.ajax({
@@ -261,6 +245,7 @@ $('#btIndex').on('click', function() {
             coutcopy08: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex08]').value(),
             coutcopy09: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex09]').value(),
             coutcopy10: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex10]').value(),
+            coutcopyprod: $('.eqLogicAttr[data-l1key=configuration][data-l2key=CoutindexProd]').value(),
             },
         dataType: 'json',
 });
