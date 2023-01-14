@@ -4,11 +4,7 @@ Pour toutes demandes :
  - [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) 
  - [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
 
-<<<<<<< HEAD
 ## 4.7.1.c (14-01-2022) => version stable
-=======
-## 4.7.1.b (12-01-2022) => version stable
->>>>>>> develop
 - correction manque courbe HC sur graph annuel
 - mise à jour de la documentation
 
