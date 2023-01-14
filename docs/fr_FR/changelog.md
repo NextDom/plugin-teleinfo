@@ -1,12 +1,15 @@
 # Changelog
 
-Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) ou [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
+Pour toutes demandes : 
+ - [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) 
+ - [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
 
-## 4.7.1.b (12-01-2022) => version stable
+## 4.7.1.c (14-01-2022) => version stable
 - correction manque courbe HC sur graph annuel
+- mise à jour de la documentation
 
-## 4.7.1 (27-12-2022)
-Modification du panel:
+## 4.7.1b (27-12-2022)
+Modification du pannel:
 - ajout de la courbe des températures dans tous les graphiques sauf jour courant
 - durée de la courbe des consommations instantanées sur l'intégralité de la période sélectionnée et non plus sur seulement le jour en cours
 - ajout de case à cocher pour faire correspondre son abonnement aux courbes à afficher
@@ -17,8 +20,7 @@ Modification du panel:
 - ajout courbe pluri annuelle
 - pas mal de corrections de détails
 
-
-## 4.7 (04-02-2022)
+## 4.7.1 (04-02-2022)
 
 Ajout des modifications pour la compatibilité Jeedom 4.2. Merci à Noyax37
 passage en python3
@@ -33,7 +35,17 @@ ajout du fichier packages.json pour profiter de l'évolution de la gestion des d
 
 je ne sais plus...
 
-### 4.6.5 (28-10-2019)
+## 4.6.5b (provisoire 10-01-2023)
+Aucune modification apportée sauf la supression de "l'erreur 500". Il s'agit surtout d'un avis pour ceux qui sont encore avec ce plugin en version stable.
+
+La version 4.7.1 n'apporte aucun changement ni dans le traitement des données ni dans le traitement des statistiques juste dans leur affichage.
+
+Cette mise à jour et ce qui va suivre est expliqué là:
+https://community.jeedom.com/t/plugin-teleinfo-annonce-importante/99198?u=noyax37
+
+
+
+### 4.6.5a (28-10-2019)
 
 * Correction calcul puissance dernière minute dans le cas de plusieurs compteurs
 
