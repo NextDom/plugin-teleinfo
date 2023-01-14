@@ -1451,33 +1451,42 @@ class teleinfo extends eqLogic
                     //recalcul des index de 1 à 10
                     for ($j=1;$j<11;$j++){
                         if ($indexcopy[$j]<>''){
-                            $statTotal1 = intval($indexorigine[$j]->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
-                                        - intval($indexorigine[$j]->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
-                            
+                            if(floatval($coutcopy[$j])<>0){
+                                $statTotal1 = intval($indexorigine[$j]->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
+                                            - intval($indexorigine[$j]->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
+                                
 
-                            if ($statTotal1 <> 0){ 
-                                $coutotal = floatval($statTotal1) * floatval($coutcopy[$j]) / 1000;
-                                $history = new history();
-                                $history->setCmd_id($iddestination[$j]);
-                                $history->setDatetime($date2->format('Y-m-d 00:00:00'));
-                                $history->setTableName('historyArch');
-                                $history->setValue(intval($statTotal1));
-                                $history->save();
-                                if ($coutotal <> 0){ 
-                                    $coutotal2 += $coutotal;
-                                    $historycout = new history();
-                                    $historycout->setCmd_id($idcoutdest[$j]);
-                                    $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
-                                    $historycout->setTableName('historyArch');
-                                    $historycout->setValue(($coutotal));
-                                    $historycout->save();
+                                if ($statTotal1 <> 0){ 
+                                    $coutotal = floatval($statTotal1) * floatval($coutcopy[$j]) / 1000;
+                                    $history = new history();
+                                    $history->setCmd_id($iddestination[$j]);
+                                    $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                    $history->setTableName('historyArch');
+                                    $history->setValue(intval($statTotal1));
+                                    $history->save();
+                                    if ($coutotal <> 0){ 
+                                        $coutotal2 += $coutotal;
+                                        $historycout = new history();
+                                        $historycout->setCmd_id($idcoutdest[$j]);
+                                        $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                        $historycout->setTableName('historyArch');
+                                        $historycout->setValue(($coutotal));
+                                        $historycout->save();
+                                    }else{
+                                        $historycout = new history();
+                                        $historycout->setCmd_id($idcoutdest[$j]);
+                                        $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                        $historycout->setTableName('historyArch');
+                                        $historycout->setValue('');
+                                        $historycout->save();
+                                    }
                                 }else{
-                                    $historycout = new history();
-                                    $historycout->setCmd_id($idcoutdest[$j]);
-                                    $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
-                                    $historycout->setTableName('historyArch');
-                                    $historycout->setValue('');
-                                    $historycout->save();
+                                    $history = new history();
+                                    $history->setCmd_id($iddestination[$j]);
+                                    $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                    $history->setTableName('historyArch');
+                                    $history->setValue('');
+                                    $history->save();
                                 }
                             }else{
                                 $history = new history();
@@ -1486,6 +1495,12 @@ class teleinfo extends eqLogic
                                 $history->setTableName('historyArch');
                                 $history->setValue('');
                                 $history->save();
+                                $historycout = new history();
+                                $historycout->setCmd_id($idcoutdest[$j]);
+                                $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
+                                $historycout->setTableName('historyArch');
+                                $historycout->setValue('');
+                                $historycout->save();   
                             }
                         }
                     }
