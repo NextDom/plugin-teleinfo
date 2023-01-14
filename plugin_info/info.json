@@ -17,5 +17,9 @@
 	"documentation" : "https://NextDom.github.io/plugin-teleinfo/fr_FR/",
 	"changelog_beta" : "https://Noyax.github.io/plugin-teleinfo/fr_FR/changelog",
 	"documentation_beta" : "https://Noyax.github.io/plugin-teleinfo/fr_FR/",
+<<<<<<< HEAD
 	"pluginVersion" : "4.7.1c"
+=======
+	"pluginVersion" : "4.7.1b"
+>>>>>>> develop
 }
