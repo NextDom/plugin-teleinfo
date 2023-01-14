@@ -7,9 +7,11 @@ Pour toutes demandes :
 ## 4.7.2 ---
 - création de stat par index mais maintien du mode de stat précédent
 - possibilité de l'affichage du pannel téléinfo ancien ou du nouveau qui prend en compte les nouveaux index
+- prise en compte des dates saisies pour recalcul des courbes par mois et année
 
-## 4.7.1.c (12-01-2022)
+## 4.7.1.c (12-01-2022) => version stable
 - correction manque courbe HC sur graph annuel
+- mise à jour de la documentation
 
 ## 4.7.1b (27-12-2022)
 Modification du pannel:

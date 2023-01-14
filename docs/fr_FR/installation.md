@@ -1,6 +1,6 @@
 Installation
 ===
-Commencer par installer le plugin depuis le market : https://doc.jeedom.com/fr_FR/core/3.3/plugin
+Commencer par installer le plugin depuis le market : [https://doc.jeedom.com/fr_FR/core/3.3/plugin](https://doc.jeedom.com/fr_FR/core/3.3/plugin)
 
 Après avoir activé le plugin vous devez choisir le port du modem :
 

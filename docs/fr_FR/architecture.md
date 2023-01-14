@@ -14,17 +14,18 @@ Pas de configuration spécifique pour ce type de compteur.
 
 ![teleinfolinky1](../images/teleinfo_linky1.png)
 
-Le compteur linky possède 2 modes de téléinformation.
--    Le premier appelé historique : Ce mode assure une compatibilité égale aux compteurs d'ancienne génération.
-     La configuration doit donc être sur :
+Le compteur linky possède 2 modes de téléinformation=> 
+>Pour connaitre le mode utilisé appuyer plusieurs fois sur le + de votre compteur linky jusqu'à l'affichage TIC Standard ou TIC Historique.
+-    Mode historique : Ce mode assure une compatibilité égale aux compteurs d'ancienne génération.
+     Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), ne pas cocher 2 et si besoin sélectionner 1200 en 3 :
 
      ![teleinfolinkydesactive](../images/teleinformation_linky_des.png)
 
--    Le second appelé stantard : **Seul ce mode requiert l'option Linky sur le plugin**, il s'agit du nouveau mode de communication.
-     La configuration doit donc être sur :
+-    Mode standard : mode de communication plus récent, **seul ce mode requiert l'option Linky sur le plugin**.
+     Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), cocher 2 et si besoin sélectionner 9600 en 3 :
      ![teleinfolinkyactive](../images/teleinformation_linky_act.png)
 
->Pour connaitre le mode utilisé par le compteur appuyer plusieurs fois sur + jusqu'à l'affichage TIC Stantard ou TIC Historique.
+
 
 Cas d'utilisation de 2 compteurs
 ===
@@ -34,7 +35,7 @@ Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement 
 
 ![teleinfo3](../images/teleinformation_2compteurs.png)
 
-## Utilisation d'un second compteur pour de la production électrique
-Dans ce cas il faut activer le mode production du plugin :
+## Utilisation d'un second compteur
+Si vous disposez de 2 compteurs chez vous, il faut le paramétrer (sauf si utilisation du modem ci dessus) :
 
-![teleinfo31](../images/teleinformation_production.png)
+![teleinfo31](../images/teleinformation_2compteurs_bis.png)
