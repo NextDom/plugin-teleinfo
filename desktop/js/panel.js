@@ -151,7 +151,12 @@ $.ajax({
                             prodEtConso = true;
                     }
                 }
-            }
+            }else{
+                if(data.result[globalEqLogic].configuration.ActivationProduction == 1){
+                        $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Production');
+						prodEtConso = true;
+                }
+			}
 
             try {
                 var diviseur = 1;
