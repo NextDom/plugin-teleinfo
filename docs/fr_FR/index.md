@@ -3,6 +3,7 @@
 {% include_relative installation.md %}
 {% include_relative configuration.md %}
 {% include_relative commandes.md %}
+{% include_relative lesindex.md %}
 {% include_relative sante.md %}
 {% include_relative api.md %}
 {% include_relative diagnostic.md %}

@@ -14,29 +14,32 @@ Pas de configuration spécifique pour ce type de compteur.
 
 ![teleinfolinky1](../images/teleinfo_linky1.png)
 
-Le compteur linky possède 2 modes de téléinformation.
--    Le premier appelé historique : Ce mode assure une compatibilité égale aux compteurs d'ancienne génération.
-     La configuration doit donc être sur :
+Le compteur linky possède 2 modes de téléinformation 
+>Pour connaitre le mode utilisé appuyer plusieurs fois sur le + de votre compteur linky jusqu'à l'affichage TIC Standard ou TIC Historique.
+
+-    Mode historique : Ce mode assure une compatibilité égale aux compteurs d'ancienne génération.
+     Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), ne pas cocher 2 et si besoin sélectionner 1200 en 3 :
 
      ![teleinfolinkydesactive](../images/teleinformation_linky_des.png)
 
--    Le second appelé stantard : **Seul ce mode requiert l'option Linky sur le plugin**, il s'agit du nouveau mode de communication.
-     La configuration doit donc être sur :
+-    Mode standard : mode de communication plus récent, **seul ce mode requiert l'option Linky sur le plugin**.
+     Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), cocher 2 et si besoin sélectionner 9600 en 3 :
      ![teleinfolinkyactive](../images/teleinformation_linky_act.png)
 
->Pour connaitre le mode utilisé par le compteur appuyer plusieurs fois sur + jusqu'à l'affichage TIC Stantard ou TIC Historique.
+
 
 Cas d'utilisation de 2 compteurs
 ===
->Le plugin ne permet pas d'utiliser le modem 2 compteurs cartelectronic avec 2 types de compteurs différents (Historique et Standard).
-Pour ce cas, veuillez utiliser 2 modem séparés. 
+
+
+## Utilisation d'un second compteur
+Si vous disposez de 2 compteurs chez vous, il faut le paramétrer (sauf si utilisation du modem ci dessous) :
+
+![teleinfo31](../images/teleinformation_2compteurs_bis.png)
+
+
 
 ## Utilisation du modem Cartelectronic 2 Compteurs
 Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement de 2 compteurs électrique il est nécessaire d'activer le mode 2 compteurs.
 
 ![teleinfo3](../images/teleinformation_2compteurs.png)
-
-## Utilisation d'un second compteur pour de la production électrique
-Dans ce cas il faut activer le mode production du plugin :
-
-![teleinfo31](../images/teleinformation_production.png)

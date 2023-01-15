@@ -155,6 +155,18 @@ switch ($controlerState) {
                               <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                           </div>
                       </div>
+                      <div class="form-group ProdCons">
+                          <label class="col-lg-4 control-label pull-left">{{Compteur en mode conso ET prod}} <sup><i class="fas fa-question-circle tooltips" title="{{A cocher si le compteur sert aussi en production (Linky)}}"></i></sup></label>
+                          <div class="col-lg-7 tooltips">
+                              <input type="checkbox" id="activation_production" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="ActivationProduction" placeholder="{{Activer}}"/>
+                          </div>
+                      </div>
+                      <div class="form-group HCHP">
+                          <label class="col-lg-4 control-label pull-left">{{Abonnement HC / HP}} <sup><i class="fas fa-question-circle tooltips" title="{{A cocher si votre abonnement est HC / HP}}"></i></sup></label>
+                          <div class="col-lg-7 tooltips">
+                              <input type="checkbox" id="HC_HP" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="HCHP" placeholder="{{Abbonnement HC/HP}}"/>
+                          </div>
+                      </div>
                   </fieldset>
               </form>
           </div>

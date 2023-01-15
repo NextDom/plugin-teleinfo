@@ -12,7 +12,7 @@ function apt_install {
   fi
 }
 function pip_install {
-  sudo pip install "$@"
+  sudo pip3 install --upgrade "$@"
   if [ $? -ne 0 ]; then
     echo "could not install $p - abort"
     rm ${PROGRESS_FILE}
@@ -28,8 +28,8 @@ echo "Raffraichissement du système"
 sudo apt-get update
 echo 20 > ${PROGRESS_FILE}
 echo "Installation de la librairie ftdi pour modem 2 compteurs"
-sudo apt-get -y install python-ftdi
-sudo apt-get -y install python-ftdi1
+#sudo apt-get -y install python3-ftdi
+sudo apt-get -y install python3-ftdi1
 #pip_install pyftdi
 pip_install pylibftdi
 echo 30 > ${PROGRESS_FILE}
@@ -38,6 +38,7 @@ echo 40 > ${PROGRESS_FILE}
 echo "Installation de la librairie serial"
 #pip_install serial
 sudo pip uninstall -y serial
+pip_install six
 #apt_install python-serial
 pip_install pyserial
 pip_install setuptools

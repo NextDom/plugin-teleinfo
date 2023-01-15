@@ -117,6 +117,7 @@ class teleinfo extends eqLogic
                     ->setLogicalId($oKey)
                     ->setType('info');
             switch ($oKey) {
+				case "ADSC":
                 case "OPTARIF":
                 case "PTEC":
                 case "DEMAIN":
@@ -126,6 +127,26 @@ class teleinfo extends eqLogic
                 case "NGTF":
                 case "LTARF":
                 case "STGE":
+                case "STGE01":
+                case "STGE02":
+                case "STGE03":
+                case "STGE04":
+                case "STGE05":
+                case "STGE06":
+                case "STGE07":
+                case "STGE08":
+                case "STGE09":
+                case "STGE10":
+                case "STGE11":
+                case "STGE12":
+                case "STGE13":
+                case "STGE14":
+                case "STGE15":
+                case "STGE16":
+                case "STGE17":
+                case "STGE18":
+                case "STGE19":
+                case "STGE20":
                 case "DPM1":
                 case "FPM1":
                 case "DPM2":
@@ -135,11 +156,19 @@ class teleinfo extends eqLogic
                 case "MSG1":
                 case "MSG2":
                 case "PRM":
-                case "RELAIS":
                 case "NJOURF":
                 case "NJOURF+1":
                 case "PJOURF+1":
                 case "PPOINTE":
+                case "RELAIS":
+                case "RELAIS01":
+                case "RELAIS02":
+                case "RELAIS03":
+                case "RELAIS04":
+                case "RELAIS05":
+                case "RELAIS06":
+                case "RELAIS07":
+                case "RELAIS08":
                     $cmd->setSubType('string')
                             ->setDisplay('generic_type', 'GENERIC_INFO');
                     break;
@@ -156,7 +185,6 @@ class teleinfo extends eqLogic
             return $cmd;
         }
     }
-
 
 	/**
 	 * Fonction de détection du type de compteur
@@ -279,11 +307,11 @@ class teleinfo extends eqLogic
 
         if ($twoCptCartelectronic == 1) {
             log::add('teleinfo', 'info', '[' . $type . '] Fonctionnement en mode 2 compteur');
-            $cmd          = 'sudo nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo_2_cpt.py';
+            $cmd          = 'sudo nice -n 19 /usr/bin/python3 ' . $teleinfoPath . '/teleinfo_2_cpt.py';
         }
 		else {
             log::add('teleinfo', 'info', '[' . $type . '] Fonctionnement en mode 1 compteur');
-            $cmd          = 'nice -n 19 /usr/bin/python ' . $teleinfoPath . '/teleinfo.py';
+            $cmd          = 'nice -n 19 /usr/bin/python3 ' . $teleinfoPath . '/teleinfo.py';
             $cmd         .= ' --type ' . $type;
         }
 		$cmd         .= ' --port ' . $port;
@@ -490,14 +518,16 @@ class teleinfo extends eqLogic
 
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
-                    if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
-                        array_push($statHpToCumul, $cmd->getId());
-                    }
-                    if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
-                        array_push($statHcToCumul, $cmd->getId());
-                    }
-                    if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
-                        array_push($statProdToCumul, $cmd->getId());
+                    if (!empty($cmd->getConfiguration('info_conso'))) {
+                        if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHpToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statHcToCumul, $cmd->getId());
+                        }
+                        if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
+                            array_push($statProdToCumul, $cmd->getId());
+                        }
                     }
                 }
                 if ($cmd->getConfiguration('info_conso') == "TENDANCE_DAY") {

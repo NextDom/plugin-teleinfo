@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 """ Teleinfo reader
@@ -41,7 +41,7 @@ knowledge of the CeCILL license and that you accept its terms.
 
 import time
 import optparse
-import urllib2
+#import urllib2
 import sys
 import os
 import traceback
@@ -49,7 +49,7 @@ import logging
 import signal
 import globals
 import argparse
-import thread
+import _thread
 import json
 try:
     import ftdi
@@ -268,11 +268,16 @@ class Teleinfo(object):
         for line in lines:
             try:
                 checksum = line[-1]
+                #logging.debug('chechsum : ' + checksum)
                 header, value = line[:-2].split()
                 #data = {'header': header.encode(), 'value': value.encode(), 'checksum': checksum}
-                logging.debug('TELEINFO------name : ' + header.encode() + ' value : ' + value.encode() + ' checksum : ' + checksum)
+                #logging.debug('TELEINFO------name : ' + header.encode() + ' value : ' + value.encode() + ' checksum : ' + checksum)
+                logging.debug('TELEINFO------name : ' + header + ' value : ' + value + ' chechsum : ' + checksum)
                 if self.__checkData(line):
-                    Content[header.encode()] = value.encode()
+                    #logging.debug('retour vrai du checksum')
+                    #Content[header.encode()] = value.encode()
+                    Content[header] = value
+                    #logging.debug('retour 2 ')
             except:
                 pass
                 #datas.append(data)
@@ -283,14 +288,20 @@ class Teleinfo(object):
         """
         if globals.mode == "standard":
             #Gestion des champs horodates
+            #logging.debug('calcul du checksum 1')
             if len(data.split('\x09')) == 4:
                 datas = '\x09'.join(data.split('\x09')[0:3])
+                #logging.debug('calcul du checksum 2' + datas)
             else:
                 datas = '\x09'.join(data.split('\x09')[0:2])
+                #logging.debug('calcul du checksum 3' + datas)
             my_sum = 0
             for cks in datas:
                 my_sum = my_sum + ord(cks)
+            #logging.debug('my_sum : ' + str(my_sum))
             computed_checksum = ((my_sum - 0x01) & int("111111", 2)) + 0x20
+            #computed_checksum = ((my_sum + 0x09) & int("111111", 2)) + 0x20
+            #logging.debug('computed checksum : ' + chr(computed_checksum) + ' compare a checksum : ' + data[-1])
         else:
             #print "Check checksum : f = %s, chk = %s" % (frame, checksum)
             datas = ' '.join(data.split()[0:2])
@@ -307,6 +318,7 @@ class Teleinfo(object):
         end = raw.rfind(chr(etx)) + 1
         start = raw[:end].rfind(chr(etx)+chr(stx))
         frame = raw[start+2:end-2]
+        #logging.debug('end : ' + str(end) + ' start : ' + str(start) + ' frame : ' + frame)
 
         # Check if there is a eot, cancel frame
         if frame.find(chr(eot)) != -1:
@@ -341,10 +353,10 @@ class Teleinfo(object):
             else:
                 logging.info("TELEINFO------HEARTBEAT")
                 raz_time = 600
-                for cle, valeur in cpt1_data.items():
+                for cle, valeur in list(cpt1_data.items()):
                     cpt1_data.pop(cle)
                     cpt1_data_temp.pop(cle)
-                for cle, valeur in cpt2_data.items():
+                for cle, valeur in list(cpt2_data.items()):
                     cpt2_data.pop(cle)
                     cpt2_data_temp.pop(cle)
             send_data = {}
@@ -352,7 +364,7 @@ class Teleinfo(object):
             raw = self.__readRawFrame()
             self.__selectMeter(0)
             datas = self.extractDatas(raw)
-            logging.debug(datas)
+            #logging.debug(raw)
 
             if num_compteur == 1:
                 for cle, valeur in datas.items():
@@ -362,6 +374,7 @@ class Teleinfo(object):
                         cpt1_data[cle] = valeur
                     else:
                         cpt1_data[cle] = valeur
+                        logging.debug('cle : ' + cle + ' valeur : ' + valeur)
             elif num_compteur == 2:
                 for cle, valeur in datas.items():
                     if cle == 'PTEC':
@@ -440,7 +453,7 @@ class Teleinfo(object):
             ftdi.close()
 
     def terminate(self):
-        print "Terminating..."
+        print ("Terminating...")
         self.close()
         #sys.close(gOutput)
         #sys.exit()
@@ -458,7 +471,7 @@ def read_socket(cycle):
                 logging.debug('SOCKET-READ------Received command from jeedom : '+str(message['cmd']))
                 if message['cmd'] == 'action':
                     logging.debug('SOCKET-READ------Attempt an action on a device')
-                    thread.start_new_thread( action_handler, (message,))
+                    _thread.start_new_thread( action_handler, (message,))
                     logging.debug('SOCKET-READ------Action Thread Launched')
                 elif message['cmd'] == 'logdebug':
                     logging.info('SOCKET-READ------Passage du demon en mode debug force')
@@ -472,7 +485,7 @@ def read_socket(cycle):
                     log = logging.getLogger()
                     for hdlr in log.handlers[:]:
                         log.removeHandler(hdlr)
-                    jeedom_utils.set_log_level('error')
+                    jeedom_utils.set_log_level('info')
         except Exception as e:
             logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
             logging.debug(traceback.format_exc())
@@ -484,7 +497,7 @@ def listen():
     logging.info("GLOBAL------Start listening...")
     #globals.TELEINFO = Teleinfo()
     logging.info("GLOBAL------Preparing Teleinfo...")
-    thread.start_new_thread( read_socket, (globals.cycle,))
+    _thread.start_new_thread( read_socket, (globals.cycle,))
     logging.debug('GLOBAL------Read Socket Thread Launched')
     while 1:
         try:
@@ -494,7 +507,7 @@ def listen():
                 globals.TELEINFO = Teleinfo(ftdi_)
             else:
                 globals.TELEINFO = Teleinfo("")
-            thread.start_new_thread( log_starting,(globals.cycle,))
+            _thread.start_new_thread( log_starting,(globals.cycle,))
             globals.TELEINFO.readMeter()
         except Exception as e:
             print("Error:")
