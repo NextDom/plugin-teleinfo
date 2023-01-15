@@ -4,17 +4,17 @@ Pour toutes demandes :
  - [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) 
  - [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
 
-## 4.7.2 ---
+## 4.7.3 ---
 - création de stat par index mais maintien du mode de stat précédent
 - possibilité de l'affichage du pannel téléinfo ancien ou du nouveau qui prend en compte les nouveaux index
 - prise en compte des dates saisies pour recalcul des courbes par mois et année
 - nouveau mode de lissage plus rapide
 
-## 4.7.1.c (12-01-2022) => version stable
+## 4.7.2a (15-01-2022) => version stable
 - correction manque courbe HC sur graph annuel
 - mise à jour de la documentation
 
-## 4.7.1b (27-12-2022)
+## 4.7.2 (27-12-2022)
 Modification du pannel:
 - ajout de la courbe des températures dans tous les graphiques sauf jour courant
 - durée de la courbe des consommations instantanées sur l'intégralité de la période sélectionnée et non plus sur seulement le jour en cours

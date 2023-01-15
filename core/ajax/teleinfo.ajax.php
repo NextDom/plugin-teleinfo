@@ -196,7 +196,8 @@ try {
                 $values = array(
                     'cmdId' => init('id'),
                 );
-                $valeursDepart = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                $valeursDepartDB = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                $valeursDepart = $valeursDepartDB['COUNT(*)'];
                 
                 //sélectionne le min par heure
                 $sql = "SELECT cmd_id,datetime,value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
@@ -208,16 +209,9 @@ try {
                 event::add('jeedom::alert', array(
                         'level' => 'warning',
                         'page' => 'teleinfo',
-                        'message' => __('Les données sont stockées dans une variable, passons à la suppression du superflu, la phase la plus longue...)', __FILE__),
+                        'message' => __('Les données sont stockées dans une variable, passons à la suppression du superflu, la phase la plus longue...', __FILE__),
                 ));
     
-//                foreach($minParHeure as $cle => $valeur){
-  //                  foreach($valeur as $cle2 => $valeur2){
-  //                  echo("<script>console.log('PHP: " . $minParHeure[$cle]['datetime'] . "');</script>");
-    //            }//}
-//                echo("<script>console.log('PHP: " . $minParHeure[0]['cmd_id'] . "');</script>");
-                
-                
                 // Nettoyage de toutes les valeurs
                 $sql = "DELETE FROM historyArch WHERE cmd_id=:cmdId";
                 $values = array(
@@ -247,12 +241,8 @@ try {
                 $values = array(
                     'cmdId' => init('id'),
                 );
-                $valuesClean = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
-                event::add('jeedom::alert', array(
-                        'level' => 'warning',
-                        'page' => 'teleinfo',
-                        'message' => __('Les données sont remises en place)', __FILE__),
-                ));
+                $valuesCleanDB = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                $valuesClean = $valuesCleanDB['COUNT(*)'];
     
 /*
                 // Plus ancienne valeur différente de heure fixe
@@ -307,7 +297,7 @@ try {
                 event::add('jeedom::alert', array(
                         'level' => 'success',
                         'page' => 'teleinfo',
-                        'message' => __('Optimisation de l\'historique terminée', __FILE__),
+                        'message' => __('Optimisation de l\'historique terminée. Les données sont remises en place). Il y avait ' . $valeursDepart . ' lignes de données avant, il en reste '.$valuesClean, __FILE__),
                 ));
                 ajax::success($return);
                 //ajax::success();
