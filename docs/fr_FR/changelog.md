@@ -8,6 +8,7 @@ Pour toutes demandes :
 - création de stat par index mais maintien du mode de stat précédent
 - possibilité de l'affichage du pannel téléinfo ancien ou du nouveau qui prend en compte les nouveaux index
 - prise en compte des dates saisies pour recalcul des courbes par mois et année
+- nouveau mode de lissage plus rapide
 
 ## 4.7.1.c (12-01-2022) => version stable
 - correction manque courbe HC sur graph annuel

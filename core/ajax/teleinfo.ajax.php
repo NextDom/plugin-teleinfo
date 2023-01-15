@@ -1,6 +1,7 @@
 <?php
 
-/* This file is part of Jeedom.
+/* Test
+ * This file is part of Jeedom.
  *
  * Jeedom is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,6 +182,7 @@ try {
 		break;
         case 'optimizeArchive':
 			$return = array();
+            $minParHeure = array();
 			$valuesClean = 0;
 			if (init('id') !== '') {
                 event::add('jeedom::alert', array(
@@ -188,7 +190,72 @@ try {
                         'page' => 'teleinfo',
                         'message' => __('Optimisation de l\'historique, cela peut prendre du temps. (La fenêtre peut être fermée)', __FILE__),
                 ));
-				// Plus ancienne valeur différente de heure fixe
+                
+                //compter le nb de ligne
+                $sql = "SELECT COUNT(*) FROM historyArch WHERE cmd_id=:cmdId";
+                $values = array(
+                    'cmdId' => init('id'),
+                );
+                $valeursDepart = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                
+                //sélectionne le min par heure
+                $sql = "SELECT cmd_id,datetime,value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
+                $values = array(
+			                 'cmdId' => init('id'),
+		        );
+				$minParHeure = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+
+                event::add('jeedom::alert', array(
+                        'level' => 'warning',
+                        'page' => 'teleinfo',
+                        'message' => __('Les données sont stockées dans une variable, passons à la suppression du superflu, la phase la plus longue...)', __FILE__),
+                ));
+    
+//                foreach($minParHeure as $cle => $valeur){
+  //                  foreach($valeur as $cle2 => $valeur2){
+  //                  echo("<script>console.log('PHP: " . $minParHeure[$cle]['datetime'] . "');</script>");
+    //            }//}
+//                echo("<script>console.log('PHP: " . $minParHeure[0]['cmd_id'] . "');</script>");
+                
+                
+                // Nettoyage de toutes les valeurs
+                $sql = "DELETE FROM historyArch WHERE cmd_id=:cmdId";
+                $values = array(
+                                'cmdId' => init('id'),
+                );
+                $deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                event::add('jeedom::alert', array(
+                        'level' => 'warning',
+                        'page' => 'teleinfo',
+                        'message' => __('Les anciennes données sont supprimées, passons à la remise en place des valeurs stockées)', __FILE__),
+                ));
+
+                //remise des données purgées en place
+                $valuesClean=0;
+                foreach ($minParHeure as $cle => $valeur) {
+                    $sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:newValue";
+                    $values = array(
+                        'cmdId' => init('id'),
+                        'newDatetime' => date('Y-m-d H:00:00', strtotime($valeur['datetime'])),
+                        'newValue' => $valeur['value'],
+                    );
+                    $replaceValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                }
+                
+                //compter le nb de ligne
+                $sql = "SELECT COUNT(*) FROM historyArch WHERE cmd_id=:cmdId";
+                $values = array(
+                    'cmdId' => init('id'),
+                );
+                $valuesClean = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                event::add('jeedom::alert', array(
+                        'level' => 'warning',
+                        'page' => 'teleinfo',
+                        'message' => __('Les données sont remises en place)', __FILE__),
+                ));
+    
+/*
+                // Plus ancienne valeur différente de heure fixe
                 $sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
                 $values = array(
 			                 'cmdId' => init('id'),
@@ -196,7 +263,7 @@ try {
 				$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
 
 				while ($oldest['oldest'] !== null) {
-					// Récupération de la valeur max sur l heure
+					// Récupération de la valeur min sur l heure
                     if(substr($oldest['oldest'],-8,2) == "00" && init('type') != "AVG"){
                         $sql = "SELECT MIN(value) as value FROM historyArch WHERE MINUTE(datetime) <> '0' AND cmd_id=:cmdId AND datetime > :oldest";
                         //$sql = "SELECT MIN(CAST(value AS DECIMAL(12,2))) as value, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime FROM historyArch WHERE addtime(datetime,'-01:00:00')<:oldest AND cmd_id=:cmdId;";
@@ -236,7 +303,7 @@ try {
 					$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
 					$valuesClean+=1;
 				}
-				$return['valuesClean'] = $valuesClean;
+*/				$return['valuesClean'] = $valuesClean;
                 event::add('jeedom::alert', array(
                         'level' => 'success',
                         'page' => 'teleinfo',
