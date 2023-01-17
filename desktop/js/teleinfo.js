@@ -300,6 +300,7 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="STAT_TODAY_INDEX08_COUT">Coût index08 Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_INDEX09_COUT">Coût index09 Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_INDEX10_COUT">Coût index10 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_PROD_COUT">Revenus Production hier</option>';
         selRequestType += '<option value="STAT_YESTERDAY_INDEX00">Conso Totale hier</option>';
         selRequestType += '<option value="STAT_YESTERDAY_INDEX01">Conso index01 hier</option>';
         selRequestType += '<option value="STAT_YESTERDAY_INDEX02">Conso index02 hier</option>';

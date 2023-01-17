@@ -1904,8 +1904,10 @@ class teleinfo extends eqLogic
         foreach ($array as $value){
             $cmd = $this->getCmd('info', $value);
             if (!is_object($cmd)) {
+                log::add('teleinfo', 'debug', 'Santé => ' . $value);
                 $cmd = new teleinfoCmd();
                 $cmd->setName($value);
+                //$cmd->setEqLogic_id($value);
                 $cmd->setEqLogic_id($this->id);
                 $cmd->setLogicalId($value);
                 $cmd->setType('info');
@@ -1937,13 +1939,13 @@ class teleinfo extends eqLogic
                         "STAT_TODAY_INDEX09","STAT_TODAY_INDEX09_COUT","STAT_YESTERDAY_INDEX09","STAT_YESTERDAY_INDEX09_COUT",
                         "STAT_TODAY_INDEX10","STAT_TODAY_INDEX10_COUT","STAT_YESTERDAY_INDEX10","STAT_YESTERDAY_INDEX10_COUT");
         foreach ($array as $value){
-            if (strpos($value,'COUT')===0){
-                $unite = ('Wh');
-            }else{
-                $unite = ('€');
-            }
             $cmd = $this->getCmd('info', $value);
-            if ($cmd === false) {
+            if (strpos($value,'COUT')<>0) {
+                $unite = ('€');
+            }else{
+                $unite = ('Wh');
+            }
+            if (!is_object($cmd)) {
                 log::add('teleinfo', 'debug', 'Nouvelle => ' . $value);
                 $cmd = new teleinfoCmd();
                 $cmd->setName($value);
@@ -1965,6 +1967,7 @@ class teleinfo extends eqLogic
                 log::add('teleinfo', 'debug', 'Ancienne => ' . $value);
                 $cmd->setIsHistorized(1);
                 $cmd->setConfiguration('type', 'stat');
+                $cmd->setUnite($unite);
                 $cmd->setConfiguration('historizeMode', 'none');
                 $cmd->setDisplay('generic_type', 'DONT');
                 $cmd->save();
