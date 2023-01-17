@@ -10,3 +10,23 @@ Des conseils sont disponibles afin d'aider à la résolution.
 Il est également possible de générer une archive contenant les infornations nécessaires à l'ouverture d'un ticket.
 
 ![teleinfodiag1](../images/teleinformation_diagnostic2.png)
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+---

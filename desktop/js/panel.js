@@ -525,7 +525,7 @@ $.ajax({
                                         }
                                         commande = datacmd;
                                         commande.name = nomIndex;
-                                        console.log("commande.name " + nomIndex + ' index en cours ' + indexEnCours + ' ' + index[indexEnCours])
+                                        console.log("commande.name " + commande.unite + ' index en cours ' + indexEnCours + ' ' + index[indexEnCours])
                                         if (coutoui){
                                             getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd, 1);
                                             getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd, 1);
@@ -672,12 +672,14 @@ $.ajax({
 
 function getObjectHistory(div, type, object, color, action = 'none') {
     dailyHistoryChart[div] = null;
-    if (type == 'cout'){
+    if (type === 'cout'){
         symbole = '€';
+        plotBackgroundColor = 'rgba(255, 99, 71, 0.2)';
     }else{
         symbole = 'kWh';
+        plotBackgroundColor = 'rgba(255, 255, 255, 0)';
     }
-    console.log("[getObjectHistory] couleur: du graph " + color);
+        console.log("[getObjectHistory] couleur: du graph " + color);
 //    if(action === 'refresh'){
         startDate = $('#in_startDate').value()
 //    }else {
@@ -691,6 +693,9 @@ function getObjectHistory(div, type, object, color, action = 'none') {
                     dateStart: startDate,
                     dateEnd: $('#in_endDate').value(),
                     showNavigator : false,
+                    charts: {
+                        plotBackgroundColor: plotBackgroundColor,
+                    },
                     option: {
                         name : object.name,
                         graphColor : color,
@@ -753,10 +758,14 @@ function getDailyHistory(div,  object, color, stackGraph, diviseur, serie, type)
 //    if (object.logicalId.includes("PROD")){
 //        color = '#ed9448';
 //    }
-if (type == 'cout'){
+if (type === 'cout'){
     symbole = '€';
+    decimals = 2;
+    plotBackgroundColor = 'rgba(255, 99, 71, 0.2)';
 }else{
     symbole = 'kWh';
+    decimals = 1;
+    plotBackgroundColor = 'rgba(255, 255, 255, 0)';
 }
 console.log("[getDailyHistory] Commande = " + object.name);
     console.log("[getDailyHistory] Récupération de div " + div);
@@ -778,6 +787,9 @@ console.log("[getDailyHistory] Commande = " + object.name);
                     dateEnd: to,
                     showNavigator : false,
                     index : serie,
+                    charts: {
+                        plotBackgroundColor: plotBackgroundColor,
+                    },
                     option: {
                         graphColor: color,
                         name : object.name,
@@ -790,18 +802,20 @@ console.log("[getDailyHistory] Commande = " + object.name);
                         groupingType:"high::day",
                         stacking : 'normal',
                         displayAlert: false,
+                        valueDecimals: 1,
                     },
                     tooltip : {
                         shared : true,
-                        valueDecimals: 2,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ' + symbole + '<br/>',
-                        shared: true
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.'+decimals+'f}</b> ' + symbole + '<br/>',
+                        shared: true,
+                        valueDecimals: 1,
                     },
                     plotOptions : {
                         column: {
                             stacking: 'normal',
+                            valueDecimals: 1,
                             dataLabels: {
                                 enabled: true,
                                 color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
@@ -810,7 +824,7 @@ console.log("[getDailyHistory] Commande = " + object.name);
                                     fontSize: '10px',
 
                                 },
-                                format: "{point.y:.2f}",
+                                format: '{point.y:.'+decimals+'f}',
                             }
                         }
                     },
@@ -834,7 +848,7 @@ console.log("[getDailyHistory] Commande = " + object.name);
                                 showNavigator : false,
                                 index : 20,
                                 tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f}</b><br/>',
                                     shared: true
                                 },
                                 option: {
@@ -845,6 +859,9 @@ console.log("[getDailyHistory] Commande = " + object.name);
                                     graphZindex : 2,
                                     groupingType:"average::day",
                                 },
+								tooltipSeries : {
+									valueDecimals: 1
+								},
                             });
             }
             else{
@@ -861,10 +878,14 @@ function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie, typ
 var from = moment($('#in_endDate').value(), "YYYY-MM-DD").subtract(18, 'months').startOf('month').format('YYYY-MM-DD 00:00:00');
 var to = moment($('#in_endDate').value(), "YYYY-MM-DD").endOf('month').format('YYYY-MM-DD 23:59:59');
 
-if (type == 'cout'){
+if (type === 'cout'){
     symbole = '€';
+    decimals = 2;
+    plotBackgroundColor = 'rgba(255, 99, 71, 0.2)';
 }else{
     symbole = 'kWh';
+    decimals = 1;
+    plotBackgroundColor = 'rgba(255, 255, 255, 0)';
 }
 dailyHistoryChart[div] = null;
 console.log("[getMonthlyHistory] Récupération de div " + div);
@@ -877,6 +898,9 @@ console.log("[getMonthlyHistory] Récupération de div " + div);
                     dateEnd: to,
                     showNavigator : false,
                     index : serie,
+                    charts: {
+                        plotBackgroundColor: plotBackgroundColor,
+                    },
                     option: {
                         name : object.name,
 						graphColor: color,
@@ -890,15 +914,13 @@ console.log("[getMonthlyHistory] Récupération de div " + div);
                         displayAlert: false,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ' + symbole + '<br/>',
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.'+decimals+'f}</b> ' + symbole + '<br/>',
                         shared : true,
-                        valueDecimals: 2
                         //pointFormat: '{series.name}</span>: <b>{point.y} kWh</b><br/>',
                     },
                     tooltip : {
                         stacking : 'normal',
                         shared : true,
-                        valueDecimals: 2
                     },
                     plotOptions : {
                         column: {
@@ -911,7 +933,7 @@ console.log("[getMonthlyHistory] Récupération de div " + div);
                                     fontSize: '10px',
 
                                 },
-                                format: "{point.y:.2f}",
+                                format: '{point.y:.'+decimals+'f}',
                             }
                         }
                     },
@@ -935,7 +957,7 @@ console.log("[getMonthlyHistory] Récupération de div " + div);
                                 showNavigator : false,
                                 index : 20,
                                 tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} °C</b><br/>',
+                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
                                     shared: true
                                 },
                                 option: {
@@ -949,7 +971,7 @@ console.log("[getMonthlyHistory] Récupération de div " + div);
                             });
             }
             else{
-                console.log("[getDailyHistory] + de 1 courbes ou Pas de température extérieure")
+                console.log("[getMonthlyHistory] + de 1 courbes ou Pas de température extérieure")
             }
         }
     });
@@ -963,12 +985,16 @@ function getAnnualHistory(div,  object, color, stackGraph, diviseur, serie, type
 //    var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
     var from = moment($('#in_endDate').value(), "YYYY-MM-DD").subtract(18, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
     var to = moment($('#in_endDate').value(), "YYYY-MM-DD").endOf('year').format('YYYY-MM-DD 23:59:59');
-if (type == 'cout'){
-    symbole = '€';
-}else{
-    symbole = 'kWh';
-}
-dailyHistoryChart[div] = null;
+    if (type === 'cout'){
+        symbole = '€';
+        decimals = 1;
+        plotBackgroundColor = 'rgba(255, 99, 71, 0.2)';
+    }else{
+        symbole = 'kWh';
+        decimals = 0;
+        plotBackgroundColor = 'rgba(255, 255, 255, 0)';
+    }
+    dailyHistoryChart[div] = null;
 console.log("[getAnnualHistory] Récupération de div " + div);
     console.log("[getAnnualHistory] Récupération de l'historique pour la période du " + from + " au " + to);
     teleinfoDrawChart({
@@ -979,6 +1005,9 @@ console.log("[getAnnualHistory] Récupération de div " + div);
                     dateEnd: to,
                     showNavigator : false,
                     index : serie,
+                    charts: {
+                        plotBackgroundColor: plotBackgroundColor,
+                    },
                     option: {
                         name : object.name,
 						graphColor: color,
@@ -992,14 +1021,13 @@ console.log("[getAnnualHistory] Récupération de div " + div);
                         displayAlert: false,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ' + symbole + '<br/>',
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.'+decimals+'f}</b> ' + symbole + '<br/>',
                         shared : true
                         //pointFormat: '{series.name}</span>: <b>{point.y} kWh</b><br/>',
                     },
                     tooltip : {
                         stacking : 'normal',
                         shared : true,
-                        valueDecimals: 0
                     },
                     plotOptions : {
                         column: {
@@ -1012,7 +1040,7 @@ console.log("[getAnnualHistory] Récupération de div " + div);
                                     fontSize: '10px',
 
                                 },
-                                format: "{point.y:.2f}",
+                                format: '{point.y:.'+decimals+'f}',
                             }
                         }
                     },
@@ -1036,7 +1064,7 @@ console.log("[getAnnualHistory] Récupération de div " + div);
                                 showNavigator : false,
                                 index : 20,
                                 tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} °C</b><br/>',
+                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
                                     shared: true
                                 },
                                 option: {
@@ -1048,7 +1076,7 @@ console.log("[getAnnualHistory] Récupération de div " + div);
                                     groupingType:"average::year",
                                 },
 								tooltipSeries : {
-									valueDecimals: 2
+									valueDecimals: 1
 								},
                             });
             }
@@ -1655,6 +1683,7 @@ function teleinfoDrawChart(_params) {
       }
       var charts = {
         zoomType: 'x',
+        plotBackgroundColor: _params.charts.plotBackgroundColor,
         renderTo: _params.el,
         alignTicks: false,
         spacingBottom: 5,

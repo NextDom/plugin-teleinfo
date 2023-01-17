@@ -184,7 +184,7 @@ try {
 			$return = array();
             $minParHeure = array();
 			$valuesClean = 0;
-			if (init('id') !== '') {
+            if (init('id') !== '') {
                 event::add('jeedom::alert', array(
                         'level' => 'warning',
                         'page' => 'teleinfo',
@@ -198,44 +198,105 @@ try {
                 );
                 $valeursDepartDB = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
                 $valeursDepart = $valeursDepartDB['COUNT(*)'];
-                
-                //sélectionne le min par heure
-                $sql = "SELECT cmd_id,datetime,value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
-                $values = array(
-			                 'cmdId' => init('id'),
-		        );
-				$minParHeure = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
 
-                event::add('jeedom::alert', array(
+                //test si on a affaire à un stat_yesterday
+                if (strpos(init('logicalId'), 'STAT_YESTERDAY')===0){
+                    //sélectionne le min par heure
+                    if (init('type') != "AVG"){
+                        $sql = "SELECT cmd_id,datetime,value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
+                    }else{
+                        $sql = "SELECT cmd_id,datetime,(CAST(value AS DECIMAL(12,2))) as value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
+                    }
+                    $values = array(
+                                'cmdId' => init('id'),
+                    );
+                    $minParHeure = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+
+                    //sélectionne le max de 23h
+                    $sql = "SELECT cmd_id,datetime, max(value) as value 
+                            FROM historyArch 
+                            WHERE (cmd_id=:cmdId) and HOUR(datetime)='23' 
+                            GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
+                    $maxJournee = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+
+                    event::add('jeedom::alert', array(
+                            'level' => 'warning',
+                            'page' => 'teleinfo',
+                            'message' => __('Les données sont stockées dans une variable, passons à la suppression du superflu, la phase la plus longue...', __FILE__),
+                    ));
+        
+                    // Nettoyage de toutes les valeurs
+                    $sql = "DELETE FROM historyArch WHERE cmd_id=:cmdId";
+                    $values = array(
+                                    'cmdId' => init('id'),
+                    );
+                    $deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                    event::add('jeedom::alert', array(
+                            'level' => 'warning',
+                            'page' => 'teleinfo',
+                            'message' => __('Les anciennes données sont supprimées, passons à la remise en place des valeurs stockées)', __FILE__),
+                    ));
+
+                    //remise des données purgées en place
+                    $valuesClean=0;
+                    foreach ($minParHeure as $cle => $valeur) {
+                        $sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:newValue";
+                        $values = array(
+                            'cmdId' => init('id'),
+                            'newDatetime' => date('Y-m-d H:00:00', strtotime($valeur['datetime'])),
+                            'newValue' => $valeur['value'],
+                        );
+                        $replaceValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                    }
+                    foreach ($maxJournee as $cle2 => $valeur2){
+                        $sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:newValue";
+                        $values = array(
+                            'cmdId' => init('id'),
+                            'newDatetime' => date('Y-m-d 23:59:59', strtotime($valeur2['datetime'])),
+                            'newValue' => $valeur2['value'],
+                        );
+                        $replaceValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                    }
+                }else{
+                    //si on a affaire à des 'stat_yesterday' alors il ne faut garder que le max de la journée
+                    $sql = "SELECT cmd_id,datetime,max(value) as value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime)";
+                    $values = array(
+                                'cmdId' => init('id'),
+                    );
+                    $minParJour = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                    event::add('jeedom::alert', array(
                         'level' => 'warning',
                         'page' => 'teleinfo',
                         'message' => __('Les données sont stockées dans une variable, passons à la suppression du superflu, la phase la plus longue...', __FILE__),
-                ));
-    
-                // Nettoyage de toutes les valeurs
-                $sql = "DELETE FROM historyArch WHERE cmd_id=:cmdId";
-                $values = array(
-                                'cmdId' => init('id'),
-                );
-                $deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
-                event::add('jeedom::alert', array(
-                        'level' => 'warning',
-                        'page' => 'teleinfo',
-                        'message' => __('Les anciennes données sont supprimées, passons à la remise en place des valeurs stockées)', __FILE__),
-                ));
-
-                //remise des données purgées en place
-                $valuesClean=0;
-                foreach ($minParHeure as $cle => $valeur) {
-                    $sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:newValue";
+                    ));
+        
+                    // Nettoyage de toutes les valeurs
+                    $sql = "DELETE FROM historyArch WHERE cmd_id=:cmdId";
                     $values = array(
-                        'cmdId' => init('id'),
-                        'newDatetime' => date('Y-m-d H:00:00', strtotime($valeur['datetime'])),
-                        'newValue' => $valeur['value'],
+                                    'cmdId' => init('id'),
                     );
-                    $replaceValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                    $deleteValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                    event::add('jeedom::alert', array(
+                            'level' => 'warning',
+                            'page' => 'teleinfo',
+                            'message' => __('Les anciennes données sont supprimées, passons à la remise en place des valeurs stockées)', __FILE__),
+                    ));
+
+                    //remise des données purgées en place
+                    $valuesClean=0;
+                    foreach ($minParJour as $cle => $valeur) {
+                        $sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:newValue";
+                        $values = array(
+                            'cmdId' => init('id'),
+                            'newDatetime' => date('Y-m-d 00:00:00', strtotime($valeur['datetime'])),
+                            'newValue' => $valeur['value'],
+                        );
+                        $replaceValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                    }
+
+
                 }
-                
+
                 //compter le nb de ligne
                 $sql = "SELECT COUNT(*) FROM historyArch WHERE cmd_id=:cmdId";
                 $values = array(
@@ -244,7 +305,11 @@ try {
                 $valuesCleanDB = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
                 $valuesClean = $valuesCleanDB['COUNT(*)'];
     
-/*
+
+
+
+
+                /*
                 // Plus ancienne valeur différente de heure fixe
                 $sql = "SELECT datetime as oldest FROM historyArch WHERE MINUTE(datetime) <> '0' AND  cmd_id=:cmdId";
                 $values = array(
@@ -293,7 +358,9 @@ try {
 					$oldest = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
 					$valuesClean+=1;
 				}
-*/				$return['valuesClean'] = $valuesClean;
+*/
+
+                $return['valuesClean'] = $valuesClean;
                 event::add('jeedom::alert', array(
                         'level' => 'success',
                         'page' => 'teleinfo',

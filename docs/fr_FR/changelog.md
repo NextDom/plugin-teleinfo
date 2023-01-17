@@ -9,6 +9,9 @@ Pour toutes demandes :
 - possibilité de l'affichage du pannel téléinfo ancien ou du nouveau qui prend en compte les nouveaux index
 - prise en compte des dates saisies pour recalcul des courbes par mois et année
 - nouveau mode de lissage plus rapide
+- lissage sur la valeur mini par heure + le max de la journée positionnée à 23h59mn59s
+- correction d'un bug sur la gestion des erreurs
+
 
 ## 4.7.2a (15-01-2022) => version stable
 - correction manque courbe HC sur graph annuel

@@ -8,3 +8,23 @@ En cas de bug sur le plugin il est possible de demander de l'aide :
 ou d'ouvrir une issue :
 
 [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+---

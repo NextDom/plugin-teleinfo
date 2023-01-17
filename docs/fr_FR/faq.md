@@ -99,3 +99,24 @@ wget http://IP-JEEDOM/plugins/teleinfo/ressources/jeedom/jeedom.py
 python /root/teleinfo/teleinfo.py --port /dev/ttyUSB0 --apikey API-KEY-JEEDOM-TELEINFO --callback http://IP-JEEDOM/plugins/teleinfo/core/php/jeeTeleinfo.php --loglevel debug --cyclesommeil 15 --pidfile /tmp/teleinfo --sockethost IP-SERVEUR-DEMON >> /tmp/teleinfo.log 2>&1 &
 ```
 - Remarque : il peut-être nécéssaire d'installer des dépendances Python (inspirez-vous du fichier http://IP-JEEDOM/plugins/teleinfo/ressources/install_apt.sh)
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+.
+
+---
+
