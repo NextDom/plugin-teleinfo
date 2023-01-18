@@ -206,7 +206,7 @@ class teleinfo extends eqLogic
             $port = jeedom::getUsbMapping($port);
         }
 
-		exec('stty -F ' . $port . ' 1200 sane evenp parenb cs7 -crtscts');
+/*		exec('stty -F ' . $port . ' 1200 sane evenp parenb cs7 -crtscts');
         passthru('timeout 5 sed -n 5,8p ' . $port, $return['data']);
         log::add('teleinfo', 'debug', "retour : " . $return['data']);
 		if ($return['data'] > 5){
@@ -233,7 +233,14 @@ class teleinfo extends eqLogic
 				$return['message'] = 'Impossible de détecter le type de compteur.';
 			}
         }
-		return $return;
+*/
+        // en attendant de faire fonctionner le test de vitesse du modem
+        $return['state'] = 'nok';
+        $return['type'] = '';
+        $return['vitesse'] = '';
+        $return['message'] = 'Cette fonction n est pas opérationnelle, configurez la vitesse du port manuellement.';
+        // --------------------------------------------------------------
+        return $return;
 	}
 
 	/**
@@ -1844,7 +1851,7 @@ class teleinfo extends eqLogic
                     break;
                 case "PAPP":
                 case "SINSTS":
-                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> papp');
+                    log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> papp ou sinsts');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
                         //$cmd->setDisplay('icon', '<i class=\"fa fa-tachometer\"><\/i>');
@@ -1940,13 +1947,13 @@ class teleinfo extends eqLogic
                         "STAT_TODAY_INDEX10","STAT_TODAY_INDEX10_COUT","STAT_YESTERDAY_INDEX10","STAT_YESTERDAY_INDEX10_COUT");
         foreach ($array as $value){
             $cmd = $this->getCmd('info', $value);
-            if (strpos($value,'COUT')<>0) {
-                $unite = ('€');
-            }else{
-                $unite = ('Wh');
-            }
             if (!is_object($cmd)) {
                 log::add('teleinfo', 'debug', 'Nouvelle => ' . $value);
+                if (strpos($value,'COUT')<>0) {
+                    $unite = ('€');
+                }else{
+                    $unite = ('Wh');
+                }
                 $cmd = new teleinfoCmd();
                 $cmd->setName($value);
                 $cmd->setEqLogic_id($this->id);
@@ -1967,7 +1974,6 @@ class teleinfo extends eqLogic
                 log::add('teleinfo', 'debug', 'Ancienne => ' . $value);
                 $cmd->setIsHistorized(1);
                 $cmd->setConfiguration('type', 'stat');
-                $cmd->setUnite($unite);
                 $cmd->setConfiguration('historizeMode', 'none');
                 $cmd->setDisplay('generic_type', 'DONT');
                 $cmd->save();
