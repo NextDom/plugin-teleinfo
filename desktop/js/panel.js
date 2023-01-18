@@ -851,7 +851,10 @@ console.log("[getDailyHistory] Commande = " + object.name);
                                     pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f}</b><br/>',
                                     shared: true
                                 },
-                                option: {
+                                charts: {
+                                    plotBackgroundColor: plotBackgroundColor,
+                                },
+                                            option: {
                                     name : 'Température ext.',
 									graphType : 'line',
                                     graphColor: '#87b125',
@@ -960,7 +963,10 @@ console.log("[getMonthlyHistory] Récupération de div " + div);
                                     pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
                                     shared: true
                                 },
-                                option: {
+                                charts: {
+                                    plotBackgroundColor: plotBackgroundColor,
+                                },
+                                            option: {
 									name : 'Température ext.',
 						            graphType : 'line',
                                     graphColor: '#87b125',
@@ -1067,7 +1073,10 @@ console.log("[getAnnualHistory] Récupération de div " + div);
                                     pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
                                     shared: true
                                 },
-                                option: {
+                                charts: {
+                                    plotBackgroundColor: plotBackgroundColor,
+                                },
+                                            option: {
 									name : 'Température ext.',
 						            graphType : 'line',
                                     graphColor: '#87b125',
