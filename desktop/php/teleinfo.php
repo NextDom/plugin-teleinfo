@@ -213,6 +213,8 @@ switch ($controlerState) {
                       <?php
 							//création du tableau des paramètres des index
                             $index=array('index01','index02','index03','index04','index05','index06','index07','index08','index09','index10');
+                            $indexId=array("EASF01","EASF02","EASF03","EASF04","EASF05","EASF06","EASF07","EASF08","EASF09","EASF10",
+                                            "HCHC", "HCHP", "EJPHN", "EJPHPM", "BBRHCJB", "BBRHPJB", "BBRHCJW", "BBRHPJW", "BBRHCJR","BBRHPJR");
 							foreach($index as $numindex){
 								$tableau.='<div class="form-group">';
 									$tableau.='<label class="col-sm-2 control-label">{{Index '.substr($numindex,-2).'}} :</label>';
@@ -221,7 +223,14 @@ switch ($controlerState) {
 									$tableau.='</div>';
 									$tableau.='<label class="col-sm-1 control-label">{{ }}</label>';
 									$tableau.='<div class="col-sm-2">';
-										$tableau.='<input type="text" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="'.$numindex.'" placeholder="{{...}}"/>';
+										//$tableau.='<input type="text" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="'.$numindex.'" placeholder="{{...}}" />';
+                                        $tableau.='<select class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="'.$numindex.'">';
+                                        $tableau.='<option selected="selected"></option>';
+                                        foreach($indexId as $value){
+                                            $tableau.='<option value='.$value.'>';
+                                            $tableau.= $value.' </option>';
+                                        }
+                                        $tableau.='</select>';
 									$tableau.='</div>';
 								    $tableau.='<label class="col-sm-1 control-label">{{ }}</label>';
 									$tableau.='<div class="col-sm-2">';
@@ -229,7 +238,7 @@ switch ($controlerState) {
                                     $tableau.='</div>';
                                 $tableau.='</div>';
                                     }
-						?>
+                        ?>
 						<?php echo $tableau ?>
 
                   </fieldset>

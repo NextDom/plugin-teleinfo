@@ -441,7 +441,7 @@ $.ajax({
                                     commandesStat.push({"graph":"div_graphGlobalJournalier", "id":datacmd.id,"name":datacmd.name,"color":color[13],"stackGraph":stackGraph,"diviseur":diviseur});
                                     getDailyHistory('div_graphGlobalJournalier',datacmd, color[13], stackGraph, diviseur, serie);
                                 }
-                                break;
+                            break;
                             case (test==="STAT_YESTERDAY_PROD"):
                                 console.log("[loadData][STAT_YESTERDAY_PROD] " + datacmd.id + ' prod? ' + compteurProd + ' ' + prodEtConso);
                                 if(compteurProd||prodEtConso){
@@ -474,8 +474,8 @@ $.ajax({
                                     getMonthlyHistory('div_graphGlobalIndex',datacmd, color[14], stackGraph, diviseur, serie);
                                     getDailyHistory('div_graphGlobalJournalier',datacmd, color[14], stackGraph, diviseur, serie);
                                 }
-                                break;
-                                case (test==="STAT_YESTERDAY_PROD_COUT"):
+                            break;
+                            case (test==="STAT_YESTERDAY_PROD_COUT"&&newIndex):
                                     console.log("[loadData][STAT_YESTERDAY_PROD_COUT] " + datacmd.id + ' prod? ' + compteurProd + ' ' + prodEtConso);
                                     if(compteurProd||prodEtConso){
                                         stackGraph = 0
@@ -500,8 +500,8 @@ $.ajax({
                                             getDailyHistory('div_graphGlobalJournalierCout',datacmd, color[14], stackGraph, 1000, serie, 'cout');
                                         }
                                     }
-                                    break;
-                                case (test.includes("STAT_YESTERDAY_INDEX")&&newIndex):
+                            break;
+                            case (test.includes("STAT_YESTERDAY_INDEX")&&newIndex):
                                     var indexEnCours = parseInt(test.substr(20,2));
                                     if (indexEnCours==0){
                                         stackGraph = 0;
@@ -552,30 +552,30 @@ $.ajax({
                                             getMonthlyHistory('div_graphGlobalIndex',commande, color[indexEnCours], stackGraph, diviseur, serie);
                                         }
                                     }
-                                break;
-                                case (test==="SINSTI"):
-                                case (test==="SINST1"):
+                            break;
+                            case (test==="SINSTI"):
+                            case (test==="SINST1"):
                                     if(compteurProd||prodEtConso){
                                         commandesPuissance.push({"id":datacmd.id,"name":datacmd.name,"color":color[14]});
                                         console.log("[loadData][SINST*] " + datacmd.id);
                                         getObjectHistory('div_graphGlobalPower', 'Simple', datacmd, color[14]);
                                     }
-                                    break;
-                                case (test==="SINSTS"):
+                            break;
+                            case (test==="SINSTS"):
                                     colori = color[0];
-                                case (test==="SINSTS1"):
+                            case (test==="SINSTS1"):
                                     if (test==="SINSTS1"){
                                         colori = color[1];
                                     }
-                                case (test==="SINSTS2"):
+                            case (test==="SINSTS2"):
                                     if (test==="SINSTS2"){
                                         colori = color[2];
                                     }
-                                case (test==="SINSTS3"):
+                            case (test==="SINSTS3"):
                                     if (test==="SINSTS3"){
                                         colori = color[3];
                                     }
-                                case (test==="PAPP"):
+                            case (test==="PAPP"):
                                     if (test==="PAPP"){
                                         colori = color[0];
                                     }
@@ -584,29 +584,29 @@ $.ajax({
                                         console.log("[loadData][PAPP ou SINSTS] " + datacmd.id);
                                         getObjectHistory('div_graphGlobalPower', 'Simple', datacmd, colori);
                                     }
-                                    break;
-                                case (test==="STAT_TODAY"&&!newIndex):
+                            break;
+                            case (test==="STAT_TODAY"&&!newIndex):
                                     if(!compteurProd){
                                         console.log("[loadData][STAT_TODAY] " + datacmd.value);
                                         $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
                                         getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=day]'), 'day' , "coutBase", datacmd);
                                     }
-                                    break;
-                                case (test==="STAT_TODAY_HC"&&!newIndex):
+                            break;
+                            case (test==="STAT_TODAY_HC"&&!newIndex):
                                     if(!compteurProd&&HCHP){
                                         console.log("[loadData][STAT_TODAY_HC] " + datacmd.value);
                                         $('.teleinfoAttr[data-l1key=consoHC][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
                                         getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=day]'), 'day' , "coutHC", datacmd);
                                     }
-                                break;
-                                case (test==="STAT_TODAY_HP"&&!newIndex):
+                            break;
+                            case (test==="STAT_TODAY_HP"&&!newIndex):
                                     if(!compteurProd&&HCHP){
                                         console.log("[loadData][STAT_TODAY_HP] " + datacmd.value);
                                         $('.teleinfoAttr[data-l1key=consoHP][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
                                         getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=day]'), 'day' , "coutHP", datacmd);
                                     }
-                                break;
-                                case (test.includes("STAT_TODAY_INDEX")&&newIndex):
+                            break;
+                            case (test.includes("STAT_TODAY_INDEX")&&newIndex):
                                         var indexEnCours = parseInt(test.substr(16,2));
                                         if (index[indexEnCours]){
                                             indexCout = index_cout[indexEnCours];
@@ -636,18 +636,20 @@ $.ajax({
                                                 }
                                             }
                                         }
-                                    break;
-                                case (test==="STAT_TODAY_PROD"):
+                            break;
+                            case (test==="STAT_TODAY_PROD"):
                                     if(compteurProd||prodEtConso){
                                         console.log("[loadData][STAT_TODAY_PROD] " + datacmd.value);
                                         $('.teleinfoAttr[data-l1key=prod][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
                                         if(newIndex){
-                                            coutProd = CoutindexProd;
+                                            commande = datacmd;
+                                            commande.name = 'Revenu Prod';                                                       
+                                            //getObjectHistory('div_graphGlobalPowerCout', 'cout', commande, color[14]);
                                         }else{
-                                          getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]'), 'day' , "coutProd", datacmd);
+                                          getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]'), 'day' , CoutindexProd, datacmd);
                                         }
                                 }
-                                    break;
+                            break;
                         }
                     }
                     catch(err) {

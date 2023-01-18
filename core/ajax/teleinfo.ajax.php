@@ -198,9 +198,9 @@ try {
                 );
                 $valeursDepartDB = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
                 $valeursDepart = $valeursDepartDB['COUNT(*)'];
-
+            
                 //test si on a affaire à un stat_yesterday
-                if (strpos(init('logicalId'), 'STAT_YESTERDAY')===0){
+                if (!strpos(init('logicalId'), 'STAT_YESTERDAY')){
                     //sélectionne le min par heure
                     if (init('type') != "AVG"){
                         $sql = "SELECT cmd_id,datetime,value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
