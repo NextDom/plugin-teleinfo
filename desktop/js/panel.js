@@ -27,6 +27,10 @@
  var commandesStatCoutIndex = [];
  var dailyHistoryChart = [];
  var tableCouts = [];
+ var graphTempDaily = false;
+ var graphTempMonthly = false;
+ var graphTempAnnualy = false;
+ 
  
 $(".in_datepicker").datepicker();
 
@@ -98,6 +102,9 @@ $( "#eqlogic_select" ).change(function() {
 });
 
 $('#bt_validChangeDate').on('click',function(){
+    graphTempDaily = false;
+    graphTempMonthly = false;
+    graphTempAnnualy = false;
     puissanceSeries = [];
     //console.log($('#div_graphGlobalIndex').attr("cmd_id"));
     $.each( commandesPuissance, function( key, value ) {
@@ -833,47 +840,50 @@ console.log("[getDailyHistory] Commande = " + object.name);
                     divide:1000/diviseur,
                 });
 
-	jeedom.config.load({
-        plugin: "teleinfo",
-        configuration : "outside_temp",
-        error: function (error) {
-        },
-        success: function (myId) {
-            if ((myId != '') && (!object.name.includes("PROD")) && (!object.name.includes("HC"))){
-                console.log("[getDailyHistory] Id température exterieure : " + myId)
-                teleinfoDrawChart({
-                                cmd_id: myId,
-                                el: div,
-                                dateRange : 'all',
-                                dateStart: from,
-                                dateEnd: to,
-                                showNavigator : false,
-                                index : 20,
-                                tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f}</b><br/>',
-                                    shared: true
-                                },
-                                charts: {
-                                    plotBackgroundColor: plotBackgroundColor,
-                                },
-                                            option: {
-                                    name : 'Température ext.',
-									graphType : 'line',
-                                    graphColor: '#87b125',
-                                    derive : 0,
-                                    graphZindex : 2,
-                                    groupingType:"average::day",
-                                },
-								tooltipSeries : {
-									valueDecimals: 1
-								},
-                            });
+    if (type !== 'cout'){
+        jeedom.config.load({
+            plugin: "teleinfo",
+            configuration : "outside_temp",
+            error: function (error) {
+            },
+            success: function (myId) {
+                if ((myId != '') && !graphTempDaily){
+                    graphTempDaily = true;
+                    console.log("[getDailyHistory] Id température exterieure : " + myId)
+                    teleinfoDrawChart({
+                                    cmd_id: myId,
+                                    el: div,
+                                    dateRange : 'all',
+                                    dateStart: from,
+                                    dateEnd: to,
+                                    showNavigator : false,
+                                    index : 20,
+                                    tooltipSeries: {
+                                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f}</b><br/>',
+                                        shared: true
+                                    },
+                                    charts: {
+                                        plotBackgroundColor: plotBackgroundColor,
+                                    },
+                                                option: {
+                                        name : 'Température ext.',
+                                        graphType : 'line',
+                                        graphColor: '#87b125',
+                                        derive : 0,
+                                        graphZindex : 2,
+                                        groupingType:"average::day",
+                                    },
+                                    tooltipSeries : {
+                                        valueDecimals: 1
+                                    },
+                                });
+                }
+                else{
+                    console.log("[getDailyHistory] + de 1 courbes ou Pas de température extérieure ou courbe déjà tracée")
+                }
             }
-            else{
-                console.log("[getDailyHistory] + de 1 courbes ou Pas de température extérieure")
-            }
-        }
-    });
+        });
+    }
 }
 
 function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie, type) {
@@ -945,45 +955,47 @@ console.log("[getMonthlyHistory] Récupération de div " + div);
                    divide:1000/diviseur,
     });
 //
-    jeedom.config.load({
-        plugin: "teleinfo",
-        configuration : "outside_temp",
-        error: function (error) {
-        },
-        success: function (myId) {
-            if ((myId != '') && (!object.logicalId.includes("PROD")) && (!object.logicalId.includes("HC"))){
-                console.log("[getMonthlyHistory] Id température exterieure : " + myId)
-                teleinfoDrawChart({
-                                cmd_id: myId,
-                                el: div,
-                                dateRange : 'all',
-                                dateStart: from,
-                                dateEnd: to,
-                                showNavigator : false,
-                                index : 20,
-                                tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
-                                    shared: true
-                                },
-                                charts: {
-                                    plotBackgroundColor: plotBackgroundColor,
-                                },
-                                            option: {
-									name : 'Température ext.',
-						            graphType : 'line',
-                                    graphColor: '#87b125',
-                                    derive : 0,
-                                    graphZindex : 2,
-                                    groupingType:"average::month",
-                                },
-                            });
+    if (type !== 'cout'){
+        jeedom.config.load({
+            plugin: "teleinfo",
+            configuration : "outside_temp",
+            error: function (error) {
+            },
+            success: function (myId) {
+                if ((myId != '') && !graphTempMonthly){
+                    graphTempMonthly = true;
+                    console.log("[getMonthlyHistory] Id température exterieure : " + myId)
+                    teleinfoDrawChart({
+                                    cmd_id: myId,
+                                    el: div,
+                                    dateRange : 'all',
+                                    dateStart: from,
+                                    dateEnd: to,
+                                    showNavigator : false,
+                                    index : 20,
+                                    tooltipSeries: {
+                                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
+                                        shared: true
+                                    },
+                                    charts: {
+                                        plotBackgroundColor: plotBackgroundColor,
+                                    },
+                                                option: {
+                                        name : 'Température ext.',
+                                        graphType : 'line',
+                                        graphColor: '#87b125',
+                                        derive : 0,
+                                        graphZindex : 2,
+                                        groupingType:"average::month",
+                                    },
+                                });
+                }
+                else{
+                    console.log("[getMonthlyHistory] + de 1 courbes ou Pas de température extérieure ou courbe déjà tracée")
+                }
             }
-            else{
-                console.log("[getMonthlyHistory] + de 1 courbes ou Pas de température extérieure")
-            }
-        }
-    });
-
+        });
+    }
 //
 }
 
@@ -1055,48 +1067,50 @@ console.log("[getAnnualHistory] Récupération de div " + div);
                     divide:1000/diviseur,
     });
 //
-    jeedom.config.load({
-        plugin: "teleinfo",
-        configuration : "outside_temp",
-        error: function (error) {
-        },
-        success: function (myId) {
-            if ((myId != '') && (!object.logicalId.includes("PROD")) && (!object.logicalId.includes("HC"))){
-                console.log("[getAnnualHistory] Id température exterieure : " + myId)
-                teleinfoDrawChart({
-                                cmd_id: myId,
-                                el: div,
-                                dateRange : 'all',
-                                dateStart: from,
-                                dateEnd: to,
-                                showNavigator : false,
-                                index : 20,
-                                tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
-                                    shared: true
-                                },
-                                charts: {
-                                    plotBackgroundColor: plotBackgroundColor,
-                                },
-                                            option: {
-									name : 'Température ext.',
-						            graphType : 'line',
-                                    graphColor: '#87b125',
-                                    derive : 0,
-                                    graphZindex : 2,
-                                    groupingType:"average::year",
-                                },
-								tooltipSeries : {
-									valueDecimals: 1
-								},
-                            });
+    if (type !== 'cout'){
+        jeedom.config.load({
+            plugin: "teleinfo",
+            configuration : "outside_temp",
+            error: function (error) {
+            },
+            success: function (myId) {
+                if ((myId != '') && !graphTempAnnualy){
+                    graphTempAnnualy = true;
+                    console.log("[getAnnualHistory] Id température exterieure : " + myId)
+                    teleinfoDrawChart({
+                                    cmd_id: myId,
+                                    el: div,
+                                    dateRange : 'all',
+                                    dateStart: from,
+                                    dateEnd: to,
+                                    showNavigator : false,
+                                    index : 20,
+                                    tooltipSeries: {
+                                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
+                                        shared: true
+                                    },
+                                    charts: {
+                                        plotBackgroundColor: plotBackgroundColor,
+                                    },
+                                                option: {
+                                        name : 'Température ext.',
+                                        graphType : 'line',
+                                        graphColor: '#87b125',
+                                        derive : 0,
+                                        graphZindex : 2,
+                                        groupingType:"average::year",
+                                    },
+                                    tooltipSeries : {
+                                        valueDecimals: 1
+                                    },
+                                });
+                }
+                else{
+                    console.log("[getAnnualHistory] + de 1 courbe courbe ou Pas de température extérieure ou courbe déjà tracée")
+                }
             }
-            else{
-                console.log("[getAnnualHistory] + de 1 courbe courbe ou Pas de température extérieure")
-            }
-        }
-    });
-
+        });
+    }
 //
 }
 

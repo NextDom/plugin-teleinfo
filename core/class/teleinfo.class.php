@@ -1336,10 +1336,12 @@ class teleinfo extends eqLogic
 
                 $indexoriginebase=$eqLogic->getCmd('info', 'BASE');
                 $indexorigineeast=$eqLogic->getCmd('info', 'EAST');
+                // mise dans index origine pour recalcul de tous sauf 00 et prod
                 for ($i=1;$i<12;$i++){
                     $indexorigine[$i] = $eqLogic->getCmd('info', $indexcopy[$i]);
                 }
 
+                
                 for($i=1; $i < ($diff+1); $i++){
 
                     if ($diff > 9){
@@ -1358,21 +1360,23 @@ class teleinfo extends eqLogic
                     $coutotal2 = 0;
 
                     
-                    //recalcul des idex + coûts base
+                    //recalcul des index + coûts base
                     if ($indexoriginebase<>''){
                         $statTotal1 = intval($indexoriginebase->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
                                             - intval($indexoriginebase->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
-                        if ($statTotal1 <> 0){ 
+                        if ($statTotal1 <> 0 && $indexcout00){ 
                             $coutotal1 = floatval($statTotal1) * floatval($coutcopy[0]) / 1000;
                         }
                     }
+                    //recalcul des index + coûts EAST
                     if ($indexorigineeast<>''){
                         $statTotal2 = intval($indexorigineeast->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['max'])
                                             - intval($indexorigineeast->getStatistique($date2->format('Y-m-d 00:00:00'), $date2->format('Y-m-d 23:59:59'))['min']);
-                        if ($statTotal2 <> 0){ 
+                        if ($statTotal2 <> 0 && $indexcout00){ 
                             $coutotal2 = floatval($statTotal2) * floatval($coutcopy[0]) / 1000;
                         }
                     }
+                    //remise en place des index et coûts base + EAST
                     if (($statTotal1 + $statTotal2) <> 0){
                         $history = new history();
                         $history->setCmd_id($iddestination[0]);
@@ -1454,7 +1458,8 @@ class teleinfo extends eqLogic
                     $coutotal1 = 0;
                     $statTotal2 = 0;
                     $coutotal2 = 0;
-
+                    $coutotal = 0;
+                    
                     //recalcul des index de 1 à 10
                     for ($j=1;$j<11;$j++){
                         if ($indexcopy[$j]<>''){
@@ -1464,6 +1469,7 @@ class teleinfo extends eqLogic
                                 
 
                                 if ($statTotal1 <> 0){ 
+                                    $statTotal2 += $statTotal1;
                                     $coutotal = floatval($statTotal1) * floatval($coutcopy[$j]) / 1000;
                                     $history = new history();
                                     $history->setCmd_id($iddestination[$j]);
@@ -1472,7 +1478,7 @@ class teleinfo extends eqLogic
                                     $history->setValue(intval($statTotal1));
                                     $history->save();
                                     if ($coutotal <> 0){ 
-                                        $coutotal2 += $coutotal;
+                                        $coutotal2 = $coutotal2 + $coutotal;
                                         $historycout = new history();
                                         $historycout->setCmd_id($idcoutdest[$j]);
                                         $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));

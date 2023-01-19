@@ -187,6 +187,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="yearLastYear"></span>
 						</td>
 					</tr>
+<!--- mise en forme du tableau des index --->
 						<?php
 							$index=array('Index00','Index01','Index02','Index03','Index04','Index05','Index06','Index07','Index08','Index09','Index10');
 							$periode=array('day','yesterday','month','monthLastYearPartial','monthLastYear','year','yearLastYearPartial','yearLastYear');
@@ -207,10 +208,10 @@ $eqLogics = eqLogic::byType('teleinfo');
 						<?php echo $tableau ?>
 					</tr>
 
+<!--- mise en forme du tableau des couts index --->
+					<tr>
 					<th rowspan="11" style="vertical-align: middle" class="couts">Coûts</th>
 						<?php
-							$index=array('Index00','Index01','Index02','Index03','Index04','Index05','Index06','Index07','Index08','Index09','Index10');
-							$periode=array('day','yesterday','month','monthLastYearPartial','monthLastYear','year','yearLastYearPartial','yearLastYear');
 							foreach($index as $numindex){
 								$tableau2.='<tr class="couts">';
 									$tableau2.='<th class="'.$numindex.'">';
@@ -225,8 +226,34 @@ $eqLogics = eqLogic::byType('teleinfo');
 								$tableau2.='</tr>';
 							}
 						?>
+					</tr>
 						<?php echo $tableau2 ?>
-					
+<!--- Elaboration du tableau PROD --->
+						<?php
+							$tableau3.='<tr class="PROD">';
+								$tableau3.='<th rowspan="2" style="vertical-align: middle" class="PROD">Prod test</th>';
+								$tableau3.='<th class="PROD" style="font-size: 1em;">Energie</th>';
+								foreach($periode as $jours){
+									$tableau3.='<td class="PROD">';
+										$tableau3.='<span class="teleinfoAttr" data-l1key="prod" data-l2key="'.$jours.'" style="font-size: 1em;"></span>';
+										$tableau3.='kWh';
+									$tableau3.='</td>';
+								}
+								$tableau3.='</tr>';
+								$tableau3.='<tr class="PRODCOUT">';
+									$tableau3.='<th class="PRODCOUT" style="font-size: 1em;">Revenus</span>';
+									foreach($periode as $jours){
+										$tableau3.='<td class="PRODCOUT">';
+											$tableau3.='<span class="teleinfoAttr" data-l1key="coutProd" data-l2key="'.$jours.'" style="font-size: 1em;"></span>';
+											$tableau3.=' €';
+										$tableau3.='</td>';
+									}
+								$tableau3.='</tr>';
+							
+						?>
+					</tr>
+						<?php echo $tableau3 ?>
+<!---						
 					<tr class="PROD">
 						<th colspan="2">Prod</th>
 						<td class="PROD">
@@ -270,7 +297,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="yearLastYear"></span>
 						</td>
 					</tr>
-				</thead>
+--->				</thead>
 			</table>
 		
 		</fieldset>
