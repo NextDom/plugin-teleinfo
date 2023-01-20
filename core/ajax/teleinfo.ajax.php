@@ -171,7 +171,7 @@ try {
 		case 'countArchiveNotZero':
             $return = array();
 			if (init('id') !== '') {
-                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId AND MINUTE(datetime) <> "0"';
+                $sql = 'SELECT COUNT(*) as count FROM historyArch WHERE cmd_id=:cmdId AND MINUTE(datetime) <> "0" AND (HOUR(datetime) <> "23" AND MINUTE(datetime) <> "59")';
                 $values = array(
 			                 'cmdId' => init('id'),
 		        );
@@ -205,7 +205,7 @@ try {
                     if (init('type') != "AVG"){
                         $sql = "SELECT cmd_id,datetime,value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
                     }else{
-                        $sql = "SELECT cmd_id,datetime,(CAST(value AS DECIMAL(12,2))) as value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
+                        $sql = "SELECT cmd_id, FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(datetime))) as datetime, (CAST(value AS DECIMAL(12,2))) as value FROM historyArch WHERE (cmd_id=:cmdId) GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
                     }
                     $values = array(
                                 'cmdId' => init('id'),
@@ -213,11 +213,13 @@ try {
                     $minParHeure = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
 
                     //sélectionne le max de 23h
-                    $sql = "SELECT cmd_id,datetime, max(value) as value 
+                    if (init('type') != "AVG"){
+                        $sql = "SELECT cmd_id,datetime, max(value) as value 
                             FROM historyArch 
                             WHERE (cmd_id=:cmdId) and HOUR(datetime)='23' 
                             GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
-                    $maxJournee = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                        $maxJournee = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                    }
 
                     event::add('jeedom::alert', array(
                             'level' => 'warning',
@@ -248,14 +250,16 @@ try {
                         );
                         $replaceValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
                     }
-                    foreach ($maxJournee as $cle2 => $valeur2){
-                        $sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:newValue";
-                        $values = array(
-                            'cmdId' => init('id'),
-                            'newDatetime' => date('Y-m-d 23:59:59', strtotime($valeur2['datetime'])),
-                            'newValue' => $valeur2['value'],
-                        );
-                        $replaceValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                    if (init('type') != "AVG"){
+                        foreach ($maxJournee as $cle2 => $valeur2){
+                            $sql = "REPLACE INTO historyArch SET cmd_id=:cmdId,datetime=:newDatetime,value=:newValue";
+                            $values = array(
+                                'cmdId' => init('id'),
+                                'newDatetime' => date('Y-m-d 23:59:59', strtotime($valeur2['datetime'])),
+                                'newValue' => $valeur2['value'],
+                            );
+                            $replaceValues = DB::Prepare($sql, $values, DB::FETCH_TYPE_ROW);
+                        }
                     }
                 }else{
                     //si on a affaire à des 'stat_yesterday' alors il ne faut garder que le max de la journée

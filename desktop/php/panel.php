@@ -48,6 +48,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 						<th colspan="2">Mois de A-1</th>
 						<th rowspan="2" style="vertical-align: middle">Année</th>
 						<th colspan="2">Année A-1</th>
+						<th rowspan="2" style="vertical-align: middle">Total général</th>
 					</tr>
 					<tr>
 						<th>J</th>
@@ -62,135 +63,150 @@ $eqLogics = eqLogic::byType('teleinfo');
 						<th class="TOTAL">Total</th>
 						<td class="TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="day" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="day"></span>
 						</td>
 						<td class="TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="yesterday" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="yesterday"></span>
 						</td>
 						<td class="TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="month"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="month"></span>
 						</td>
 						<td class="TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="monthLastYearPartial" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="monthLastYearPartial"></span>
 						</td>
 						<td class="TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="monthLastYear" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="monthLastYear"></span>
 						</td>
 						<td class="TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="year"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="year"></span>
 						</td>
 						<td class="TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="yearLastYearPartial"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="yearLastYearPartial"></span>
 						</td>
 						<td class="TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="yearLastYear" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="yearLastYear"></span>
+						</td>
+						<td class="TOTAL">
+							<span class="teleinfoAttr" data-l1key="conso" data-l2key="all" style="font-size: 1em;"></span>
+							{{ kWh}}
+							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="cout" data-l2key="all"></span>
 						</td>
 					</tr>
 					<tr>
 						<th class="HCHP">HP</th>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="day" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="day"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="yesterday" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="yesterday"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="month"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="month"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="monthLastYearPartial" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="monthLastYearPartial"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="monthLastYear" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="monthLastYear"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="year"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="year"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="yearLastYearPartial"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="yearLastYearPartial"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="yearLastYear" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="yearLastYear"></span>
+						</td>
+						<td class="HCHP">
+							<span class="teleinfoAttr" data-l1key="consoHP" data-l2key="all" style="font-size: 1em;"></span>
+							{{ kWh}}
+							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHP" data-l2key="all"></span>
 						</td>
 					</tr>
 					<tr>
 						<th class="HCHP">HC</th>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="day" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="day"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="yesterday" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="yesterday"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="month"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="month"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="monthLastYearPartial" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="monthLastYearPartial"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="monthLastYear" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="monthLastYear"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="year"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="year"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="yearLastYearPartial"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="yearLastYearPartial"></span>
 						</td>
 						<td class="HCHP">
 							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="yearLastYear" style="font-size: 1em;"></span>
-							kWh
+							{{ kWh}}
 							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="yearLastYear"></span>
+						</td>
+						<td class="HCHP">
+							<span class="teleinfoAttr" data-l1key="consoHC" data-l2key="all" style="font-size: 1em;"></span>
+							{{ kWh}}
+							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutHC" data-l2key="all"></span>
 						</td>
 					</tr>
 <!--- mise en forme du tableau des index --->
 						<?php
 							$index=array('Index00','Index01','Index02','Index03','Index04','Index05','Index06','Index07','Index08','Index09','Index10');
-							$periode=array('day','yesterday','month','monthLastYearPartial','monthLastYear','year','yearLastYearPartial','yearLastYear');
+							$periode=array('day','yesterday','month','monthLastYearPartial','monthLastYear','year','yearLastYearPartial','yearLastYear','all');
 							foreach($index as $numindex){
 								$tableau.='<tr class="index">';
 									$tableau.='<th class="'.$numindex.'">';
@@ -199,7 +215,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 									foreach($periode as $jours){
 										$tableau.='<td class="'.$numindex.'">';
 											$tableau.='<span class="teleinfoAttr" data-l1key="conso'.$numindex.'" data-l2key="'.$jours.'" style="font-size: 1em;"></span>';
-											$tableau.='kWh';
+											$tableau.=' kWh';
 										$tableau.='</td>';
 									}
 								$tableau.='</tr>';
@@ -230,13 +246,13 @@ $eqLogics = eqLogic::byType('teleinfo');
 						<?php echo $tableau2 ?>
 <!--- Elaboration du tableau PROD --->
 						<?php
-							$tableau3.='<tr class="PROD">';
-								$tableau3.='<th rowspan="2" style="vertical-align: middle" class="PROD">Prod test</th>';
+							$tableau3.='<tr class="PRODUCTION">';
+								$tableau3.='<th rowspan="2" style="vertical-align: middle" class="PROD">Prod</th>';
 								$tableau3.='<th class="PROD" style="font-size: 1em;">Energie</th>';
 								foreach($periode as $jours){
 									$tableau3.='<td class="PROD">';
 										$tableau3.='<span class="teleinfoAttr" data-l1key="prod" data-l2key="'.$jours.'" style="font-size: 1em;"></span>';
-										$tableau3.='kWh';
+										$tableau3.=' kWh';
 									$tableau3.='</td>';
 								}
 								$tableau3.='</tr>';
@@ -253,51 +269,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 						?>
 					</tr>
 						<?php echo $tableau3 ?>
-<!---						
-					<tr class="PROD">
-						<th colspan="2">Prod</th>
-						<td class="PROD">
-							<span class="teleinfoAttr" data-l1key="prod" data-l2key="day" style="font-size: 1em;"></span>
-							kWh
-							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="day"></span>
-						</td>
-						<td class="PROD">
-							<span class="teleinfoAttr" data-l1key="prod" data-l2key="yesterday" style="font-size: 1em;"></span>
-							kWh
-							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="yesterday"></span>
-						</td>
-						<td class="PROD">
-							<span class="teleinfoAttr" data-l1key="prod" data-l2key="month"></span>
-							kWh
-							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="month"></span>
-						</td>
-						<td class="PROD">
-							<span class="teleinfoAttr" data-l1key="prod" data-l2key="monthLastYearPartial" style="font-size: 1em;"></span>
-							kWh
-							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="monthLastYearPartial"></span>
-						</td>
-						<td class="PROD">
-							<span class="teleinfoAttr" data-l1key="prod" data-l2key="monthLastYear" style="font-size: 1em;"></span>
-							kWh
-							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="monthLastYear"></span>
-						</td>
-						<td class="PROD">
-							<span class="teleinfoAttr" data-l1key="prod" data-l2key="year"></span>
-							kWh
-							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="year"></span>
-						</td>
-						<td class="PROD">
-							<span class="teleinfoAttr" data-l1key="prod" data-l2key="yearLastYearPartial"></span>
-							kWh
-							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="yearLastYearPartial"></span>
-						</td>
-						<td class="PROD">
-							<span class="teleinfoAttr" data-l1key="prod" data-l2key="yearLastYear" style="font-size: 1em;"></span>
-							kWh
-							<span style="display:none;font-size: 0.9em;" class="teleinfoAttr" data-l1key="coutProd" data-l2key="yearLastYear"></span>
-						</td>
-					</tr>
---->				</thead>
+				</thead>
 			</table>
 		
 		</fieldset>

@@ -951,6 +951,7 @@ class teleinfo extends eqLogic
             $statYesterdayHc     = 0;
             $statYesterdayHp     = 0;
             $statYesterdayProd   = 0;
+            $prod                = 0;
             $statHpToCumul       = array();
             $statHcToCumul       = array();
             $statProdToCumul     = array();
@@ -966,7 +967,13 @@ class teleinfo extends eqLogic
 			$index08 = $eqLogic->getConfiguration('index08');
 			$index09 = $eqLogic->getConfiguration('index09');
 			$index10 = $eqLogic->getConfiguration('index10');
+            $prod    = intval($eqLogic->getConfiguration('ActivationProduction'));
             
+            if ((floatval($eqLogic->getConfiguration('CoutindexProd')) <> 0) && ($prod == 1)) {
+                $CoutIndexProd = floatval($eqLogic->getConfiguration('CoutindexProd'));
+                log::add('teleinfo', 'info', 'EAIT revenus au kWh = ' . strval($CoutIndexProd));
+            }
+
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == "data" || $cmd->getConfiguration('type') == "") {
                     if (strpos($indexConsoHP, $cmd->getConfiguration('info_conso')) !== false) {
@@ -975,13 +982,17 @@ class teleinfo extends eqLogic
                     if (strpos($indexConsoHC, $cmd->getConfiguration('info_conso')) !== false) {
                         array_push($statHcToCumul, $cmd->getId());
                     }
-                    if (strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) {
+                    if ((strpos($indexProduction, $cmd->getConfiguration('info_conso')) !== false) && ($prod <> 1)){
                         array_push($statProdToCumul, $cmd->getId());
                     }
                     if (strpos($indexConsoTotales, $cmd->getConfiguration('info_conso')) !== false) {
                         array_push($statTotalToCumul, $cmd->getId());
                     }
                 }
+				if (($cmd->getConfiguration('info_conso') == 'EAIT') && ($prod == 1)) {
+					$IndexProd = $cmd->getId();
+					log::add('teleinfo', 'info', 'EAIT = ' . $IndexProd);
+				}
 				if (($cmd->getConfiguration('info_conso') == 'BASE') || ($cmd->getConfiguration('info_conso') == 'EAST')) {
 					$index00 = $cmd->getConfiguration('info_conso');
 					$idIndex00 = $cmd->getId();
@@ -1027,6 +1038,10 @@ class teleinfo extends eqLogic
 				if ($cmd->getConfiguration('info_conso') == $index10) {
 					$idIndex10 = $cmd->getId();
 					log::add('teleinfo', 'info', 'Index10 ' . $idIndex10);
+				}
+				if (($cmd->getLogicalId() == 'STAT_TODAY_PROD')) {
+					$idIndexProd = $cmd->getId();
+					log::add('teleinfo', 'debug', 'Id STAT_TODAY_PROD ' . $idIndexProd);
 				}
 				if (($cmd->getLogicalId() == 'STAT_TODAY_INDEX00_COUT')) {
 					$idCoutIndex00 = $cmd->getId();
@@ -1074,6 +1089,15 @@ class teleinfo extends eqLogic
 				}
             }
 
+            if ($prod = 1){
+                //log::add('teleinfo', 'debug', 'Index EAIT = ' . $idIndexProd);
+				$cmd = cmd::byId($idIndexProd);
+                $statYesterdayProd = intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
+                log::add('teleinfo', 'debug', 'Total PROD hier --> ' . $statYesterdayProd);
+                $statYesterdayCoutProd = $statYesterdayProd * $CoutIndexProd / 1000;
+                log::add('teleinfo', 'debug', 'Total Revenus Prod hier --> ' . $statYesterdayCoutProd);
+            }
+
 			for ($i=0; $i <= 10; $i++){
 				if ($i == 10) {   //affectation des variables index en dynamique
 					$a = 'idIndex' . $i;
@@ -1094,7 +1118,7 @@ class teleinfo extends eqLogic
 					$$c = intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
 					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' hier --> ' . ${$c});
                     $cmd = cmd::byId(${$d});
-                    $$e = (float)($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
+                    $$e = floatval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
 					log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d});
                 }
 			}
@@ -1115,10 +1139,12 @@ class teleinfo extends eqLogic
                 $statYesterdayHp 	 += intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
             }
 
-            foreach ($statProdToCumul as $key => $value) {
-                log::add('teleinfo', 'debug', 'Commande Prod N°' . $value);
-                $cmd                  = cmd::byId($value);
-                $statYesterdayProd 	 += intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
+            if ($prod <> 1){
+                foreach ($statProdToCumul as $key => $value) {
+                    log::add('teleinfo', 'debug', 'Commande Prod N°' . $value);
+                    $cmd                  = cmd::byId($value);
+                    $statYesterdayProd 	 += intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']) - intval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['min']);
+                }
             }
 
             foreach ($eqLogic->getCmd('info') as $cmd) {
@@ -1149,7 +1175,7 @@ class teleinfo extends eqLogic
                             break;
                         case ($test==="STAT_YESTERDAY_PROD"):
                             log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (PROD) ==> ' . intval($statYesterdayProd));
-                            $cmd->event((intval($statYesterdayProd)), $startDay->format('Y-m-d 00:00:00'));
+                            $cmd->event($statYesterdayProd, $startDay->format('Y-m-d 00:00:00'));
                             //$history->setValue(intval($statYesterdayProd));
                             //$history->save();
                             break;
@@ -1220,51 +1246,58 @@ class teleinfo extends eqLogic
 							}
 							break;
                         
-                        case (strpos($test,'YESTERDAY')!=0 && strpos($test,'COUT')!=0):
+                        case ($test==="STAT_YESTERDAY_PROD_COUT"):
+                            if ($statYesterdayCoutProd != 0) {
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique cout hier (PROD) ==> ' . strval($statYesterdayCoutProd));
+                                $cmd->event((floatval($statYesterdayCoutProd)), $startDay->format('Y-m-d 00:00:00'));
+                            }
+                            break;
+                        
+                        case (strpos($test,'YESTERDAY_INDEX')!=0 && strpos($test,'COUT')!=0):
                             $indexyy = (int)(substr($test,20,2));
                             if($statYesterdayCoutTotalIndex00 != 0 && $indexyy == 0){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index00) ==> ' . (float)($statYesterdayCoutTotalIndex00));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex00)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index00) ==> ' . floatval($statYesterdayCoutTotalIndex00));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex00)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex01 != 0 && $indexyy == 1){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index01) ==> ' . (float)($statYesterdayCoutTotalIndex01));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex01)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index01) ==> ' . floatval($statYesterdayCoutTotalIndex01));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex01)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex02 != 0 && $indexyy == 2){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index02) ==> ' . (float)($statYesterdayCoutTotalIndex02));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex02)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index02) ==> ' . floatval($statYesterdayCoutTotalIndex02));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex02)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex03 != 0 && $indexyy == 3){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index03) ==> ' . (float)($statYesterdayCoutTotalIndex03));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex03)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index03) ==> ' . floatval($statYesterdayCoutTotalIndex03));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex03)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex04 != 0 && $indexyy == 4){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index04) ==> ' . (float)($statYesterdayCoutTotalIndex04));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex04)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index04) ==> ' . floatval($statYesterdayCoutTotalIndex04));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex04)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex05 != 0 && $indexyy == 5){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index05) ==> ' . (float)($statYesterdayCoutTotalIndex05));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex05)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index05) ==> ' . floatval($statYesterdayCoutTotalIndex05));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex05)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex06 != 0 && $indexyy == 6){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index06) ==> ' . (float)($statYesterdayCoutTotalIndex06));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex06)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index06) ==> ' . floatval($statYesterdayCoutTotalIndex06));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex06)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex07 != 0 && $indexyy == 7){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index07) ==> ' . (float)($statYesterdayCoutTotalIndex07));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex07)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index07) ==> ' . floatval($statYesterdayCoutTotalIndex07));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex07)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex08 != 0 && $indexyy == 8){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index08) ==> ' . (float)($statYesterdayCoutTotalIndex08));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex08)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index08) ==> ' . floatval($statYesterdayCoutTotalIndex08));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex08)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex09 != 0 && $indexyy == 9){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index09) ==> ' . (float)($statYesterdayCoutTotalIndex09));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex09)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index09) ==> ' . floatval($statYesterdayCoutTotalIndex09));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex09)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex10 != 0 && $indexyy == 10){
-                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index10) ==> ' . (float)($statYesterdayCoutTotalIndex10));
-								$cmd->event(((float)($statYesterdayCoutTotalIndex10)), $startDay->format('Y-m-d 00:00:00'));
+                                log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index10) ==> ' . floatval($statYesterdayCoutTotalIndex10));
+								$cmd->event((floatval($statYesterdayCoutTotalIndex10)), $startDay->format('Y-m-d 00:00:00'));
                             }
                         break;
                     }
@@ -1398,7 +1431,7 @@ class teleinfo extends eqLogic
                             $historycout->setCmd_id($idcoutdest[0]);
                             $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
                             $historycout->setTableName('historyArch');
-                            $historycout->setValue('');
+                            $historycout->setValue(' ');
                             $historycout->save();
                         }
                     }else{
@@ -1406,7 +1439,7 @@ class teleinfo extends eqLogic
                         $history->setCmd_id($iddestination[0]);
                         $history->setDatetime($date2->format('Y-m-d 00:00:00'));
                         $history->setTableName('historyArch');
-                        $history->setValue('');
+                        $history->setValue(' ');
                         $history->save();
                     }
 
@@ -1438,7 +1471,7 @@ class teleinfo extends eqLogic
                                 $historycout->setCmd_id($idcoutdest[11]);
                                 $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
                                 $historycout->setTableName('historyArch');
-                                $historycout->setValue('');
+                                $historycout->setValue(' ');
                                 $historycout->save();
                             }
                         }else{
@@ -1446,7 +1479,7 @@ class teleinfo extends eqLogic
                             $history->setCmd_id($iddestination[11]);
                             $history->setDatetime($date2->format('Y-m-d 00:00:00'));
                             $history->setTableName('historyArch');
-                            $history->setValue('');
+                            $history->setValue(' ');
                             $history->save();
                         }
                     }
@@ -1459,7 +1492,7 @@ class teleinfo extends eqLogic
                     $statTotal2 = 0;
                     $coutotal2 = 0;
                     $coutotal = 0;
-                    
+
                     //recalcul des index de 1 à 10
                     for ($j=1;$j<11;$j++){
                         if ($indexcopy[$j]<>''){
@@ -1490,7 +1523,7 @@ class teleinfo extends eqLogic
                                         $historycout->setCmd_id($idcoutdest[$j]);
                                         $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
                                         $historycout->setTableName('historyArch');
-                                        $historycout->setValue('');
+                                        $historycout->setValue(' ');
                                         $historycout->save();
                                     }
                                 }else{
@@ -1498,7 +1531,7 @@ class teleinfo extends eqLogic
                                     $history->setCmd_id($iddestination[$j]);
                                     $history->setDatetime($date2->format('Y-m-d 00:00:00'));
                                     $history->setTableName('historyArch');
-                                    $history->setValue('');
+                                    $history->setValue(' ');
                                     $history->save();
                                 }
                             }else{
@@ -1506,13 +1539,13 @@ class teleinfo extends eqLogic
                                 $history->setCmd_id($iddestination[$j]);
                                 $history->setDatetime($date2->format('Y-m-d 00:00:00'));
                                 $history->setTableName('historyArch');
-                                $history->setValue('');
+                                $history->setValue(' ');
                                 $history->save();
                                 $historycout = new history();
                                 $historycout->setCmd_id($idcoutdest[$j]);
                                 $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
                                 $historycout->setTableName('historyArch');
-                                $historycout->setValue('');
+                                $historycout->setValue(' ');
                                 $historycout->save();   
                             }
                         }
@@ -1530,7 +1563,7 @@ class teleinfo extends eqLogic
                             $historycout->setCmd_id($idcoutdest[0]);
                             $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
                             $historycout->setTableName('historyArch');
-                            $historycout->setValue('');
+                            $historycout->setValue(' ');
                             $historycout->save();
                         }
                     }
