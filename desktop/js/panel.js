@@ -1137,9 +1137,10 @@ console.log("[getAnnualHistory] Récupération de div " + div);
 
 
 
-function getCommandHistoryValue(div, type , object, coutoui = 1000) {
+function getCommandHistoryValue(div, type , object, coutoui = 1000, virgule = 1) {
     var from = moment().format('YYYY-MM-DD 00:00:00');
     var to = moment().format('YYYY-MM-DD 23:59:59');
+    virgule = 2;
     switch (type){
         case 'monthLastYear':
             from = moment().subtract(1, 'years').startOf('month').subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
@@ -1183,12 +1184,21 @@ function getCommandHistoryValue(div, type , object, coutoui = 1000) {
         error: function (error) {
         },
         success: function (myCommandHistory) {
-            if(myCommandHistory.data.length == 1){
-              div.text((myCommandHistory.maxValue / coutoui).toFixed(0))
-              console.log("[Object 1] " + object.id + " [getCommandHistoryValue 1] " + object.name + " " + type + " | from : " + from + " | to : " + to + " | value : " + (myCommandHistory.maxValue/coutoui).toFixed(0));
+            if (coutoui == 1 || type == 'yesterday'){
+                virgule = 2;
+            }else{
+                if (type == 'month' || type == 'monthLastYearPartial'){
+                    virgule = 1;
+                }else{
+                    virgule = 0;
+                }
+            }
+        if(myCommandHistory.data.length == 1){
+              div.text((myCommandHistory.maxValue / coutoui).toFixed(virgule))
+              console.log("[Object 1] " + object.id + " [getCommandHistoryValue 1] " + object.name + " " + type + " | from : " + from + " | to : " + to + " | value : " + (myCommandHistory.maxValue/coutoui).toFixed(virgule));
             }else {
               //myCommandHistory.data.splice(-1,1);
-              div.text((myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(0));
+              div.text((myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(virgule));
               console.log("[Object 2] " + object.id + " [getCommandHistoryValue 2] " + object.name + " "  + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui);
             }
         }
