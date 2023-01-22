@@ -14,14 +14,14 @@ une fois le plugin installé Jeedom vous propose d'aller dans le panneau de conf
 <br>
 <br>
 
-### Configuration
+## Configuration
 <br>
 
 ![Configuration 1](../../images/teleinfo_config02.png)
 <br>
 <br>
 
-#### Détection automatique:
+## Détection automatique:
 <br>
 
 Ne fonctionne pas à l'heure actuelle. Affiche systématiquement la TIC du compteur en mode historique.
@@ -30,14 +30,14 @@ Ne fonctionne pas à l'heure actuelle. Affiche systématiquement la TIC du compt
 Cette option a été dévalidée.
 <br>
 
-#### Bloquer la création automatique des compteurs
+## Bloquer la création automatique des compteurs
 <br>
 Décocher cette case permet au plugin de créer un nouveau compteur en fonction de la trame TIC reçue.
 Cette option n'est à décocher que si c'est votre première utilisation du plugin ou si vous changez de compteur ou encore si vous installez un nouveau compteur.
 <br>
 <br>
 
-#### Configuration avancée:
+## Configuration avancée:
 <br>
 
 
@@ -48,7 +48,7 @@ Cliquer sur le + permet d'afficher les paramètres de configuration du modem
 <br>
 <br>
 
-##### Compteur type Linky:
+## Compteur type Linky:
 <br>
 
 Cette option permet de faire la différence entre le mode TIC historique ou standard. Le mode TIC peut être identifié pour un compteur Linky sur la cadran du compteur en appuyant plusieurs fois sur le + ou le -. Tous les autres compteurs sont en mode historique, seul le Linky peut avoir un mode standard.
@@ -56,7 +56,7 @@ Si vous avez un mode historique il ne faut pas cocher cette case
 <br>
 <br>
 
-##### Vitesse:
+## Vitesse:
 <br>
 
 Si vous avez un mode historique la vitesse doit être fixée à 1200
