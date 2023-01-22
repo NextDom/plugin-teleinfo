@@ -44,6 +44,23 @@ Ne fonctionne pas à l'heure actuelle. Affiche systématiquement la TIC du compt
 
 Cette option a été dévalidée.
 <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 ## Bloquer la création automatique des compteurs
 <br>
