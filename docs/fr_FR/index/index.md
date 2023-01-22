@@ -2,9 +2,9 @@
 
 # Nouveautés
 
-## .Le plugin
+## Le plugin
 
-### .Le plugin
+### Le plugin
 
 test
 
