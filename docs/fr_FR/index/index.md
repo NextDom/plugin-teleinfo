@@ -1,7 +1,7 @@
 
 
-Nouveautés
-===
+# Nouveautés
+
 
 ## Après l'installation
 
