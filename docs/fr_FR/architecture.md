@@ -26,7 +26,7 @@ Le compteur linky possède 2 modes de téléinformation
      Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), cocher 2 et si besoin sélectionner 9600 en 3 :
      ![teleinfolinkyactive](../images/teleinformation_linky_act.png)
 
-
+### Test
 
 Cas d'utilisation de 2 compteurs
 ===
