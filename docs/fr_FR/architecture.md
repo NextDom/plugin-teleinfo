@@ -19,14 +19,18 @@ Le compteur linky possède 2 modes de téléinformation
 
 -    Mode historique : Ce mode assure une compatibilité égale aux compteurs d'ancienne génération.
      Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), ne pas cocher 2 et si besoin sélectionner 1200 en 3 :
+     
 
      ![teleinfolinkydesactive](../images/teleinformation_linky_des.png)
+     
 
 -    Mode standard : mode de communication plus récent, **seul ce mode requiert l'option Linky sur le plugin**.
      Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), cocher 2 et si besoin sélectionner 9600 en 3 :
      ![teleinfolinkyactive](../images/teleinformation_linky_act.png)
+     
 
 ### Test
+
 
 Cas d'utilisation de 2 compteurs
 ===
