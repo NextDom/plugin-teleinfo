@@ -10,12 +10,12 @@ Les Index
 
 une fois le plugin installé Jeedom vous propose d'aller dans le panneau de configuration:
 
-![Configuration](../../images/teleinfo_config01.png)
+[Configuration](../../images/teleinfo_config01.png)
 
 
 #### "configuration" (1):
 
-![Configuration 1](../../images/teleinfo_config02.png)
+[Configuration 1](../../images/teleinfo_config02.png)
 
 ##### Détection automatique:
 
@@ -33,7 +33,7 @@ Cette option n'est à décocher que si c'est votre première utilisation du plug
 
 Cliquer sur le + permet d'afficher les paramètres de configuration du modem
 
-![Configuration modem](../../images/teleinfo_config03.png)
+[Configuration modem](../../images/teleinfo_config03.png)
 
 ###### Compteur type Linky:
 
