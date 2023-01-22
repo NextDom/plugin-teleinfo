@@ -1,7 +1,6 @@
 
 
-Les Index
-===
+# Les Index
 
 ## Le plugin
 
@@ -10,11 +9,7 @@ Les Index
 
 une fois le plugin installé Jeedom vous propose d'aller dans le panneau de configuration:
 
-![Configuration](../../images/teleinfo_options.png)
-
-![Configuration](../images/teleinfo_options.png)
-
-![Configuration](/images/teleinfo_options.png)
+![Configuration](../../images/teleinfo_config01.png)
 
 
 #### "configuration" (1):
@@ -55,6 +50,6 @@ Si vous avez un mode standard la vitesse doit être fixée à 9600
 
   
 
-[Retour à la documentation principale](/plugin-teleinfo/fr_FR/)
-===
+# [Retour à la documentation principale](/plugin-teleinfo/fr_FR/)
+
 
