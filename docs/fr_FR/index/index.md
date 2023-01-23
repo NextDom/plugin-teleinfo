@@ -1,8 +1,7 @@
 <br><br>
 
 # Nouveautés
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
+<br><br><br><br><br><br><br>
 # Après l'installation
 
 <br>
@@ -17,7 +16,9 @@ une fois le plugin installé Jeedom vous propose d'aller dans le panneau de conf
 ## configuration:
 <br>
 
+<a href="../../images/teleinfo_config02.png">
 <img src="../../images/teleinfo_config02.png" alt="configuration" style="width:400px;"/>
+</a>
 <br><br><br><br><br><br><br>
 
 ## Détection automatique:
