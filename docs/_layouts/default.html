@@ -129,13 +129,13 @@
                 $('#div_main').addClass('container');
                 $('#div_content').toc({
                     renderIn : "#div_summary2",
-                    selectors : 'h1,h2,h3,h4,h5,h6'
+                    selectors : 'h1,h2,h3'
                 });
             }else{
                 $('#div_main').removeClass('container');
                 $('#div_content').toc({
                     renderIn : "#div_summary",
-                    selectors : 'h1,h2,h3,h4,h5,h6'
+                    selectors : 'h1,h2,h3'
                 });
             }
             $('#toctitle').html('<h2 style="padding-left:5px !important;">'+titlePlugin+'</h2>');
@@ -145,7 +145,7 @@
     });
 
     var idChapitre = null, nbrChapitre = 0, idAncre = null;
-    $('#div_content h1, #div_content h2').on('inview',function(event, isInView){
+    $('#div_content h1, #div_content h2, #div_content h3').on('inview',function(event, isInView){
         nbrChapitre = $('a.active').length;
         idAncre = $(this).attr('id');
         if(isInView){
