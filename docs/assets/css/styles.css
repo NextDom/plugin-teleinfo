@@ -29,7 +29,7 @@ h1,h2,h3,h4,h5 {
 #side-nav {
 	background-color:#F3F3F3 !important;
 	z-index:2 !important;
-	top:60px !important;
+	top:0px !important;
 	width : 350px !important;
 }
 #div_menuMobile {
