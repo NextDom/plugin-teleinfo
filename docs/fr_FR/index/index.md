@@ -8,8 +8,9 @@
 une fois le plugin installé Jeedom vous propose d'aller dans le panneau de configuration:
 <br>
 
+<a href="../../images/teleinfo_config01.png">
 <img src="../../images/teleinfo_config01.png" alt="configuration" style="width:400px;"/>
-
+<a>
 <br><br><br><br><br>
 
 
@@ -44,7 +45,9 @@ Cette option n'est à décocher que si c'est votre première utilisation du plug
 Cliquer sur le + permet d'afficher les paramètres de configuration du modem
 <br>
 
+<a href="../../images/teleinfo_config03.png">
 <img src="../../images/teleinfo_config03.png" alt="configuration" style="width:400px;"/>
+<a>
 <br><br><br><br><br><br><br><br><br><br>
 
 ## Compteur type Linky:
