@@ -8,6 +8,28 @@
   <meta http-equiv="Content-Language" content="pt-br">
 </head>
 <body>
+<div class="navbar-fixed">
+    <nav>
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="https://NextDom.github.io/" class="brand-logo left"><img class="logo" src="https://NextDom.github.io/NextDom/images/logoblue.png"></a>
+            <ul class="left">
+                <li><h5 style="margin-top:15px; padding-left: 75px">NextDom</h5>
+                    <ul class="left hide-on-med-and-down">
+                        <li><h6 style="padding-left: 75px; margin-top:0px">Car à plusieurs on est plus fort et ensemble on codera plus propre</h6></li>
+                    </ul>
+            </ul>
+            <a href="https://NextDom.github.io/" data-activates="nav-mobile" class="button-collapse btn-floating btn-large waves-effect waves-light jeedomcolorbg"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="https://NextDom.github.io/">Site</a></li>
+            </ul>
+            <ul class="side-nav" id="nav-mobile">
+                <li><a href="https://NextDom.github.io/">Site</a></li>
+                <li><a href="https://www.jeedom.com/forum/">Forum Jeedom</a></li>
+                <li><a href="https://www.jeedom.com/site/fr/">Jeedom SAS</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
 <div class="row" id="div_main">
     <div id="side-nav" class="side-nav fixed">
         <div class="container">
@@ -72,7 +94,7 @@
         document.title = 'Documentation NextDom | '+ title[0].toUpperCase() + title.substring(1)
         $(".button-collapse").sideNav();
         $('meta[name=description]').remove();
-        $('head').append( '<meta name="description" content="Ceci est la documentation du plugin "'+ title[0].toUpperCase() + title.substring(1)+'", lier à la solution domotique Jeedom.">' );
+        $('head').append( '<meta name="description" content="Ceci est la documentation du plugin "'+ title[0].toUpperCase() + title.substring(1)+'", lié à la solution domotique Jeedom.">' );
         $('img').addClass('responsive-img');
         $('#div_content table').addClass('striped');
         init();
@@ -107,13 +129,13 @@
                 $('#div_main').addClass('container');
                 $('#div_content').toc({
                     renderIn : "#div_summary2",
-                    selectors : 'h1,h2,h3,h4,h5,h6'
+                    selectors : 'h1,h2'
                 });
             }else{
                 $('#div_main').removeClass('container');
                 $('#div_content').toc({
                     renderIn : "#div_summary",
-                    selectors : 'h1,h2,h3,h4,h5,h6'
+                    selectors : 'h1,h2'
                 });
             }
             $('#toctitle').html('<h2 style="padding-left:5px !important;">'+titlePlugin+'</h2>');
@@ -123,7 +145,7 @@
     });
 
     var idChapitre = null, nbrChapitre = 0, idAncre = null;
-    $('#div_content h1, #div_content h2, #div_content h3, #div_content h4, #div_content h5, #div_content h6').on('inview',function(event, isInView){
+    $('#div_content h1, #div_content h2').on('inview',function(event, isInView){
         nbrChapitre = $('a.active').length;
         idAncre = $(this).attr('id');
         if(isInView){
