@@ -129,13 +129,13 @@
                 $('#div_main').addClass('container');
                 $('#div_content').toc({
                     renderIn : "#div_summary2",
-                    selectors : 'h1,h2'
+                    selectors : 'h1,h2,h3,h4,h5,h6'
                 });
             }else{
                 $('#div_main').removeClass('container');
                 $('#div_content').toc({
                     renderIn : "#div_summary",
-                    selectors : 'h1,h2'
+                    selectors : 'h1,h2,h3,h4,h5,h6'
                 });
             }
             $('#toctitle').html('<h2 style="padding-left:5px !important;">'+titlePlugin+'</h2>');
