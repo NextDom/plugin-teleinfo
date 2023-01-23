@@ -1,10 +1,7 @@
-<br>
-<br>
-
+<br><br>
 
 # Nouveautés
-
-<br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 # Après l'installation
 
@@ -12,17 +9,15 @@
 une fois le plugin installé Jeedom vous propose d'aller dans le panneau de configuration:
 <br>
 
-<img src="../../images/teleinfo_config01.png" alt="configuration" style="width:200px;"/>
+<img src="../../images/teleinfo_config01.png" alt="configuration" style="width:400px;"/>
 
-<br><br>
-![Configuration](../../images/teleinfo_config01.png)
 <br><br><br><br><br>
 
 
-## "configuration" (1):
+## configuration:
 <br>
 
-![Configuration 1](../../images/teleinfo_config02.png)
+<img src="../../images/teleinfo_config02.png" alt="configuration" style="width:400px;"/>
 <br><br><br><br><br><br><br>
 
 ## Détection automatique:
@@ -48,22 +43,22 @@ Cette option n'est à décocher que si c'est votre première utilisation du plug
 Cliquer sur le + permet d'afficher les paramètres de configuration du modem
 <br>
 
-![Configuration modem](../../images/teleinfo_config03.png)
-<br><br><br><br><br><br><br>
+<img src="../../images/teleinfo_config03.png" alt="configuration" style="width:400px;"/>
+<br><br><br><br><br><br><br><br><br><br>
 
 ## Compteur type Linky:
 <br>
 
 Cette option permet de faire la différence entre le mode TIC historique ou standard. Le mode TIC peut être identifié pour un compteur Linky sur la cadran du compteur en appuyant plusieurs fois sur le + ou le -. Tous les autres compteurs sont en mode historique, seul le Linky peut avoir un mode standard.
 Si vous avez un mode historique il ne faut pas cocher cette case
-<br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## Vitesse:
 <br>
 
 Si vous avez un mode historique la vitesse doit être fixée à 1200
 Si vous avez un mode standard la vitesse doit être fixée à 9600
-<br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br>
   
 
 # [Retour à la documentation principale](/plugin-teleinfo/fr_FR/)
