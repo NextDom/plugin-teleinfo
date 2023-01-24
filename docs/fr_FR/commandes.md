@@ -30,27 +30,6 @@ Pour le mode Standard les principaux index sont:
 
 > Pour consulter la liste complète: [Enedis-NOI-CPT_54E.pdf](../images/Enedis-NOI-CPT_54E.pdf)
 
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
----
-
-
 
 Les statistiques
 ===
@@ -69,26 +48,6 @@ De plus certaines statistiques (consommation du mois, de l'année en cours, ...)
 Le panel doit être validé dans la configuration du plugin
 
   ![teleinfo62](../images/teleinformation_panel0.png)
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
----
   
 
 Les unités
@@ -102,23 +61,3 @@ Les unités
 -   Type d'abonnement : Chaîne de caractères.
 -   Le préavis EJP et la couleur du lendemain : Chaîne de caractères.
 -   La conso moyenne sur la dernière minute : Watt
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
----

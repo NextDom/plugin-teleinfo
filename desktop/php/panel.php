@@ -44,11 +44,11 @@ $eqLogics = eqLogic::byType('teleinfo');
 					<tr>
 						<th rowspan="2" colspan="2" style="vertical-align: middle">Compteur</th>
 						<th colspan="2">Journée</th>
-						<th rowspan="2" style="vertical-align: middle">Mois</th>
+						<th rowspan="2" style="vertical-align: middle">Mois<br>en cours</th>
 						<th colspan="2">Mois de A-1</th>
-						<th rowspan="2" style="vertical-align: middle">Année</th>
+						<th rowspan="2" style="vertical-align: middle">Année<br>en cours</th>
 						<th colspan="2">Année A-1</th>
-						<th rowspan="2" style="vertical-align: middle">Total général</th>
+						<th rowspan="2" style="vertical-align: middle">Total<br>général</th>
 					</tr>
 					<tr>
 						<th>J</th>
@@ -226,7 +226,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 
 <!--- mise en forme du tableau des couts index --->
 					<tr>
-					<th rowspan="11" style="vertical-align: middle" class="couts">Coûts</th>
+					<th rowspan="12" style="vertical-align: middle" class="couts">Coûts</th>
 						<?php
 							foreach($index as $numindex){
 								$tableau2.='<tr class="couts">';
@@ -250,7 +250,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 								$tableau3.='<th rowspan="2" style="vertical-align: middle" class="PROD">Prod</th>';
 								$tableau3.='<th class="PROD" style="font-size: 1em;">Energie</th>';
 								foreach($periode as $jours){
-									$tableau3.='<td class="PROD">';
+									$tableau3.='<td class="PRODCONSO">';
 										$tableau3.='<span class="teleinfoAttr" data-l1key="prod" data-l2key="'.$jours.'" style="font-size: 1em;"></span>';
 										$tableau3.=' kWh';
 									$tableau3.='</td>';
@@ -303,7 +303,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 				<form class="form-horizontal">
 					<fieldset style="border: 1px solid #e5e5e5; border-radius: 5px 5px 5px 5px">
 						<div class="index" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
-							<i style="font-size: initial;" class="fas fa-chart-line"></i> {{Puissance}}
+							<i style="font-size: initial;" class="fas fa-chart-line"></i> {{Puissance instantanée}}
 						</div>
 						<div class="index" id='div_graphGlobalPower'>
 						</div>
@@ -313,7 +313,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 						<div class="couts" id='div_graphGlobalPowerCout'>
 						</div>
 						<div class="index" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
-							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution journalière}}
+							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution consommation journalière}}
 						</div>
 						<div class="index" id='div_graphGlobalJournalier'>
 						</div>
@@ -323,7 +323,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 						<div class="couts" id='div_graphGlobalJournalierCout'>
 						</div>
 						<div class="index" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
-							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution mensuelle}}
+							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution consommation mensuelle}}
 						</div>
 						<div class="index" id='div_graphGlobalIndex'>
 						</div>
@@ -333,7 +333,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 						<div class="couts" id='div_graphGlobalIndexCout'>
 						</div>
 						<div class="index" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
-							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution annuelle}}
+							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution consommation annuelle}}
 						</div>
 						<div class="index" id='div_graphGlobalAnnual'>
 						</div>

@@ -34,24 +34,3 @@ Vous pouvez également créer votre appareil manuellement :
 >Il est possible aussi de désactiver la création automatique des nouvelles commandes en décochant:
 >
 >![teleinfo51](../images/teleinformation_blocage.png)
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
----
-

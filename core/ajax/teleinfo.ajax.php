@@ -188,7 +188,7 @@ try {
                 event::add('jeedom::alert', array(
                         'level' => 'warning',
                         'page' => 'teleinfo',
-                        'message' => __('Optimisation de l\'historique, cela peut prendre du temps. (La fenêtre peut être fermée)', __FILE__),
+                        'message' => __('Optimisation de l\'historique, cela peut prendre du temps.', __FILE__),
                 ));
                 
                 //compter le nb de ligne
@@ -212,12 +212,12 @@ try {
                     );
                     $minParHeure = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
 
-                    //sélectionne le max de 23h
+                    //sélectionne le max de la journée
                     if (init('type') != "AVG"){
                         $sql = "SELECT cmd_id,datetime, max(value) as value 
                             FROM historyArch 
-                            WHERE (cmd_id=:cmdId) and HOUR(datetime)='23' 
-                            GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime),HOUR(datetime)";
+                            WHERE (cmd_id=:cmdId) 
+                            GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime)";
                         $maxJournee = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
                     }
 

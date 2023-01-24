@@ -13,23 +13,3 @@ En cas d'utilisation d'un modem série il est nécessaire de renseigner son port
 Enfin pensez à sauvegarder.
 
 Un nouveau Protocole est disponible dans Plugins => Protocole domotique => Téléinfo
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
----

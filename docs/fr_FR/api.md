@@ -53,23 +53,3 @@ Quelques unes (Les plus connues) :
 	* PAPP
 	* IINST
 	* ADPS
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
-.
-
----
