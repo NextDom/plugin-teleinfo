@@ -149,6 +149,8 @@
 {etiquette:"PJOURF+1",name:"Profil du prochain jour calendrier fournisseur",unite:""},
 {etiquette:"PPOINTE",name:"Profil du prochain jour de pointe",unite:""}];
 
+$(".in_datepicker").datepicker();
+
 $('#bt_stopTeleinfoDaemon').on('click', function() {
     stopTeleinfoDeamon();
 });
@@ -212,6 +214,46 @@ $('#btTeleinfoMaintenance').on('click', function() {
 });
 
 
+$('#btIndex').on('click', function() {
+    $.ajax({
+        type: 'POST',
+        url: 'plugins/teleinfo/core/ajax/teleinfo.ajax.php',
+        data: {
+            action:'copyVersIndex',
+            compteur: $('.eqLogicAttr[data-l1key=logicalId]').value(),
+            startDate: $('#in_startDate').value(),
+            endDate:  $('#in_endDate').value(),
+            indexcopy00: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index00]').value(),
+            indexcopy01: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index01]').value(),
+            indexcopy02: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index02]').value(),
+            indexcopy03: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index03]').value(),
+            indexcopy04: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index04]').value(),
+            indexcopy05: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index05]').value(),
+            indexcopy06: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index06]').value(),
+            indexcopy07: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index07]').value(),
+            indexcopy08: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index08]').value(),
+            indexcopy09: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index09]').value(),
+            indexcopy10: $('.eqLogicAttr[data-l1key=configuration][data-l2key=index10]').value(),
+            coutcopy00: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex00]').value(),
+            coutcopy01: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex01]').value(),
+            coutcopy02: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex02]').value(),
+            coutcopy03: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex03]').value(),
+            coutcopy04: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex04]').value(),
+            coutcopy05: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex05]').value(),
+            coutcopy06: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex06]').value(),
+            coutcopy07: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex07]').value(),
+            coutcopy08: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex08]').value(),
+            coutcopy09: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex09]').value(),
+            coutcopy10: $('.eqLogicAttr[data-l1key=configuration][data-l2key=Coutindex10]').value(),
+            coutcopyprod: $('.eqLogicAttr[data-l1key=configuration][data-l2key=CoutindexProd]').value(),
+            },
+        dataType: 'json',
+});
+$.hideLoading();
+
+
+});
+
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 
 function addCmdToTable(_cmd) {
@@ -236,6 +278,51 @@ function addCmdToTable(_cmd) {
         selRequestType += '<option value="STAT_TODAY_HP">Conso HP Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_HC">Conso HC Aujourd\'hui</option>';
         selRequestType += '<option value="STAT_TODAY_PROD">Production Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX00">Conso Totale Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX01">Conso index01 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX02">Conso index02 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX03">Conso index03 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX04">Conso index04 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX05">Conso index05 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX06">Conso index06 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX07">Conso index07 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX08">Conso index08 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX09">Conso index09 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX10">Conso index10 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX00_COUT">Coût total Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX01_COUT">Coût index01 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX02_COUT">Coût index02 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX03_COUT">Coût index03 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX04_COUT">Coût index04 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX05_COUT">Coût index05 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX06_COUT">Coût index06 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX07_COUT">Coût index07 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX08_COUT">Coût index08 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX09_COUT">Coût index09 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_TODAY_INDEX10_COUT">Coût index10 Aujourd\'hui</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_PROD_COUT">Revenus Production hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX00">Conso Totale hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX01">Conso index01 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX02">Conso index02 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX03">Conso index03 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX04">Conso index04 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX05">Conso index05 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX06">Conso index06 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX07">Conso index07 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX08">Conso index08 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX09">Conso index09 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX10">Conso index10 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX00_COUT">Coût total hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX01_COUT">Coût index01 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX02_COUT">Coût index02 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX03_COUT">Coût index03 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX04_COUT">Coût index04 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX05_COUT">Coût index05 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX06_COUT">Coût index06 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX07_COUT">Coût index07 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX08_COUT">Coût index08 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX09_COUT">Coût index09 hier</option>';
+        selRequestType += '<option value="STAT_YESTERDAY_INDEX10_COUT">Coût index10 hier</option>';
         selRequestType += '<option value="TENDANCE_DAY">Tendance journalière de consommation</option>';
         selRequestType += '<option value="PPAP_MANUELLE">Conso moy dernière minute</option>';
         selRequestType += '<option value="STAT_MOY_LAST_HOUR">Conso moy dernière heure</option>';
@@ -293,6 +380,9 @@ function addCmdToTable(_cmd) {
             }
             else if (_cmd.configuration['OPTARIF'].value.includes('BBR')){
                 $("#typeAbonnement").html("Tempo");
+            }
+            else if (_cmd.configuration['OPTARIF'].value.includes('EJP')){
+                $("#typeAbonnement").html("EJP");
             }
             else {
                 $("#typeAbonnement").html(_cmd.configuration['OPTARIF'].value);
@@ -378,6 +468,7 @@ $('#addStatToTable').on('click', function() {
     _cmd.configuration = {'type':'stat'};
     addCmdToTable(_cmd);
 });
+
 $('#addDataToTable').on('click', function() {
     var _cmd = {type: 'info'};
     _cmd.configuration = {'type':'data'};

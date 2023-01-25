@@ -6,6 +6,7 @@ Pour récupérer la Téléinformation il faut se connecter sur les bornes I1 et 
 
 <br>
 <br>
+
 ## Compteur électronique
 
 ![teleinfoelectronique1](../images/teleinfo_electronique1.png)
@@ -14,6 +15,7 @@ Pas de configuration spécifique pour ce type de compteur.
 
 <br>
 <br>
+
 ## Compteur Linky
 
 ![teleinfolinky1](../images/teleinfo_linky1.png)
@@ -35,30 +37,36 @@ Le compteur linky possède 2 modes de téléinformation
      Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), cocher 2 et si besoin sélectionner 9600 en 3 :
 <br>
 <br>
-     ![teleinfolinkyactive](../images/teleinformation_linky_act.png)
+
+![teleinfolinkyactive](../images/teleinformation_linky_act.png)
      
 <br>
 <br>
 <br>
 <br>
 <br>
+
 Cas d'utilisation de 2 compteurs
 ===
 
 
 ## Utilisation d'un second compteur
 <br>
+
 Si vous disposez de 2 compteurs chez vous, il faut le paramétrer (sauf si utilisation du modem ci dessous) :
 
 <br>
+
 ![teleinfo31](../images/teleinformation_2compteurs_bis.png)
 
 
 <br>
 
 <br>
+
 ## Utilisation du modem Cartelectronic 2 Compteurs
 <br>
+
 Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement de 2 compteurs électrique il est nécessaire d'activer le mode 2 compteurs.
 <br>
 

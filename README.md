@@ -1,4 +1,5 @@
-# plugin-teleinfo ![build](https://travis-ci.org/NextDom/plugin-teleinfo.svg?branch=master)
+# teleinfo
+ 
 
 Plugin pour utiliser les modems téléinformation USB sur Jeedom
 
