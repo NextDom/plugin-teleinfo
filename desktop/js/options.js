@@ -18,6 +18,18 @@ $('#btOptionsSave').off().on('click', function () {
 		}
     });
 
+console.log($("#indexConsoTotales").val());
+    console.log(jeedom.config.save({
+      plugin: "teleinfo",
+      configuration: {"indexConsoTotales" : $("#indexConsoTotales").val()},
+		error: function (error) {
+		$('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
+		},
+		success: function (data) {
+
+		}
+    }));
+
 console.log($("#indexConsoHP").val());
     console.log(jeedom.config.save({
       plugin: "teleinfo",
@@ -52,6 +64,17 @@ console.log($("#indexConsoHP").val());
         }
     }));
 
+    console.log($("#coutBase").val());
+        console.log(jeedom.config.save({
+          plugin: "teleinfo",
+          configuration: {"coutBase" : $("#coutBase").val()},
+    		error: function (error) {
+    		$('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
+    		},
+    		success: function (data) {
+
+    		}
+        }));
     console.log($("#coutHP").val());
         console.log(jeedom.config.save({
           plugin: "teleinfo",

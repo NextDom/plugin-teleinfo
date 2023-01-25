@@ -54,7 +54,7 @@ function miseEnForme(texte){
     return texte;
 }
 
-function optimize(cmd_id, type){
+function optimize(cmd_id, type, logicalId){
     if ($('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').attr('disabled') != "disabled"){
         $('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').attr('disabled','disabled');
     	$('.btTeleinfoMaintenance[cmd_id='+cmd_id+']').removeClass("btn-info").addClass("btn-warning");
@@ -68,6 +68,7 @@ function optimize(cmd_id, type){
                     action:'optimizeArchive',
                     id: cmd_id,
                     type: type,
+                    logicalId: logicalId,
                     },
                 dataType: 'json',
     	});
@@ -165,7 +166,7 @@ $('#table_maintenance .cmdMaintenance').each(function( index ) {
                         tempcount.find(".cmdMaintenanceAttr[type=optimize]").html('<a class="btn btn-sm btn-info tooltips btTeleinfoMaintenance" cmd_id="' + tempcount.attr( "cmd_id" ) + '" onclick="optimize(' + tempcount.attr( "cmd_id" ) + ',\'AVG\')" ><i class="fas fa-terminal"></i>{{ Optimiser (AVG)}}</a>');
                     }
                     else {
-                        tempcount.find(".cmdMaintenanceAttr[type=optimize]").html('<a class="btn btn-sm btn-info tooltips btTeleinfoMaintenance" cmd_id="' + tempcount.attr( "cmd_id" ) + '" onclick="optimize(' + tempcount.attr( "cmd_id" ) + ',\'MAX\')" ><i class="fas fa-terminal"></i>{{ Optimiser}}</a>');
+                        tempcount.find(".cmdMaintenanceAttr[type=optimize]").html('<a class="btn btn-sm btn-info tooltips btTeleinfoMaintenance" cmd_id="' + tempcount.attr( "cmd_id" ) + '" onclick="optimize(' + tempcount.attr( "cmd_id" ) + ',\'MAX\',\'' + tempcount.attr( "logicalId" ) + '\')" ><i class="fas fa-terminal"></i>{{ Optimiser}}</a>');
                     }
                 }
             }

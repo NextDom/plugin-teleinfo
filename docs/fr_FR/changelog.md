@@ -1,9 +1,25 @@
 # Changelog
 
-Pour toutes demandes : [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues)
+Pour toutes demandes : 
+ - [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) 
+ - [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
 
-## 4.7.1 (27-12-2022)
-Modification du panel:
+ -[Doc version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/)
+ -[Doc version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/)
+
+## 4.7.3 (24-01-2022) => version bêta
+- création d'index de 00 à 10 pour suivre tous les tarifs possibles en fonction de vos abonnements. Voir la doc https://noyax.github.io/plugin-teleinfo/fr_FR/index/
+- mise à jour de l'optimisation des données. Maintenant cette fonctionnalité conserve le mini par heure et le maxi de la dernière heure de la journée lorsque le mode d elissage est sur "aucun", la moyenne par heure lorsque le lissage est sur "moyenne" et le max de la journée pour les "STAT_YESTERDAY_***"
+
+## 4.7.2b (24-01-2022) => version stable
+- pas de nouveauté, juste pour dire que le v 4.7.3 est parue en version béta
+
+## 4.7.2a (14-01-2022)
+- correction manque courbe HC sur graph annuel
+- mise à jour de la documentation
+
+## 4.7.2 (27-12-2022)
+Modification du pannel:
 - ajout de la courbe des températures dans tous les graphiques sauf jour courant
 - durée de la courbe des consommations instantanées sur l'intégralité de la période sélectionnée et non plus sur seulement le jour en cours
 - ajout de case à cocher pour faire correspondre son abonnement aux courbes à afficher
@@ -14,8 +30,7 @@ Modification du panel:
 - ajout courbe pluri annuelle
 - pas mal de corrections de détails
 
-
-## 4.7 (04-02-2022)
+## 4.7.1 (04-02-2022)
 
 Ajout des modifications pour la compatibilité Jeedom 4.2. Merci à Noyax37
 passage en python3
@@ -30,8 +45,24 @@ ajout du fichier packages.json pour profiter de l'évolution de la gestion des d
 
 je ne sais plus...
 
-### 4.6.5 (28-10-2019)
+## 4.6.5b (provisoire 10-01-2023)
+Aucune modification apportée sauf la supression de "l'erreur 500". Il s'agit surtout d'un avis pour ceux qui sont encore avec ce plugin en version stable.
 
+La version 4.7.1 n'apporte aucun changement ni dans le traitement des données ni dans le traitement des statistiques juste dans leur affichage.
+
+Cette mise à jour et ce qui va suivre est expliqué là:
+https://community.jeedom.com/t/plugin-teleinfo-annonce-importante/99198?u=noyax37
+
+
+## 4.6.5b (provisoire 10-01-2023)
+Aucune modification apportée mais un avis pour ceux qui sont encore avec ce plugin en version stable.
+
+La version 4.7.1 n'apporte aucun changement ni dans le traitement des données ni dans le traitement des statistiques.
+
+Cette mise à jour et ce qui va suivre est expliqué là:
+https://community.jeedom.com/t/plugin-teleinfo-annonce-importante/99198
+
+### 4.6.5 (28-10-2019)
 * Correction calcul puissance dernière minute dans le cas de plusieurs compteurs
 
 ### 4.6.4 (28-10-2019)
