@@ -220,8 +220,9 @@ Si le nombre affiché dans la colonne "A lisser" est supérieur à 1 000 alors c
 
 L'action de ce bouton dépend de:
 - la commande est une des "STAT_YESTERDAY-***" : prend la valeur max de la journée et la recopie sur cette même journée à 00h 00mn 00s
+- la commande est une des "STAT_TODAY-***" : prend la valeur max de l'heure' et la recopie sur cette même heure à 00mn 00s
 - le mode de lissage a été paramétré sur "AVG" (moyenne): prend la valeur moyenne sur chaque intervalle horaire puis la replace à chaque heure à 00mn et 00s
-- le mode de lissage n'est pas paramétré: prend le min de chaque heure et le remplace à chaque heure corraspondante à 00mn 00s ET prend le max de la journée et le remplace sur cette journée à 23h 59mn 59s
+- le mode de lissage n'est pas paramétré: prend le min de chaque heure et le remplace à chaque heure correspondante à 00mn 00s ET prend le max de la journée et le replace sur cette journée à 23h 59mn 59s
 <br><br>
 
 
@@ -344,7 +345,77 @@ Une fois que vous aurez fini de configurer les 3 premiers points ci-dessus vous 
 - si possible allez voir dans le panel si les données sont conformes à ce que vous attendez.
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
+# Le panel
+<br><br>
 
+<a href="../../images/teleinfo_panel01.png">
+<img src="../../images/teleinfo_panel01.png" alt="configuration" style="width:600px;"/>
+<a>
+<br><br>
+
+## (1) Les options
+<br><br>
+
+**Les dates:** permettent de sélectionner la plage de temps concernant les différents graphique. Ne joue par sur le tableau des données.
+<br><br>
+
+**Le bouton €:** ne garde l'affichage que pour les données relatives aux coûts aussi bien sur le graphique que dans le tableau
+<br><br>
+
+**le bouton kWh:** ne garde l'affichage que pour les données relatives aux consommations aussi bien sur le graphique que dans le tableau
+<br><br>
+
+**le bouton "tout":** remet l'affichage de toutes les données de conso et de coûts
+<br><br>
+
+## (2) Les rubriques
+<br><br>
+
+Il y en a au moins deux qui seront affichées, les données relatives à la production ne seront affichées que si cette option est choisie dans les paramètres du compteur
+<br><br>
+
+## (3) les index:
+<br><br>
+
+Correspondent aux libellés qui auront été saisies dans les paramètres du compteur
+<br><br>
+
+# Les courbes
+<br><br>
+
+Voici les courbes que vous pourrez avoir:
+
+**Instantanées:**
+<br><br>
+
+<a href="../../images/teleinfo_panel02.png">
+<img src="../../images/teleinfo_panel02.png" alt="configuration" style="width:600px;"/>
+<a>
+<br><br>
+
+**Journalières:**
+<br><br>
+
+<a href="../../images/teleinfo_panel03.png">
+<img src="../../images/teleinfo_panel03.png" alt="configuration" style="width:600px;"/>
+<a>
+<br><br>
+
+**Mensuelles:**
+<br><br>
+
+<a href="../../images/teleinfo_panel04.png">
+<img src="../../images/teleinfo_panel04.png" alt="configuration" style="width:600px;"/>
+<a>
+<br><br>
+
+**Annuelles:**
+<br><br>
+
+<a href="../../images/teleinfo_panel05.png">
+<img src="../../images/teleinfo_panel05.png" alt="configuration" style="width:600px;"/>
+<a>
+<br><br><br><br><br><br><br><br><br><br><br><br>
 
 
 # [Retour à la documentation principale](/plugin-teleinfo/fr_FR/)
