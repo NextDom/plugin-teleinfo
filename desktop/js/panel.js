@@ -394,8 +394,8 @@ $.ajax({
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=month]'), 'month' , datacmd);
                                     monthHC = $('.teleinfoAttr[data-l1key=consoHC][data-l2key=month]').text.value;
-									console.log("[loadData][STAT_YESTERDAY_HC] " + monthHC)
-									getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=year]'), 'year' , datacmd);
+                  									console.log("[loadData][STAT_YESTERDAY_HC] " + monthHC)
+									                  getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=year]'), 'year' , datacmd);
                                     getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=yesterday]'), 'yesterday' , datacmd);
                                     commandesStat.push({"graph":"div_graphGlobalJournalier", "id":datacmd.id,"name":datacmd.name,"color":color[11],"stackGraph":stackGraph,"diviseur":diviseur});
                                     getDailyHistory('div_graphGlobalJournalier',datacmd, color[11], stackGraph, diviseur, serie);

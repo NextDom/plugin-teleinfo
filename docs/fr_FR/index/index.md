@@ -310,8 +310,8 @@ Une fois que vous aurez fini de configurer les 3 premiers points ci-dessus vous 
 2. Si un index n'a pas de champs sélectionné => pas de copie de données ni d'écrasement des anciennes données de l'index
 3. Si un index a un champ sélectionné mais qu'il n'y a pas d'enregistrement sur ce champ => écrasement des données existantes de l'index (peut être utilisé pour remettre à 0 des statistiques d'un index)
 4. Si un index n'a pas de tarif indiqué => écrasement des coûts enregistrés pour cet index
-6. pour lancer des copies il n'est pas nécessaire de sauvegarder donc les index continuent à être alimentés sans être perturbés.
-7. Aucune action de copie ne touche les champs de téléinfo archivés. Cela ne joue que sur l'archivage des index. Il n'y a donc aucun risque et toute mauvaise manipulation peut se rattraper.
+5. pour lancer des copies il n'est pas nécessaire de sauvegarder donc les index continuent à être alimentés sans être perturbés.
+6. Aucune action de copie ne touche les champs de téléinfo archivés. Cela ne joue que sur l'archivage des index. Il n'y a donc aucun risque et toute mauvaise manipulation peut se rattraper.
 <br><br>
 
 **Passons aux cas concrets:**

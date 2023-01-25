@@ -54,7 +54,6 @@ Cette mise à jour et ce qui va suivre est expliqué là:
 https://community.jeedom.com/t/plugin-teleinfo-annonce-importante/99198?u=noyax37
 
 
-
 ## 4.6.5b (provisoire 10-01-2023)
 Aucune modification apportée mais un avis pour ceux qui sont encore avec ce plugin en version stable.
 
