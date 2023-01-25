@@ -38,27 +38,7 @@ Décocher cette case permet au plugin de créer un nouveau compteur en fonction 
 Cette option n'est à décocher que si c'est votre première utilisation du plugin ou si vous changez de compteur ou encore si vous installez un nouveau compteur.
 <br><br><br><br><br><br><br>
 
-# Le Panel:
-<br><br>
-
-<a href="../../images/teleinformation_panel0.png">
-<img src="../../images/teleinformation_panel0.png" alt="configuration" style="width:600px;"/>
-<a>
-<br><br>
-
-Cocher cette case pour permettre l'affichage du panel que vous pourrez afficher via le menu:
-<br>
-
-<a href="../../images/teleinformation_panel1.png">
-<img src="../../images/teleinformation_panel1.png" alt="configuration" style="width:600px;"/>
-<a>
-<br><br>
-
-Le panel en lui même sera vu plus loin dans cette doc
-
-<br><br><br><br><br><br><br><br><br><br><br>
-
-# Configuration avancée:
+## (3) Configuration avancée:
 <br>
 
 
@@ -68,21 +48,41 @@ Cliquer sur le + permet d'afficher les paramètres de configuration du modem
 <a href="../../images/teleinfo_config03.png">
 <img src="../../images/teleinfo_config03.png" alt="configuration" style="width:600px;"/>
 <a>
-<br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br>
 
-## (1) Compteur type Linky:
+### (1) Compteur type Linky:
 <br>
 
 Cette option permet de faire la différence entre le mode TIC historique ou standard. Le mode TIC peut être identifié pour un compteur Linky sur la cadran du compteur en appuyant plusieurs fois sur le + ou le -. Tous les autres compteurs sont en mode historique, seul le Linky peut avoir un mode standard.
 Si vous avez un mode historique il ne faut pas cocher cette case
-<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br>
 
-## (2) Vitesse:
+### (2) Vitesse:
 <br>
 
 Si vous avez un mode historique la vitesse doit être fixée à 1200
 Si vous avez un mode standard la vitesse doit être fixée à 9600
 <br><br><br><br><br><br><br><br><br><br><br><br>
+
+# Le Panel:
+<br><br>
+
+<a href="../../images/teleinformation_panel0.png">
+<img src="../../images/teleinformation_panel0.png" alt="configuration" style="width:600px;"/>
+<a>
+<br><br><br><br>
+
+Cocher cette case pour permettre l'affichage du panel que vous pourrez afficher via le menu:
+<br><br><br>
+
+<a href="../../images/teleinformation_panel1.png">
+<img src="../../images/teleinformation_panel1.png" alt="configuration" style="width:400px;"/>
+<a>
+<br><br>
+
+Le panel en lui même sera vu plus loin dans cette doc
+
+<br><br><br><br><br><br><br><br><br><br><br>
 
 # Options:
 <br>
@@ -103,28 +103,34 @@ Permet d'indiquer au plugin quel est l'index qui sert à construire les statisti
 
 ## (2) Index conso HP
 <br>
+
 Si vous avez un abonnement HP / HC
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## (3) Index conso HC
 <br>
+
 Si vous avez un abonnement HP / HC
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## (4) Index Production
 <br>
+
 Si vous avez un compteur qui sert aussi à comptabiliser la production que vous envoyez vers le réseau (option uniquement possible avec un linky en mode standard)
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## (5) Prix kWh
 <br>
+
 Sert à indiquer le tarif appliqué pour chaque index cité avant
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
 # Le compteur
 <br>
+
 Si des trames TIC sont reçues par le plugin et que l'option de création automatique de nouveau compteur n'est pas bloquée alors celui ci va créer un nouveau compteur:
 <br><br>
+
 <a href="../../images/teleinfo_compteur02.png">
 <img src="../../images/teleinfo_compteur02.png" alt="configuration" style="width:600px;"/>
 <a>
@@ -140,36 +146,99 @@ En cliquant dessus vous rentrez dans l'équipement
 <a>
 <br><br>
 
-## (1) Paramètres de base
+## (1) Paramètres classiques
 <br>
+
 rien de neuf
 <br><br>
 
 ## (2)Création des commandes
 <br>
+
 Autorise la création de nouvelles commandes reçues via le modem. Permet de créer automatiquement les commandes qui n'existaient pas avant ou qui auraient été effacées.
+<br><br>
+
+Les commandes ne sont crées que si elles sont effectivement reçues par la trame TIC.
 <br><br>
 
 ## (3) Compteur en mode conso ET prod
 <br>
+
 Introduit avec la version 4.7.2, permet de suivre les statistiques d'un compteur servant à comptabiliser sa consommation et sa production. Production en autoconsommation par exemple. Cette possibilité n'existe que si vous avez un linky en mode standard.
 <br><br>
 
 ## (4) Abo HP / HC (ancienne méthode)
 <br>
+
 Si vous voulez continuer à suivre les statistiques dans le panel de votre compteur de la même façon qu'avant la V4.7.3 et que vous avez un abonnement qui incrémente les index HP et HC
 <br><br>
 
 ## (5) Utilisation des nouveaux index (nouveau)
 <br><br>
+
 Permet de suivre jusqu'à 10 index dans le panel paramètrables indépendamment les uns des autres + l'index 00 qui sert soit au suivi des conso pour un abonnement de base soit de totalisateur de l'ensembles des index de 01 à 10.
+<br><br><br><br><br><br><br><br><br><br>
+
+## (6) Maintenance
+<br><br>
+
+L'écran sur lequel on arrive en cliquant sur ce bouton sert à montrer l'utilisation en base de données des différentes commandes et à en assurer la maintenance (lissage des données).
+<br><br>
+
+<a href="../../images/teleinfo_maintenance.png">
+<img src="../../images/teleinfo_maintenance.png" alt="configuration" style="width:800px;"/>
+<a>
+
+### (1) Regénérer les stats mensuelles
+<br><br>
+
+Ancienne méthode, a une action sur les statistiques HP / HC et Prod. Ne plus employer si vous utilisez les nouveaux index
+<br><br>
+
+### (2) Nombre en base
+<br><br>
+
+Correspond au total d'enregistrement associés à la commande correspondante
+<br><br>
+
+### (3) A lisser
+<br><br>
+
+Correspond au total d'enregistrement dont les heures en base ne sont pas égales à **h 00mn 00s
+<br><br>
+
+### (4) Lissage
+<br><br>
+
+Affiche le mode de lissage utilisé pour la commande correspondante. Si un lissage est paramétré dans votre commande alors cela sera affiché ici: "AVG" (moyenne), "MAX" ou "MIN". Si aucun lissage n'est paramétré pour cette commande alors il sera affiché "aucun".
+<br><br>
+
+### (5) >_optimiser
+<br><br>
+
+Si le nombre affiché dans la colonne "A lisser" est supérieur à 1 000 alors ce bouton apparait.
+
+L'action de ce bouton dépend de:
+- la commande est une des "STAT_YESTERDAY-***" : prend la valeur max de la journée et la recopie sur cette même journée à 00h 00mn 00s
+- le mode de lissage a été paramétré sur "AVG" (moyenne): prend la valeur moyenne sur chaque intervalle horaire puis la replace à chaque heure à 00mn et 00s
+- le mode de lissage n'est pas paramétré: prend le min de chaque heure et le remplace à chaque heure corraspondante à 00mn 00s ET prend le max de la journée et le remplace sur cette journée à 23h 59mn 59s
+<br><br>
+
+
+**IMPORTANT:** cette opération est destructrice, pensez à faire une sauvegarde de votre base au cas où un problème survient pendant cette manipulation.
+<br><br>
+
+**IMPORTANT bis:** Il est préférable de na pas demander à JEEDOM de lisser automatiquement les index utilisés pour construire les statistiques. En effet JEEDOM ne prend pas la valeur max de la journée lors su lissage ce qui peut ammener à ne pas tenir compte de la dernère heure de la journée (ou de la première si le lissage est sur la valeur MAX). L'inconvénient est qu'il faut penser régulièrement à faire la maintenance des données. Dans une version future je pense proposer le lissage type TELEINFO à intervalle régulier en option.
+
 <br><br><br><br><br><br><br><br><br><br>
 
 # L'équipement 2/2:
 <br>
+
 <a href="../../images/teleinfo_equipement02.png">
-<img src="../../images/teleinfo_equipement02.png" alt="configuration" style="width:600px;"/>
+<img src="../../images/teleinfo_equipement02.png" alt="configuration" style="width:800px;"/>
 <a>
+
 <br><br>
 
 ## (1) Libellés
@@ -186,16 +255,17 @@ Ce sont ces libellés qui vont servir de nom pour l'affichage des statistiques e
 
 ## (2) Les champs de téléinformation
 <br>
+
 <a href="../../images/teleinfo_equipement03.png">
-<img src="../../images/teleinfo_equipement03.png" alt="configuration" style="width:600px;"/>
+<img src="../../images/teleinfo_equipement03.png" alt="configuration" style="width:200px;"/>
 <a>
 <br><br>
 
 Liste de choix proposant de choisir en fonction de votre mode du TIC:
-1. **historique**: "HCHC" ou "HCHP3 ou ... 
+1. **historique**: "HCHC" ou "HCHP" ou ... 
 2. **standard**: "EASF01" ou "EASF02" ou ...
 
-Ces choix devront être fait en fonction de votre abonnement. Pour vous aider vous pouvez vous reporter à la documentation Enedis [Enedis-NOI-CPT_54E.pdf](../images/Enedis-NOI-CPT_54E.pdf) ou vous appuyer sur le tableau ci dessous:
+Ces choix devront être fait en fonction de votre abonnement. Pour vous aider vous pouvez vous reporter à la documentation Enedis [Enedis-NOI-CPT_54E.pdf](../../images/Enedis-NOI-CPT_54E.pdf) ou vous appuyer sur le tableau ci dessous:
 
 <br>
 <a href="../../images/teleinformation_liste_index.png">
@@ -208,13 +278,14 @@ Ces champs peuvent être mis sur n'importe quel index, l'important pour vous c'e
 
 Vous pouvez aussi profiter de ces 10 index disponibles pour afficher les évolutions de vos abonnements. Par exemple, vous étiez en abonnement HP/HC et vous venez de passer en Tempo, vous pouvez très bien suivre vos index comme cela:
 <br>
-<a href="../../images/teleinfo_equipement03.png">
-<img src="../../images/teleinfo_equipement03.png" alt="configuration" style="width:600px;"/>
+
+<a href="../../images/teleinfo_equipement04.png">
+<img src="../../images/teleinfo_equipement04.png" alt="configuration" style="width:600px;"/>
 <a>
 <br><br>
 
 **Important:** 
-1. l'enregistrement des index commence dès la sauvegarde de ces infos. Tant qu'il n'y a pas de sauvegarde la configuration précédente est toujurs utilisée
+1. l'enregistrement des index commence dès la sauvegarde de ces infos. Tant qu'il n'y a pas de sauvegarde la configuration précédente est toujours utilisée
 2. s'il y a un libellé inscrit mais qu'il n'y a pas de champs sélectionné => l'affichage des statistiques déjà enregistrées continue mais il n'y a plus de nouveaux enregistrements. Cette possibilité permet de pouvoir continuer à afficher les courbes et les statistiques d'un champs qui soit n'existe plus soit a changé d'utilisation à cause d'un changement d'abonnement. Par exemple le champs EASF02 sert à totaliser les HP si vous avez un abonnement HP/HC mais peut aussi servir à totaliser les HP Jour Bleu d'un abonnement Tempo. Donc si vous passez de l'un à l'autre la signification change.
 
 ## (3) Les tarifs
@@ -239,7 +310,6 @@ Une fois que vous aurez fini de configurer les 3 premiers points ci-dessus vous 
 2. Si un index n'a pas de champs sélectionné => pas de copie de données ni d'écrasement des anciennes données de l'index
 3. Si un index a un champ sélectionné mais qu'il n'y a pas d'enregistrement sur ce champ => écrasement des données existantes de l'index (peut être utilisé pour remettre à 0 des statistiques d'un index)
 4. Si un index n'a pas de tarif indiqué => écrasement des coûts enregistrés pour cet index
-5. Si un index n'a pas de coûts indiqué => écrasement des coûts enregistrés pour cet index
 6. pour lancer des copies il n'est pas nécessaire de sauvegarder donc les index continuent à être alimentés sans être perturbés.
 7. Aucune action de copie ne touche les champs de téléinfo archivés. Cela ne joue que sur l'archivage des index. Il n'y a donc aucun risque et toute mauvaise manipulation peut se rattraper.
 <br><br>
