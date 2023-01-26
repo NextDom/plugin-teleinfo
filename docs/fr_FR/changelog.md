@@ -4,11 +4,23 @@ Pour toutes demandes :
  - [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) 
  - [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
 
-## 4.7.2a (14-01-2022) => version stable
+ - [Doc version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/)
+ - [Doc version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/)
+
+ - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
+ - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
+
+## 4.7.2b (24-01-2022) => version stable
+
+- pas de nouveauté, juste pour dire que le v 4.7.3 est parue en version béta, voir chagelog bêta ci dessus pour plus d'info.
+
+## 4.7.2a (14-01-2022)
+
 - correction manque courbe HC sur graph annuel
 - mise à jour de la documentation
 
 ## 4.7.2 (27-12-2022)
+
 Modification du pannel:
 - ajout de la courbe des températures dans tous les graphiques sauf jour courant
 - durée de la courbe des consommations instantanées sur l'intégralité de la période sélectionnée et non plus sur seulement le jour en cours
@@ -36,6 +48,7 @@ ajout du fichier packages.json pour profiter de l'évolution de la gestion des d
 je ne sais plus...
 
 ## 4.6.5b (provisoire 10-01-2023)
+
 Aucune modification apportée sauf la supression de "l'erreur 500". Il s'agit surtout d'un avis pour ceux qui sont encore avec ce plugin en version stable.
 
 La version 4.7.1 n'apporte aucun changement ni dans le traitement des données ni dans le traitement des statistiques juste dans leur affichage.
