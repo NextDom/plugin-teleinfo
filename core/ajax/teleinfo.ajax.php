@@ -220,7 +220,7 @@ try {
                     if (init('type') != "AVG"){
                         $sql = "SELECT cmd_id,datetime, max(value) as value 
                             FROM historyArch 
-                            WHERE (cmd_id=:cmdId) 
+                            WHERE (cmd_id=:cmdId) AND `datetime` < date(NOW())
                             GROUP BY YEAR(datetime),MONTH(datetime),DAY(datetime)";
                         $maxJournee = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
                     }

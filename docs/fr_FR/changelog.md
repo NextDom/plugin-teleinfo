@@ -4,10 +4,16 @@ Pour toutes demandes :
  - [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) 
  - [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
 
- -[Doc version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/)
- -[Doc version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/)
+ - [Doc version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/)
+ - [Doc version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/)
 
-## 4.7.3 (24-01-2022) => version bêta
+ - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
+ - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
+
+## 4.7.3a (24-01-2022) => version bêta
+- correction sur la fonction "optimize" pour ne pas enregistrer la valeur max du jour actuel à 23h59mn59s alors que la journée n'est pas terminée
+
+## 4.7.3 (24-01-2022)
 - création d'index de 00 à 10 pour suivre tous les tarifs possibles en fonction de vos abonnements. Voir la doc https://noyax.github.io/plugin-teleinfo/fr_FR/index/
 - mise à jour de l'optimisation des données. Maintenant cette fonctionnalité conserve le mini par heure et le maxi de la dernière heure de la journée lorsque le mode d elissage est sur "aucun", la moyenne par heure lorsque le lissage est sur "moyenne" et le max de la journée pour les "STAT_YESTERDAY_***"
 
