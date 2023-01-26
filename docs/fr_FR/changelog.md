@@ -4,8 +4,11 @@ Pour toutes demandes :
  - [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) 
  - [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
 
- -[Doc version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/)
- -[Doc version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/)
+ - [Doc version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/)
+ - [Doc version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/)
+
+ - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
+ - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
 ## 4.7.3a (24-01-2022) => version bêta
 - correction sur la fonction "optimize" pour ne pas enregistrer la valeur max du jour actuel à 23h59mn59s alors que la journée n'est pas terminée
