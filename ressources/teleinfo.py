@@ -73,7 +73,6 @@ class Teleinfo:
                             premtrame = False
                         else:
                             resp = (globals.TELEINFO_SERIAL.readline().decode("UTF-8"))
-
                         if len(resp.replace('\r', '').replace('\n', '').split('\x09')) == 4:
                             name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                             # checksum = ' '

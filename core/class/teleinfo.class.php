@@ -637,43 +637,43 @@ class teleinfo extends eqLogic
 				}
 				if ($cmd->getConfiguration('info_conso') == $index01) {
 					$idIndex01 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index01 ' . $idIndex01);
+					log::add('teleinfo', 'debug', 'Id Index01 ' . $idIndex01);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index02) {
 					$idIndex02 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index02 ' . $idIndex02);
+					log::add('teleinfo', 'debug', 'Id Index02 ' . $idIndex02);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index03) {
 					$idIndex03 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index03 ' . $idIndex03);
+					log::add('teleinfo', 'debug', 'Id Index03 ' . $idIndex03);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index04) {
 					$idIndex04 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index04 ' . $idIndex04);
+					log::add('teleinfo', 'debug', 'Id Index04 ' . $idIndex04);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index05) {
 					$idIndex05 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index05 ' . $idIndex05);
+					log::add('teleinfo', 'debug', 'Id Index05 ' . $idIndex05);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index06) {
 					$idIndex06 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index06 ' . $idIndex06);
+					log::add('teleinfo', 'debug', 'Id Index06 ' . $idIndex06);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index07) {
 					$idIndex07 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index07 ' . $idIndex07);
+					log::add('teleinfo', 'debug', 'Id Index07 ' . $idIndex07);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index08) {
 					$idIndex08 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index08 ' . $idIndex08);
+					log::add('teleinfo', 'debug', 'Id Index08 ' . $idIndex08);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index09) {
 					$idIndex09 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index09 ' . $idIndex09);
+					log::add('teleinfo', 'debug', 'Id Index09 ' . $idIndex09);
 				}
 				if ($cmd->getConfiguration('info_conso') == $index10) {
 					$idIndex10 = $cmd->getId();
-					log::add('teleinfo', 'debug', 'Index10 ' . $idIndex10);
+					log::add('teleinfo', 'debug', 'Id Index10 ' . $idIndex10);
 				}
 				log::add('teleinfo', 'debug', 'liste des donnees' . $cmd->getConfiguration('info_conso'));
             }
@@ -702,7 +702,7 @@ class teleinfo extends eqLogic
                     $e = 'Coutkwhindex0' . $i;
 				}
 				if (${$a} >= 1) {
-					log::add('teleinfo', 'debug', 'Index à trouver ' . $i . ' = ' . $a);
+                    log::add('teleinfo', 'debug', 'Index à trouver ' . $i . ' = ' . $a);
 					log::add('teleinfo', 'debug', 'Id Index ' . $i . ' = ' . ${$a});
 					$cmd = cmd::byId(${$a});
 					$statMaxToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['max'];
@@ -712,12 +712,16 @@ class teleinfo extends eqLogic
 					$$b = intval($statMaxToday) - intval($statMinToday);
 					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' --> ' . ${$b});
                     $$d = $$b * $$e / 1000;
-                    $Coutindex00 += ${$d};
+                    if ($i == 0){
+                        $Coutindex00 = ${$d};
+                    }else{
+                        $Coutindex00 += ${$d};
+                    }
                     log::add('teleinfo', 'info', 'Coût Index00 ' . $Coutindex00); 
 					log::add('teleinfo', 'info', 'Coût au kWh Index ' . $i . ' --> ' .${$e}. ' coût pour cet index aujourd hui --> ' .${$d});
-				}
+					
 			}
-
+            
             foreach ($statTotalToCumul as $key => $value) {
                 log::add('teleinfo', 'debug', 'Commande Conso totale N° ' . $value);
                 $cmd            = cmd::byId($value);
@@ -1369,6 +1373,7 @@ class teleinfo extends eqLogic
 
                 $indexoriginebase=$eqLogic->getCmd('info', 'BASE');
                 $indexorigineeast=$eqLogic->getCmd('info', 'EAST');
+                
                 // mise dans index origine pour recalcul de tous sauf 00 et prod
                 for ($i=1;$i<12;$i++){
                     $indexorigine[$i] = $eqLogic->getCmd('info', $indexcopy[$i]);
