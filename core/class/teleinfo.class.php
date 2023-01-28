@@ -719,7 +719,7 @@ class teleinfo extends eqLogic
                     }
                     log::add('teleinfo', 'info', 'Coût Index00 ' . $Coutindex00); 
 					log::add('teleinfo', 'info', 'Coût au kWh Index ' . $i . ' --> ' .${$e}. ' coût pour cet index aujourd hui --> ' .${$d});
-					
+                }
 			}
             
             foreach ($statTotalToCumul as $key => $value) {
