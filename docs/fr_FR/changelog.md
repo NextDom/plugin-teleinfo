@@ -10,7 +10,10 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
-## 4.7.3b (28-01-2022) => version bêta
+## 4.7.3c (29-01-2022) => version bêta
+- correction suite à une erreur de saisie qui faisait planter le plugin.
+
+## 4.7.3b (28-01-2022)
 - correction sur la fonction qui calcule le coût de la journée qui comptait en double uniquement pour un abonnement de base.
 
 ## 4.7.3a (27-01-2022)
