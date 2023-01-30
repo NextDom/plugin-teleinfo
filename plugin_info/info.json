@@ -11,11 +11,12 @@
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 45,
 	"link" : {
-		"forum":"https://community.jeedom.com/tag/plugin-teleinfo"
+		"forum":"https://community.jeedom.com/tag/plugin-teleinfo",
+		"Fil d'actualité du plugin":"https://community.jeedom.com/t/plugin-teleinfo-actualites/100688?u=noyax37"
 	},
 	"changelog" : "https://NextDom.github.io/plugin-teleinfo/fr_FR/changelog",
 	"documentation" : "https://NextDom.github.io/plugin-teleinfo/fr_FR/",
 	"changelog_beta" : "https://Noyax.github.io/plugin-teleinfo/fr_FR/changelog",
 	"documentation_beta" : "https://Noyax.github.io/plugin-teleinfo/fr_FR/",
-	"pluginVersion" : "4.7.3c"
+	"pluginVersion" : "4.7.3d"
 }
