@@ -41,11 +41,13 @@ $('#bt_teleinfoPanelSante').on('click', function() {
 
 $('#bt_teleinfoCout').on('click', function() {
     if (newIndex){
-        $('.couts').show();
-        $('.PRODCOUT').show();
+        if (prodEtConso == 1){
+            $('.PRODCOUT').show();
+            $('.PRODCONSO').hide();
+        }
         $('.index').hide();
-        $('.PRODCONSO').hide();
-    }else{
+        $('.couts').show();
+            }else{
         if (isCoutVisible === false){
             isCoutVisible = true;
             $('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]').show();
@@ -62,7 +64,9 @@ $('#bt_teleinfoCout').on('click', function() {
             $('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]').show();
             $('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]').show();
             $('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]').show();
-            $('.PRODCOUT').show();
+            if (prodEtConso == 1){
+                $('.PRODCOUT').show();
+            }
         }else{
             isCoutVisible = false;
             $('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]').hide();
@@ -86,19 +90,23 @@ $('#bt_teleinfoCout').on('click', function() {
 
 $('#bt_teleinfoConso').on('click', function() {
     if (newIndex){
+        if (prodEtConso == 1){
+            $('.PRODCOUT').hide();
+            $('.PRODCONSO').show();
+        }
         $('.couts').hide();
-        $('.PRODCOUT').hide();
         $('.index').show();
-        $('.PRODCONSO').show();
     }
 });
 
 $('#bt_teleinfoTout').on('click', function() {
     if (newIndex){
+        if (prodEtConso == 1){
+            $('.PRODCOUT').show();
+            $('.PRODCONSO').show();
+        }
         $('.couts').show();
-        $('.PRODCOUT').show();
         $('.index').show();
-        $('.PRODCONSO').show();
     }
 });
 
@@ -190,13 +198,25 @@ $.ajax({
 			var commande;
 			var consommation;
             var colori;
-
+            if (data.result[globalEqLogic].configuration.ActivationProduction == 1){
+                prodEtConso = true;
+            }
             console.log("[loadData] Nom de l'objet => " + data.result[globalEqLogic].name);
 
             console.log("[si c'est prod = 1 ] => " + data.result[globalEqLogic].configuration.ActivationProduction);
             
             console.log("[si c'est HC HP = 1 ] => " + data.result[globalEqLogic].configuration.HCHP);
-			
+
+            if (prodEtConso ==1){
+                $('.PRODCOUT').show();
+                $('.PRODUCTION').show();
+                $('.PRODCONSO').show();
+            }else{
+                $('.PRODCOUT').hide();
+                $('.PRODUCTION').hide();
+                $('.PRODCONSO').hide();
+            }
+            
 			var y;
 			let index_nom =[];
             let index_cout =[];
@@ -226,6 +246,7 @@ $.ajax({
                             Number(data.result[globalEqLogic].configuration.Coutindex09),
                             Number(data.result[globalEqLogic].configuration.Coutindex10)];
                 $('.teleinfoAttr[data-l1key=titre][data-l2key=Index00]').text(index_nom[0]);
+
 
                 for(i=1;i<11;i++){
                     if (i<10){
@@ -301,12 +322,12 @@ $.ajax({
 			}else{
                 HCHP = true;
 			}
-            if(data.result[globalEqLogic].configuration.ActivationProduction == 0){
-				 y = document.getElementsByClassName('PROD');
-				 for (j = 0; j < y.length; j++) {
-					y[j].style.display = 'none';
-				}
-			}
+//            if(data.result[globalEqLogic].configuration.ActivationProduction == 0){
+//				 y = document.getElementsByClassName('PROD');
+//				 for (j = 0; j < y.length; j++) {
+//					y[j].style.display = 'none';
+//				}
+//			}
             if(newIndex){
 				 y = document.getElementsByClassName('TOTAL');
 				 for (j = 0; j < y.length; j++) {
@@ -641,7 +662,8 @@ $.ajax({
                                             if(!compteurProd){
                                                 if (test.includes("COUT")){
                                                     console.log("[loadData 1][STAT_TODAY_INDEX_COUT " + indexEnCours + "] " + cout + ' ' + indexCout);
-                                                    $('.teleinfoAttr[data-l1key='+ cout + '][data-l2key=day]').text((datacmd.value).toFixed(2));
+                                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=day]'), 'day' , datacmd, 1);
+                                                    //$('.teleinfoAttr[data-l1key='+ cout + '][data-l2key=day]').text((datacmd.value).toFixed(2));
                                                     //if (indexEnCours == 0){
                                                         nomIndex = index_nom[indexEnCours];
                                                         commande = datacmd;
@@ -653,7 +675,8 @@ $.ajax({
                                                     //}
                                                 }else{
                                                     console.log("[loadData 2][STAT_TODAY_INDEX " + indexEnCours + "] " +datacmd.id + ' ' + (datacmd.value));
-                                                    $('.teleinfoAttr[data-l1key='+ consommation + '][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
+                                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=day]'), 'day' , datacmd);
+                                                    //$('.teleinfoAttr[data-l1key='+ consommation + '][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
                                                 }
                                             }
                                         }
@@ -1140,6 +1163,10 @@ function getCommandHistoryValue(div, type , object, coutoui = 1000, virgule = 1)
     var to = moment().format('YYYY-MM-DD 23:59:59');
     virgule = 2;
     switch (type){
+        case 'day':
+            from = moment().format('YYYY-MM-DD 00:00:00');
+            to = moment().format('YYYY-MM-DD 23:59:59');
+        break;
         case 'monthLastYear':
             from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
             to = moment().subtract(1, 'years').endOf('month').format('YYYY-MM-DD 23:59:59');
@@ -1182,7 +1209,7 @@ function getCommandHistoryValue(div, type , object, coutoui = 1000, virgule = 1)
         error: function (error) {
         },
         success: function (myCommandHistory) {
-            if (coutoui == 1 || type == 'yesterday'){
+            if (coutoui == 1 || type == 'yesterday' || type == 'day'){
                 virgule = 2;
             }else{
                 if (type == 'month' || type == 'monthLastYearPartial'){
@@ -1193,12 +1220,16 @@ function getCommandHistoryValue(div, type , object, coutoui = 1000, virgule = 1)
             }
             if(myCommandHistory.data.length != 0){ 
                 if(myCommandHistory.data.length == 1){ // || type == 'yesterday'){
-                div.text((myCommandHistory.maxValue / coutoui).toFixed(virgule))
-                console.log("[Object 1] " + object.id + " [getCommandHistoryValue 1] " + object.name + " " + type + " | from : " + from + " | to : " + to + " | value : " + (myCommandHistory.maxValue/coutoui).toFixed(virgule));
+                    div.text((myCommandHistory.maxValue / coutoui).toFixed(virgule))
+                    console.log("[Object 1] " + object.id + " [getCommandHistoryValue 1] " + object.name + " " + type + " | from : " + from + " | to : " + to + " | value : " + (myCommandHistory.maxValue/coutoui).toFixed(virgule));
                 }else {
-                myCommandHistory.data.splice(-1,1);
-                div.text((myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(virgule));
-                console.log("[Object 2] " + object.id + " [getCommandHistoryValue 2] " + object.name + " "  + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui);
+                    myCommandHistory.data.splice(-1,1);
+                    if (type == 'day'){
+                        div.text((myCommandHistory.data.reduce(function(prev, cur) {  return cur[1];}, 0) / coutoui).toFixed(virgule));
+                    }else{
+                        div.text((myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(virgule));
+                    }
+                    console.log("[Object 2] " + object.id + " [getCommandHistoryValue 2] " + object.name + " "  + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui);
                 }
             }
         }
@@ -1281,8 +1312,7 @@ function getCommandHistoryCout(div, type, cout, object) {
 							console.log("[getCommandHistoryCout 3] " + type + " " + cout + " : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000 + " * " + valeurCout + " = " + tableCouts[type])
                           }
 						}
-
-                        div.text(' (~' + tableCouts[type].toFixed(0) + ' €)');
+                        div.text('( ~' + tableCouts[type].toFixed(0) + ' )');
                     }
                 });
             }
