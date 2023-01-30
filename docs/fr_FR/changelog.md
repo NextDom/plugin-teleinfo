@@ -1,5 +1,7 @@
 # Changelog
 
+**[Fil d'actualité du plugin](https://community.jeedom.com/t/plugin-teleinfo-actualites/100688?u=noyax37)**
+
 Pour toutes demandes : 
  - [https://github.com/NextDom/plugin-teleinfo/issues](https://github.com/NextDom/plugin-teleinfo/issues) 
  - [https://community.jeedom.com/tag/plugin-teleinfo](https://community.jeedom.com/tag/plugin-teleinfo)
@@ -10,7 +12,13 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
-## 4.7.3c (29-01-2022) => version bêta
+## 4.7.3d (31-01-2022) => version bêta
+- modif pour tenir compte des index à 0 sur la journée pour les abonnements autres que BASE
+- modif pour générer les stats globales (somme des index) pour les compteur dont la TIC fonctionne en mode historique.
+- correction d'une erreur d'affichage concernant la partie PROD du tableau du panel quand elle ne doit pas être affichée
+Vous serez sans doute obligé de relancer une copie des index
+
+## 4.7.3c (29-01-2022)
 - correction suite à une erreur de saisie qui faisait planter le plugin.
 
 ## 4.7.3b (28-01-2022)

@@ -577,6 +577,8 @@ class teleinfo extends eqLogic
             $Coutkwhindex09 = $eqLogic->getConfiguration('Coutindex09');
             $Coutkwhindex10 = $eqLogic->getConfiguration('Coutindex10');
 
+            $linky = config::byKey('linky', 'teleinfo');
+
 			if ($index01 != '') {
 				log::add('teleinfo', 'info', 'Index 01     --> ' . $index01);
 			}
@@ -715,6 +717,9 @@ class teleinfo extends eqLogic
                     if ($i == 0){
                         $Coutindex00 = ${$d};
                     }else{
+                        if ($linky == 0){
+                            $statTodayIndex00 += ${$b};
+                        }                        
                         $Coutindex00 += ${$d};
                     }
                     log::add('teleinfo', 'info', 'Coût Index00 ' . $Coutindex00); 
@@ -972,7 +977,8 @@ class teleinfo extends eqLogic
 			$index09 = $eqLogic->getConfiguration('index09');
 			$index10 = $eqLogic->getConfiguration('index10');
             $prod    = intval($eqLogic->getConfiguration('ActivationProduction'));
-            
+            $linky = config::byKey('linky', 'teleinfo');
+
             if ((floatval($eqLogic->getConfiguration('CoutindexProd')) <> 0) && ($prod == 1)) {
                 $CoutIndexProd = floatval($eqLogic->getConfiguration('CoutindexProd'));
                 log::add('teleinfo', 'info', 'EAIT revenus au kWh = ' . strval($CoutIndexProd));
@@ -1123,6 +1129,10 @@ class teleinfo extends eqLogic
 					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' hier --> ' . ${$c});
                     $cmd = cmd::byId(${$d});
                     $$e = floatval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
+                    if ($linky==0 && $i!=0){
+                        $statYesterdayTotalIndex00 += ${$c};
+                        $statYesterdayCoutTotalIndex00 += ${$e};
+                    }
 					log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d});
                 }
 			}
@@ -1368,7 +1378,7 @@ class teleinfo extends eqLogic
                     $iddestination[$i] = $indexdestination[$i]->getId();
                     $idcoutdest[$i] = $coutdestination[$i]->getId();
                 }                        
-                            
+                //$linky = config::byKey('linky', 'teleinfo');
                 $statIndex00 = 0;
 
                 $indexoriginebase=$eqLogic->getCmd('info', 'BASE');
@@ -1396,6 +1406,8 @@ class teleinfo extends eqLogic
                     $coutotal1 = 0;
                     $statTotal2 = 0;
                     $coutotal2 = 0;
+                    $aboBase = false;
+                    $aboBaseCouts = false;
 
                     
                     //recalcul des index + coûts base
@@ -1416,6 +1428,7 @@ class teleinfo extends eqLogic
                     }
                     //remise en place des index et coûts base + EAST
                     if (($statTotal1 + $statTotal2) <> 0){
+                        $aboBase = true;
                         $history = new history();
                         $history->setCmd_id($iddestination[0]);
                         $history->setDatetime($date2->format('Y-m-d 00:00:00'));
@@ -1424,7 +1437,7 @@ class teleinfo extends eqLogic
                         $history->save();
                         if (($coutotal1 + $coutotal2) <> 0){ 
                             //$coutotal2 += $coutotal;
-                            
+                            $aboBaseCouts = true;
                             $historycout = new history();
                             $historycout->setCmd_id($idcoutdest[0]);
                             $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
@@ -1439,13 +1452,6 @@ class teleinfo extends eqLogic
                             $historycout->setValue(' ');
                             $historycout->save();
                         }
-                    }else{
-                        $history = new history();
-                        $history->setCmd_id($iddestination[0]);
-                        $history->setDatetime($date2->format('Y-m-d 00:00:00'));
-                        $history->setTableName('historyArch');
-                        $history->setValue(' ');
-                        $history->save();
                     }
 
 
@@ -1516,7 +1522,7 @@ class teleinfo extends eqLogic
                                     $history->setValue(intval($statTotal1));
                                     $history->save();
                                     if ($coutotal <> 0){ 
-                                        $coutotal2 = $coutotal2 + $coutotal;
+                                        $coutotal2 += $coutotal;
                                         $historycout = new history();
                                         $historycout->setCmd_id($idcoutdest[$j]);
                                         $historycout->setDatetime($date2->format('Y-m-d 00:00:00'));
@@ -1555,7 +1561,27 @@ class teleinfo extends eqLogic
                             }
                         }
                     }
-                    if (!$indexcout00){
+                    // s'il n'y a pas d'index de base (BASE ou EAST) sur la période on prend la somme des index
+                    if (!$aboBase){
+                        if ($statTotal2 <> 0){
+                            $history = new history();
+                            $history->setCmd_id($iddestination[0]);
+                            $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                            $history->setTableName('historyArch');
+                            $history->setValue($statTotal2);
+                            $history->save();
+                        }else{
+                            $history = new history();
+                            $history->setCmd_id($iddestination[0]);
+                            $history->setDatetime($date2->format('Y-m-d 00:00:00'));
+                            $history->setTableName('historyArch');
+                            $history->setValue(' ');
+                            $history->save();
+                        }
+                    }
+                
+                    // s'il n'y a pas de tarif au kwh alors on prend la somme des index
+                    if (!$aboBaseCouts){
                         if ($coutotal2 <> 0){
                             $historycout = new history();
                             $historycout->setCmd_id($idcoutdest[0]);

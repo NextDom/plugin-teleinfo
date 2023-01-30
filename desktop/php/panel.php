@@ -247,8 +247,8 @@ $eqLogics = eqLogic::byType('teleinfo');
 <!--- Elaboration du tableau PROD --->
 						<?php
 							$tableau3.='<tr class="PRODUCTION">';
-								$tableau3.='<th rowspan="2" style="vertical-align: middle" class="PROD">Prod</th>';
-								$tableau3.='<th class="PROD" style="font-size: 1em;">Energie</th>';
+								$tableau3.='<th rowspan="2" style="vertical-align: middle" class="PRODUCTION">Prod</th>';
+								$tableau3.='<th class="PRODCONSO" style="font-size: 1em;">Energie</th>';
 								foreach($periode as $jours){
 									$tableau3.='<td class="PRODCONSO">';
 										$tableau3.='<span class="teleinfoAttr" data-l1key="prod" data-l2key="'.$jours.'" style="font-size: 1em;"></span>';
