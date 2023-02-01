@@ -1219,12 +1219,16 @@ function getCommandHistoryValue(div, type , object, coutoui = 1000, virgule = 1)
                 }
             }
             if(myCommandHistory.data.length != 0){ 
-                if(myCommandHistory.data.length == 1){ // || type == 'yesterday'){
+                if(myCommandHistory.data.length == 1){
                     div.text((myCommandHistory.maxValue / coutoui).toFixed(virgule));
                     console.log("[Object 1] " + object.id + " [getCommandHistoryValue 1] " + object.name + " " + type + " | from : " + from + " | to : " + to + " | value : " + (myCommandHistory.maxValue/coutoui).toFixed(virgule));
                 }else {
                     //myCommandHistory.data.splice(-1,1);
-                    resultat = (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(virgule);
+                    if (type == 'day' || type == 'yesterday'){                    
+                        resultat = (myCommandHistory.data.reduce(function(prev, cur) {  return cur[1];}, 0) / coutoui).toFixed(virgule);
+                    }else{
+                        resultat = (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(virgule);                    
+                    }
                     div.text(resultat);
                     console.log("[Object 2] " + object.id + " [getCommandHistoryValue 2] " + object.name + " "  + type + " | from : " + from + " | to : " + to + " | value : " + resultat);
                 }

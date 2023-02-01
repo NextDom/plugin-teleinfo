@@ -14,7 +14,7 @@ Pour toutes demandes :
 
 ## 4.7.3e (??-02-2022) => version bêta
 - affichage de 2 fois le coût en global sur J-1
-- n'affiche les valeurs = 0 dans les graphiques du panel
+- n'affiche les valeurs = 0 dans les graphiques du panel => necessite une copie des index
 - préparation pour MQTT (téléchargement du module paho-mqtt)
 
 ## 4.7.3d (31-01-2022)
