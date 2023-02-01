@@ -852,6 +852,7 @@ console.log("[getDailyHistory] Commande = " + object.name);
                         stacking : 'normal',
                         displayAlert: false,
                         valueDecimals: 1,
+                        allowZero: 0,
                     },
                     tooltip : {
                         shared : true,
@@ -1098,7 +1099,6 @@ console.log("[getAnnualHistory] Récupération de div " + div);
                                 style: {
                                     textShadow: '0 0 3px black',
                                     fontSize: '10px',
-
                                 },
                                 format: '{point.y:.'+decimals+'f}',
                             }
@@ -1201,7 +1201,7 @@ function getCommandHistoryValue(div, type , object, coutoui = 1000, virgule = 1)
         break;
     }
 
-    dailyHistoryChart[div] = null;
+//    dailyHistoryChart[div] = null;
     jeedom.history.get({
         cmd_id: object.id,
         dateStart : from,
@@ -1220,17 +1220,16 @@ function getCommandHistoryValue(div, type , object, coutoui = 1000, virgule = 1)
             }
             if(myCommandHistory.data.length != 0){ 
                 if(myCommandHistory.data.length == 1){ // || type == 'yesterday'){
-                    div.text((myCommandHistory.maxValue / coutoui).toFixed(virgule))
+                    div.text((myCommandHistory.maxValue / coutoui).toFixed(virgule));
                     console.log("[Object 1] " + object.id + " [getCommandHistoryValue 1] " + object.name + " " + type + " | from : " + from + " | to : " + to + " | value : " + (myCommandHistory.maxValue/coutoui).toFixed(virgule));
                 }else {
-                    myCommandHistory.data.splice(-1,1);
-                    if (type == 'day'){
-                        div.text((myCommandHistory.data.reduce(function(prev, cur) {  return cur[1];}, 0) / coutoui).toFixed(virgule));
-                    }else{
-                        div.text((myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(virgule));
-                    }
-                    console.log("[Object 2] " + object.id + " [getCommandHistoryValue 2] " + object.name + " "  + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui);
+                    //myCommandHistory.data.splice(-1,1);
+                    resultat = (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(virgule);
+                    div.text(resultat);
+                    console.log("[Object 2] " + object.id + " [getCommandHistoryValue 2] " + object.name + " "  + type + " | from : " + from + " | to : " + to + " | value : " + resultat);
                 }
+            }else{
+                div.text(0);
             }
         }
     });
@@ -1307,9 +1306,10 @@ function getCommandHistoryCout(div, type, cout, object) {
                             console.log("[getCommandHistoryCout 2] " + type + " " + cout + " : " + (myCommandHistory.maxValue / 1000) + " * " + valeurCout + " = " + tableCouts[type]);
                           }
                           else {
-                            //myCommandHistory.data.splice(-1,1);
-                            tableCouts[type] = tableCouts[type] + (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000) * valeurCout;
-							console.log("[getCommandHistoryCout 3] " + type + " " + cout + " : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000 + " * " + valeurCout + " = " + tableCouts[type])
+                            resultat = (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000) * valeurCout
+                            myCommandHistory.data.splice(-1,1);
+                            tableCouts[type] = tableCouts[type] + resultat ;
+							console.log("[getCommandHistoryCout 3] " + type + " " + cout + " : " + resultat)
                           }
 						}
                         div.text('( ~' + tableCouts[type].toFixed(0) + ' )');
@@ -1322,337 +1322,6 @@ function getCommandHistoryCout(div, type, cout, object) {
         }
     });
 }
-
-
-
-
-
-
-/*
-function drawPieChart(_el, _data, _title) {
-    new Highcharts.Chart({
-        chart: {
-            renderTo: _el,
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            height: 225,
-            spacingTop: 0,
-            spacingLeft: 0,
-            spacingRight: 0,
-            spacingBottom: 0
-        },
-        title: {
-            text: ''
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        credits: {
-            /*text: 'Copyright Jeedom',
-            href: 'http://jeedom.fr',*/
-/*        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    color: '#000000',
-                    connectorColor: '#000000',
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                }
-            }
-        },
-        series: [{
-                type: 'pie',
-                name: 'Browser share',
-                data: _data
-            }]
-    });
-}
-*/
-/*
-function drawStackGraph(_el, _data) {
-    var series = [];
-    for (var i in _data) {
-        if (isset(_data[i].data.history.power) && _data[i].data.history.power.length > 0) {
-            var serie = {
-                step: true,
-                name: _data[i].name,
-                data: _data[i].data.history.power,
-            };
-            series.push(serie);
-        }
-    }
-
-    if (!$.mobile) {
-        var legend = {
-            enabled: true,
-            borderColor: 'black',
-            borderWidth: 2,
-            shadow: true
-        };
-    } else {
-        var legend = {};
-    }
-
-    new Highcharts.StockChart({
-        chart: {
-            zoomType: 'x',
-            type: 'area',
-            renderTo: _el,
-            height: 225,
-            spacingTop: 0,
-            spacingLeft: 0,
-            spacingRight: 0,
-            spacingBottom: 0
-        },
-        plotOptions: {
-            area: {
-                stacking: 'normal',
-                lineColor: '#666666',
-                lineWidth: 1,
-                marker: {
-                    lineWidth: 1,
-                    lineColor: '#666666'
-                }
-            },
-        },
-        credits: {
-            /*text: 'Copyright Jeedom',
-            href: 'http://jeedom.fr',*/
-/*        },
-        navigator: {
-            enabled: false
-        },
-        rangeSelector: {
-            buttons: [{
-                    type: 'minute',
-                    count: 30,
-                    text: '30m'
-                }, {
-                    type: 'hour',
-                    count: 1,
-                    text: 'H'
-                }, {
-                    type: 'day',
-                    count: 1,
-                    text: 'J'
-                }, {
-                    type: 'week',
-                    count: 1,
-                    text: 'S'
-                }, {
-                    type: 'month',
-                    count: 1,
-                    text: 'M'
-                }, {
-                    type: 'year',
-                    count: 1,
-                    text: 'A'
-                }, {
-                    type: 'all',
-                    count: 1,
-                    text: 'Tous'
-                }],
-            selected: 6,
-            inputEnabled: false
-        },
-        legend: legend,
-        tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-            valueDecimals: 2,
-        },
-        yAxis: {
-            format: '{value}',
-            showEmpty: false,
-            showLastLabel: true,
-            min: 0,
-            labels: {
-                align: 'right',
-                x: -5
-            }
-        },
-        xAxis: {
-            type: 'datetime',
-            ordinal: false,
-        },
-        scrollbar: {
-            barBackgroundColor: 'gray',
-            barBorderRadius: 7,
-            barBorderWidth: 0,
-            buttonBackgroundColor: 'gray',
-            buttonBorderWidth: 0,
-            buttonBorderRadius: 7,
-            trackBackgroundColor: 'none', trackBorderWidth: 1,
-            trackBorderRadius: 8,
-            trackBorderColor: '#CCC'
-        },
-        series: series
-    });
-
-}
-*/
-/*
-function drawStackColumnChart(_el, _data){
-
-    new Highcharts.Chart({
-        chart: {
-            renderTo: _el,
-            type: 'column',
-            height: 350,
-            spacingTop: 5,
-            spacingLeft: -15,
-            spacingRight: 0,
-            spacingBottom: 0
-        },
-        title: {
-            text: ''
-        },
-        credits: {
-            text: 'Copyright Jeedom',
-            href: 'http://jeedom.fr',
-        },
-        xAxis: {
-            categories: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'kWh'
-            },
-            stackLabels: {
-                enabled: true,
-                style: {
-                    fontWeight: 'bold',
-                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                }
-            }
-        },
-        navigator: {
-            enabled: false
-        },
-        legend: {
-            align: 'right',
-            x: -30,
-            verticalAlign: 'top',
-            y: 25,
-            floating: true,
-            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-            borderColor: '#CCC',
-            borderWidth: 1,
-            shadow: false
-        },
-        tooltip: {
-            formatter: function () {
-                return '<b>' + this.x + '</b><br/>' +
-                    this.series.name + ': ' + this.y + ' kWh<br/>' +
-                    'Total: ' + this.point.stackTotal + ' kWh';
-            }
-        },
-        plotOptions: {
-            column: {
-                stacking: 'normal',
-                dataLabels: {
-                    enabled: true,
-//                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-                    style: {
-                        textShadow: '0 0 3px black'
-                    }
-                }
-            }
-        },
-        series: [{
-            name: 'HP',
-            color: '#7cb5ec',
-        }, {
-            name: 'HC',
-            color: '#ed9448',
-        }]
-    });
-
-}
-*/
-/*
-function drawSimpleGraph(_el, _serie) {
-    var legend = {
-        enabled: true,
-        borderColor: 'black',
-        borderWidth: 2,
-        shadow: true
-    };
-
-    new Highcharts.StockChart({
-        chart: {
-            zoomType: 'x',
-            renderTo: _el,
-            height: 350,
-            spacingTop: 0,
-            spacingLeft: 0,
-            spacingRight: 0,
-            spacingBottom: 0
-        },
-        credits: {
-            text: 'Copyright Jeedom',
-            href: 'http://jeedom.fr',
-        },
-        navigator: {
-            enabled: false
-        },
-        rangeSelector: {
-            buttons: [{
-                    type: 'minute',
-                    count: 30,
-                    text: '30m'
-                }, {
-                    type: 'hour',
-                    count: 1,
-                    text: 'H'
-                }, {
-                    type: 'day',
-                    count: 1,
-                    text: 'J'
-                }, {
-                    type: 'week',
-                    count: 1,
-                    text: 'S'
-                }, {
-                    type: 'month',
-                    count: 1,
-                    text: 'M'
-                }, {
-                    type: 'year',
-                    count: 1,
-                    text: 'A'
-                }, {
-                    type: 'all',
-                    count: 1,
-                    text: 'Tous'
-                }],
-            selected: 6,
-            inputEnabled: false
-        },
-        legend: legend,
-        tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-            valueDecimals: 2,
-        },
-        yAxis: {
-            format: '{value}',
-            showEmpty: false,
-            showLastLabel: true,
-            min: 0,
-            labels: {
-                align: 'right',
-                x: -5
-            }
-        },
-        series: _serie
-    });
-}
-*/
 
 function initHistoryTrigger() {
 

@@ -1600,6 +1600,30 @@ class teleinfo extends eqLogic
                     }
                     $date2->sub($p1j);
                 }
+                foreach ($iddestination as $key => $destination){
+                    try{
+                        $sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdId) AND (value=' ' OR value = 0)";
+                        $values = array(
+                            'cmdId' => $destination,
+                        );
+                        $sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdId) AND (value=' ' OR value = 0)";
+                        DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                    } catch (\Exception $e) {
+                        log::add('teleinfo', 'error', $e) ;
+                    }
+                }
+                foreach ($idcoutdest as $destination){
+                    try{
+                        $sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdId) AND (value=' ' OR value = 0)";
+                        $values = array(
+                            'cmdId' => $destination,
+                        );
+                        $sql = "DELETE FROM historyArch WHERE (cmd_id=:cmdId) AND (value=' ' OR value = 0)";
+                        DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
+                    } catch (\Exception $e) {
+                        log::add('teleinfo', 'error', $e) ;
+                    }
+                }
             }    
         }
     

@@ -12,7 +12,12 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
-## 4.7.3d (31-01-2022) => version bêta
+## 4.7.3e (??-02-2022) => version bêta
+- affichage de 2 fois le coût en global sur J-1
+- n'affiche les valeurs = 0 dans les graphiques du panel
+- préparation pour MQTT (téléchargement du module paho-mqtt)
+
+## 4.7.3d (31-01-2022)
 - modif pour tenir compte des index à 0 sur la journée pour les abonnements autres que BASE
 - modif pour générer les stats globales (somme des index) pour les compteur dont la TIC fonctionne en mode historique.
 - correction d'une erreur d'affichage concernant la partie PROD du tableau du panel quand elle ne doit pas être affichée
