@@ -16,6 +16,8 @@ Pour toutes demandes :
 - affichage de 2 fois le coût en global sur J-1
 - n'affiche les valeurs = 0 dans les graphiques du panel => necessite une copie des index
 - préparation pour MQTT (téléchargement du module paho-mqtt)
+- correction sur graphique des puissances instantanées qui apparaissaient en kWh au lieu de VA
+- les coûts de l'affichage classique n'étaient pas affichés pour les HP et HC
 
 ## 4.7.3d (31-01-2022)
 - modif pour tenir compte des index à 0 sur la journée pour les abonnements autres que BASE

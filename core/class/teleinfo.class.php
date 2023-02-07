@@ -1108,6 +1108,8 @@ class teleinfo extends eqLogic
                 log::add('teleinfo', 'debug', 'Total Revenus Prod hier --> ' . $statYesterdayCoutProd);
             }
 
+            
+
 			for ($i=0; $i <= 10; $i++){
 				if ($i == 10) {   //affectation des variables index en dynamique
 					$a = 'idIndex' . $i;
@@ -1129,11 +1131,11 @@ class teleinfo extends eqLogic
 					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' hier --> ' . ${$c});
                     $cmd = cmd::byId(${$d});
                     $$e = floatval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
-                    if ($linky==0 && $i!=0){
-                        $statYesterdayTotalIndex00 += ${$c};
-                        $statYesterdayCoutTotalIndex00 += ${$e};
+					if ($linky==0 && $i!=0){ 
+                        $statYesterdayTotalIndex00 += ${$c}; 
+                        $statYesterdayCoutTotalIndex00 += ${$e}; 
                     }
-					log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d});
+                    log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d});
                 }
 			}
 
@@ -1270,8 +1272,8 @@ class teleinfo extends eqLogic
                         case (strpos($test,'YESTERDAY_INDEX')!=0 && strpos($test,'COUT')!=0):
                             $indexyy = (int)(substr($test,20,2));
                             if($statYesterdayCoutTotalIndex00 != 0 && $indexyy == 0){
+                                $cmd->event((floatval($statYesterdayCoutTotalIndex00)), $startDay->format('Y-m-d 00:00:00'));
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index00) ==> ' . floatval($statYesterdayCoutTotalIndex00));
-								$cmd->event((floatval($statYesterdayCoutTotalIndex00)), $startDay->format('Y-m-d 00:00:00'));
                             }
                             if($statYesterdayCoutTotalIndex01 != 0 && $indexyy == 1){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index01) ==> ' . floatval($statYesterdayCoutTotalIndex01));
