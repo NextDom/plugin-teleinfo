@@ -12,7 +12,7 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
-## 4.7.3e (??-02-2022) => version bêta
+## 4.7.3e (08-02-2022) => version bêta
 - affichage de 2 fois le coût en global sur J-1
 - n'affiche les valeurs = 0 dans les graphiques du panel => necessite une copie des index
 - préparation pour MQTT (téléchargement du module paho-mqtt)
