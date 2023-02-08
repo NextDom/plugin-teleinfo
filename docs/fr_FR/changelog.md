@@ -15,6 +15,7 @@ Pour toutes demandes :
 ## 4.7.3f (09-02-2022) => version bêta
 - correction de la multiplication par 2 du coût en global pour les compteurs en mode historique avec un abonnement autre que BASE
 - modification du css du panel pour qu'il ne s'applique qu'au panel
+- correction d'un pb d'affichage des index du panel lorsque plusieurs compteurs avec des index différents
 
 ## 4.7.3e (08-02-2022)
 - affichage de 2 fois le coût en global sur J-1

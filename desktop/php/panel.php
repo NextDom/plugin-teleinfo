@@ -208,7 +208,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 							$index=array('Index00','Index01','Index02','Index03','Index04','Index05','Index06','Index07','Index08','Index09','Index10');
 							$periode=array('day','yesterday','month','monthLastYearPartial','monthLastYear','year','yearLastYearPartial','yearLastYear','all');
 							foreach($index as $numindex){
-								$tableau.='<tr class="teleinfotr"  class="index">';
+								$tableau.='<tr class="teleinfotr index">';
 									$tableau.='<th class="teleinfoth '.$numindex.'">';
 										$tableau.='<span class="teleinfoAttr" data-l1key="titre" data-l2key="'.$numindex.'" style="font-size: 1em;"></span>';
 									$tableau.='</th>';
