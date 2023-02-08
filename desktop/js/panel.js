@@ -297,6 +297,10 @@ $.ajax({
                     }
                     if(index_nom[i] !== ''){
                         index[i] = true;
+                        y = document.getElementsByClassName(numeroIndex);
+                        for (w = 0; w < y.length; w++) {
+                            y[w].style.display = 'table-cell';
+                        }
                         $('.teleinfoAttr[data-l1key=titre][data-l2key=' + numeroIndex + ']').text(index_nom[i]);
                     }else{
                         y = document.getElementsByClassName(numeroIndex);

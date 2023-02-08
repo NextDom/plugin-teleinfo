@@ -803,136 +803,136 @@ class teleinfo extends eqLogic
                             $cmd->event(intval($statTodayProd));
                             break;
                         case "STAT_TODAY_INDEX00":
-							if ($statTodayIndex00 > 0) {
+							//if ($statTodayIndex00 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 00 ==> ' . intval($statTodayIndex00));
 								$cmd->event(intval($statTodayIndex00));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX01":
-							if ($statTodayIndex01 > 0) {
+							//if ($statTodayIndex01 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 01 ==> ' . intval($statTodayIndex01));
 								$cmd->event(intval($statTodayIndex01));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX02":
-							if ($statTodayIndex02 > 0) {
+							//if ($statTodayIndex02 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 02 ==> ' . intval($statTodayIndex02));
 								$cmd->event(intval($statTodayIndex02));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX03":
-							if ($statTodayIndex03 > 0) {
+							//if ($statTodayIndex03 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 03 ==> ' . intval($statTodayIndex03));
 								$cmd->event(intval($statTodayIndex03));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX04":
-							if ($statTodayIndex04 > 0) {
+							//if ($statTodayIndex04 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 04 ==> ' . intval($statTodayIndex04));
 								$cmd->event(intval($statTodayIndex04));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX05":
-							if ($statTodayIndex05 > 0) {
+							//if ($statTodayIndex05 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 05 ==> ' . intval($statTodayIndex05));
 								$cmd->event(intval($statTodayIndex05));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX06":
-							if ($statTodayIndex06 > 0) {
+							//if ($statTodayIndex06 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 06 ==> ' . intval($statTodayIndex06));
 								$cmd->event(intval($statTodayIndex06));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX07":
-							if ($statTodayIndex07 > 0) {
+							//if ($statTodayIndex07 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 07 ==> ' . intval($statTodayIndex07));
 								$cmd->event(intval($statTodayIndex07));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX08":
-							if ($statTodayIndex08 > 0) {
+							//if ($statTodayIndex08 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 08 ==> ' . intval($statTodayIndex08));
 								$cmd->event(intval($statTodayIndex08));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX09":
-							if ($statTodayIndex09 > 0) {
+							//if ($statTodayIndex09 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 09 ==> ' . intval($statTodayIndex09));
 								$cmd->event(intval($statTodayIndex09));
-							}
+							//}
 							break;
                         case "STAT_TODAY_INDEX10":
-							if ($statTodayIndex10 > 0) {
+							//if ($statTodayIndex10 > 0) {
 								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 10 ==> ' . intval($statTodayIndex10));
 								$cmd->event(intval($statTodayIndex10));
-							}
+							//}
 							break;
                             case "STAT_TODAY_INDEX00_COUT":
-                                if ($Coutindex00 > 0) {
+                                //if ($Coutindex00 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 00 ==> ' . round($Coutindex00,2));
                                     $cmd->event(round($Coutindex00,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX01_COUT":
-                                if ($Coutindex01 > 0) {
+                                //if ($Coutindex01 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 01 ==> ' . round($Coutindex01,2));
                                     $cmd->event(round($Coutindex01,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX02_COUT":
-                                if ($Coutindex02 > 0) {
+                                //if ($Coutindex02 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 02 ==> ' . round($Coutindex02,2));
                                     $cmd->event(round($Coutindex02,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX03_COUT":
-                                if ($Coutindex03 > 0) {
+                                //if ($Coutindex03 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 03 ==> ' . round($Coutindex03,2));
                                     $cmd->event(round($Coutindex03,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX04_COUT":
-                                if ($Coutindex04 > 0) {
+                                //if ($Coutindex04 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 04 ==> ' . round($Coutindex04,2));
                                     $cmd->event(round($Coutindex04,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX05_COUT":
-                                if ($Coutindex05 > 0) {
+                                //if ($Coutindex05 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 05 ==> ' . round($Coutindex05,2));
                                     $cmd->event(round($Coutindex05,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX06_COUT":
-                                if ($Coutindex06 > 0) {
+                                //if ($Coutindex06 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 06 ==> ' . round($Coutindex06,2));
                                     $cmd->event(round($Coutindex06,2,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX07_COUT":
-                                if ($Coutindex07 > 0) {
+                                //if ($Coutindex07 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 07 ==> ' . round($Coutindex07,2));
                                     $cmd->event(round($Coutindex07,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX08_COUT":
-                                if ($Coutindex08 > 0) {
+                                //if ($Coutindex08 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 08 ==> ' . round($Coutindex08,2));
                                     $cmd->event(round($Coutindex08,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX09_COUT":
-                                if ($Coutindex09 > 0) {
+                                //if ($Coutindex09 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 09 ==> ' . round($Coutindex09,2));
                                     $cmd->event(round($Coutindex09,2));
-                                }
+                                //}
                                 break;
                             case "STAT_TODAY_INDEX10_COUT":
-                                if ($Coutindex10 > 0) {
+                                //if ($Coutindex10 > 0) {
                                     log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 10 ==> ' . round($Coutindex10,2));
                                     $cmd->event(round($Coutindex10,2));
-                                }
+                                //}
                                 break;
                             case "TENDANCE_DAY":
                             log::add('teleinfo', 'debug', 'Mise à jour de la tendance journalière ==> ' . '(Hier : ' . intval($statYesterdayHc + $statYesterdayHp) . ' Aujourd\'hui : ' . intval($statTodayHc + $statTodayHp) . ' Différence : ' . (intval($statYesterdayHc + $statYesterdayHp) - intval($statTodayHc + $statTodayHp)) . ')');
@@ -965,7 +965,9 @@ class teleinfo extends eqLogic
             $statHcToCumul       = array();
             $statProdToCumul     = array();
             $statTotalToCumul    = array();
-            log::add('teleinfo', 'info', 'Objet : ' . $eqLogic->getName());
+            log::add('teleinfo', 'info', '--------------------------------------------------');
+            log::add('teleinfo', 'info', '----- Compteur : ' . $eqLogic->getName() . ' -----');
+            log::add('teleinfo', 'info', '--------------------------------------------------');
 			$index01 = $eqLogic->getConfiguration('index01');
 			$index02 = $eqLogic->getConfiguration('index02');
 			$index03 = $eqLogic->getConfiguration('index03');
@@ -1133,9 +1135,9 @@ class teleinfo extends eqLogic
                     $$e = floatval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
 					if ($linky==0 && $i!=0){ 
                         $statYesterdayTotalIndex00 += ${$c}; 
-                        $statYesterdayCoutTotalIndex00 += ${$e}; 
+                        //$statYesterdayCoutTotalIndex00 += ${$e}; 
                     }
-                    log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d});
+                    log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d} . ' Index 00 ' . $statYesterdayTotalIndex00 . ' Coût Index 00 ' . $statYesterdayCoutTotalIndex00);
                 }
 			}
 
