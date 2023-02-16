@@ -20,3 +20,13 @@ frame_length = 3000  # Nb chars to read to ensure to get a least one complete ra
 port = '/dev/ttyUSB0'
 mode = 'historique'
 vitesse = '1200'
+
+# MQTT
+modem = ''
+mqtt = ''
+mqtt_broker = ''
+mqtt_port = ''
+mqtt_topic = '#'
+mqtt_keepalive = 45
+mqtt_username = ''
+mqtt_password = ''

@@ -12,6 +12,9 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
+## 4.8.0a (xx-02-2022) => version bêta
+- apparition de la possibilité d'utiliser le MQTT pour rapatrier des données de téléinfo déportées => ATTENTION: après l'installation de cette version il est impératif d'aller dans la page configuration et de valider l'utilisation ou non d'un modem
+
 ## 4.7.3f (09-02-2022) => version bêta
 - correction de la multiplication par 2 du coût en global pour les compteurs en mode historique avec un abonnement autre que BASE
 - modification du css du panel pour qu'il ne s'applique qu'au panel

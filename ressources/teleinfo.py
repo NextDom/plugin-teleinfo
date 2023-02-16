@@ -36,7 +36,6 @@ class Teleinfo:
     """ Fetch teleinformation datas and call user callback
     each time all data are collected
     """
-
     def __init__(self):
         logging.debug("TELEINFO------INIT CONNECTION")
 
@@ -512,7 +511,6 @@ def log_starting(cycle):
         log.removeHandler(hdlr)
     jeedom_utils.set_log_level('error')
 
-
 def listen():
     globals.PENDING_ACTION = False
     jeedom_socket.open()
@@ -795,7 +793,11 @@ globals.cycle = float(globals.cycle)
 globals.cycle_sommeil = float(globals.cycle_sommeil)
 
 jeedom_utils.set_log_level(globals.log_level)
+globals.JEEDOM_COM = jeedom_com(apikey=globals.apikey, url=globals.callback, cycle=globals.cycle)
+globals.pidfile = globals.pidfile + "_" + globals.type + ".pid"
 logging.info('GLOBAL------Start teleinfod')
+jeedom_utils.write_pid(str(globals.pidfile))
+
 logging.info('GLOBAL------Cycle Sommeil : ' + str(globals.cycle_sommeil))
 logging.info('GLOBAL------Socket port : ' + str(globals.socketport))
 logging.info('GLOBAL------Socket host : ' + str(globals.sockethost))
@@ -809,9 +811,6 @@ logging.info('GLOBAL------Type : ' + str(globals.type))
 logging.info('GLOBAL------Mode : ' + str(globals.mode))
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
-globals.pidfile = globals.pidfile + "_" + globals.type + ".pid"
-jeedom_utils.write_pid(str(globals.pidfile))
-globals.JEEDOM_COM = jeedom_com(apikey=globals.apikey, url=globals.callback, cycle=globals.cycle)
 if not globals.JEEDOM_COM.test():
     logging.error('GLOBAL------Network communication issues. Please fix your Jeedom network configuration.')
     shutdown()
