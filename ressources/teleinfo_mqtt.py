@@ -62,10 +62,10 @@ def mqtt_on_message(client, userdata, message):
                 for keys in x[key]:
                     if keys == "ADCO" or keys == "ADSC" or trouveTIC:
                         if trouveTIC == False:
-                            logging.info( "------------------------------------") 
+                            logging.debug( "------------------------------------") 
                             device = keys
                         trouveTIC = True
-                        logging.info( "---------------- " + str(keys) + " : " +  str(x[key][keys]))
+                        logging.debug( "---------------- " + str(keys) + " : " +  str(x[key][keys]))
                         data[keys] = str(x[key][keys])
     except:
         logging.debug("message autre")
@@ -82,26 +82,56 @@ def mqtt_on_message(client, userdata, message):
 
 
 
-def read_socket():
-    global JEEDOM_SOCKET_MESSAGE
-    if not JEEDOM_SOCKET_MESSAGE.empty():
-        logging.debug("Message received in socket JEEDOM_SOCKET_MESSAGE")
-        message = json.loads(jeedom_utils.stripped(JEEDOM_SOCKET_MESSAGE.get()))
-        if message['apikey'] != globals.apikey:
-            logging.error("Invalid apikey from socket : " + str(message))
-            return
+def read_socket(cycle):
+    while True:
         try:
-            pass
+            global JEEDOM_SOCKET_MESSAGE
+            if not JEEDOM_SOCKET_MESSAGE.empty():
+                logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE")
+                message = json.loads(JEEDOM_SOCKET_MESSAGE.get())
+                if message['apikey'] != globals.apikey:
+                    logging.error("SOCKET-READ------Invalid apikey from socket : " + str(message))
+                    return
+                logging.debug('SOCKET-READ------Received command from jeedom : ' + str(message['cmd']))
+                if message['cmd'] == 'action':
+                    logging.debug('SOCKET-READ------Attempt an action on a device')
+                    _thread.start_new_thread(action_handler, (message,))
+                    logging.debug('SOCKET-READ------Action Thread Launched')
+                elif message['cmd'] == 'logdebug':
+                    logging.info('SOCKET-READ------Passage du demon en mode debug force')
+                    log = logging.getLogger()
+                    for hdlr in log.handlers[:]:
+                        log.removeHandler(hdlr)
+                    jeedom_utils.set_log_level('debug')
+                    logging.debug('SOCKET-READ------<----- La preuve ;)')
+                elif message['cmd'] == 'lognormal':
+                    logging.info('SOCKET-READ------Passage du demon en mode de log normal')
+                    log = logging.getLogger()
+                    for hdlr in log.handlers[:]:
+                        log.removeHandler(hdlr)
+                    jeedom_utils.set_log_level('error')
         except Exception as e:
-            logging.error('Send command to demon error : '+str(e))
+            logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
+            logging.debug(traceback.format_exc())
+        time.sleep(cycle)
+
+def log_starting(cycle):
+    logging.info('MQTT------commande des logs')
+    time.sleep(90)
+    logging.info('MQTT------Passage des logs en normal')
+    log = logging.getLogger()
+    for hdlr in log.handlers[:]:
+        log.removeHandler(hdlr)
+    jeedom_utils.set_log_level('error')
 
 def listen():
     jeedom_socket.open()
     try:
+        _thread.start_new_thread(read_socket, (globals.cycle,))
         _thread.start_new_thread(listen_mqtt())
+        logging.info('MQTT------Tout roule')
         while 1:
             time.sleep(0.5)
-            read_socket()
     except KeyboardInterrupt:
         shutdown()
 
@@ -109,7 +139,7 @@ def listen():
 def listen_mqtt():
     logging.info("MQTT------Start listening...")
     logging.info("MQTT------Preparing Teleinfo...")
-    logging.debug('MQTT------Read Socket Thread Launched')
+    logging.info('MQTT------Read Socket Thread Launched')
     logging.info("MQTT------Start listening MQTT...")
     client = mqtt_client.Client( client_id="", clean_session=True)
 
@@ -171,7 +201,7 @@ if args.socketport:
 if args.sockethost:
     globals.sockethost = args.sockethost
 if args.loglevel:
-    globals.loglevel = args.loglevel
+    globals.log_level = args.loglevel
 if args.callback:
     globals.callback = args.callback
 if args.cycle:

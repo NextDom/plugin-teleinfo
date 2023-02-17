@@ -60,16 +60,31 @@ class teleinfo extends eqLogic
 
     public static function socket_connection($value)
     {
-        try {
-            $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-            socket_connect($socket, config::byKey('sockethost', 'teleinfo', '127.0.0.1'), config::byKey('socketport', 'teleinfo', '55062'));
-            socket_write($socket, $value, strlen($value));
-            socket_close($socket);
-            $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
-            //$productionActivated = config::byKey('activation_production', 'teleinfo');
-            if ($productionActivated == 1) {
+        if (($activation_Modem=='0') && ($activation_Mqtt=='0')) {
+            log::add('teleinfo', 'info', 'pas d envoi de message faute de configuration');
+            return false;
+        }
+    try {
+            $activation_Modem = config::byKey('activation_Modem', 'teleinfo');
+            $socketPort = config::byKey('socketport', 'teleinfo', '55062');
+            if ($activation_Modem!=0){
                 $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-                socket_connect($socket, config::byKey('sockethost', 'teleinfo', '127.0.0.1'), config::byKey('socketport', 'teleinfo','55062') + 1);
+                socket_connect($socket, config::byKey('sockethost', 'teleinfo', '127.0.0.1'), $socketPort);
+                socket_write($socket, $value, strlen($value));
+                socket_close($socket);
+                $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
+                //$productionActivated = config::byKey('activation_production', 'teleinfo');
+                if ($productionActivated == 1) {
+                    $socket = socket_create(AF_INET, SOCK_STREAM, 0);
+                    socket_connect($socket, config::byKey('sockethost', 'teleinfo', '127.0.0.1'), ($socketPort + 1));
+                    socket_write($socket, $value, strlen($value));
+                    socket_close($socket);
+                }
+            }
+            $activation_Mqtt = config::byKey('activation_Mqtt', 'teleinfo');
+            if ($activation_Mqtt=='1'){
+                $socket = socket_create(AF_INET, SOCK_STREAM, 0);
+                socket_connect($socket, config::byKey('sockethost', 'teleinfo', '127.0.0.1'), ($socketPort + 2));
                 socket_write($socket, $value, strlen($value));
                 socket_close($socket);
             }
@@ -380,9 +395,11 @@ class teleinfo extends eqLogic
         $mqtt_password 	= config::byKey('mqtt_password', 'teleinfo', '');
         $keep_alive     = 45; # interval en seconde
         log::add('teleinfo', 'info', '---------------------------------------------');
-        log::add('teleinfo', 'info', '[découverte MQTT] Démarrage découverte compteur ');
+        log::add('teleinfo', 'info', '[MQTT] Démarrage service MQTT ');
+        log::add('teleinfo', 'info', "SocketHost : " . $socketHost);
+        log::add('teleinfo', 'info', "Socketport : " . $socketport);
         log::add('teleinfo', 'info', "Broker : " . $mqtt_broker);
-        log::add('teleinfo', 'info', "Port : " . $mqtt_port);
+        log::add('teleinfo', 'info', "Port du Broker : " . $mqtt_port);
         log::add('teleinfo', 'info', "topic : " . '"' . $mqtt_topic . '"');
         log::add('teleinfo', 'info', '---------------------------------------------');
         $cmd          = 'nice -n 19 /usr/bin/python3 ' . $teleinfoPath . '/teleinfo_mqtt.py';
@@ -396,10 +413,10 @@ class teleinfo extends eqLogic
         $cmd         .= ' --mqtt_password ' . $mqtt_password;
         $cmd         .= ' --modem aucun';
         $cmd         .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/teleinfo/core/php/jeeTeleinfo.php';
-        $cmd         .= ' --loglevel debug';
+        $cmd         .= ' --loglevel info';
         $cmd         .= ' --mqtt_topic ' . '"' . $mqtt_topic . '"';
         log::add('teleinfo', 'info', '[découverte MQTT] Exécution du service : ' . $cmd);
-        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_Mqtt') . ' 2>&1 &');
+        $result = exec($cmd . ' >> ' . log::getPathToLog('teleinfo_deamon_Mqtt') . ' 2>&1 &');
         if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
             log::add('teleinfo', 'error', $result);
             return false;
@@ -564,7 +581,7 @@ class teleinfo extends eqLogic
     {
         $activation_Modem = config::byKey('activation_Modem', 'teleinfo');
         $activation_Mqtt  = config::byKey('activation_Mqtt', 'teleinfo');
-        if ($activation_Modem == 1) {
+        if ($activation_Modem != 0) {
             log::add('teleinfo', 'info', '[deamon_start_modem] Démarrage du service');
             $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
             //$productionActivated = config::byKey('activation_production', 'teleinfo');
@@ -580,7 +597,7 @@ class teleinfo extends eqLogic
                 log::add('teleinfo', 'info', 'Pas d\'informations sur le port USB (Modem série ?) ');
             }
         }
-        if ($activation_Mqtt == 1){
+        if ($activation_Mqtt != 0){
             log::add('teleinfo', 'info', '[deamon_start_MQTT] Démarrage du service');
             if (!self::deamonRunningMqtt('non')) {
                 self::runDeamonMqtt($debug, 'rien');
@@ -596,7 +613,6 @@ class teleinfo extends eqLogic
 
     public static function start_Mqtt($debug = false, $socketPort, $socketHost, $modem, $mqtt, $mqtt_broker, $mqtt_port, $mqtt_topic, $mqtt_username, $mqtt_password){
         if (!self::deamonRunningMqtt()) {
-            log::add('teleinfo', 'info', 'données : ' . $socketPort . ' / ' . $socketHost . ' / ' . $modem . ' / ' . $mqtt . ' / ' . $mqtt_broker . ' / ' . $mqtt_port . ' / ' . $mqtt_topic . ' / ' . $mqtt_username . ' / ' . $mqtt_password);
             self::runDeamonMqtt($debug, 'rien', $socketPort, $socketHost, $modem, $mqtt, $mqtt_broker, $mqtt_port, $mqtt_topic, $mqtt_username, $mqtt_password);
             message::removeAll('teleinfo', 'noTeleinfoPort');
         }
@@ -671,6 +687,7 @@ class teleinfo extends eqLogic
                 if (!$kill) {
                     system::kill($pid);
                 }
+                system::kill('teleinfo_mqtt.py');
             }
         }
 
@@ -689,6 +706,8 @@ class teleinfo extends eqLogic
                 if (!$kill) {
                     system::kill($pid);
                 }
+                system::kill('teleinfo_mqtt.py');
+
             }
         }
 
