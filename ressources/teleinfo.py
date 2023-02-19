@@ -37,16 +37,16 @@ class Teleinfo:
     each time all data are collected
     """
     def __init__(self):
-        logging.debug("TELEINFO------INIT CONNECTION")
+        logging.debug("MODEM------INIT CONNECTION")
 
     @staticmethod
     def close():
         """ close telinfo modem
         """
-        logging.info("TELEINFO------CLOSE CONNECTION")
+        logging.info("MODEM------CLOSE CONNECTION")
         if globals.TELEINFO_SERIAL is not None and globals.TELEINFO_SERIAL.isOpen():
             globals.TELEINFO_SERIAL.close()
-            logging.info("TELEINFO------CONNECTION CLOSED")
+            logging.info("MODEM------CONNECTION CLOSED")
 
     def terminate(self):
         print("Terminating...")
@@ -79,22 +79,22 @@ class Teleinfo:
                             if self._is_valid(resp, checksum):
                                 content[name] = value
                             else:
-                                logging.error("TELEINFO---- ** DONNEES HS ! ** sur trame : " + resp + ' checksum : ' + checksum)
-                            logging.debug('TELEINFO----name : ' + name + ' value : ' + value + ' Horodate : ' + horodate + ' checksum : ' + checksum)
+                                logging.error("MODEM---- ** DONNEES HS ! ** sur trame : " + resp + ' checksum : ' + checksum)
+                            logging.debug('MODEM----name : ' + name + ' value : ' + value + ' Horodate : ' + horodate + ' checksum : ' + checksum)
                         else:
                             name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                             # logging.debug('Nombre de champs : ' + champs)
                             # content[name] = value;
                             if self._is_valid(resp, checksum):
-                                logging.debug('TELEINFO---- .......... DECODAGE Checksum de la ligne ci dessous OK')
+                                logging.debug('MODEM---- .......... DECODAGE Checksum de la ligne ci dessous OK')
                                 content[name] = value
                                 if name == 'STGE':
                                     stgebin = bin(int(value, 16))
                                     stgebin = stgebin[2::]
-                                    logging.debug('TELEINFO-------stgebin ' + str(stgebin))
+                                    logging.debug('MODEM-------stgebin ' + str(stgebin))
                                     bits = [stgebin]
                                     longueur = len(stgebin)
-                                    logging.debug('TELEINFO-------Length stgebin ' + str(longueur))
+                                    logging.debug('MODEM-------Length stgebin ' + str(longueur))
                                     # print ('bits 1 ', bits)
                                     for i in range(32):
                                         if i > longueur - 1:
@@ -106,121 +106,121 @@ class Teleinfo:
                                     label = 'STGE01 - Contact sec'                                   
                                     message = switch_mot01(int(bits[1]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE02'
                                     label = 'STGE02 - Organe de coupure'
                                     message = switch_mot02(int(bits[4]+bits[3]+bits[2],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE03'
                                     label = 'STGE03 - Etat du cache-bornes distributeur'                                    
                                     message = switch_mot03(int(bits[5]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE04'
                                     label = 'STGE04 - Non utilise - Toujours a 0'                                    
                                     message = switch_mot04(int(bits[6]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE05'
                                     label = 'STGE05 - Surtension sur une des phases'                                    
                                     message = switch_mot05(int(bits[7]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE06'
                                     label = 'STGE06 - Depassement de la puissance de reference'                                    
                                     message = switch_mot06(int(bits[8]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE07'
                                     label = 'STGE07 - Fonctionnement producteur/consommateur'                                    
                                     message = switch_mot07(int(bits[9]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE08'
                                     label = 'STGE08 - Sens de l’energie active'                                    
                                     message = switch_mot08(int(bits[10]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE09'
                                     label = 'STGE09 - Tarif en cours sur le contrat fourniture'                                    
                                     message = switch_mot09(int(bits[14]+bits[13]+bits[12]+bits[11],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE10'
                                     label = 'STGE10 - Tarif en cours sur le contrat distributeur'                                    
                                     message = switch_mot10(int(bits[16]+bits[15],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE11'
                                     label = 'STGE11 - Mode degrade de l’horloge'                                    
                                     message = switch_mot11(int(bits[17]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE12'
                                     label = 'STGE12 - Etat de la sortie tele-information'                                    
                                     message = switch_mot12(int(bits[18]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE13'
                                     label = 'STGE13 - Non utilise - Non utilise'                                    
                                     message = switch_mot13(int(bits[19]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE14'
                                     label = 'STGE14 - Etat de la sortie communication Euridis'                                    
                                     message = switch_mot14(int(bits[21]+bits[20],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE15'
                                     label = 'STGE15 - Statut du CPL'                                    
                                     message = switch_mot15(int(bits[23]+bits[22],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE16'
                                     label = 'STGE16 - Synchronisation CPL'                                   
                                     message = switch_mot16(int(bits[24]))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE17'
                                     label = 'STGE17 - Couleur du jour pour le contrat historique Tempo'                                    
                                     message = switch_mot17(int(bits[26]+bits[25],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE18'
                                     label = 'STGE18 - Couleur du lendemain pour le contrat historique Tempo'                                    
                                     message = switch_mot18(int(bits[28]+bits[27],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
 
                                     name = 'STGE19'
                                     label = 'STGE19 - Preavis pointes mobiles'                                    
                                     message = switch_mot19(int(bits[30]+bits[29],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'STGE20'
                                     label = 'STGE20 - Pointe mobile (PM)'                                    
                                     message = switch_mot20(int(bits[32]+bits[31],2))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (STGE Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'STGE'
 
@@ -228,10 +228,10 @@ class Teleinfo:
                                 if name == 'RELAIS':
                                     relaisbin = bin(int(value))
                                     relaisbin = relaisbin[2::]
-                                    logging.debug('TELEINFO-------relaisbin ' + str(relaisbin))
+                                    logging.debug('MODEM-------relaisbin ' + str(relaisbin))
                                     bitsrelais = [relaisbin]
                                     longueur = len(relaisbin)
-                                    logging.debug('TELEINFO-------Length relaisbin ' + str(longueur))
+                                    logging.debug('MODEM-------Length relaisbin ' + str(longueur))
                                     # print ('bits 1 ', bits)
                                     for i in range(8):
                                         if i > longueur - 1:
@@ -243,58 +243,58 @@ class Teleinfo:
                                     label = 'RELAIS01 - Relais1'                                    
                                     message = switch_relais(int(str(bitsrelais[1])))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'RELAIS02'
                                     label = 'RELAIS02 - Relais2'                                    
                                     message = switch_relais(int(str(bitsrelais[2])))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'RELAIS03'
                                     label = 'RELAIS03 - Relais3'                                    
                                     message = switch_relais(int(str(bitsrelais[3])))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'RELAIS04'
                                     label = 'RELAIS04 - Relais4'                                    
                                     message = switch_relais(int(str(bitsrelais[4])))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'RELAIS05'
                                     label = 'RELAIS05 - Relais5'                                    
                                     message = switch_relais(int(str(bitsrelais[5])))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'RELAIS06'
                                     label = 'RELAIS06 - Relais6'                                   
                                     message = switch_relais(int(str(bitsrelais[6])))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'RELAIS07'
                                     label = 'RELAIS07 - Relais7'                                    
                                     message = switch_relais(int(str(bitsrelais[7])))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     name = 'RELAIS08'
                                     label = 'RELAIS08 - Relais8'                                    
                                     message = switch_relais(int(str(bitsrelais[8])))
                                     content[name] = message
-                                    logging.debug('TELEINFO----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
+                                    logging.debug('MODEM----name : ' + name + ' (RELAIS Translation) ' + 'label : ' + label + ' value : ' + message)
                                     
                                     
                                     name = 'RELAIS'
                                     
                             else:
-                                logging.error('TELEINFO---- ** DONNEES HS ! ** sur trame : ' + resp + ' checksum : ' + checksum)
+                                logging.error('MODEM---- ** DONNEES HS ! ** sur trame : ' + resp + ' checksum : ' + checksum)
                             
-                            logging.debug('TELEINFO----name : ' + name + ' value : ' + value + ' Horodate : ' + " " + ' checksum : ' + checksum)
-                    logging.debug('TELEINFO----Content : ' + str(content))
+                            logging.debug('MODEM----name : ' + name + ' value : ' + value + ' Horodate : ' + " " + ' checksum : ' + checksum)
+                    logging.debug('MODEM----Content : ' + str(content))
                     is_ok = True
                 except ValueError:
                     checksum = ' '
@@ -318,15 +318,15 @@ class Teleinfo:
                             # The checksum char is ' '
                             name, value = resp.replace('\r', '').replace('\n', '').split()
                             checksum = ' '
-                            logging.debug('TELEINFO------name : ' + name + ' value : ' + value)
+                            logging.debug('MODEM------name : ' + name + ' value : ' + value)
                         else:
                             name, value, checksum = resp.replace('\r', '').replace('\n', '').split()
                             logging.debug(
-                                'TELEINFO------name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                                'MODEM------name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                         if self._is_valid(resp, checksum):
                             content[name] = value
                         else:
-                            logging.error("TELEINFO------ ** FRAME CORRUPTED ! **")
+                            logging.error("MODEM------ ** FRAME CORRUPTED ! **")
                             logging.error('** FRAME : ' + resp + '**')
                             # This frame is corrupted, we need to wait until the next one
                             while '\x02' not in resp:
@@ -337,11 +337,11 @@ class Teleinfo:
                     if len(resp.replace('\r', '').replace('\n', '').split()) == 2:
                         name, value = resp.replace('\r', '').replace('\n', '').replace('\x02', '').replace('\x03', '').split()
                         checksum = ' '
-                        logging.debug('TELEINFO------name : ' + name + ' value : ' + value)
+                        logging.debug('MODEM------name : ' + name + ' value : ' + value)
                     else:
                         name, value, checksum = resp.replace('\r', '').replace('\n', '').replace('\x02', '').replace(
                             '\x03', '').split()
-                        logging.debug('TELEINFO------name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                        logging.debug('MODEM------name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     if self._is_valid(resp, checksum):
                         is_ok = True
                     else:
@@ -374,7 +374,7 @@ class Teleinfo:
                 logging.error('checksum non concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(
                     computed_checksum))
             else:
-                logging.debug('TELEINFO---- .......... checksum concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
+                logging.debug('MODEM---- .......... checksum concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
         else:
             # print "Check checksum : f = %s, chk = %s" % (frame, checksum)
             datas = ' '.join(frame.split()[0:2])
@@ -400,7 +400,7 @@ class Teleinfo:
         while 1:
             raz_calcul = datetime.now() - raz_time
             if raz_calcul.seconds > 60:
-                logging.info("TELEINFO------HEARTBEAT")
+                logging.info("MODEM------HEARTBEAT")
                 raz_time = datetime.now()
                 for cle, valeur in list(data.items()):
                     data.pop(cle)
@@ -442,13 +442,13 @@ class Teleinfo:
             except Exception:
                 error_com = "Connection error"
                 logging.error(error_com)
-            logging.debug("TELEINFO------START SLEEPING " + str(globals.cycle_sommeil) + " seconds")
+            logging.debug("MODEM------START SLEEPING " + str(globals.cycle_sommeil) + " seconds")
             time.sleep(globals.cycle_sommeil)
-            logging.debug("TELEINFO------WAITING : " + str(
+            logging.debug("MODEM------WAITING : " + str(
                 globals.TELEINFO_SERIAL.inWaiting()) + " octets dans la file apres sleep ")
             if globals.TELEINFO_SERIAL.inWaiting() > 1500:
                 globals.TELEINFO_SERIAL.flushInput()
-                logging.info("TELEINFO------BUFFER OVERFLOW => FLUSH")
+                logging.info("MODEM------BUFFER OVERFLOW => FLUSH")
                 logging.debug(str(globals.TELEINFO_SERIAL.inWaiting()) + "octets dans la file apres flush ")
         self.terminate()
 
@@ -462,9 +462,9 @@ def open():
     """ open teleinfo modem device
     """
     try:
-        logging.info("TELEINFO------OPEN CONNECTION")
+        logging.info("MODEM------OPEN CONNECTION")
         globals.TELEINFO_SERIAL = serial.Serial(globals.port, globals.vitesse, bytesize=7, parity='E', stopbits=1)
-        logging.info("TELEINFO------CONNECTION OPENED")
+        logging.info("MODEM------CONNECTION OPENED")
     except serial.SerialException:
         logging.error("Error opening Teleinfo modem '%s' : %s" % (globals.port, traceback.format_exc()))
 
@@ -476,6 +476,7 @@ def read_socket(cycle):
             if not JEEDOM_SOCKET_MESSAGE.empty():
                 logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE")
                 message = json.loads(JEEDOM_SOCKET_MESSAGE.get())
+                logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE " + message['cmd'])
                 if message['apikey'] != globals.apikey:
                     logging.error("SOCKET-READ------Invalid apikey from socket : " + str(message))
                     return
@@ -484,51 +485,36 @@ def read_socket(cycle):
                     logging.debug('SOCKET-READ------Attempt an action on a device')
                     _thread.start_new_thread(action_handler, (message,))
                     logging.debug('SOCKET-READ------Action Thread Launched')
-                elif message['cmd'] == 'logdebug':
-                    logging.info('SOCKET-READ------Passage du demon en mode debug force')
+                elif message['cmd'] == 'changelog':
+                    jeedom_utils.set_log_level('info')
+                    logging.info('SOCKET-READ------Passage du demon en mode ' + message['level'])
                     log = logging.getLogger()
                     for hdlr in log.handlers[:]:
                         log.removeHandler(hdlr)
-                    jeedom_utils.set_log_level('debug')
-                    logging.debug('SOCKET-READ------<----- La preuve ;)')
-                elif message['cmd'] == 'lognormal':
-                    logging.info('SOCKET-READ------Passage du demon en mode de log normal')
-                    log = logging.getLogger()
-                    for hdlr in log.handlers[:]:
-                        log.removeHandler(hdlr)
-                    jeedom_utils.set_log_level('error')
+                    logging.info("SOCKET-READ------------ C'est parti ;)")
+                    jeedom_utils.set_log_level(message['level'])
         except Exception as e:
             logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
             logging.debug(traceback.format_exc())
         time.sleep(cycle)
 
-
-def log_starting(cycle):
-    time.sleep(90)
-    logging.info('GLOBAL------Passage des logs en normal')
-    log = logging.getLogger()
-    for hdlr in log.handlers[:]:
-        log.removeHandler(hdlr)
-    jeedom_utils.set_log_level('error')
-
 def listen():
     globals.PENDING_ACTION = False
     jeedom_socket.open()
-    logging.info("GLOBAL------Start listening...")
+    logging.info("MODEM------Start listening...")
     globals.TELEINFO = Teleinfo()
-    logging.info("GLOBAL------Preparing Teleinfo...")
+    logging.info("MODEM------Preparing Teleinfo...")
     _thread.start_new_thread(read_socket, (globals.cycle,))
-    logging.debug('GLOBAL------Read Socket Thread Launched')
+    logging.debug('MODEM------Read Socket Thread Launched')
     while 1:
         try:
             try:
-                logging.info("TELEINFO------RUN")
+                logging.info("MODEM------RUN")
                 open()
             except error as err:
                 logging.error(err.value)
                 globals.TELEINFO.terminate()
                 return
-            _thread.start_new_thread(log_starting, (globals.cycle,))
             globals.TELEINFO.run()
         except Exception as e:
             print("Error:")
@@ -546,7 +532,7 @@ def shutdown():
     for hdlr in log.handlers[:]:
         log.removeHandler(hdlr)
     jeedom_utils.set_log_level('debug')
-    logging.info("GLOBAL------Shutdown")
+    logging.info("MODEM------Shutdown")
     logging.info("Removing PID file " + str(globals.pidfile))
     try:
         os.remove(globals.pidfile)
@@ -788,31 +774,33 @@ if args.cyclesommeil:
 if args.pidfile:
     globals.pidfile = args.pidfile
 
+
 globals.socketport = int(globals.socketport)
 globals.cycle = float(globals.cycle)
 globals.cycle_sommeil = float(globals.cycle_sommeil)
 
 jeedom_utils.set_log_level(globals.log_level)
+
 globals.JEEDOM_COM = jeedom_com(apikey=globals.apikey, url=globals.callback, cycle=globals.cycle)
 globals.pidfile = globals.pidfile + "_" + globals.type + ".pid"
-logging.info('GLOBAL------Start teleinfod')
+logging.info('MODEM------Start teleinfod')
 jeedom_utils.write_pid(str(globals.pidfile))
 
-logging.info('GLOBAL------Cycle Sommeil : ' + str(globals.cycle_sommeil))
-logging.info('GLOBAL------Socket port : ' + str(globals.socketport))
-logging.info('GLOBAL------Socket host : ' + str(globals.sockethost))
-logging.info('GLOBAL------Log level : ' + str(globals.log_level))
-logging.info('GLOBAL------Callback : ' + str(globals.callback))
-logging.info('GLOBAL------Vitesse : ' + str(globals.vitesse))
-logging.info('GLOBAL------Apikey : ' + str(globals.apikey))
-logging.info('GLOBAL------Cycle : ' + str(globals.cycle))
-logging.info('GLOBAL------Port : ' + str(globals.port))
-logging.info('GLOBAL------Type : ' + str(globals.type))
-logging.info('GLOBAL------Mode : ' + str(globals.mode))
+logging.info('MODEM------Cycle Sommeil : ' + str(globals.cycle_sommeil))
+logging.info('MODEM------Socket port : ' + str(globals.socketport))
+logging.info('MODEM------Socket host : ' + str(globals.sockethost))
+logging.info('MODEM------Log level : ' + str(globals.log_level))
+logging.info('MODEM------Callback : ' + str(globals.callback))
+logging.info('MODEM------Vitesse : ' + str(globals.vitesse))
+logging.info('MODEM------Apikey : ' + str(globals.apikey))
+logging.info('MODEM------Cycle : ' + str(globals.cycle))
+logging.info('MODEM------Port : ' + str(globals.port))
+logging.info('MODEM------Type : ' + str(globals.type))
+logging.info('MODEM------Mode : ' + str(globals.mode))
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
 if not globals.JEEDOM_COM.test():
-    logging.error('GLOBAL------Network communication issues. Please fix your Jeedom network configuration.')
+    logging.error('MODEM------Network communication issues. Please fix your Jeedom network configuration.')
     shutdown()
 jeedom_socket = jeedom_socket(port=globals.socketport, address=globals.sockethost)
 listen()

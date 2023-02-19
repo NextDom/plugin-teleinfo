@@ -33,11 +33,11 @@ class error(Exception):
 # Teleinfo core
 # ----------------------------------------------------------------------------
 def handler(signum=None, frame=None):
-    logging.debug("Signal %i caught, exiting..." % int(signum))
+    logging.debug("MQTT------Signal %i caught, exiting..." % int(signum))
     shutdown()
 
 def mqtt_on_log( client, userdata, level, buf ):
-    logging.info( "log: " + buf)
+    logging.info( "MQTT------log: " + buf)
 
 def mqtt_on_connect( client, userdata, flags, rc ):
     logging.info( "MQTT------Connexion: code retour = %d" % rc )
@@ -53,8 +53,8 @@ def mqtt_on_message(client, userdata, message):
     data = {}
     _SendData = {}
     y = str(message.payload.decode("utf-8"))
-    logging.debug( "Topic : %s" % message.topic )
-    logging.debug( "Data  : " + y )
+    logging.debug( "MQTT------Topic : %s" % message.topic )
+    logging.debug( "MQTT------Data  : " + y )
     trouveTIC = False
     try:
         x = json.loads(str(y))
@@ -65,10 +65,21 @@ def mqtt_on_message(client, userdata, message):
                             logging.debug( "------------------------------------") 
                             device = keys
                         trouveTIC = True
-                        logging.debug( "---------------- " + str(keys) + " : " +  str(x[key][keys]))
-                        data[keys] = str(x[key][keys])
+                        valeur = str(x[key][keys])
+                        if keys == 'PTEC':
+                            valeur = valeur.replace(".", "")
+                            valeur = valeur.replace(")", "")
+                            data[keys] = valeur
+                        elif keys == 'OPTARIF':
+                            valeur = valeur.replace(".", "")
+                            valeur = valeur.replace(")", "")
+                            data[keys] = valeur
+                        else:
+                            # valeur = valeur.replace(" ", "%20")
+                            data[keys] = valeur
+                        logging.debug( "MQTT------ " + str(keys) + " : " +  valeur)
     except:
-        logging.debug("message autre")
+        logging.debug("MQTT------message autre")
     if trouveTIC:
             for cle, valeur in data.items():
                 _SendData[cle] = valeur
@@ -77,11 +88,8 @@ def mqtt_on_message(client, userdata, message):
                 globals.JEEDOM_COM.add_changes('device::' + data[device], _SendData)
             except Exception:
                 error_com = "Connection error"
-                logging.error(error_com)
+                logging.error("MQTT------" + error_com)
     
-
-
-
 def read_socket(cycle):
     while True:
         try:
@@ -89,6 +97,7 @@ def read_socket(cycle):
             if not JEEDOM_SOCKET_MESSAGE.empty():
                 logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE")
                 message = json.loads(JEEDOM_SOCKET_MESSAGE.get())
+                logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE " + message['cmd'])
                 if message['apikey'] != globals.apikey:
                     logging.error("SOCKET-READ------Invalid apikey from socket : " + str(message))
                     return
@@ -97,32 +106,18 @@ def read_socket(cycle):
                     logging.debug('SOCKET-READ------Attempt an action on a device')
                     _thread.start_new_thread(action_handler, (message,))
                     logging.debug('SOCKET-READ------Action Thread Launched')
-                elif message['cmd'] == 'logdebug':
-                    logging.info('SOCKET-READ------Passage du demon en mode debug force')
+                elif message['cmd'] == 'changelog':
+                    jeedom_utils.set_log_level('info')
+                    logging.info('SOCKET-READ------Passage du demon en mode ' + message['level'])
                     log = logging.getLogger()
                     for hdlr in log.handlers[:]:
                         log.removeHandler(hdlr)
-                    jeedom_utils.set_log_level('debug')
-                    logging.debug('SOCKET-READ------<----- La preuve ;)')
-                elif message['cmd'] == 'lognormal':
-                    logging.info('SOCKET-READ------Passage du demon en mode de log normal')
-                    log = logging.getLogger()
-                    for hdlr in log.handlers[:]:
-                        log.removeHandler(hdlr)
-                    jeedom_utils.set_log_level('error')
+                    logging.info("SOCKET-READ------------ C'est parti ;)")
+                    jeedom_utils.set_log_level(message['level'])
         except Exception as e:
             logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
-            logging.debug(traceback.format_exc())
+            logging.debug("MQTT------" + traceback.format_exc())
         time.sleep(cycle)
-
-def log_starting(cycle):
-    logging.info('MQTT------commande des logs')
-    time.sleep(90)
-    logging.info('MQTT------Passage des logs en normal')
-    log = logging.getLogger()
-    for hdlr in log.handlers[:]:
-        log.removeHandler(hdlr)
-    jeedom_utils.set_log_level('error')
 
 def listen():
     jeedom_socket.open()
@@ -158,8 +153,8 @@ def listen_mqtt():
     client.loop_forever()  
 
 def shutdown():
-    logging.debug("Shutdown")
-    logging.debug("Removing PID file " + str(globals.pidfile))
+    logging.debug("MQTT------Shutdown")
+    logging.debug("MQTT------Removing PID file " + str(globals.pidfile))
     try:
         os.remove(globals.pidfile)
     except:
@@ -168,7 +163,7 @@ def shutdown():
         jeedom_socket.close()
     except:
         pass
-    logging.debug("Exit 0")
+    logging.debug("MQTT------Exit 0")
     sys.stdout.flush()
     os._exit(0)
 

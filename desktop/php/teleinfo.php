@@ -11,6 +11,7 @@ $date = array(
 $plugin = plugin::byId('teleinfo');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
+
 try {
 	$result = teleinfo::deamon_info();
 	if (isset($result['state'])) {

@@ -47,12 +47,12 @@ try {
 
 <form class="form-horizontal">
     <fieldset>
-        <legend><i class="icon fas fa-bolt"></i> {{Compteurs}}</legend>
+        <legend><i class="icon fas fa-bolt"></i> {{Compteurs   => ATTENTION: toute modification des configurations ci-dessous nécessite le redémarrage du daemon}}</legend>
         <div class="form-group">
             <div class="col-sm-8">
+                <a class="btn btn-warning config_Generale" data-choix="config_Generale"><i class="fas fa-cogs"></i> {{Configuration Générale du plugin}}</a>
         		<a class="btn btn-success choix_Modem" data-choix="choix_Modem"><i class="fas fa-paperclip"></i> {{Configuration de la partie Modem}}</a>
         		<a class="btn btn-success choix_Mqtt" data-choix="choix_Mqtt"><i class="fas fa-paperclip"></i> {{Configuration de la partie MQTT}}</a>
-        		<a class="btn btn-warning config_Generale" data-choix="config_Generale"><i class="fas fa-cogs"></i> {{Configuration Générale du plugin}}</a>
         	</div>
         </div>
         <div class="choixModem form-group div_local">
@@ -281,16 +281,16 @@ try {
                 </div>
             <div id="div_activation_Modem" class="form-group">
                 <label class="col-lg-4 control-label">Utilisation d'un modem téléinformation : </label>
-                <div class="col-lg-2">
+                <div class="col-lg-4">
                     <input type="checkbox" id="activation_Modem" class="configKey" data-l1key="activation_Modem" placeholder="{{Activer}}" checked/>
-                    <label for="activation_Modem"></label>
+                    <label class="check_modem" for="activation_Modem">compléter la partie configuration du modem</label>
                     </div>
             </div>
             <div class="form-group div_local">
                 <label class="col-lg-4 control-label">Activer le MQTT <sup><i class="fas fa-question-circle tooltips" title="{{Utilisation d'une TIC en MQTT}}" style="font-size : 1em;color:grey;"></i></sup></label>
-                <div id="div_activation_Mqtt" class="col-lg-2 tooltips">
+                <div id="div_activation_Mqtt" class="col-lg-4 tooltips">
                     <input type="checkbox" id="activation_Mqtt" class="configKey" data-l1key="activation_Mqtt" placeholder="{{Activer}}"/>
-                    <label for="activation_Mqtt"></label>
+                    <label class="check_mqtt" for="activation_Mqtt">compléter la partie configuration du MQTT</label>
                 </div>
             </div>
             <div class="form-group">
@@ -332,10 +332,10 @@ try {
         </div>
         <div class="form-group">
             <label class="col-sm-4 control-label"></label>
-            <div class="col-sm-4">
-        		<a class="btn btn-warning changeLogLive" data-log="logdebug"><i class="fas fa-cogs"></i> {{Mode debug forcé temporaire}}</a>
-        		<a class="btn btn-success changeLogLive" data-log="lognormal"><i class="fas fa-paperclip"></i> {{Remettre niveau de log normal}}</a>
-        	</div>
+            <div class="col-sm-8">
+<!--        		<a class="btn btn-warning changeLogLive" data-log="logdebug"><i class="fas fa-cogs"></i> {{Mode debug forcé temporaire des démons}}</a>
+        		<a class="btn btn-success changeLogLive" data-log="lognormal"><i class="fas fa-paperclip"></i> {{Remettre niveau de log normal des démons}}</a>
+-->        	</div>
         </div>
     </fieldset>
 </form>
@@ -350,6 +350,28 @@ try {
         $('#btn_diagnostic').on('click',function(){
             $('#md_modal').dialog({title: "{{Diagnostique de résolution d'incident}}"});
             $('#md_modal').load('index.php?v=d&plugin=teleinfo&modal=diagnostic').dialog('open');
+        });
+
+        $('#bt_savePluginLogConfig').on('click',function(){ // bouton sauvegarde des modifs mode de log
+            $.ajax({// fonction permettant de faire de l'ajax
+                type: "POST", // methode de transmission des données au fichier php
+                url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
+                data: {
+                    action: "changeLogLive",
+                    level: $('#div_plugin_log').getValues('.configKey')[0],
+                },
+                dataType: 'json',
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { // si l'appel a bien fonctionné
+                    if (data.state != 'ok') {
+                        $.fn.showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    $.fn.showAlert({message: '{{Changement réussi}}', level: 'success'});
+                }
+            });
         });
 
 		$('#btn_detect_type').on('click',function(){
@@ -454,6 +476,8 @@ try {
                 }
             });
         });
+
+
 
         $('.choix_Mqtt').on('click', function () {
             $('.choixModem').hide();
