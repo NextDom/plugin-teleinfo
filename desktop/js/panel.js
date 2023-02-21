@@ -48,7 +48,10 @@ $('#bt_teleinfoCout').on('click', function() {
         }
         $('.index').hide();
         $('.couts').show();
-            }else{
+        $('.conso').hide();
+        $('.coutsgraph').show();
+        $('.indexgraph').hide();
+    }else{
         if (isCoutVisible === false){
             isCoutVisible = true;
             $('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]').show();
@@ -136,7 +139,10 @@ $('#bt_teleinfoConso').on('click', function() {
             $('.PRODCONSO').show();
         }
         $('.couts').hide();
+        $('.conso').show();
         $('.index').show();
+        $('.coutsgraph').hide();
+        $('.indexgraph').show();
     }
 });
 
@@ -147,7 +153,10 @@ $('#bt_teleinfoTout').on('click', function() {
             $('.PRODCONSO').show();
         }
         $('.couts').show();
+        $('.conso').show();
         $('.index').show();
+        $('.coutsgraph').show();
+        $('.indexgraph').show();
     }
 });
 
@@ -248,6 +257,8 @@ $.ajax({
             
             console.log("[si c'est HC HP = 1 ] => " + data.result[globalEqLogic].configuration.HCHP);
 
+            console.log("[loadData Nouveaux index? ] => " + data.result[globalEqLogic].configuration.newIndex);
+
             if (prodEtConso ==1){
                 $('.PRODCOUT').show();
                 $('.PRODUCTION').show();
@@ -262,9 +273,14 @@ $.ajax({
 			let index_nom =[];
             let index_cout =[];
 			if (data.result[globalEqLogic].configuration.newIndex == 1) {
-				newIndex = true;
+                $('.couts').show();
+                $('.index').show();
+                $('.TOTAL').hide();
+                $('.HCHP').hide();
+                $('.coutsgraph').show();
+            	newIndex = true;
 				index[0] = true;
-				index_nom = ['Global',
+                index_nom = ['Global',
                             data.result[globalEqLogic].configuration.index01_nom,
                             data.result[globalEqLogic].configuration.index02_nom,
                             data.result[globalEqLogic].configuration.index03_nom,
@@ -314,8 +330,19 @@ $.ajax({
 				newIndex = false;
                 $('.couts').hide();
                 $('.PRODCOUT').hide();
+                $('.index').hide();
+                $('.TOTAL').show();
+                $('.coutsgraph').hide();
+                if (data.result[globalEqLogic].configuration.HCHP==1){
+                    HCHP = true;
+                    $('.HCHP').show();
+                }else{
+                    HCHP = false;
+                    $('.HCHP').hide();
+                }
+                console.log("[loadData] anciens index HCHP : " + HCHP);
 				index[0] = false;
-				for (k=0; k<=10; k++){
+/*				for (k=0; k<=10; k++){
 					switch(k)
                         {
                             case 0:
@@ -356,29 +383,14 @@ $.ajax({
 						y[w].style.display = 'none';
 					}
 				}
-			}
+            */			}
 
-            if((data.result[globalEqLogic].configuration.HCHP == 0) || newIndex ){
-                y = document.getElementsByClassName('HCHP');
-				HCHP = false;
-				for (i = 0; i < y.length; i++) {
-					y[i].style.display = 'none';
-				}
-			}else{
-                HCHP = true;
-			}
 //            if(data.result[globalEqLogic].configuration.ActivationProduction == 0){
 //				 y = document.getElementsByClassName('PROD');
 //				 for (j = 0; j < y.length; j++) {
 //					y[j].style.display = 'none';
 //				}
 //			}
-            if(newIndex){
-				 y = document.getElementsByClassName('TOTAL');
-				 for (j = 0; j < y.length; j++) {
-					y[j].style.display = 'none';
-				}
-			}
 					
 			
             var CoutindexProd = Number(data.result[globalEqLogic].configuration.CoutindexProd);                        

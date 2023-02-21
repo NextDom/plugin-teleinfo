@@ -31,6 +31,8 @@ $mqtt_topic = config::byKey('mqtt_topic', 'teleinfo');
 $mqtt_username = config::byKey('mqtt_username', 'teleinfo');
 $mqtt_password = config::byKey('mqtt_password', 'teleinfo');
 $core_version = '1.1.1';
+
+
 if (!file_exists(dirname(__FILE__) . '/info.json')) {
     log::add('teleinfo','warning','Pas de fichier info.json');
 }

@@ -45,7 +45,7 @@ def mqtt_on_connect( client, userdata, flags, rc ):
 
 def mqtt_on_disconnect(client, userdata, rc):
     logging.info("MQTT------disconnecting reason  "  +str(rc))
-    shutdown(client)
+    shutdown()
 
 def mqtt_on_message(client, userdata, message):
     """lecture des trames MQTT"""

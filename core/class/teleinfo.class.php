@@ -141,7 +141,7 @@ class teleinfo extends eqLogic
                 case "PTEC":
                 case "DEMAIN":
                 case "MOTDETAT":
-                case "HHPHC":
+                case "HPHC":
                 case "PPOT":
                 case "NGTF":
                 case "LTARF":
@@ -784,32 +784,55 @@ class teleinfo extends eqLogic
             $typeTendance      = 0;
             $statToday         = 0;
 			$index             = '';
-            $statTodayIndex00  = 0;
-            $statTodayIndex01  = 0;
-            $statTodayIndex02  = 0;
-            $statTodayIndex03  = 0;
-            $statTodayIndex04  = 0;
-            $statTodayIndex05  = 0;
-            $statTodayIndex06  = 0;
-            $statTodayIndex07  = 0;
-            $statTodayIndex08  = 0;
-            $statTodayIndex09  = 0;
-            $statTodayIndex10  = 0;
-            $statYesterdayIndex00  = 0;
-            $statYesterdayIndex01  = 0;
-            $statYesterdayIndex02  = 0;
-            $statYesterdayIndex03  = 0;
-            $statYesterdayIndex04  = 0;
-            $statYesterdayIndex05  = 0;
-            $statYesterdayIndex06  = 0;
-            $statYesterdayIndex07  = 0;
-            $statYesterdayIndex08  = 0;
-            $statYesterdayIndex09  = 0;
-            $statYesterdayIndex10  = 0;
             $statHpToCumul     = array();
             $statHcToCumul     = array();
             $statProdToCumul   = array();
 			$statTotalToCumul  = array();
+            $statTotalMaxToday = 0;
+            $statTotalMinToday = 0;
+            $statTodayTotal = 0;
+            $statYesterdayTotal = 0;
+            $statHcMaxToday = 0;
+            $statHcMinToday = 0;
+            $statHcTotal = 0;
+            $statYesterdayHc = 0;
+            $statHpMaxToday = 0;
+            $statHpMinToday = 0;
+            $statHpTotal = 0;
+            $statYesterdayHp = 0;
+            $statProdMaxToday = 0;
+            $statProdMinToday = 0;
+            $statProdTotal = 0;
+            $statYesterdayProd = 0;
+
+
+
+			// raz des variables
+            for ($i=0; $i <= 10; $i++){
+				if ($i == 10) {   //affectation des variables index en dynamique
+					$a = 'idIndex' . $i;
+					$b = 'statTodayIndex' . $i;
+					$c = 'statYesterdayIndex' . $i;
+                    $d = 'Coutindex' . $i;
+                    $e = 'Coutkwhindex' . $i;
+                    $f = 'index' . $i;
+				} 
+				else {
+					$a = 'idIndex0' . $i;
+					$b = 'statTodayIndex0' . $i;
+					$c = 'statYesterdayIndex0' . $i;
+                    $d = 'Coutindex0' . $i;
+                    $e = 'Coutkwhindex0' . $i;
+                    $f = 'index0' . $i;
+				}
+                $$a = 0;
+                $$b = 0;
+                $$c = 0;
+                $$d = 0;
+                $$e = '';
+                $$f = '';
+            }
+
 
             $index01 = $eqLogic->getConfiguration('index01');
 			$index02 = $eqLogic->getConfiguration('index02');
@@ -934,7 +957,7 @@ class teleinfo extends eqLogic
 					$idIndex10 = $cmd->getId();
 					log::add('teleinfo', 'debug', 'Id Index10 ' . $idIndex10);
 				}
-				log::add('teleinfo', 'debug', 'liste des donnees' . $cmd->getConfiguration('info_conso'));
+				log::add('teleinfo', 'debug', 'liste des donnees : ' . $cmd->getConfiguration('info_conso'));
             }
 
             $startdateyesterday = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
@@ -972,17 +995,23 @@ class teleinfo extends eqLogic
 					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' --> ' . ${$b});
                     $$d = $$b * $$e / 1000;
                     if ($i == 0){
-                        $Coutindex00 = ${$d};
+                        $Coutindex00Init = $Coutindex00;
+                        $statTodayIndex00init = $statTodayIndex00;
+                        $Coutindex00 = 0;
+                        $statTodayIndex00 = 0;
                     }else{
-                        if ($linky == 0){
-                            $statTodayIndex00 += ${$b};
-                        }                        
+                        $statTodayIndex00 += ${$b};
                         $Coutindex00 += ${$d};
+                        $statTodayIndex00init = 0;
+                        $Coutindex00Init = 0;
                     }
                     log::add('teleinfo', 'info', 'Coût Index00 ' . $Coutindex00); 
 					log::add('teleinfo', 'info', 'Coût au kWh Index ' . $i . ' --> ' .${$e}. ' coût pour cet index aujourd hui --> ' .${$d});
                 }
 			}
+            $statTodayIndex00 += $statTodayIndex00init;
+            $Coutindex00 += $Coutindex00Init;
+
             
             foreach ($statTotalToCumul as $key => $value) {
                 log::add('teleinfo', 'debug', 'Commande Conso totale N° ' . $value);
@@ -1010,13 +1039,13 @@ class teleinfo extends eqLogic
             }
             foreach ($statHpToCumul as $key => $value) {
                 $cmd            = cmd::byId($value);
-                $statHcMaxToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['max'];
-                $statHcMinToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['min'];
+                $statHpMaxToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['max'];
+                $statHpMinToday = $cmd->getStatistique($startDateToday->format('Y-m-d 00:00:00'), $endDateToday->format('Y-m-d H:i:s'))['min'];
                 log::add('teleinfo', 'debug', 'Commande HP N°' . $value);
-                log::add('teleinfo', 'debug', ' ==> Valeur HP MAX : ' . $statHcMaxToday);
-                log::add('teleinfo', 'debug', ' ==> Valeur HP MIN : ' . $statHcMinToday);
+                log::add('teleinfo', 'debug', ' ==> Valeur HP MAX : ' . $statHpMaxToday);
+                log::add('teleinfo', 'debug', ' ==> Valeur HP MIN : ' . $statHpMinToday);
 
-                $statTodayHp     += intval($statHcMaxToday) - intval($statHcMinToday);
+                $statTodayHp     += intval($statHpMaxToday) - intval($statHpMinToday);
                 $statYesterdayHp += intval($cmd->getStatistique($startdateyesterday->format('Y-m-d 00:00:00'), $enddateyesterday)['max']) - intval($cmd->getStatistique($startdateyesterday->format('Y-m-d 00:00:00'), $enddateyesterday)['min']);
                 log::add('teleinfo', 'debug', 'Total HP --> ' . $statTodayHp);
             }
@@ -1121,7 +1150,7 @@ class teleinfo extends eqLogic
 							break;
                         case "STAT_TODAY_INDEX10":
 							//if ($statTodayIndex10 > 0) {
-								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière coût Index 10 ==> ' . intval($statTodayIndex10));
+								log::add('teleinfo', 'info', 'Mise à jour de la statistique journalière Index 10 ==> ' . intval($statTodayIndex10));
 								$cmd->event(intval($statTodayIndex10));
 							//}
 							break;
@@ -1217,11 +1246,51 @@ class teleinfo extends eqLogic
             $statYesterdayHc     = 0;
             $statYesterdayHp     = 0;
             $statYesterdayProd   = 0;
+            $statHpToCumul       = 0;
+            $statHcToCumul       = 0;
+            $statYesterdayCoutProd = 0;
+            $statYesterdayTotal  = 0;
+            $statYesterdayHp     = 0;
+            $statYesterdayHc     = 0;
+            $statYesterdayProd  = 0;
             $prod                = 0;
             $statHpToCumul       = array();
             $statHcToCumul       = array();
             $statProdToCumul     = array();
             $statTotalToCumul    = array();
+            $idIndexProd         = 0;
+
+
+            // raz des variables
+            for ($i=0; $i <= 10; $i++){
+                if ($i == 10) {   //affectation des variables index en dynamique
+                    $a = 'idIndex' . $i;
+                    $b = 'statYesterdayTotalIndex' . $i;
+                    $c = 'statYesterdayCoutTotalIndex' . $i;
+                    $d = 'Coutindex' . $i;
+                    $e = 'Coutkwhindex' . $i;
+                    $f = 'index' . $i;
+                    $g = 'idCoutIndex' . $i;
+                } 
+                else {
+                    $a = 'idIndex0' . $i;
+                    $b = 'statYesterdayTotalIndex0' . $i;
+                    $c = 'statYesterdayCoutTotalIndex0' . $i;
+                    $d = 'Coutindex0' . $i;
+                    $e = 'Coutkwhindex0' . $i;
+                    $f = 'index0' . $i;
+                    $g = 'idCoutIndex0' . $i;
+                }
+                $$a = 0;
+                $$b = 0;
+                $$c = 0;
+                $$d = 0;
+                $$e = '';
+                $$f = '';
+                $$g = 0;
+            }
+            
+
             log::add('teleinfo', 'info', '--------------------------------------------------');
             log::add('teleinfo', 'info', '----- Compteur : ' . $eqLogic->getName() . ' -----');
             log::add('teleinfo', 'info', '--------------------------------------------------');
@@ -1241,6 +1310,8 @@ class teleinfo extends eqLogic
             if ((floatval($eqLogic->getConfiguration('CoutindexProd')) <> 0) && ($prod == 1)) {
                 $CoutIndexProd = floatval($eqLogic->getConfiguration('CoutindexProd'));
                 log::add('teleinfo', 'info', 'EAIT revenus au kWh = ' . strval($CoutIndexProd));
+            }else{
+                $CoutIndexProd = 0;
             }
 
             foreach ($eqLogic->getCmd('info') as $cmd) {
@@ -1390,13 +1461,24 @@ class teleinfo extends eqLogic
 					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' hier --> ' . ${$c});
                     $cmd = cmd::byId(${$d});
                     $$e = floatval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
-					if ($linky==0 && $i!=0){ 
-                        $statYesterdayTotalIndex00 += ${$c}; 
-                        //$statYesterdayCoutTotalIndex00 += ${$e}; 
+					if ($i==0){ 
+                        $statYesterdayTotalIndex00Init = $statYesterdayCoutTotalIndex00;
+                        $statYesterdayCoutTotalIndex00Init = $statYesterdayCoutTotalIndex00;
+                        $statYesterdayCoutTotalIndex00 = 0;
+                        $statYesterdayCoutTotalIndex00Init = 0;
+                    }else{
+                        $statYesterdayTotalIndex00 += ${$c};
+                        $statYesterdayCoutTotalIndex00 += ${$e};
+                        $statYesterdayTotalIndex00Init = 0;
+                        $statYesterdayCoutTotalIndex00Init = 0;
                     }
+
                     log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d} . ' Index 00 ' . $statYesterdayTotalIndex00 . ' Coût Index 00 ' . $statYesterdayCoutTotalIndex00);
                 }
 			}
+            $statYesterdayTotalIndex00 += $statYesterdayTotalIndex00Init;
+            $statYesterdayCoutTotalIndex00 += $statYesterdayCoutTotalIndex00Init;
+
 
             foreach ($statTotalToCumul as $key => $value) {
                 log::add('teleinfo', 'debug', 'Commande Totale N°' . $value);
@@ -2177,11 +2259,12 @@ class teleinfo extends eqLogic
                 case "BBRHPJB":
                 case "BBRHPJW":
                 case "BBRHPJR":
-                case "HCHC":
                 case "BBRHCJB":
                 case "BBRHCJW":
                 case "BBRHCJR":
                 case "EJPHPM":
+                case "EAIT":
+                case "EAST":
                 case "EASF01":
                 case "EASF02":
                 case "EASF03":
@@ -2194,8 +2277,6 @@ class teleinfo extends eqLogic
                 case "EASF10":
                 case "EASD01":
                 case "EASD02":
-                case "EAIT":
-                case "EAST":
                     log::add('teleinfo', 'debug', $cmd->getConfiguration('info_conso') . '=> index');
                     if ($cmd->getDisplay('generic_type') == '') {
                         $cmd->setDisplay('generic_type', 'GENERIC_INFO');
