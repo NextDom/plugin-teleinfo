@@ -11,15 +11,15 @@
 
 <br>
 
-<a href="../images/teleinfo_config02.png">
-<img src="../images/teleinfo_config02.png" alt="configuration" style="width:600px;"/>
+<a href="../../../images/teleinfo_config02.png">
+<img src="../../images/teleinfo_config02.png" alt="configuration" style="width:600px;"/>
 </a>
 <br><br><br><br><br><br><br>
 
 ## (1) Configuration générale du plugin
 
-<a href="../images/teleinfo_config04.png">
-<img src="../images/teleinfo_config04.png" alt="configuration" style="width:600px;"/>
+<a href="../../images/teleinfo_config04.png">
+<img src="../../images/teleinfo_config04.png" alt="configuration" style="width:600px;"/>
 </a>
 <br><br><br>
 Un clic sur chaque bouton fait apparaitre un sous menu associé
@@ -56,8 +56,8 @@ Si vous ne savez pas à quoi cela sert, n'y touchez pas.
 <br><br><br><br><br><br><br>
 
 
-<a href="../images/teleinfo_config05.png">
-<img src="../images/teleinfo_config05.png" alt="configuration" style="width:600px;"/>
+<a href="../../images/teleinfo_config05.png">
+<img src="../../images/teleinfo_config05.png" alt="configuration" style="width:600px;"/>
 </a>
 
 <br><br><br><br>
@@ -96,8 +96,8 @@ Permet de faire savoir au plugin que le modem installé est un type 2 compteurs 
 Cliquer sur le + permet d'afficher les paramètres de configuration du modem
 <br>
 
-<a href="../images/teleinfo_config03.png">
-<img src="../images/teleinfo_config03.png" alt="configuration" style="width:600px;"/>
+<a href="../../images/teleinfo_config03.png">
+<img src="../../images/teleinfo_config03.png" alt="configuration" style="width:600px;"/>
 </a>
 <br><br><br><br>
 
@@ -116,8 +116,8 @@ Si vous avez un mode standard la vitesse doit être fixée à 9600
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
 
-<a href="../images/teleinfo_config06.png">
-<img src="../images/teleinfo_config06.png" alt="configuration" style="width:600px;"/>
+<a href="../../images/teleinfo_config06.png">
+<img src="../../images/teleinfo_config06.png" alt="configuration" style="width:600px;"/>
 </a>
 
 <br><br><br><br>
@@ -151,8 +151,8 @@ Si vous avez des difficultés vous pouvez essayer l'excellent logiciel MQTT Expl
 
 <br>
 
-<a href="../images/teleinfo_equipement02.png">
-<img src="../images/teleinfo_equipement02.png" alt="configuration" style="width:800px;"/>
+<a href="../../images/teleinfo_equipement02.png">
+<img src="../../images/teleinfo_equipement02.png" alt="configuration" style="width:800px;"/>
 <a>
 
 <br><br>
