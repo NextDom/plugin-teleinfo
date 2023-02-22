@@ -10,10 +10,5 @@
     "requests" : {},
     "pyudev" : {},
     "paho-mqtt" : {}
-  },
-  "pip2" :{
-    "setuptools" : {},
-    "paho-mqtt" : {}
   }
-
   }

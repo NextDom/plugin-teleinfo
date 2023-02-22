@@ -12,6 +12,7 @@ $plugin = plugin::byId('teleinfo');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
+
 try {
 	$result = teleinfo::deamon_info();
 	if (isset($result['state'])) {
@@ -41,6 +42,7 @@ switch ($controlerState) {
 }
 //$deamonRunning = false;
 //$deamonRunning = teleinfo::deamonRunning();
+
 ?>
 
 <div class="row row-overflow">
@@ -180,13 +182,18 @@ switch ($controlerState) {
                               <input type="checkbox" id="NewMethode" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="newIndex" placeholder="{{Utilisation des index}}"/>
                           </div>
                       </div>
+                      <div class="form-group Colors">
+                          <a class="btn btn-warning tooltips col-sm-2 pull-right"  id="btTeleinfoRazCouleurs"><i class="fas fa-medkit"></i>{{ RAZ des couleurs}}</a>
+                      </div>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">{{Index}}</label>
                           <label class="col-sm-2 control-label">{{Libellé tarif}}</label>
                           <label class="col-sm-1 control-label">{{ }}</label>
                           <label class="col-sm-2 control-label">{{Champ téléinfo}}</label>
                           <label class="col-sm-1 control-label">{{ }}</label>
-                          <label class="col-sm-2 control-label">{{Prix kWh}}</label>
+                          <label class="col-sm-1 control-label">{{Prix kWh}}</label>
+						  <label class="col-sm-1 control-label">{{ }}</label>
+                          <label class="col-sm-2 control-label">{{Couleurs ligne}}</label>
                       </div>
 
                       <div class="form-group">
@@ -198,6 +205,10 @@ switch ($controlerState) {
                           <div class="col-sm-2">
                               <input type="number" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="CoutindexProd" placeholder="{{0}}"/>
                           </div>
+						  <label class="col-sm-1 control-label">{{ }}</label>
+                          <div class="col-sm-1">
+                              <input type="color" class="eqLogicAttr configKey" id="favcolor14"  data-l1key="configuration" data-l2key="color14" name="favcolor14">
+                          </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">{{Index 00}} :</label>
@@ -208,6 +219,10 @@ switch ($controlerState) {
                           <div class="col-sm-2">
                               <input type="number" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="Coutindex00" placeholder="{{Si abo de base sinon 0}}"/>
                           </div>
+						  <label class="col-sm-1 control-label">{{ }}</label>
+                          <div class="col-sm-1">
+                              <input type="color" class="eqLogicAttr configKey" id="favcolor0"  data-l1key="configuration" data-l2key="color0" name="favcolor0">
+                          </div>
 
                       </div>
                       
@@ -216,7 +231,9 @@ switch ($controlerState) {
                             $index=array('index01','index02','index03','index04','index05','index06','index07','index08','index09','index10');
                             $indexId=array("EASF01","EASF02","EASF03","EASF04","EASF05","EASF06","EASF07","EASF08","EASF09","EASF10",
                                             "HCHC", "HCHP", "EJPHN", "EJPHPM", "BBRHCJB", "BBRHPJB", "BBRHCJW", "BBRHPJW", "BBRHCJR","BBRHPJR");
+                            $color = 0;
 							foreach($index as $numindex){
+                                $color += 1;
 								$tableau.='<div class="form-group">';
 									$tableau.='<label class="col-sm-2 control-label">{{Index '.substr($numindex,-2).'}} :</label>';
 									$tableau.='<div class="col-sm-2">';
@@ -237,11 +254,42 @@ switch ($controlerState) {
 									$tableau.='<div class="col-sm-2">';
                                         $tableau.='<input type="number" class="eqLogicAttr configKey" data-l1key="configuration" data-l2key="Cout'.$numindex.'" placeholder="{{0}}"/>';
                                     $tableau.='</div>';
+                                    $tableau.='<label class="col-sm-1 control-label">{{ }}</label>';
+                                    $tableau.='<div class="col-sm-1">';
+                                        $tableau.='<input type="color" class="eqLogicAttr configKey" id="favcolor'.$color.'"  data-l1key="configuration" data-l2key="color'.$color.'" name="favcolor'.$color.'">';
+                                    $tableau.='</div>';
                                 $tableau.='</div>';
                                     }
                         ?>
 						<?php echo $tableau ?>
 
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label">{{ }}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <label class="col-sm-4 control-label">{{Pour les autres courbes :}}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <label class="col-sm-2 control-label">{{Stat HC}}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <div class="col-sm-1">
+                              <input type="color" class="eqLogicAttr configKey" id="favcolor11"  data-l1key="configuration" data-l2key="color11" name="favcolor11">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-8 control-label">{{ }}</label>
+                          <label class="col-sm-2 control-label">{{Stat HP}}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <div class="col-sm-1">
+                              <input type="color" class="eqLogicAttr configKey" id="favcolor12"  data-l1key="configuration" data-l2key="color12" name="favcolor12">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-8 control-label">{{ }}</label>
+                          <label class="col-sm-2 control-label">{{Stat Today}}</label>
+                          <label class="col-sm-1 control-label">{{ }}</label>
+                          <div class="col-sm-1">
+                              <input type="color" class="eqLogicAttr configKey" id="favcolor13"  data-l1key="configuration" data-l2key="color13" name="favcolor13">
+                          </div>
+                        </div>
                   </fieldset>
               </form>
           </div>
@@ -276,6 +324,8 @@ switch ($controlerState) {
                       <div class="form-group">
                           </br>
 						  </br>
+						  </br>
+                          </br>
 						  </br>
 						  </br>
 							  <div> 
@@ -332,6 +382,41 @@ switch ($controlerState) {
 	</div>
 </div>
 
+<script>
+//création du tableau des paramètres des couleurs par défaut
+$colordefaut = ['#D62828','#001219','#005F73','#0A9396','#94D2BD',
+                                '#E9D8A6','#ee9b00','#ca6702','#bb3e03','#ae2012',
+                                '#9b2226','#ed9448','#7cb5ec','#d62828','#00FF00'
+                ];
+
+$('#btTeleinfoRazCouleurs').on('click', function () {
+    $('#favcolor0').value($colordefaut[0]);
+    $('#favcolor1').value($colordefaut[1]);
+    $('#favcolor2').value($colordefaut[2]);
+    $('#favcolor3').value($colordefaut[3]);
+    $('#favcolor4').value($colordefaut[4]);
+    $('#favcolor5').value($colordefaut[5]);
+    $('#favcolor6').value($colordefaut[6]);
+    $('#favcolor7').value($colordefaut[7]);
+    $('#favcolor8').value($colordefaut[8]);
+    $('#favcolor9').value($colordefaut[9]);
+    $('#favcolor10').value($colordefaut[10]);
+    $('#favcolor11').value($colordefaut[11]);
+    $('#favcolor12').value($colordefaut[12]);
+    $('#favcolor13').value($colordefaut[13]);
+    $('#favcolor14').value($colordefaut[14]);
+});
+
+//$('#favcolor14').value('#00FF00');
+//    document.getElementById("favcolor14").value = "#00FF00";
+//    $('.eqLogicAttr[data-l1key=configuration][data-l2key=color14]').value("#00FF00");
+//eqLogicAttr configKey" id="favcolor14"  data-l1key="configuration" data-l2key="color14
+
+</script>
+
+
 <?php include_file('desktop', 'teleinfo', 'js', 'teleinfo'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
 <?php include_file('desktop', 'teleinfo', 'css', 'teleinfo'); ?>
+
+

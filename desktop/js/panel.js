@@ -232,7 +232,7 @@ $.ajax({
             var compteurProd = false;
             prodEtConso = false;
             var HCHP = false;
-            var color = '#7cb5ec';
+            //var color = '#7cb5ec';
             var indexCout = 0;
 			newIndex = false;
 			let index = [];
@@ -272,7 +272,28 @@ $.ajax({
 			var y;
 			let index_nom =[];
             let index_cout =[];
-			if (data.result[globalEqLogic].configuration.newIndex == 1) {
+            let color = ['#d62828','#001219','#005f73','#0a9396','#94d2bd',
+            '#e9d8a6','#ee9b00','#ca6702','#bb3e03','#ae2012',
+            '#9b2226','#ed9448','#7cb5ec','#d62828','#00FF00'];
+
+            if (data.result[globalEqLogic].configuration.color0 != null) {
+                color[0] = data.result[globalEqLogic].configuration.color0;
+                color[1] = data.result[globalEqLogic].configuration.color1;
+                color[2] = data.result[globalEqLogic].configuration.color2;
+                color[3] = data.result[globalEqLogic].configuration.color3;
+                color[4] = data.result[globalEqLogic].configuration.color4;
+                color[5] = data.result[globalEqLogic].configuration.color5;
+                color[6] = data.result[globalEqLogic].configuration.color6;
+                color[7] = data.result[globalEqLogic].configuration.color7;
+                color[8] = data.result[globalEqLogic].configuration.color8;
+                color[9] = data.result[globalEqLogic].configuration.color9;
+                color[10] = data.result[globalEqLogic].configuration.color10;
+                color[11] = data.result[globalEqLogic].configuration.color11;
+                color[12] = data.result[globalEqLogic].configuration.color12;
+                color[13] = data.result[globalEqLogic].configuration.color13;
+                color[14] = data.result[globalEqLogic].configuration.color14;
+            }
+            if (data.result[globalEqLogic].configuration.newIndex == 1) {
                 $('.couts').show();
                 $('.index').show();
                 $('.TOTAL').hide();
@@ -428,10 +449,6 @@ $.ajax({
 				monthHC = 0;
 				yearHp = 0;
 				yearHC = 0;
-                let color = ['#d62828','#001219','#005f73','#0a9396','#94d2bd',
-                                '#e9d8a6','#ee9b00','#ca6702','#bb3e03','#ae2012',
-                                '#9b2226','#ed9448','#7cb5ec','#7cb5ec','#00FF00'
-                ];
 
                 for(cmd in data.result[globalEqLogic].cmd)
                 {

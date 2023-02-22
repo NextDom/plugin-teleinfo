@@ -48,9 +48,9 @@ class teleinfo extends eqLogic
 
     public static function changeLogLive($level)
     {
-        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 0 : 1;
-        $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : 1;
-        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
+        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
+        $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : config::byKey('activation_Mqtt', 'teleinfo');
+        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : config::byKey('port_modem2', 'teleinfo');
         if (($activation_Modem=='0') && ($activation_Mqtt=='0')) {
             log::add('teleinfo', 'info', 'pas d envoi de message faute de configuration');
             return false;
@@ -93,6 +93,9 @@ class teleinfo extends eqLogic
 	 */
     public static function createFromDef(string $adco)
     {
+        $color = ['#D62828','#001219','#005F73','#0A9396','#94D2BD',
+                    '#E9D8A6','#ee9b00','#ca6702','#bb3e03','#ae2012',
+                    '#9b2226','#ed9448','#7cb5ec','#d62828','#00FF00'];
         $autorisationCreationObjet = config::byKey('createNewADCO', 'teleinfo');
         if ($autorisationCreationObjet != 1) {
             $teleinfo = teleinfo::byLogicalId($adco, 'teleinfo');
@@ -104,14 +107,28 @@ class teleinfo extends eqLogic
                     ->setEqType_name('teleinfo')
                     ->setIsEnable(1)
                     ->setIsVisible(1)
-                    ->setconfiguration('AutoCreateFromCompteur','1');
+                    ->setconfiguration('AutoCreateFromCompteur','1')
+                    ->setconfiguration('color0',$color[0])
+                    ->setconfiguration('color1',$color[1])
+                    ->setconfiguration('color2',$color[2])
+                    ->setconfiguration('color3',$color[3])
+                    ->setconfiguration('color4',$color[4])
+                    ->setconfiguration('color5',$color[5])
+                    ->setconfiguration('color6',$color[6])
+                    ->setconfiguration('color7',$color[7])
+                    ->setconfiguration('color8',$color[8])
+                    ->setconfiguration('color9',$color[9])
+                    ->setconfiguration('color10',$color[10])
+                    ->setconfiguration('color11',$color[11])
+                    ->setconfiguration('color12',$color[12])
+                    ->setconfiguration('color13',$color[13])
+                    ->setconfiguration('color14',$color[14]);
             $eqLogic->save();
             return $eqLogic;
         } else {
             return null;
         }
     }
-
 	/**
 	 * Creation commande sur reception de trame
 	 * @param $oADCO identifiant compteur
@@ -479,9 +496,9 @@ class teleinfo extends eqLogic
      */
     public static function deamon_info()
     {
-        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 0 : 1;
-        $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : 1;
-        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
+        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
+        $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : config::byKey('activation_Mqtt', 'teleinfo');
+        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : config::byKey('port_modem2', 'teleinfo');
         $return               = array();
         $return['log']        = 'teleinfo';
         $return['state']      = 'nok';
@@ -505,21 +522,27 @@ class teleinfo extends eqLogic
                     $returnmodem = 'nok';
                     shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
                 }
+            }else{
+                log::add('teleinfo', 'error', "[TELEINFO_deamon_infoserial] le deamon serial n'est pas démarré ");
+                $returnmodem = 'nok';
             }
             if ($productionActivated == 1){
                 log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoprod] test pid');
                 $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
                 if (file_exists($pidFile)) {
                     if (posix_getsid(trim(file_get_contents($pidFile)))) {
-                        log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoserial] pidfile = prod');
+                        log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoProd] pidfile = prod');
                         $returnprod = 'ok';
                     } else {
-                        log::add('teleinfo', 'error', "[TELEINFO_deamon_infoserial] le deamon prod s'est éteint");
+                        log::add('teleinfo', 'error', "[TELEINFO_deamon_infoProd] le deamon prod s'est éteint");
                         $returnprod = 'nok';
                         shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
                     }
+                }else{
+                    log::add('teleinfo', 'error', "[TELEINFO_deamon_infoprod] le deamon Prod n'est pas démarré");
+                    $returnprod = 'nok';
                 }
-            }
+                }
         }
         if ($activation_Mqtt==1){
             $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_Mqtt.pid';
@@ -533,12 +556,18 @@ class teleinfo extends eqLogic
                     log::add('teleinfo', 'error', "[TELEINFO_deamon_infoMqtt] le deamon MQTT s'est éteint");
                     shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
                 }
+            }else{
+                log::add('teleinfo', 'error', "[TELEINFO_deamon_infoMqtt] le deamon MQTT n'est pas démarré");
+                $returnmqtt = 'nok';
             }
         }
         $return['launchable'] = 'ok';
-        if ($returnmodem == 'ok' || $returnmqtt == 'ok' || $returnprod == 'ok'){
+        if (($returnmodem != 'nok' && $returnmqtt != 'nok' && $returnprod != 'nok')&&($returnmodem != 'sans' || $returnmqtt != 'sans' || $returnprod != 'sans')){
             $return['state'] = 'ok';
+        }else{
+            $return['state'] = 'nok';
         }
+        log::add('teleinfo', 'debug', '[TELEINFO_deamon_xx] Modem :' . $returnmodem.' Mqtt :' . $returnmqtt.' Prod :' . $returnprod . ' => retour: ' . $return['state']);
         return $return;
     }
 
@@ -603,9 +632,9 @@ class teleinfo extends eqLogic
      */
     public static function deamon_start($debug = false)
     {
-        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 0 : 1;
-        $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : 1;
-        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
+        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
+        $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : config::byKey('activation_Mqtt', 'teleinfo');
+        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : config::byKey('port_modem2', 'teleinfo');
         if ($activation_Modem == 1) {
             log::add('teleinfo', 'info', '[deamon_start_modem] Démarrage du service');
             if (config::byKey('port', 'teleinfo') != "" || config::byKey('2cpt_cartelectronic', 'teleinfo')) {    // Si un port est sélectionné
@@ -645,9 +674,9 @@ class teleinfo extends eqLogic
      */
     public static function deamon_stop()
     {
-        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 0 : 1;
-        $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : 1;
-        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
+        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
+        $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : config::byKey('activation_Mqtt', 'teleinfo');
+        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : config::byKey('port_modem2', 'teleinfo');
         $deamonKill= false;
         if ($activation_Modem==1){
             $deamonInfo = self::deamon_infoSerial();
