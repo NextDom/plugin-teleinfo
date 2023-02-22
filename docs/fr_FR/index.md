@@ -37,23 +37,6 @@ Pas de configuration spécifique pour ce type de compteur.
 Le compteur linky possède 2 modes de téléinformation 
 >Pour connaitre le mode utilisé appuyer plusieurs fois sur le + de votre compteur linky jusqu'à l'affichage TIC Standard ou TIC Historique.
 
--    Mode historique : Ce mode assure une compatibilité égale aux compteurs d'ancienne génération.
-     Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), ne pas cocher 2 et si besoin sélectionner 1200 en 3 :
-<br>
-     
-
-![teleinfolinkydesactive](../images/teleinformation_linky_des.png)
-     
-<br>
-<br>
-
--    Mode standard : mode de communication plus récent, **seul ce mode requiert l'option Linky sur le plugin**.
-     Pour configurer ce mode, aller dans les paramètres du plugin, cliquer sur le + (1), cocher 2 et si besoin sélectionner 9600 en 3 :
-<br>
-<br>
-
-![teleinfolinkyactive](../images/teleinformation_linky_act.png)
-     
 <br>
 <br>
 <br>
@@ -89,6 +72,7 @@ Dans le cas d'utilisation du modem Cartelectronic 2 Compteurs et le branchement 
 
 Installation
 ===
+
 Commencer par installer le plugin depuis le market : [https://doc.jeedom.com/fr_FR/core/3.3/plugin](https://doc.jeedom.com/fr_FR/core/3.3/plugin)
 
 
@@ -106,7 +90,7 @@ une fois le plugin installé Jeedom vous propose d'aller dans le panneau de conf
 <br><br><br><br><br>
 
 
-# configuration:
+# configuration (nouvelle présentation avec la V 4.8.0):
 <br>
 
 <a href="../images/teleinfo_config02.png">
@@ -114,7 +98,60 @@ une fois le plugin installé Jeedom vous propose d'aller dans le panneau de conf
 </a>
 <br><br><br><br><br><br><br>
 
-## (1) Détection automatique:
+## (1) Configuration générale du plugin
+
+<a href="../images/teleinfo_config04.png">
+<img src="../images/teleinfo_config04.png" alt="configuration" style="width:600px;"/>
+</a>
+<br><br><br>
+Un clic sur chaque bouton fait apparaitre un sous menu associé
+<br><br><br>
+
+## (1) Bloquer la création automatique des compteurs
+<br>
+
+Décocher cette case permet au plugin de créer un nouveau compteur en fonction de la trame TIC reçue.
+Cette option n'est à décocher que si c'est votre première utilisation du plugin ou si vous changez de compteur ou encore si vous installez un nouveau compteur.
+<br><br><br><br><br><br><br>
+
+## (2) Utilisation d'un modem téléinformation
+<br>
+
+Cocher cette case permet au plugin d' utiliser un modem de téléinformation type carteélectronique pour récupérer les données.
+Si cette case est cochée, il faut en plus aller configurer la partie "modem"
+<br><br><br><br><br><br><br>
+
+
+## (3) Activer le MQTT (nouveauté v4.8.0)
+<br>
+
+Cocher cette case permet au plugin d' utiliser Broker MQTT pour récupérer les données. Le Broker peut être local ou distant.
+Si cette case est cochée, il faut en plus aller configurer la partie "MQTT"
+<br><br><br><br><br><br><br>
+
+
+## (4) Partie "sensible" de la configuration du plugin
+<br>
+
+Si vous ne savez pas à quoi cela sert, n'y touchez pas.
+<br><br><br><br><br><br><br>
+
+
+<a href="../images/teleinfo_config05.png">
+<img src="../images/teleinfo_config05.png" alt="configuration" style="width:600px;"/>
+</a>
+
+<br><br><br><br>
+
+## (1) Configuration des ports du modem:
+<br>
+
+Sélectionner celui qui correspond à votre modem.
+
+<br><br><br><br><br><br><br>
+
+
+## (2) Détection automatique:
 <br>
 
 Ne fonctionne pas à l'heure actuelle. Affiche systématiquement la TIC du compteur en mode historique.
@@ -123,14 +160,17 @@ Ne fonctionne pas à l'heure actuelle. Affiche systématiquement la TIC du compt
 Cette option a été dévalidée.
 <br><br><br><br><br><br><br>
 
-## (2) Bloquer la création automatique des compteurs
+
+## (3) Modem 2 compteurs: 
+
 <br>
 
-Décocher cette case permet au plugin de créer un nouveau compteur en fonction de la trame TIC reçue.
-Cette option n'est à décocher que si c'est votre première utilisation du plugin ou si vous changez de compteur ou encore si vous installez un nouveau compteur.
+
+Permet de faire savoir au plugin que le modem installé est un type 2 compteurs de cartelectronic
 <br><br><br><br><br><br><br>
 
-## (3) Configuration avancée:
+
+## (4) Configuration avancée:
 <br>
 
 
@@ -139,7 +179,7 @@ Cliquer sur le + permet d'afficher les paramètres de configuration du modem
 
 <a href="../images/teleinfo_config03.png">
 <img src="../images/teleinfo_config03.png" alt="configuration" style="width:600px;"/>
-<a>
+</a>
 <br><br><br><br>
 
 ### (1) Compteur type Linky:
@@ -155,6 +195,36 @@ Si vous avez un mode historique il ne faut pas cocher cette case
 Si vous avez un mode historique la vitesse doit être fixée à 1200
 Si vous avez un mode standard la vitesse doit être fixée à 9600
 <br><br><br><br><br><br><br><br><br><br><br><br>
+
+
+<a href="../images/teleinfo_config06.png">
+<img src="../images/teleinfo_config06.png" alt="configuration" style="width:600px;"/>
+</a>
+
+<br><br><br><br>
+
+## (1) Configuration du Broker MQTT (nouveauté 4.8.0):
+<br>
+
+compléter avec les informations nécessaire à la prise en compte du Broker
+
+<br><br><br><br><br><br><br>
+
+## (2) Topic MQTT (nouveauté 4.8.0):
+<br>
+
+Si vous ne savez pas quoi saisir, laisser vide. Il est possible aussi de saisir le caractère générique "#".
+
+La meilleure solution est de mettre le topic le plus proche des données que vous voulez récupérer, cela permet d'éviter des temps de traitement inutiles au plugin.
+
+Par exemple, vous n'avez qu'un seul compteur accessible via MQTT alors il est préférable de saisir le topic complet du style "tasmota/compteur_linky/SENSOR".
+
+Par contre si vous avez 2 compteurs sur ce Broker, un sur le topic "tasmota/compteur_linky/SENSOR" et l'autre sur le topic "tasmota/linky/SENSOR" alors le topic à saisir le plus adapté serait "tasmota/#".
+
+Si vous avez des difficultés vous pouvez essayer l'excellent logiciel MQTT Explorer.
+
+<br><br><br><br><br><br><br>
+
 
 # Le Panel:
 <br><br>
@@ -185,37 +255,37 @@ Le panel en lui même sera vu plus loin dans cette doc
 <br><br>
 
 Ces options ne servent que pour l'affichage des statistiques dans le panel selon la même forme que dans les versions antérieures à la V 4.7.3
-<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br>
 
 ## (1) Index conso globales (nouveau)
 <br>
 
 Permet d'indiquer au plugin quel est l'index qui sert à construire les statistiques de la consommation globale
-<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br>
 
 ## (2) Index conso HP
 <br>
 
 Si vous avez un abonnement HP / HC
-<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br>
 
 ## (3) Index conso HC
 <br>
 
 Si vous avez un abonnement HP / HC
-<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br>
 
 ## (4) Index Production
 <br>
 
 Si vous avez un compteur qui sert aussi à comptabiliser la production que vous envoyez vers le réseau (option uniquement possible avec un linky en mode standard)
-<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br>
 
 ## (5) Prix kWh
 <br>
 
 Sert à indiquer le tarif appliqué pour chaque index cité avant
-<br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br>
 
 
 Les commandes
@@ -454,13 +524,25 @@ Vous pouvez aussi profiter de ces 10 index disponibles pour afficher les évolut
 Il y a besoin d'une explication? ;)
 <br><br>
 
-## (4) Période servant pour la (ré)génération des index
+## (4) RAZ Couleurs (Nouveauté 4.8.0)
+<br>
+
+Permet de remettre les couleurs par défaut des lignes (voir ci dessous)
+<br><br>
+
+## (5) Les couleurs de ligne (Nouveauté 4.8.0)
+<br>
+
+Permet de sélectionner les couleurs qui vous plaisent pour le traçage des courbes dans le panel
+<br><br>
+
+## (6) Période servant pour la (ré)génération des index
 <br>
 
 Si vous avez déjà un historique du plugin teleinfo ou si vous avez oublié de changer la configuration des champs lors d'un changement d'abonnement ces dates servent à borner la (ré)rénération des index. Voir explication au paragraphe suivant.
 <br><br>
 
-## (5) Copie des anciennes données vers Index
+## (7) Copie des anciennes données vers Index
 <br>
 
 Une fois que vous aurez fini de configurer les 3 premiers points ci-dessus vous souhaiterez sans doute récupérer vos archives de téléinfo afin d'alimenter les statistiques qui seront présentées sur le panel. C'est ici que cela va se passer.
