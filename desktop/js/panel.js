@@ -15,14 +15,24 @@
  */
 
 //var globalIndexChart;
- var versionEnCours = "06/11/2020 12:00";
+ var versionEnCours = "20/12/2022 12:00";
  var globalEqLogic = $( "#eqlogic_select option:selected" ).val();
  var isCoutVisible = false;
  var puissanceSeries = [];
  var commandesPuissance = [];
+ var commandesPuissanceCout = [];
  var commandesStat = [];
+ var commandesStatCout = [];
+ var commandesStatIndex = [];
+ var commandesStatCoutIndex = [];
  var dailyHistoryChart = [];
  var tableCouts = [];
+ var graphTempDaily = false;
+ var graphTempMonthly = false;
+ var graphTempAnnualy = false;
+ faireTotHpHc = false;
+
+ 
 $(".in_datepicker").datepicker();
 
 $('#bt_teleinfoPanelSante').on('click', function() {
@@ -31,36 +41,114 @@ $('#bt_teleinfoPanelSante').on('click', function() {
 });
 
 $('#bt_teleinfoCout').on('click', function() {
-    if (isCoutVisible === false){
-		isCoutVisible = true;
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]').show();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=month]').show();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]').show();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=year]').show();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=day]').show();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]').show();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYear]').show();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=month]').show();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYear]').show();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]').show();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]').show();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]').show();
-	}
-	else{
-		isCoutVisible = false;
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]').hide();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=month]').hide();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]').hide();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=year]').hide();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=day]').hide();
-		$('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]').hide();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYear]').hide();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=month]').hide();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYear]').hide();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]').hide();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]').hide();
-		$('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]').hide();
-	}
+    if (newIndex){
+        if (prodEtConso == 1){
+            $('.PRODCOUT').show();
+            $('.PRODCONSO').hide();
+        }
+        $('.index').hide();
+        $('.couts').show();
+            }else{
+        if (isCoutVisible === false){
+            isCoutVisible = true;
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]').show();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=month]').show();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYearPartial]').show();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYearPartial]').show();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]').show();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=year]').show();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=day]').show();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]').show();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=all]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=monthLastYear]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=month]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=monthLastYearPartial]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=yearLastYearPartial]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=yearLastYear]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=year]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=day]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=yesterday]').show();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=all]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYear]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=month]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYearPartial]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=yearLastYearPartial]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=yearLastYear]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=year]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=day]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=yesterday]').show();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=all]').show();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYear]').show();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=month]').show();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYear]').show();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]').show();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]').show();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]').show();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=all]').show();
+            if (prodEtConso == 1){
+                $('.PRODCOUT').show();
+            }
+        }else{
+            isCoutVisible = false;
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]').hide();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=month]').hide();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYearPartial]').hide();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYearPartial]').hide();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]').hide();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=year]').hide();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=day]').hide();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]').hide();
+            $('.teleinfoAttr[data-l1key=cout][data-l2key=all]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=monthLastYear]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=month]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=monthLastYearPartial]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=yearLastYearPartial]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=yearLastYear]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=year]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=day]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=yesterday]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=all]').hide();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYear]').hide();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=month]').hide();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYearPartial]').hide();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=yearLastYearPartial]').hide();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=yearLastYear]').hide();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=year]').hide();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=day]').hide();
+            $('.teleinfoAttr[data-l1key=coutHC][data-l2key=yesterday]').hide();
+            $('.teleinfoAttr[data-l1key=coutHP][data-l2key=all]').hide();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYear]').hide();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=month]').hide();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYear]').hide();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]').hide();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]').hide();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]').hide();
+            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=all]').hide();
+            $('.PRODCOUT').hide();
+        }
+    }
+});
+
+$('#bt_teleinfoConso').on('click', function() {
+    if (newIndex){
+        if (prodEtConso == 1){
+            $('.PRODCOUT').hide();
+            $('.PRODCONSO').show();
+        }
+        $('.couts').hide();
+        $('.index').show();
+    }
+});
+
+$('#bt_teleinfoTout').on('click', function() {
+    if (newIndex){
+        if (prodEtConso == 1){
+            $('.PRODCOUT').show();
+            $('.PRODCONSO').show();
+        }
+        $('.couts').show();
+        $('.index').show();
+    }
 });
 
 $( "#eqlogic_select" ).change(function() {
@@ -71,10 +159,36 @@ $( "#eqlogic_select" ).change(function() {
 });
 
 $('#bt_validChangeDate').on('click',function(){
+    graphTempDaily = false;
+    graphTempMonthly = false;
+    graphTempAnnualy = false;
     puissanceSeries = [];
     //console.log($('#div_graphGlobalIndex').attr("cmd_id"));
     $.each( commandesPuissance, function( key, value ) {
         getObjectHistory('div_graphGlobalPower', 'Simple', {'id': value.id, 'name': value.name}, value.color, 'refresh');
+    });
+    $.each( commandesStatIndex, function( key, value ) {
+        getDailyHistory('div_graphGlobalJournalier',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie);
+        getAnnualHistory('div_graphGlobalAnnual',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie);
+        getMonthlyHistory('div_graphGlobalIndex',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie);
+    });
+    $.each( commandesStatCoutIndex, function( key, value ) {
+        getDailyHistory('div_graphGlobalJournalierCout',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie, value.cout);
+        getAnnualHistory('div_graphGlobalAnnualCout',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie, value.cout);
+        getMonthlyHistory('div_graphGlobalIndexCout',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie, value.cout);
+    });
+    $.each( commandesStat, function( key, value ) {
+        getDailyHistory('div_graphGlobalJournalier',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie);
+        getAnnualHistory('div_graphGlobalAnnual',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie);
+        getMonthlyHistory('div_graphGlobalIndex',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie);
+    });
+    $.each( commandesStatCout, function( key, value ) {
+        getDailyHistory('div_graphGlobalJournalierCout',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie, value.cout);
+        getAnnualHistory('div_graphGlobalAnnualCout',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie, value.cout);
+        getMonthlyHistory('div_graphGlobalIndexCout',{'id': value.id, 'name': value.name}, value.color, value.stackGraph, value.diviseur, value.serie, value.cout);
+    });
+    $.each( commandesPuissanceCout, function( key, value ) {
+        getObjectHistory('div_graphGlobalPowerCout', 'cout', {'id': value.id, 'name': value.name}, value.color, 'refresh');
     });
     $.each( commandesStat, function( key, value ) {
         getDailyHistory(value.graph, {'id': value.id, 'name': value.name} , value.color, value.stackGraph, value.diviseur);
@@ -106,36 +220,169 @@ $.ajax({
                 $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
-            var serie0 = 0, serie1 = 1;
             var compteurProd = false;
-            var prodEtConso = false;
+            prodEtConso = false;
             var HCHP = false;
             var color = '#7cb5ec';
-            var namestat = '';
+            var indexCout = 0;
+			newIndex = false;
+			let index = [];
+			for (i=1;i<11;i++){
+                index[i] = false;
+            }
+			var partiAvant = false;
+			var coutIndex;
+			var w;
+			var j;
+			var i;
+			var nomIndex;
+			var commande;
+			var consommation;
+            var colori;
+            if (data.result[globalEqLogic].configuration.ActivationProduction == 1){
+                prodEtConso = true;
+            }
             console.log("[loadData] Nom de l'objet => " + data.result[globalEqLogic].name);
 
             console.log("[si c'est prod = 1 ] => " + data.result[globalEqLogic].configuration.ActivationProduction);
             
             console.log("[si c'est HC HP = 1 ] => " + data.result[globalEqLogic].configuration.HCHP);
-			
-			var x = document.getElementsByClassName('HCHP');			
-			var y = document.getElementsByClassName('PROD');			
-            if(data.result[globalEqLogic].configuration.HCHP == 0){
-                HCHP = false;
-				var i;
-				for (i = 0; i < x.length; i++) {
-					x[i].style.display = 'none';
+
+            if (prodEtConso ==1){
+                $('.PRODCOUT').show();
+                $('.PRODUCTION').show();
+                $('.PRODCONSO').show();
+            }else{
+                $('.PRODCOUT').hide();
+                $('.PRODUCTION').hide();
+                $('.PRODCONSO').hide();
+            }
+            
+			var y;
+			let index_nom =[];
+            let index_cout =[];
+			if (data.result[globalEqLogic].configuration.newIndex == 1) {
+				newIndex = true;
+				index[0] = true;
+				index_nom = ['Global',
+                            data.result[globalEqLogic].configuration.index01_nom,
+                            data.result[globalEqLogic].configuration.index02_nom,
+                            data.result[globalEqLogic].configuration.index03_nom,
+                            data.result[globalEqLogic].configuration.index04_nom,
+                            data.result[globalEqLogic].configuration.index05_nom,
+                            data.result[globalEqLogic].configuration.index06_nom,
+                            data.result[globalEqLogic].configuration.index07_nom,
+                            data.result[globalEqLogic].configuration.index08_nom,
+                            data.result[globalEqLogic].configuration.index09_nom,
+                            data.result[globalEqLogic].configuration.index10_nom];
+                index_cout = [Number(data.result[globalEqLogic].configuration.Coutindex00),
+                            Number(data.result[globalEqLogic].configuration.Coutindex01),
+                            Number(data.result[globalEqLogic].configuration.Coutindex02),
+                            Number(data.result[globalEqLogic].configuration.Coutindex03),
+                            Number(data.result[globalEqLogic].configuration.Coutindex04),
+                            Number(data.result[globalEqLogic].configuration.Coutindex05),
+                            Number(data.result[globalEqLogic].configuration.Coutindex06),
+                            Number(data.result[globalEqLogic].configuration.Coutindex07),
+                            Number(data.result[globalEqLogic].configuration.Coutindex08),
+                            Number(data.result[globalEqLogic].configuration.Coutindex09),
+                            Number(data.result[globalEqLogic].configuration.Coutindex10)];
+                $('.teleinfoAttr[data-l1key=titre][data-l2key=Index00]').text(index_nom[0]);
+
+
+                for(i=1;i<11;i++){
+                    if (i<10){
+                        var numeroIndex = 'Index0' + i;
+                    }else{
+                        var numeroIndex = 'Index' + i;
+                    }
+                    if(index_nom[i] !== ''){
+                        index[i] = true;
+                        y = document.getElementsByClassName(numeroIndex);
+                        for (w = 0; w < y.length; w++) {
+                            y[w].style.display = 'table-cell';
+                        }
+                        $('.teleinfoAttr[data-l1key=titre][data-l2key=' + numeroIndex + ']').text(index_nom[i]);
+                    }else{
+                        y = document.getElementsByClassName(numeroIndex);
+                        for (w = 0; w < y.length; w++) {
+                            y[w].style.display = 'none';
+                        }
+    
+                    }
+                }
+			}else{
+				newIndex = false;
+                $('.couts').hide();
+                $('.PRODCOUT').hide();
+				index[0] = false;
+				for (k=0; k<=10; k++){
+					switch(k)
+                        {
+                            case 0:
+								y = document.getElementsByClassName('Index00')
+							break;
+                            case 1:
+								y = document.getElementsByClassName('Index01')
+							break;
+                            case 2:
+								y = document.getElementsByClassName('Index02')
+							break;
+                            case 3:
+								y = document.getElementsByClassName('Index03')
+							break;
+                            case 4:
+								y = document.getElementsByClassName('Index04')
+							break;
+                            case 5:
+								y = document.getElementsByClassName('Index05')
+							break;
+                            case 6:
+								y = document.getElementsByClassName('Index06')
+							break;
+                            case 7:
+								y = document.getElementsByClassName('Index07')
+							break;
+                            case 8:
+								y = document.getElementsByClassName('Index08')
+							break;
+                            case 9:
+								y = document.getElementsByClassName('Index09')
+							break;
+                            case 10:
+								y = document.getElementsByClassName('Index10')
+							break;
+						}
+					for (w = 0; w < y.length; w++) {
+						y[w].style.display = 'none';
+					}
+				}
+			}
+
+            if((data.result[globalEqLogic].configuration.HCHP == 0) || newIndex ){
+                y = document.getElementsByClassName('HCHP');
+				HCHP = false;
+				for (i = 0; i < y.length; i++) {
+					y[i].style.display = 'none';
 				}
 			}else{
                 HCHP = true;
 			}
-            if(data.result[globalEqLogic].configuration.ActivationProduction == 0){
-				var j;
-				for (j = 0; j < y.length; j++) {
+//            if(data.result[globalEqLogic].configuration.ActivationProduction == 0){
+//				 y = document.getElementsByClassName('PROD');
+//				 for (j = 0; j < y.length; j++) {
+//					y[j].style.display = 'none';
+//				}
+//			}
+            if(newIndex){
+				 y = document.getElementsByClassName('TOTAL');
+				 for (j = 0; j < y.length; j++) {
 					y[j].style.display = 'none';
 				}
 			}
-            
+					
+			
+            var CoutindexProd = Number(data.result[globalEqLogic].configuration.CoutindexProd);                        
+                
             if(data.result[globalEqLogic].configuration.abonnement){
                 $('.teleinfoAttr[data-l1key=abonnement][data-l2key=type]').text(' ' + data.result[globalEqLogic].configuration.abonnement);
                 if (data.result[globalEqLogic].configuration.abonnement.includes("PROD")){
@@ -144,19 +391,22 @@ $.ajax({
                 }
                 else{
                     if(data.result[globalEqLogic].configuration.ActivationProduction == 0){
-                            $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Consommation');
+                        $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Consommation');
                     }
                     else{
-                            $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Consommation et Ma production');
-                            prodEtConso = true;
+                        $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Consommation et Ma production');
+                        prodEtConso = true;
                     }
                 }
             }else{
-                if(data.result[globalEqLogic].configuration.ActivationProduction == 1){
-                        $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Production');
-						prodEtConso = true;
+                if(data.result[globalEqLogic].configuration.ActivationProduction == 0){
+                    $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Consommation');
                 }
-			}
+                else{
+                    $('#spanTitreResume').html('<i style="font-size: initial;" class="fas fa-bolt"></i> Ma Consommation et Ma production');
+                    prodEtConso = true;
+                }
+            }
 
             try {
                 var diviseur = 1;
@@ -166,11 +416,17 @@ $.ajax({
 				monthHC = 0;
 				yearHp = 0;
 				yearHC = 0;
+                let color = ['#d62828','#001219','#005f73','#0a9396','#94d2bd',
+                                '#e9d8a6','#ee9b00','#ca6702','#bb3e03','#ae2012',
+                                '#9b2226','#ed9448','#7cb5ec','#7cb5ec','#00FF00'
+                ];
+
                 for(cmd in data.result[globalEqLogic].cmd)
                 {
-                    console.log("[Courbes à tracer de " + globalEqLogic + " ] => " + data.result[globalEqLogic].cmd[cmd].logicalId)
-                    if (data.result[globalEqLogic].cmd[cmd].configuration.calculValueOffset!==undefined){
-                       tdiviseur = (data.result[globalEqLogic].cmd[cmd].configuration.calculValueOffset).split("/")
+                    var datacmd= data.result[globalEqLogic].cmd[cmd];
+                    console.log("[Courbes à tracer de " + globalEqLogic + " ] => " + datacmd.logicalId)
+                    if (datacmd.configuration.calculValueOffset!==undefined){
+                       tdiviseur = (datacmd.configuration.calculValueOffset).split("/")
                        diviseur = tdiviseur[1]
                        if (diviseur==undefined){
                             diviseur = 1
@@ -178,158 +434,314 @@ $.ajax({
                        console.log("[diviseur] => " + diviseur)
                     }
                     try{
-                      switch(data.result[globalEqLogic].cmd[cmd].logicalId)
+                      test = datacmd.logicalId
+                      switch(true)
                         {
-                            case "STAT_YESTERDAY_HC":
+                            case (test==="STAT_YESTERDAY_HC"&&!newIndex):
                                 if(!compteurProd&&HCHP){
-                                    stackGraph = 1
-									color = '#ed9448';
-                                    getAnnualHistory('div_graphGlobalAnnual',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
-                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=month]'), 'month' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=year]'), 'year' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=yesterday]'), 'yesterday' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
+                                    stackGraph = 1;
+                                    serie = 3;
+									getMonthlyHistory('div_graphGlobalIndex',datacmd, color[11], stackGraph, diviseur, serie);
+                                    getAnnualHistory('div_graphGlobalAnnual',datacmd, color[11], stackGraph, diviseur, serie);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=all]'), 'all', "coutHC", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYear]'), 'monthLastYear', "coutHC", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial', "coutHC", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=month]'), 'month' , "coutHC", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHC", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , "coutHC", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=year]'), 'year' , "coutHC", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=yesterday]'), 'yesterday' , "coutHC", datacmd);
 
-                                    console.log("[loadData][STAT_YESTERDAY_HC] " + data.result[globalEqLogic].cmd[cmd].id);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=monthLastYear]'), 'monthLastYear' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=yearLastYear]'), 'yearLastYear' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
+                                    console.log("[loadData][STAT_YESTERDAY_HC] " + datacmd.id);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=all]'), 'all' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=yearLastYear]'), 'yearLastYear' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=month]'), 'month' , datacmd);
                                     monthHC = $('.teleinfoAttr[data-l1key=consoHC][data-l2key=month]').text.value;
-									console.log("[loadData][STAT_YESTERDAY_HC] " + monthHC)
-									getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=yesterday]'), 'yesterday' , data.result[globalEqLogic].cmd[cmd]);
-                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name,"color":color,"stackGraph":stackGraph,"diviseur":diviseur});
-                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
+                  									console.log("[loadData][STAT_YESTERDAY_HC] " + monthHC)
+									                  getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=year]'), 'year' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHC][data-l2key=yesterday]'), 'yesterday' , datacmd);
+                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":datacmd.id,"name":datacmd.name,"color":color[11],"stackGraph":stackGraph,"diviseur":diviseur});
+                                    getDailyHistory('div_graphGlobalJournalier',datacmd, color[11], stackGraph, diviseur, serie);
 
                                 }
                             break;
-                            case "STAT_YESTERDAY_HP":
+                            case (test==="STAT_YESTERDAY_HP"&&!newIndex):
                                 if(!compteurProd&&HCHP){
-                                    stackGraph = 1
-                                    color = '#7cb5ec';
-                                    getAnnualHistory('div_graphGlobalAnnual',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
-                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
-								    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-								    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=month]'), 'month' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=year]'), 'year' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=yesterday]'), 'yesterday' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
+                                    stackGraph = 1;
+                                    serie = 2;
+                                    getAnnualHistory('div_graphGlobalAnnual',datacmd, color[12], stackGraph, diviseur, serie);
+                                    getMonthlyHistory('div_graphGlobalIndex',datacmd, color[12], stackGraph, diviseur, serie);
+								    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=all]'), 'all' , "coutHP", datacmd);
+								    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHP", datacmd);
+								    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , "coutHP", datacmd);
+								    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=month]'), 'month' , "coutHP", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHP", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , "coutHP", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=year]'), 'year' , "coutHP", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=yesterday]'), 'yesterday' , "coutHP", datacmd);
 
-                                    console.log("[loadData][STAT_YESTERDAY_HP 1] " + data.result[globalEqLogic].cmd[cmd].id);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=monthLastYear]'), 'monthLastYear' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=yearLastYear]'), 'yearLastYear' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=yesterday]'), 'yesterday' , data.result[globalEqLogic].cmd[cmd]);
-                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name,"color":color,"stackGraph":stackGraph,"diviseur":diviseur});
-                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
+                                    console.log("[loadData][STAT_YESTERDAY_HP 1] " + datacmd.id);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=all]'), 'all' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=yearLastYear]'), 'yearLastYear' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=month]'), 'month' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=year]'), 'year' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=consoHP][data-l2key=yesterday]'), 'yesterday' , datacmd);
+                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":datacmd.id,"name":datacmd.name,"color":color[12],"stackGraph":stackGraph,"diviseur":diviseur});
+                                    getDailyHistory('div_graphGlobalJournalier',datacmd, color[12], stackGraph, diviseur, serie);
 
                                 }
                             break;
-                            case "STAT_YESTERDAY":
-                                console.log("[loadData][STAT_YESTERDAY] " + data.result[globalEqLogic].cmd[cmd].id);
+                            case (test==="STAT_YESTERDAY"&&!newIndex):
+                                console.log("[loadData][STAT_YESTERDAY] " + datacmd.id);
                                 if(!compteurProd){
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]'), 'monthLastYear' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=month]'), 'month' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]'), 'yearLastYear' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=year]'), 'year' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]'), 'yesterday' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-//                                  
-                                    console.log("[loadData][STAT_YESTERDAY] " + data.result[globalEqLogic].cmd[cmd].id);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthLastYear]'), 'monthLastYear' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYear]'), 'yearLastYear' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
-                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yesterday]'), 'yesterday' , data.result[globalEqLogic].cmd[cmd]);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=all]'), 'all' , "coutBase", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYear]'), 'monthLastYear' , "coutBase", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , "coutBase", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=month]'), 'month' , "coutBase", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYear]'), 'yearLastYear' , "coutBase", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , "coutBase", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=year]'), 'year' , "coutBase", datacmd);
+                                    getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=yesterday]'), 'yesterday' , "coutBase", datacmd);
+                                  
+                                    console.log("[loadData][STAT_YESTERDAY] " + datacmd.id);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=all]'), 'all' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYear]'), 'yearLastYear' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=month]'), 'month' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=year]'), 'year' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=conso][data-l2key=yesterday]'), 'yesterday' , datacmd);
 								}
 								if(!compteurProd&&(!HCHP)){
-                                    stackGraph = 0
-                                    color = '#7cb5ec';
-                                    getAnnualHistory('div_graphGlobalAnnual',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
-                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
-                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name,"color":color,"stackGraph":stackGraph,"diviseur":diviseur});
-                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
+                                    stackGraph = 0;
+                                    serie = 1;
+                                    getAnnualHistory('div_graphGlobalAnnual',datacmd, color[13], stackGraph, diviseur, serie);
+                                    getMonthlyHistory('div_graphGlobalIndex',datacmd, color[13], stackGraph, diviseur, serie);
+                                    commandesStat.push({"graph":"div_graphGlobalJournalier", "id":datacmd.id,"name":datacmd.name,"color":color[13],"stackGraph":stackGraph,"diviseur":diviseur});
+                                    getDailyHistory('div_graphGlobalJournalier',datacmd, color[13], stackGraph, diviseur, serie);
                                 }
-                                break;
-                            case "STAT_YESTERDAY_PROD":
+                            break;
+                            case (test==="STAT_YESTERDAY_PROD"):
+                                console.log("[loadData][STAT_YESTERDAY_PROD] " + datacmd.id + ' prod? ' + compteurProd + ' ' + prodEtConso);
                                 if(compteurProd||prodEtConso){
                                     stackGraph = 0
-                                    color = '#f00707';
-                                    console.log("[loadData][STAT_YESTERDAY_PROD] " + data.result[globalEqLogic].cmd[cmd].id);
-                                    //if(!prodEtConso){
-                                      getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=monthLastYear]'), 'monthLastYear' , data.result[globalEqLogic].cmd[cmd]);
-                                      getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
-                                      getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=yearLastYear]'), 'yearLastYear' , data.result[globalEqLogic].cmd[cmd]);
-                                      getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , data.result[globalEqLogic].cmd[cmd]);
-                                      getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=month]'), 'month' , data.result[globalEqLogic].cmd[cmd]);
-                                      getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=year]'), 'year' , data.result[globalEqLogic].cmd[cmd]);
-                                      getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=yesterday]'), 'yesterday' , data.result[globalEqLogic].cmd[cmd]);
-									  getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYear]'), 'monthLastYear' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
-									  getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=month]'), 'month' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
-									  getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYear]'), 'yearLastYear' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
-									  getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]'), 'year' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
-									  getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]'), 'yesterday' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
-                                      commandesStat.push({"graph":"div_graphGlobalJournalier", "id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name,"color":color,"stackGraph":stackGraph,"diviseur":diviseur});
-                                    //}
-                                    getAnnualHistory('div_graphGlobalAnnual',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
-                                    getMonthlyHistory('div_graphGlobalIndex',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
-                                    getDailyHistory('div_graphGlobalJournalier',data.result[globalEqLogic].cmd[cmd], color, stackGraph, diviseur);
+                                    if (datacmd.name == 'STAT_YESTERDAY_PROD'){
+                                        datacmd.name = 'Index Prod';
+                                    }
+                                    serie = 14;
+                                    console.log("[loadData][STAT_YESTERDAY_PROD] " + datacmd.id);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=all]'), 'all' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=yearLastYear]'), 'yearLastYear' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=month]'), 'month' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=year]'), 'year' , datacmd);
+                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=prod][data-l2key=yesterday]'), 'yesterday' , datacmd);
+                                    if(!newIndex){
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=all]'), 'all' , "coutProd", datacmd);
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYear]'), 'monthLastYear' , "coutProd", datacmd);
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , "coutProd", datacmd);
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=month]'), 'month' , "coutProd", datacmd);
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYear]'), 'yearLastYear' , "coutProd", datacmd);
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , "coutProd", datacmd);
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]'), 'year' , "coutProd", datacmd);
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]'), 'yesterday' , "coutProd", datacmd);
+                                    }
+                                    commandesStat.push({"graph":"graph", "id":datacmd.id,"name":datacmd.name,"color":color[14],"stackGraph":stackGraph,"diviseur":diviseur,"serie":serie});
+                                    getAnnualHistory('div_graphGlobalAnnual',datacmd, color[14], stackGraph, diviseur, serie);
+                                    getMonthlyHistory('div_graphGlobalIndex',datacmd, color[14], stackGraph, diviseur, serie);
+                                    getDailyHistory('div_graphGlobalJournalier',datacmd, color[14], stackGraph, diviseur, serie);
                                 }
-                                break;
-                            case "SINSTI":
-                            case "SINST1":
-                                if(compteurProd||prodEtConso){
-                                    color = '#f00707';
-                                    commandesPuissance.push({"id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name,"color":color});
-                                    console.log("[loadData][SINST1 ou SINSTI] " + data.result[globalEqLogic].cmd[cmd].id);
-                                    getObjectHistory('div_graphGlobalPower', 'Simple', data.result[globalEqLogic].cmd[cmd], color);
+                            break;
+                            case (test==="STAT_YESTERDAY_PROD_COUT"&&newIndex):
+                                    console.log("[loadData][STAT_YESTERDAY_PROD_COUT] " + datacmd.id + ' prod? ' + compteurProd + ' ' + prodEtConso);
+                                    if(compteurProd||prodEtConso){
+                                        stackGraph = 0
+                                        commande = datacmd;
+                                        commande.name = 'Prod ';
+                                        serie = 14;
+                                        console.log("[loadData][STAT_YESTERDAY_PROD_COUT] " + commande.id);
+                                        //if(!prodEtConso){
+                                        getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=all]'), 'all' , commande, 1);
+                                        getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYear]'), 'monthLastYear' , commande, 1);
+                                        getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , commande, 1);
+                                        getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYear]'), 'yearLastYear' , commande, 1);
+                                        getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , commande, 1);
+                                        getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=month]'), 'month' , commande, 1);
+                                        getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=year]'), 'year' , commande, 1);
+                                        getCommandHistoryValue($('.teleinfoAttr[data-l1key=coutProd][data-l2key=yesterday]'), 'yesterday' , commande, 1);
+                                        
+                                        commandesStatCout.push({"graph":"graph", "id":commande.id,"name":commande.name,"color":color[14],"stackGraph":stackGraph,"diviseur":1000,"serie":serie,"cout":'cout'});
+                                        getAnnualHistory('div_graphGlobalAnnualCout',commande, color[14], stackGraph, 1000, serie, 'cout');
+                                        getMonthlyHistory('div_graphGlobalIndexCout',commande, color[14], stackGraph, 1000, serie, 'cout');
+                                        getDailyHistory('div_graphGlobalJournalierCout',commande, color[14], stackGraph, 1000, serie, 'cout');
+                                    
+                                    }
+                            break;
+                            case (test.includes("STAT_YESTERDAY_INDEX")&&newIndex):
+                                    var indexEnCours = parseInt(test.substr(20,2));
+                                    if (indexEnCours==0){
+                                        stackGraph = 0;
+                                    }else{
+                                        stackGraph = 1;
+                                    }
+                                    if (index[indexEnCours]){
+										nomIndex = index_nom[indexEnCours];
+										coutIndex = index_cout[indexEnCours];
+                                        if (indexEnCours<10){
+                                            consommation = 'consoIndex0' + indexEnCours;
+                                            cout = 'coutIndex0' + indexEnCours;
+                                        }else{
+                                            consommation = 'consoIndex' + indexEnCours;
+                                            cout = 'coutIndex' + indexEnCours;
+                                        }
+                                        serie = indexEnCours + 1;
+									    coutoui = false;
+                                        if (test.includes("COUT")){
+                                            coutoui = true;
+                                        }
+                                        commande = datacmd;
+                                        commande.name = nomIndex;
+                                        console.log("commande.name " + commande.unite + ' index en cours ' + indexEnCours + ' ' + index[indexEnCours])
+                                        if (coutoui){
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=all]'), 'all' , datacmd, 1);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd, 1);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd, 1);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=month]'), 'month' , datacmd, 1);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=yearLastYear]'), 'yearLastYear' , datacmd, 1);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd, 1);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=year]'), 'year' ,datacmd, 1);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=yesterday]'), 'yesterday' , datacmd, 1);
+                                            commandesStatCoutIndex.push({"graph":"graph", "id":commande.id,"name":commande.name,"color":color[indexEnCours],"stackGraph":stackGraph,"diviseur":1000,"serie":serie,"cout":'cout'});
+                                            getDailyHistory('div_graphGlobalJournalierCout',commande, color[indexEnCours], stackGraph, 1000, serie, 'cout');
+                                            getAnnualHistory('div_graphGlobalAnnualCout',commande, color[indexEnCours], stackGraph, 1000, serie, 'cout');
+                                            getMonthlyHistory('div_graphGlobalIndexCout',commande, color[indexEnCours], stackGraph, 1000, serie, 'cout');
+                                        }else{
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=all]'), 'all' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=yearLastYear]'), 'yearLastYear' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=yearLastYearPartial]'), 'yearLastYearPartial' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=month]'), 'month' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=year]'), 'year' , datacmd);
+                                            getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=yesterday]'), 'yesterday' , datacmd);
+                                            commandesStatIndex.push({"graph":"graph", "id":commande.id,"name":commande.name,"color":color[indexEnCours],"stackGraph":stackGraph,"diviseur":diviseur,"serie":serie});
+                                            getDailyHistory('div_graphGlobalJournalier',commande, color[indexEnCours], stackGraph, diviseur, serie);
+                                            getAnnualHistory('div_graphGlobalAnnual',commande, color[indexEnCours], stackGraph, diviseur, serie);
+                                            getMonthlyHistory('div_graphGlobalIndex',commande, color[indexEnCours], stackGraph, diviseur, serie);
+                                        }
+                                    }
+                            break;
+                            case (test==="SINSTI"):
+                            case (test==="SINST1"):
+                                    if(compteurProd||prodEtConso){
+                                        commandesPuissance.push({"id":datacmd.id,"name":datacmd.name,"color":color[14]});
+                                        console.log("[loadData][SINST*] " + datacmd.id);
+                                        getObjectHistory('div_graphGlobalPower', 'Simple', datacmd, color[14]);
+                                    }
+                            break;
+                            case (test==="SINSTS"):
+                                    colori = color[0];
+                            case (test==="SINSTS1"):
+                                    if (test==="SINSTS1"){
+                                        colori = color[1];
+                                    }
+                            case (test==="SINSTS2"):
+                                    if (test==="SINSTS2"){
+                                        colori = color[2];
+                                    }
+                            case (test==="SINSTS3"):
+                                    if (test==="SINSTS3"){
+                                        colori = color[3];
+                                    }
+                            case (test==="PAPP"):
+                                    if (test==="PAPP"){
+                                        colori = color[0];
+                                    }
+                                    if(!compteurProd){
+                                        commandesPuissance.push({"id":datacmd.id,"name":datacmd.name,"color":colori});
+                                        console.log("[loadData][PAPP ou SINSTS] " + datacmd.id);
+                                        getObjectHistory('div_graphGlobalPower', 'Simple', datacmd, colori);
+                                    }
+                            break;
+                            case (test==="STAT_TODAY"&&!newIndex):
+                                    if(!compteurProd){
+                                        console.log("[loadData][STAT_TODAY] " + datacmd.value);
+                                        $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=day]'), 'day' , "coutBase", datacmd);
+                                    }
+                            break;
+                            case (test==="STAT_TODAY_HC"&&!newIndex):
+                                    if(!compteurProd&&HCHP){
+                                        console.log("[loadData][STAT_TODAY_HC] " + datacmd.value);
+                                        $('.teleinfoAttr[data-l1key=consoHC][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=day]'), 'day' , "coutHC", datacmd);
+                                    }
+                            break;
+                            case (test==="STAT_TODAY_HP"&&!newIndex):
+                                    if(!compteurProd&&HCHP){
+                                        console.log("[loadData][STAT_TODAY_HP] " + datacmd.value);
+                                        $('.teleinfoAttr[data-l1key=consoHP][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
+                                        getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=day]'), 'day' , "coutHP", datacmd);
+                                    }
+                            break;
+                            case (test.includes("STAT_TODAY_INDEX")&&newIndex):
+                                        var indexEnCours = parseInt(test.substr(16,2));
+                                        if (index[indexEnCours]){
+                                            indexCout = index_cout[indexEnCours];
+                                            if (indexEnCours <10){
+                                                cout = 'coutIndex0' + indexEnCours;
+                                                consommation = 'consoIndex0' + indexEnCours;
+                                            }else{
+                                                cout = 'coutIndex' + indexEnCours;
+                                                consommation = 'consoIndex' + indexEnCours;
+                                            }
+                                            if(!compteurProd){
+                                                if (test.includes("COUT")){
+                                                    console.log("[loadData 1][STAT_TODAY_INDEX_COUT " + indexEnCours + "] " + cout + ' ' + indexCout);
+                                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=day]'), 'day' , datacmd, 1);
+                                                    //$('.teleinfoAttr[data-l1key='+ cout + '][data-l2key=day]').text((datacmd.value).toFixed(2));
+                                                    //if (indexEnCours == 0){
+                                                        nomIndex = index_nom[indexEnCours];
+                                                        commande = datacmd;
+                                                        commande.name = nomIndex;
+                                                        console.log("[loadData 1][STAT_TODAY_INDEX_COUT " + indexEnCours + "] couleur: " + color[indexEnCours]);
+                                                        commandesPuissanceCout.push({"id":commande.id,"name":commande.name,"color":color[indexEnCours]});
+                                                        console.log("[loadData][" + nomIndex + "] " + commande.id);
+                                                        getObjectHistory('div_graphGlobalPowerCout', 'cout', commande, color[indexEnCours]);
+                                                    //}
+                                                }else{
+                                                    console.log("[loadData 2][STAT_TODAY_INDEX " + indexEnCours + "] " +datacmd.id + ' ' + (datacmd.value));
+                                                    getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=day]'), 'day' , datacmd);
+                                                    //$('.teleinfoAttr[data-l1key='+ consommation + '][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
+                                                }
+                                            }
+                                        }
+                            break;
+                            case (test==="STAT_TODAY_PROD"):
+                                    if(compteurProd||prodEtConso){
+                                        console.log("[loadData][STAT_TODAY_PROD] " + datacmd.value);
+                                        $('.teleinfoAttr[data-l1key=prod][data-l2key=day]').text(((datacmd.value)/1000).toFixed(2));
+                                        if(newIndex){
+                                            commande = datacmd;
+                                            commande.name = 'Revenu Prod'; 
+                                            revenusprod = ((datacmd.value)*CoutindexProd/1000).toFixed(2);
+                                            commande.value = revenusprod;
+                                            $('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]').text(revenusprod);                                                      
+                                            //getObjectHistory('div_graphGlobalPowerCout', 'cout', commande, color[14]);
+                                        }else{
+                                          getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]'), 'day' , CoutindexProd, datacmd);
+                                        }
                                 }
-                                break;
-                            case "SINSTS":
-                            case "PAPP":
-                                if(!compteurProd){
-                                    color = '#7cb5ec';
-                                    commandesPuissance.push({"id":data.result[globalEqLogic].cmd[cmd].id,"name":data.result[globalEqLogic].cmd[cmd].name,"color":color});
-                                    console.log("[loadData][PAPP ou SINSTS] " + data.result[globalEqLogic].cmd[cmd].id);
-                                    getObjectHistory('div_graphGlobalPower', 'Simple', data.result[globalEqLogic].cmd[cmd], color);
-                                }
-                                break;
-                            case "STAT_TODAY":
-                                if(!compteurProd){
-                                    console.log("[loadData][STAT_TODAY] " + data.result[globalEqLogic].cmd[cmd].value);
-                                    $('.teleinfoAttr[data-l1key=conso][data-l2key=day]').text(((data.result[globalEqLogic].cmd[cmd].value)/1000).toFixed(2));
-									getCommandHistoryCout($('.teleinfoAttr[data-l1key=cout][data-l2key=day]'), 'day' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-                                }
-                                break;
-							case "STAT_TODAY_HC":
-								if(!compteurProd&&HCHP){
-                                    console.log("[loadData][STAT_TODAY_HC] " + data.result[globalEqLogic].cmd[cmd].value);
-									$('.teleinfoAttr[data-l1key=consoHC][data-l2key=day]').text(((data.result[globalEqLogic].cmd[cmd].value)/1000).toFixed(2));
-									getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHC][data-l2key=day]'), 'day' , "coutHC", data.result[globalEqLogic].cmd[cmd]);
-								}
-							break;
-							case "STAT_TODAY_HP":
-								if(!compteurProd&&HCHP){
-                                    console.log("[loadData][STAT_TODAY_HP] " + data.result[globalEqLogic].cmd[cmd].value);
-									$('.teleinfoAttr[data-l1key=consoHP][data-l2key=day]').text(((data.result[globalEqLogic].cmd[cmd].value)/1000).toFixed(2));
-									getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutHP][data-l2key=day]'), 'day' , "coutHP", data.result[globalEqLogic].cmd[cmd]);
-								}
-							break;
-                            case "STAT_TODAY_PROD":
-                                if(compteurProd||prodEtConso){
-                                    console.log("[loadData][STAT_TODAY_PROD] " + data.result[globalEqLogic].cmd[cmd].value);
-                                    $('.teleinfoAttr[data-l1key=prod][data-l2key=day]').text(((data.result[globalEqLogic].cmd[cmd].value)/1000).toFixed(2));
- 									getCommandHistoryCout($('.teleinfoAttr[data-l1key=coutProd][data-l2key=day]'), 'day' , "coutProd", data.result[globalEqLogic].cmd[cmd]);
-                               }
-                                break;
+                            break;
                         }
                     }
                     catch(err) {
@@ -348,12 +760,20 @@ $.ajax({
                 console.log("[loadData] => " + data.result[globalEqLogic].name);
 
             }
-        }
+        },
     });
 }
 
 function getObjectHistory(div, type, object, color, action = 'none') {
     dailyHistoryChart[div] = null;
+    if (type === 'cout'){
+        symbole = '€';
+        plotBackgroundColor = 'rgba(255, 99, 71, 0.2)';
+    }else{
+        symbole = 'VA';
+        plotBackgroundColor = 'rgba(255, 255, 255, 0)';
+    }
+        console.log("[getObjectHistory] couleur: du graph " + color);
 //    if(action === 'refresh'){
         startDate = $('#in_startDate').value()
 //    }else {
@@ -367,18 +787,22 @@ function getObjectHistory(div, type, object, color, action = 'none') {
                     dateStart: startDate,
                     dateEnd: $('#in_endDate').value(),
                     showNavigator : false,
-                    tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> Wh<br/>',
-                        shared: true
+                    charts: {
+                        plotBackgroundColor: plotBackgroundColor,
                     },
                     option: {
                         name : object.name,
-                        graphcolor : color,
+                        graphColor : color,
                         derive : 0,
                         graphType : 'line',
                         graphZindex :3,
                         graphScale : 1,
+                        displayAlert: false,
                      },
+                    tooltipSeries: {
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ' + symbole + '<br/>',
+                        shared: true
+                    },
                     //newGraph: true,
                 });
 /*    console.log("[getObjectHistory] Name => " + object.logicalId),
@@ -417,7 +841,7 @@ function getObjectHistory(div, type, object, color, action = 'none') {
     }); */
 }
 
-function getDailyHistory(div,  object, color, stackGraph, diviseur, logical = 0) {
+function getDailyHistory(div,  object, color, stackGraph, diviseur, serie, type) {
     var from = moment($('#in_startDate').value(), "YYYY-MM-DD").format('YYYY-MM-DD');
     if (moment().format('DD') === $('#in_endDate').value().substr(-2,2)) {
         var to = moment($('#in_endDate').value(), "YYYY-MM-DD").subtract(1, 'days').format('YYYY-MM-DD');
@@ -428,8 +852,18 @@ function getDailyHistory(div,  object, color, stackGraph, diviseur, logical = 0)
 //    if (object.logicalId.includes("PROD")){
 //        color = '#ed9448';
 //    }
-    console.log("[getDailyHistory] Commande = " + object.name);
+if (type === 'cout'){
+    symbole = '€';
+    decimals = 2;
+    plotBackgroundColor = 'rgba(255, 99, 71, 0.2)';
+}else{
+    symbole = 'kWh';
+    decimals = 1;
+    plotBackgroundColor = 'rgba(255, 255, 255, 0)';
+}
+console.log("[getDailyHistory] Commande = " + object.name);
     console.log("[getDailyHistory] Récupération de div " + div);
+    console.log("[getDailyHistory] Série " + serie);
  
 //	if object.logicalId != undefined {
 //		nomCourbe = object.logicalId
@@ -446,6 +880,10 @@ function getDailyHistory(div,  object, color, stackGraph, diviseur, logical = 0)
                     dateStart: from,
                     dateEnd: to,
                     showNavigator : false,
+                    index : serie,
+                    charts: {
+                        plotBackgroundColor: plotBackgroundColor,
+                    },
                     option: {
                         graphColor: color,
                         name : object.name,
@@ -456,64 +894,102 @@ function getDailyHistory(div,  object, color, stackGraph, diviseur, logical = 0)
                         graphType : 'column',
                         graphZindex :1,
                         groupingType:"high::day",
+                        stacking : 'normal',
+                        displayAlert: false,
+                        valueDecimals: 1,
+                        allowZero: 0,
                     },
                     tooltip : {
-                        valueDecimals: 2,
+                        shared : true,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> kWh<br/>',
-                        shared: true
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.'+decimals+'f}</b> ' + symbole + '<br/>',
+                        shared: true,
+                        valueDecimals: 1,
+                    },
+                    plotOptions : {
+                        column: {
+                            stacking: 'normal',
+                            valueDecimals: 1,
+                            dataLabels: {
+                                enabled: true,
+                                color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                                style: {
+                                    textShadow: '0 0 3px black',
+                                    fontSize: '10px',
+
+                                },
+                                format: '{point.y:.'+decimals+'f}',
+                            }
+                        }
                     },
                     divide:1000/diviseur,
                 });
 
-	jeedom.config.load({
-        plugin: "teleinfo",
-        configuration : "outside_temp",
-        error: function (error) {
-        },
-        success: function (myId) {
-            if ((myId != '') && (!object.name.includes("PROD")) && (!object.name.includes("HC"))){
-                console.log("[getDailyHistory] Id température exterieure : " + myId)
-                teleinfoDrawChart({
-                                cmd_id: myId,
-                                el: div,
-                                dateRange : 'all',
-                                dateStart: from,
-                                dateEnd: to,
-                                showNavigator : false,
-                                tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-                                    shared: true
-                                },
-                                option: {
-                                    name : 'Température ext.',
-									graphType : 'line',
-                                    graphColor: '#87b125',
-                                    derive : 0,
-                                    graphZindex : 2,
-                                    groupingType:"average::day"
-                                },
-                            });
+    if (type !== 'cout'){
+        jeedom.config.load({
+            plugin: "teleinfo",
+            configuration : "outside_temp",
+            error: function (error) {
+            },
+            success: function (myId) {
+                if ((myId != '') && !graphTempDaily){
+                    graphTempDaily = true;
+                    console.log("[getDailyHistory] Id température exterieure : " + myId)
+                    teleinfoDrawChart({
+                                    cmd_id: myId,
+                                    el: div,
+                                    dateRange : 'all',
+                                    dateStart: from,
+                                    dateEnd: to,
+                                    showNavigator : false,
+                                    index : 20,
+                                    tooltipSeries: {
+                                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f}</b><br/>',
+                                        shared: true
+                                    },
+                                    charts: {
+                                        plotBackgroundColor: plotBackgroundColor,
+                                    },
+                                                option: {
+                                        name : 'Température ext.',
+                                        graphType : 'line',
+                                        graphColor: '#87b125',
+                                        derive : 0,
+                                        graphZindex : 2,
+                                        groupingType:"average::day",
+                                    },
+                                    tooltipSeries : {
+                                        valueDecimals: 1
+                                    },
+                                });
+                }
+                else{
+                    console.log("[getDailyHistory] + de 1 courbes ou Pas de température extérieure ou courbe déjà tracée")
+                }
             }
-            else{
-                console.log("[getDailyHistory] + de 1 courbes ou Pas de température extérieure")
-            }
-        }
-    });
+        });
+    }
 }
 
-function getMonthlyHistory(div,  object, color, stackGraph, diviseur) {
-//    var color = '#7cb5ec';
-    var from = moment().subtract(18, 'months').startOf('month').format('YYYY-MM-DD 00:00:00');
-    var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
-//    if (object.logicalId.includes("PROD")){
-//        color = '#ed9448';
-//    }
-//    if (object.logicalId.includes("HP")){
-//        color = '#ed9448';
-//    }
-    console.log("[getMonthlyHistory] Récupération de div " + div);
+function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie, type) {
+//    var from = moment().subtract(18, 'months').startOf('month').format('YYYY-MM-DD 00:00:00');
+//    var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
+
+var from = moment($('#in_endDate').value(), "YYYY-MM-DD").subtract(18, 'months').startOf('month').format('YYYY-MM-DD 00:00:00');
+var to = moment($('#in_endDate').value(), "YYYY-MM-DD").endOf('month').format('YYYY-MM-DD 23:59:59');
+
+if (type === 'cout'){
+    symbole = '€';
+    decimals = 2;
+    plotBackgroundColor = 'rgba(255, 99, 71, 0.2)';
+}else{
+    symbole = 'kWh';
+    decimals = 1;
+    plotBackgroundColor = 'rgba(255, 255, 255, 0)';
+}
+dailyHistoryChart[div] = null;
+console.log("[getMonthlyHistory] Récupération de div " + div);
     console.log("[getMonthlyHistory] Récupération de l'historique pour la période du " + from + " au " + to);
     teleinfoDrawChart({
                     cmd_id: object.id,
@@ -522,6 +998,10 @@ function getMonthlyHistory(div,  object, color, stackGraph, diviseur) {
                     dateStart: from,
                     dateEnd: to,
                     showNavigator : false,
+                    index : serie,
+                    charts: {
+                        plotBackgroundColor: plotBackgroundColor,
+                    },
                     option: {
                         name : object.name,
 						graphColor: color,
@@ -531,86 +1011,97 @@ function getMonthlyHistory(div,  object, color, stackGraph, diviseur) {
                         graphStack : stackGraph,
                         graphType : 'column',
                         graphZindex : 1,
-                        groupingType:"sum::month"
+                        groupingType:"sum::month",
+                        displayAlert: false,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> kWh<br/>',
-                        shared : true
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.'+decimals+'f}</b> ' + symbole + '<br/>',
+                        shared : true,
                         //pointFormat: '{series.name}</span>: <b>{point.y} kWh</b><br/>',
                     },
                     tooltip : {
                         stacking : 'normal',
                         shared : true,
-                        valueDecimals: 2
                     },
-/*                    plotOptions : {
+                    plotOptions : {
                         column: {
                             stacking: 'normal',
                             dataLabels: {
                                 enabled: true,
                                 color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
                                 style: {
-                                    textShadow: '0 0 3px black',
+                                    textShadow: false,
                                     fontSize: '10px',
 
                                 },
-                                format: "{point.y:.2f}",
+                                format: '{point.y:.'+decimals+'f}',
                             }
                         }
                     },
-*/                    divide:1000/diviseur,
+                   divide:1000/diviseur,
     });
 //
-    jeedom.config.load({
-        plugin: "teleinfo",
-        configuration : "outside_temp",
-        error: function (error) {
-        },
-        success: function (myId) {
-            if ((myId != '') && (!object.logicalId.includes("PROD")) && (!object.logicalId.includes("HC"))){
-                console.log("[getMonthlyHistory] Id température exterieure : " + myId)
-                teleinfoDrawChart({
-                                cmd_id: myId,
-                                el: div,
-                                dateRange : 'all',
-                                dateStart: from,
-                                dateEnd: to,
-                                showNavigator : false,
-                                tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} °C</b><br/>',
-                                    shared: true
-                                },
-                                option: {
-									name : 'Température ext.',
-						            graphType : 'line',
-                                    graphColor: '#87b125',
-                                    derive : 0,
-                                    graphZindex : 2,
-                                    groupingType:"average::month"
-                                },
-                            });
+    if (type !== 'cout'){
+        jeedom.config.load({
+            plugin: "teleinfo",
+            configuration : "outside_temp",
+            error: function (error) {
+            },
+            success: function (myId) {
+                if ((myId != '') && !graphTempMonthly){
+                    graphTempMonthly = true;
+                    console.log("[getMonthlyHistory] Id température exterieure : " + myId)
+                    teleinfoDrawChart({
+                                    cmd_id: myId,
+                                    el: div,
+                                    dateRange : 'all',
+                                    dateStart: from,
+                                    dateEnd: to,
+                                    showNavigator : false,
+                                    index : 20,
+                                    tooltipSeries: {
+                                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
+                                        shared: true
+                                    },
+                                    charts: {
+                                        plotBackgroundColor: plotBackgroundColor,
+                                    },
+                                                option: {
+                                        name : 'Température ext.',
+                                        graphType : 'line',
+                                        graphColor: '#87b125',
+                                        derive : 0,
+                                        graphZindex : 2,
+                                        groupingType:"average::month",
+                                    },
+                                });
+                }
+                else{
+                    console.log("[getMonthlyHistory] + de 1 courbes ou Pas de température extérieure ou courbe déjà tracée")
+                }
             }
-            else{
-                console.log("[getDailyHistory] + de 1 courbes ou Pas de température extérieure")
-            }
-        }
-    });
-
+        });
+    }
 //
 }
 
 
-function getAnnualHistory(div,  object, color, stackGraph, diviseur) {
-//    var color = '#7cb5ec';
-    var from = moment().subtract(18, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
-    var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
-//    if (object.logicalId.includes("PROD")){
-//        color = '#ed9448';
-//    }
-//    if (object.logicalId.includes("HP")){
-//        color = '#ed9448';
-//    }
-    console.log("[getAnnualHistory] Récupération de div " + div);
+function getAnnualHistory(div,  object, color, stackGraph, diviseur, serie, type) {
+//    var from = moment().subtract(18, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
+//    var to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
+    var from = moment($('#in_endDate').value(), "YYYY-MM-DD").subtract(18, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
+    var to = moment($('#in_endDate').value(), "YYYY-MM-DD").endOf('year').format('YYYY-MM-DD 23:59:59');
+    if (type === 'cout'){
+        symbole = '€';
+        decimals = 1;
+        plotBackgroundColor = 'rgba(255, 99, 71, 0.2)';
+    }else{
+        symbole = 'kWh';
+        decimals = 0;
+        plotBackgroundColor = 'rgba(255, 255, 255, 0)';
+    }
+    dailyHistoryChart[div] = null;
+console.log("[getAnnualHistory] Récupération de div " + div);
     console.log("[getAnnualHistory] Récupération de l'historique pour la période du " + from + " au " + to);
     teleinfoDrawChart({
                     cmd_id: object.id,
@@ -619,6 +1110,10 @@ function getAnnualHistory(div,  object, color, stackGraph, diviseur) {
                     dateStart: from,
                     dateEnd: to,
                     showNavigator : false,
+                    index : serie,
+                    charts: {
+                        plotBackgroundColor: plotBackgroundColor,
+                    },
                     option: {
                         name : object.name,
 						graphColor: color,
@@ -628,19 +1123,19 @@ function getAnnualHistory(div,  object, color, stackGraph, diviseur) {
                         graphStack : stackGraph,
                         graphType : 'column',
                         graphZindex : 1,
-                        groupingType:"sum::year"
+                        groupingType:"sum::year",
+                        displayAlert: false,
                     },
                     tooltipSeries: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> kWh<br/>',
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.'+decimals+'f}</b> ' + symbole + '<br/>',
                         shared : true
                         //pointFormat: '{series.name}</span>: <b>{point.y} kWh</b><br/>',
                     },
                     tooltip : {
                         stacking : 'normal',
                         shared : true,
-                        valueDecimals: 0
                     },
-/*                    plotOptions : {
+                    plotOptions : {
                         column: {
                             stacking: 'normal',
                             dataLabels: {
@@ -649,53 +1144,58 @@ function getAnnualHistory(div,  object, color, stackGraph, diviseur) {
                                 style: {
                                     textShadow: '0 0 3px black',
                                     fontSize: '10px',
-
                                 },
-                                format: "{point.y:.2f}",
+                                format: '{point.y:.'+decimals+'f}',
                             }
                         }
                     },
-*/                    divide:1000/diviseur,
+                    divide:1000/diviseur,
     });
 //
-    jeedom.config.load({
-        plugin: "teleinfo",
-        configuration : "outside_temp",
-        error: function (error) {
-        },
-        success: function (myId) {
-            if ((myId != '') && (!object.logicalId.includes("PROD")) && (!object.logicalId.includes("HC"))){
-                console.log("[getAnnualHistory] Id température exterieure : " + myId)
-                teleinfoDrawChart({
-                                cmd_id: myId,
-                                el: div,
-                                dateRange : 'all',
-                                dateStart: from,
-                                dateEnd: to,
-                                showNavigator : false,
-                                tooltipSeries: {
-                                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} °C</b><br/>',
-                                    shared: true
-                                },
-                                option: {
-									name : 'Température ext.',
-						            graphType : 'line',
-                                    graphColor: '#87b125',
-                                    derive : 0,
-                                    graphZindex : 2,
-                                    groupingType:"average::year"
-                                },
-								tooltipSeries : {
-									valueDecimals: 2
-								},
-                            });
+    if (type !== 'cout'){
+        jeedom.config.load({
+            plugin: "teleinfo",
+            configuration : "outside_temp",
+            error: function (error) {
+            },
+            success: function (myId) {
+                if ((myId != '') && !graphTempAnnualy){
+                    graphTempAnnualy = true;
+                    console.log("[getAnnualHistory] Id température exterieure : " + myId)
+                    teleinfoDrawChart({
+                                    cmd_id: myId,
+                                    el: div,
+                                    dateRange : 'all',
+                                    dateStart: from,
+                                    dateEnd: to,
+                                    showNavigator : false,
+                                    index : 20,
+                                    tooltipSeries: {
+                                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>',
+                                        shared: true
+                                    },
+                                    charts: {
+                                        plotBackgroundColor: plotBackgroundColor,
+                                    },
+                                                option: {
+                                        name : 'Température ext.',
+                                        graphType : 'line',
+                                        graphColor: '#87b125',
+                                        derive : 0,
+                                        graphZindex : 2,
+                                        groupingType:"average::year",
+                                    },
+                                    tooltipSeries : {
+                                        valueDecimals: 1
+                                    },
+                                });
+                }
+                else{
+                    console.log("[getAnnualHistory] + de 1 courbe courbe ou Pas de température extérieure ou courbe déjà tracée")
+                }
             }
-            else{
-                console.log("[getAnnualHistory] + de 1 courbe courbe ou Pas de température extérieure")
-            }
-        }
-    });
-
+        });
+    }
 //
 }
 
@@ -703,10 +1203,15 @@ function getAnnualHistory(div,  object, color, stackGraph, diviseur) {
 
 
 
-function getCommandHistoryValue(div, type , object) {
+function getCommandHistoryValue(div, type , object, coutoui = 1000, virgule = 1) {
     var from = moment().format('YYYY-MM-DD 00:00:00');
     var to = moment().format('YYYY-MM-DD 23:59:59');
+    virgule = 2;
     switch (type){
+        case 'day':
+            from = moment().format('YYYY-MM-DD 00:00:00');
+            to = moment().format('YYYY-MM-DD 23:59:59');
+        break;
         case 'monthLastYear':
             from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
             to = moment().subtract(1, 'years').endOf('month').format('YYYY-MM-DD 23:59:59');
@@ -724,8 +1229,8 @@ function getCommandHistoryValue(div, type , object) {
             to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
         break;
         case 'yesterday':
-            from = moment().subtract(2, 'days').format('YYYY-MM-DD 23:59:59');
-            to = moment().subtract(1, 'days').format('YYYY-MM-DD 00:00:01');
+            from = moment().subtract(1, 'days').format('YYYY-MM-DD 00:00:00');
+            to = moment().subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
         break;
         case 'monthLastYearPartial':
             from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
@@ -735,10 +1240,13 @@ function getCommandHistoryValue(div, type , object) {
             from = moment().subtract(1, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
             to = moment().subtract(1, 'years').format('YYYY-MM-DD 23:59:59');
         break;
+        case 'all':
+            from = moment().subtract(25, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
+            to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
+        break;
     }
 
-
-    dailyHistoryChart[div] = null;
+//    dailyHistoryChart[div] = null;
     jeedom.history.get({
         cmd_id: object.id,
         dateStart : from,
@@ -746,60 +1254,78 @@ function getCommandHistoryValue(div, type , object) {
         error: function (error) {
         },
         success: function (myCommandHistory) {
-            if(myCommandHistory.data.length == 1){
-              div.text((myCommandHistory.maxValue / 1000).toFixed(2))
-              console.log("[Object 1] " + object.id + " [getCommandHistoryValue] " + type + " | from : " + from + " | to : " + to + " | value : " + (myCommandHistory.maxValue / 1000).toFixed(2));
-            }else {
-              //myCommandHistory.data.splice(-1,1);
-              div.text((myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000).toFixed(2));
-              console.log("[Object 2] " + object.id + " [getCommandHistoryValue] " + type + " | from : " + from + " | to : " + to + " | value : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000);
+            if (coutoui == 1 || type == 'yesterday' || type == 'day'){
+                virgule = 2;
+            }else{
+                if (type == 'month' || type == 'monthLastYearPartial'){
+                    virgule = 1;
+                }else{
+                    virgule = 0;
+                }
+            }
+            if(myCommandHistory.data.length != 0){ 
+                if(myCommandHistory.data.length == 1 || type == 'day' || type == 'yesterday'){
+                    div.text((myCommandHistory.data[myCommandHistory.data.length -1][1] / coutoui).toFixed(virgule)); //(myCommandHistory.maxValue / coutoui).toFixed(virgule));
+                    console.log("[Object 1] " + object.id + " [getCommandHistoryValue 1] " + object.name + " " + type + " | from : " + from + " | to : " + to + " | value : " + (myCommandHistory.maxValue/coutoui).toFixed(virgule));
+                }else {
+                    resultat = (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / coutoui).toFixed(virgule);                    
+                    div.text(resultat);
+                    console.log("[Object 2] " + object.id + " [getCommandHistoryValue 2] " + object.name + " "  + type + " | from : " + from + " | to : " + to + " | value : " + resultat);
+                }
+            }else{
+                div.text(0);
             }
         }
     });
 }
+
 
 function getCommandHistoryCout(div, type, cout, object) {
     var from = moment().format('YYYY-MM-DD 00:00:00');
     var to = moment().format('YYYY-MM-DD 23:59:59');
     switch (type){
         case 'monthLastYear':
-            from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
+            from = moment().subtract(1, 'years').startOf('month').subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
             to = moment().subtract(1, 'years').endOf('month').format('YYYY-MM-DD 23:59:59');
         break;
         case 'yearLastYear':
-            from = moment().subtract(1, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
+            from = moment().subtract(1, 'years').startOf('year').subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
             to = moment().subtract(1, 'years').endOf('year').format('YYYY-MM-DD 23:59:59');
         break;
         case 'month':
-            from = moment().startOf('month').format('YYYY-MM-DD 00:00:00');
+            from = moment().startOf('month').subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
             to = moment().endOf('month').format('YYYY-MM-DD 23:59:59');
         break;
         case 'year':
-            from = moment().startOf('year').format('YYYY-MM-DD 00:00:00');
+            from = moment().startOf('year').subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
             to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
         break;
         case 'yesterday':
-            from = moment().subtract(1, 'days').startOf('day').format('YYYY-MM-DD 00:00:00');
-            to = moment().subtract(1, 'days').endOf('day').format('YYYY-MM-DD 23:59:59');
+            from = moment().subtract(2, 'days').format('YYYY-MM-DD 23:59:59');
+            to = moment().subtract(1, 'days').format('YYYY-MM-DD 00:00:01');
         break;
         case 'monthLastYearPartial':
-            from = moment().subtract(1, 'years').startOf('month').format('YYYY-MM-DD 00:00:00');
+            from = moment().subtract(1, 'years').startOf('month').subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
             to = moment().subtract(1, 'years').format('YYYY-MM-DD 23:59:59');
         break;
         case 'yearLastYearPartial':
-            from = moment().subtract(1, 'years').startOf('year').format('YYYY-MM-DD 00:00:00');
+            from = moment().subtract(1, 'years').startOf('year').subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
             to = moment().subtract(1, 'years').format('YYYY-MM-DD 23:59:59');
+        break;
+        case 'all':
+            from = moment().subtract(25, 'years').startOf('year').subtract(1, 'days').format('YYYY-MM-DD 23:59:59');
+            to = moment().endOf('year').format('YYYY-MM-DD 23:59:59');
         break;
     }
 
-
+    dailyHistoryChart[div] = null;
     jeedom.config.load({
         plugin: "teleinfo",
         configuration : cout,
         error: function (error) {
         },
         success: function (valeurCout) {
-            if (valeurCout != ''){
+            if (valeurCout != '' && valeurCout != 0){
 
                 jeedom.history.get({
                     cmd_id: object.id,
@@ -808,369 +1334,47 @@ function getCommandHistoryCout(div, type, cout, object) {
                     error: function (error) {
                     },
                     success: function (myCommandHistory) {
-                        if(tableCouts[type] === undefined){
-							tableCouts[type] = 0;
-						}
-						tableCouts[type] = 0;
-						if(type === "day"){
-							if(myCommandHistory.data[myCommandHistory.data.length - 1] !== undefined){
-                              tableCouts[type] = tableCouts[type] + (myCommandHistory.data[myCommandHistory.data.length - 1][1] / 1000) * valeurCout;
-                              console.log("[getCommandHistoryCout 1] " + type + " " + cout + " : " + myCommandHistory.data[myCommandHistory.data.length - 1][1] / 1000 + " * " + valeurCout + " = " + tableCouts[type])
+                        if (valeurCout != 0){
+                            if(tableCouts[type] === undefined){
+                                tableCouts[type] = 0;
                             }
+                            tableCouts[type] = 0;
+                            if(type === "day"){
+                                if(myCommandHistory.data[myCommandHistory.data.length - 1] !== undefined){
+                                    tableCouts[type] = tableCouts[type] + (myCommandHistory.data[myCommandHistory.data.length - 1][1] / 1000) * valeurCout;
+                                    console.log("[getCommandHistoryCout 1] " + type + " " + cout + " : " + myCommandHistory.data[myCommandHistory.data.length - 1][1] / 1000 + " * " + valeurCout + " = " + tableCouts[type])
+                                }
 
-						}else {
-                          if(myCommandHistory.data.length == 1){
-                            tableCouts[type] = tableCouts[type] + (myCommandHistory.maxValue / 1000) * valeurCout;
-                            console.log("[getCommandHistoryCout 2] " + type + " " + cout + " : " + (myCommandHistory.maxValue / 1000) + " * " + valeurCout + " = " + tableCouts[type]);
-                          }
-                          else {
-                            //myCommandHistory.data.splice(-1,1);
-                            tableCouts[type] = tableCouts[type] + (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000) * valeurCout;
-							console.log("[getCommandHistoryCout 3] " + type + " " + cout + " : " + myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000 + " * " + valeurCout + " = " + tableCouts[type])
-                          }
-						}
-
-                        div.text(' (~' + tableCouts[type].toFixed(2) + ' €)');
+                            }else {
+                            if(myCommandHistory.data.length == 1){
+                                tableCouts[type] = tableCouts[type] + (myCommandHistory.maxValue / 1000) * valeurCout;
+                                console.log("[getCommandHistoryCout 2] " + type + " " + cout + " : " + (myCommandHistory.maxValue / 1000) + " * " + valeurCout + " = " + tableCouts[type]);
+                            }
+                            else {
+                                resultat = (myCommandHistory.data.reduce(function(prev, cur) {  return prev + cur[1];}, 0) / 1000) * valeurCout
+                                myCommandHistory.data.splice(-1,1);
+                                tableCouts[type] = tableCouts[type] + resultat ;
+                                console.log("[getCommandHistoryCout 3] " + type + " " + cout + " : " + resultat)
+                            }
+                            }
+                            div.text('( ~' + tableCouts[type].toFixed(2) + ' )');
+                        }
                     }
                 });
-            }
-            else{
+            }else{
+                if (cout == 'coutBase'){
+                    faireTotHpHc = true;
+                }
                 console.log("[getCommandHistoryCout] Pas de cout " + cout)
             }
         }
     });
 }
 
-
-
-
-
-
-
-function drawPieChart(_el, _data, _title) {
-    new Highcharts.Chart({
-        chart: {
-            renderTo: _el,
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            height: 225,
-            spacingTop: 0,
-            spacingLeft: 0,
-            spacingRight: 0,
-            spacingBottom: 0
-        },
-        title: {
-            text: ''
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        credits: {
-            /*text: 'Copyright Jeedom',
-            href: 'http://jeedom.fr',*/
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    color: '#000000',
-                    connectorColor: '#000000',
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                }
-            }
-        },
-        series: [{
-                type: 'pie',
-                name: 'Browser share',
-                data: _data
-            }]
-    });
-}
-function drawStackGraph(_el, _data) {
-    var series = [];
-    for (var i in _data) {
-        if (isset(_data[i].data.history.power) && _data[i].data.history.power.length > 0) {
-            var serie = {
-                step: true,
-                name: _data[i].name,
-                data: _data[i].data.history.power,
-            };
-            series.push(serie);
-        }
-    }
-
-    if (!$.mobile) {
-        var legend = {
-            enabled: true,
-            borderColor: 'black',
-            borderWidth: 2,
-            shadow: true
-        };
-    } else {
-        var legend = {};
-    }
-
-    new Highcharts.StockChart({
-        chart: {
-            zoomType: 'x',
-            type: 'area',
-            renderTo: _el,
-            height: 225,
-            spacingTop: 0,
-            spacingLeft: 0,
-            spacingRight: 0,
-            spacingBottom: 0
-        },
-        plotOptions: {
-            area: {
-                stacking: 'normal',
-                lineColor: '#666666',
-                lineWidth: 1,
-                marker: {
-                    lineWidth: 1,
-                    lineColor: '#666666'
-                }
-            },
-        },
-        credits: {
-            /*text: 'Copyright Jeedom',
-            href: 'http://jeedom.fr',*/
-        },
-        navigator: {
-            enabled: false
-        },
-        rangeSelector: {
-            buttons: [{
-                    type: 'minute',
-                    count: 30,
-                    text: '30m'
-                }, {
-                    type: 'hour',
-                    count: 1,
-                    text: 'H'
-                }, {
-                    type: 'day',
-                    count: 1,
-                    text: 'J'
-                }, {
-                    type: 'week',
-                    count: 1,
-                    text: 'S'
-                }, {
-                    type: 'month',
-                    count: 1,
-                    text: 'M'
-                }, {
-                    type: 'year',
-                    count: 1,
-                    text: 'A'
-                }, {
-                    type: 'all',
-                    count: 1,
-                    text: 'Tous'
-                }],
-            selected: 6,
-            inputEnabled: false
-        },
-        legend: legend,
-        tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-            valueDecimals: 2,
-        },
-        yAxis: {
-            format: '{value}',
-            showEmpty: false,
-            showLastLabel: true,
-            min: 0,
-            labels: {
-                align: 'right',
-                x: -5
-            }
-        },
-        xAxis: {
-            type: 'datetime',
-            ordinal: false,
-        },
-        scrollbar: {
-            barBackgroundColor: 'gray',
-            barBorderRadius: 7,
-            barBorderWidth: 0,
-            buttonBackgroundColor: 'gray',
-            buttonBorderWidth: 0,
-            buttonBorderRadius: 7,
-            trackBackgroundColor: 'none', trackBorderWidth: 1,
-            trackBorderRadius: 8,
-            trackBorderColor: '#CCC'
-        },
-        series: series
-    });
-
-}
-
-
-function drawStackColumnChart(_el, _data){
-
-    new Highcharts.Chart({
-        chart: {
-            renderTo: _el,
-            type: 'column',
-            height: 350,
-            spacingTop: 5,
-            spacingLeft: -15,
-            spacingRight: 0,
-            spacingBottom: 0
-        },
-        title: {
-            text: ''
-        },
-        credits: {
-            text: 'Copyright Jeedom',
-            href: 'http://jeedom.fr',
-        },
-        xAxis: {
-            categories: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'kWh'
-            },
-            stackLabels: {
-                enabled: true,
-                style: {
-                    fontWeight: 'bold',
-                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                }
-            }
-        },
-        navigator: {
-            enabled: false
-        },
-        legend: {
-            align: 'right',
-            x: -30,
-            verticalAlign: 'top',
-            y: 25,
-            floating: true,
-            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-            borderColor: '#CCC',
-            borderWidth: 1,
-            shadow: false
-        },
-        tooltip: {
-            formatter: function () {
-                return '<b>' + this.x + '</b><br/>' +
-                    this.series.name + ': ' + this.y + ' kWh<br/>' +
-                    'Total: ' + this.point.stackTotal + ' kWh';
-            }
-        },
-        plotOptions: {
-            column: {
-                stacking: 'normal',
-                dataLabels: {
-                    enabled: true,
-                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-                    style: {
-                        textShadow: '0 0 3px black'
-                    }
-                }
-            }
-        },
-        series: [{
-            name: 'HP',
-            color: '#7cb5ec',
-        }, {
-            name: 'HC',
-            color: '#ed9448',
-        }]
-    });
-
-}
-
-function drawSimpleGraph(_el, _serie) {
-    var legend = {
-        enabled: true,
-        borderColor: 'black',
-        borderWidth: 2,
-        shadow: true
-    };
-
-    new Highcharts.StockChart({
-        chart: {
-            zoomType: 'x',
-            renderTo: _el,
-            height: 350,
-            spacingTop: 0,
-            spacingLeft: 0,
-            spacingRight: 0,
-            spacingBottom: 0
-        },
-        credits: {
-            text: 'Copyright Jeedom',
-            href: 'http://jeedom.fr',
-        },
-        navigator: {
-            enabled: false
-        },
-        rangeSelector: {
-            buttons: [{
-                    type: 'minute',
-                    count: 30,
-                    text: '30m'
-                }, {
-                    type: 'hour',
-                    count: 1,
-                    text: 'H'
-                }, {
-                    type: 'day',
-                    count: 1,
-                    text: 'J'
-                }, {
-                    type: 'week',
-                    count: 1,
-                    text: 'S'
-                }, {
-                    type: 'month',
-                    count: 1,
-                    text: 'M'
-                }, {
-                    type: 'year',
-                    count: 1,
-                    text: 'A'
-                }, {
-                    type: 'all',
-                    count: 1,
-                    text: 'Tous'
-                }],
-            selected: 6,
-            inputEnabled: false
-        },
-        legend: legend,
-        tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-            valueDecimals: 2,
-        },
-        yAxis: {
-            format: '{value}',
-            showEmpty: false,
-            showLastLabel: true,
-            min: 0,
-            labels: {
-                align: 'right',
-                x: -5
-            }
-        },
-        series: _serie
-    });
-}
-
 function initHistoryTrigger() {
 
 }
+
 
 function teleinfoDrawChart(_params) {
   $.showLoading();
@@ -1258,21 +1462,26 @@ function teleinfoDrawChart(_params) {
         _params.tooltipSeries = {valueDecimals: 2, };
       }
 
+// afficher les données au dessus des colonnes et dans chaque graphstack
+      label = true;
+      stacklabel = true;
+
       if (init(_params.plotOptions) == '') {
         _params.plotOptions = {
-          pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
+          column: {
             dataLabels: {
-              enabled: true,
-              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-              style: {
-                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-              }
+                enabled: label,
+                style: {
+                    textShadow: false,
+                    textOutline: 'none',
+                    fontSize: '10px',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                },
             },
             showInLegend: true
           },
-      };
+
+        };
       }
 
       if (init(_params.legend) == '') {
@@ -1284,6 +1493,7 @@ function teleinfoDrawChart(_params) {
       }
       var charts = {
         zoomType: 'x',
+        plotBackgroundColor: _params.charts.plotBackgroundColor,
         renderTo: _params.el,
         alignTicks: false,
         spacingBottom: 5,
@@ -1391,6 +1601,7 @@ function teleinfoDrawChart(_params) {
             step: _params.option.graphStep,
             yAxis: _params.option.graphScale,
             stacking : stacking,
+            textShadow : false,
             tooltip: _params.tooltipSeries,
             point: {
             }
@@ -1400,6 +1611,10 @@ function teleinfoDrawChart(_params) {
           series.zIndex = _params.option.graphZindex;
         }
 
+        if(isset(_params.index)){
+            series.index = _params.index;
+        }
+  
         if (!isset(dailyHistoryChart[_params.el]) || (isset(_params.newGraph) && _params.newGraph == true)) {
           dailyHistoryChart[_params.el] = {};
           dailyHistoryChart[_params.el].cmd = new Array();
@@ -1492,11 +1707,24 @@ function teleinfoDrawChart(_params) {
                               align: 'left',
                               x: 2
                           },
-                          stackLabels: {
-                              enabled: true,
+                          dataLabels: {
+                            enabled: true,
+                            style: {
+                                fontWeight: 'bold',
+                                textOutline: 'none',
+                                textShadow: '0 0 3px black',
+                                fontSize: '10px',
+                                color: (Highcharts.theme && Highcharts.theme.textColor) || 'white'
+                            },
+                        },
+                        stackLabels: {
+                              enabled: false,
                               style: {
                                   fontWeight: 'bold',
-                                  color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                                  textOutline: 'none',
+                                  textShadow: '0 0 3px black',
+                                  fontSize: '10px',
+                                  color: (Highcharts.theme && Highcharts.theme.textColor) || 'white'
                               }
                           },
                         }],

@@ -56,11 +56,28 @@ if (!isConnect('admin')) {
 <div class="col-lg-12">
     <form class="form-horizontal">
             <div class="form-group">
+                <label class="col-lg-2 control-label">{{Index consommations Globales}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <?php
+            			$indexConsoTotales = config::byKey('indexConsoGlob', 'teleinfo', 'BASE,EAST');
+                        echo '<input id="indexConsoTotales" type="text" value="'.$indexConsoTotales.'" data-role="tagsinput" />';
+              			?>
+            		</div>
+                </div>
+                <div class="col-lg-5">
+                </div>
+            </div>
+    </form>
+</div>
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
                 <label class="col-lg-2 control-label">{{Index consommation HP}} :</label>
                 <div class="col-lg-5">
                     <div class="input-group">
                         <?php
-            			$indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+            			$indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
                         echo '<input id="indexConsoHP" type="text" value="'.$indexConsoHP.'" data-role="tagsinput" />';
               			?>
             		</div>
@@ -106,6 +123,24 @@ if (!isConnect('admin')) {
     </form>
 </div>
 
+<div class="col-lg-12">
+    <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">{{Prix kWh BASE}} :</label>
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-addon">€</span>
+                        <?php
+            			$coutBase = config::byKey('coutBase', 'teleinfo', '0');
+                        echo '<input class="form-control" type="number" step="0.001" id="coutBase" type="text" value="'.$coutBase.'" />';
+              			?>
+            		</div>
+                </div>
+                <div class="col-lg-5">
+                </div>
+            </div>
+    </form>
+</div>
 <div class="col-lg-12">
     <form class="form-horizontal">
             <div class="form-group">

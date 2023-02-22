@@ -22,6 +22,13 @@ except ImportError as ex:
 import serial
 from datetime import datetime
 
+class error(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+
 # ----------------------------------------------------------------------------
 # Teleinfo core
 # ----------------------------------------------------------------------------
@@ -45,7 +52,7 @@ class Teleinfo:
     def terminate(self):
         print("Terminating...")
         self.close()
-        os.remove("/tmp/teleinfo_" + options.type + ".pid")
+        os.remove("/tmp/teleinfo_" + globals.type + ".pid")
         sys.exit()
 
     def read(self):
@@ -66,7 +73,6 @@ class Teleinfo:
                             premtrame = False
                         else:
                             resp = (globals.TELEINFO_SERIAL.readline().decode("UTF-8"))
-
                         if len(resp.replace('\r', '').replace('\n', '').split('\x09')) == 4:
                             name, horodate, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
                             # checksum = ' '
@@ -460,7 +466,7 @@ def open():
         logging.info("TELEINFO------OPEN CONNECTION")
         globals.TELEINFO_SERIAL = serial.Serial(globals.port, globals.vitesse, bytesize=7, parity='E', stopbits=1)
         logging.info("TELEINFO------CONNECTION OPENED")
-    except Open.PortUnavailable:
+    except serial.SerialException:
         logging.error("Error opening Teleinfo modem '%s' : %s" % (globals.port, traceback.format_exc()))
 
 

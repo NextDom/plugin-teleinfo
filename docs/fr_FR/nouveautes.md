@@ -1,4 +1,4 @@
-<br><br>
+<br>
 
 # Nouveautés
 <br><br><br><br><br><br><br>

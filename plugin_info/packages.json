@@ -8,6 +8,11 @@
     "pyserial" : {},
     "setuptools" : {},
     "requests" : {},
-    "pyudev" : {}
+    "pyudev" : {},
+    "paho-mqtt" : {}
+  },
+  "pip2" :{
+    "paho-mqtt" : {}
   }
-}
+
+  }

@@ -168,7 +168,7 @@ class Ftdi(object):
             self.shutdown()
             raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
         if err:
-            c_error = unichr(ord(buf) % 0x80)  # Clear bit 7
+            c_error = chr(ord(buf) % 0x80)  # Clear bit 7
             return c_error
         else:
             return None

@@ -3,27 +3,27 @@
 /*
 */
 
-table {
-  border: 1px solid black;
+table.teleinfotable {
+  border: 1px solid rgb(0, 0, 0);
   font: 16px "Open Sans", Helvetica, Arial, sans-serif;
   border-spacing: 0;
   border-collapse: collapse;
 }
 
-th, td, tr {
+th.teleinfoth, td.teleinfotd, tr.teleinfotr {
   border: 1px solid black;
   padding:4px 6px;
   text-align: center;
   vertical-align: middle;
 }
 
-thead > tr {
-  background-color: rgb(228, 240, 245);
+thead > tr.teleinfotr {
   border: 1px solid black;
   padding:4px 6px;
 }
 
-thead > th {
+thead > th.teleinfoth {
   border: 1px solid black;
   padding:4px 6px;
 }
+
