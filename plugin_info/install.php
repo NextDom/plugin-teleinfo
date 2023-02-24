@@ -89,7 +89,7 @@ function teleinfo_update() {
     log::add('teleinfo','info','*****************************************************');
     log::add('teleinfo','info','*********** Mise à jour du plugin teleinfo **********');
     log::add('teleinfo','info','*****************************************************');
-    log::add('teleinfo','info','**        Core version    : '. $core_version. '                  **');
+    log::add('teleinfo','info','**        Core version    : '. $core_version. '                **');
     log::add('teleinfo','info','*****************************************************');
 
     $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');

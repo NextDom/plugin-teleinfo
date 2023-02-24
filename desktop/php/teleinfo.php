@@ -1,4 +1,11 @@
 <?php
+//header("Location:");
+//header('Refresh:');
+$url = $_SERVER['HTTP_HOST']; 
+$url .= $_SERVER['REQUEST_URI']; 
+header('Refresh','URL='.$url);
+
+
 if (!isConnect('admin')) {
     throw new Exception('Error 401 Unauthorized');
 }
@@ -11,7 +18,6 @@ $date = array(
 $plugin = plugin::byId('teleinfo');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
-
 
 try {
 	$result = teleinfo::deamon_info();
@@ -42,6 +48,7 @@ switch ($controlerState) {
 }
 //$deamonRunning = false;
 //$deamonRunning = teleinfo::deamonRunning();
+
 
 ?>
 
@@ -183,7 +190,7 @@ switch ($controlerState) {
                           </div>
                       </div>
                       <div class="form-group Colors">
-                          <a class="btn btn-warning tooltips col-sm-2 pull-right"  id="btTeleinfoRazCouleurs"><i class="fas fa-medkit"></i>{{ RAZ des couleurs}}</a>
+                          <a class="btn btn-warning tooltips col-sm-2 pull-right"  id="btTeleinfoRazCouleurs"><i class="fas fa-medkit"></i>{{ RAZ couleurs}}</a>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">{{Index}}</label>
@@ -225,9 +232,8 @@ switch ($controlerState) {
                           </div>
 
                       </div>
-                      
                       <?php
-							//création du tableau des paramètres des index
+                            //création du tableau des paramètres des index
                             $index=array('index01','index02','index03','index04','index05','index06','index07','index08','index09','index10');
                             $indexId=array("EASF01","EASF02","EASF03","EASF04","EASF05","EASF06","EASF07","EASF08","EASF09","EASF10",
                                             "HCHC", "HCHP", "EJPHN", "EJPHPM", "BBRHCJB", "BBRHPJB", "BBRHCJW", "BBRHPJW", "BBRHCJR","BBRHPJR");
@@ -383,11 +389,24 @@ switch ($controlerState) {
 </div>
 
 <script>
+
+function prePrintEqLogic() {
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index01]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index02]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index03]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index04]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index05]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index06]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index07]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index08]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index09]').value(' ');
+    $('.eqLogicAttr[data-l1key=configuration][data-l2key=index10]').value(' ');
+}
+
 //création du tableau des paramètres des couleurs par défaut
 $colordefaut = ['#D62828','#001219','#005F73','#0A9396','#94D2BD',
                                 '#E9D8A6','#ee9b00','#ca6702','#bb3e03','#ae2012',
-                                '#9b2226','#ed9448','#7cb5ec','#d62828','#00FF00'
-                ];
+                                '#9b2226','#ed9448','#7cb5ec','#d62828','#00FF00'];
 
 $('#btTeleinfoRazCouleurs').on('click', function () {
     $('#favcolor0').value($colordefaut[0]);
@@ -411,6 +430,7 @@ $('#btTeleinfoRazCouleurs').on('click', function () {
 //    document.getElementById("favcolor14").value = "#00FF00";
 //    $('.eqLogicAttr[data-l1key=configuration][data-l2key=color14]').value("#00FF00");
 //eqLogicAttr configKey" id="favcolor14"  data-l1key="configuration" data-l2key="color14
+
 
 </script>
 

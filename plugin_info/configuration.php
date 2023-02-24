@@ -456,31 +456,6 @@ try {
             });
         });
 
-
-        $('.changeLogLive').on('click', function () {
-	           $.ajax({// fonction permettant de faire de l'ajax
-                type: "POST", // methode de transmission des données au fichier php
-                url: "plugins/teleinfo/core/ajax/teleinfo.ajax.php", // url du fichier php
-                data: {
-                    action: "changeLogLive",
-    				level : $(this).attr('data-log')
-                },
-                dataType: 'json',
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) { // si l'appel a bien fonctionné
-                    if (data.state != 'ok') {
-                        $.fn.showAlert({message: data.result, level: 'danger'});
-                        return;
-                    }
-                    $.fn.showAlert({message: '{{Réussie}}', level: 'success'});
-                }
-            });
-        });
-
-
-
         $('.choix_Mqtt').on('click', function () {
             $('.choixModem').hide();
             $('.choixMqtt').show();

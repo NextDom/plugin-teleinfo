@@ -107,12 +107,13 @@ def read_socket(cycle):
                     _thread.start_new_thread(action_handler, (message,))
                     logging.debug('SOCKET-READ------Action Thread Launched')
                 elif message['cmd'] == 'changelog':
-                    jeedom_utils.set_log_level('info')
-                    logging.info('SOCKET-READ------Passage du demon en mode ' + message['level'])
                     log = logging.getLogger()
                     for hdlr in log.handlers[:]:
                         log.removeHandler(hdlr)
-                    logging.info("SOCKET-READ------------ C'est parti ;)")
+                    jeedom_utils.set_log_level('info')
+                    logging.info('SOCKET-READ------Passage des log du demon en mode ' + message['level'])
+                    for hdlr in log.handlers[:]:
+                        log.removeHandler(hdlr)
                     jeedom_utils.set_log_level(message['level'])
         except Exception as e:
             logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
