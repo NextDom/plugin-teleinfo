@@ -60,7 +60,7 @@ if (!isConnect('admin')) {
                 <div class="col-lg-5">
                     <div class="input-group">
                         <?php
-            			$indexConsoTotales = config::byKey('indexConsoGlob', 'teleinfo', 'BASE,EAST');
+            			$indexConsoTotales = config::byKey('indexConsoGlob', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
                         echo '<input id="indexConsoTotales" type="text" value="'.$indexConsoTotales.'" data-role="tagsinput" />';
               			?>
             		</div>
@@ -77,7 +77,7 @@ if (!isConnect('admin')) {
                 <div class="col-lg-5">
                     <div class="input-group">
                         <?php
-            			$indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+            			$indexConsoHP = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
                         echo '<input id="indexConsoHP" type="text" value="'.$indexConsoHP.'" data-role="tagsinput" />';
               			?>
             		</div>
@@ -94,7 +94,7 @@ if (!isConnect('admin')) {
                 <div class="col-lg-5">
                     <div class="input-group">
                         <?php
-            			$indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+            			$indexConsoHC = config::byKey('indexConsoHC', 'teleinfo', 'EASF01,EASF03,EASF05,HCHC,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
                         echo '<input id="indexConsoHC" type="text" value="'.$indexConsoHC.'" data-role="tagsinput"/>';
               			?>
             		</div>

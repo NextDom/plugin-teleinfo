@@ -781,12 +781,13 @@ class teleinfo extends eqLogic
     }
 
 
+
     public static function calculateTodayStats()
     {
-        $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
-        $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+        $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'EASF01,EASF03,EASF05,HCHC,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         $indexProduction   = config::byKey('indexProduction', 'teleinfo', 'EAIT');
-        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
+        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
 
 
         log::add('teleinfo', 'info', '----- Calcul des statistiques temps réel -----');
@@ -1259,6 +1260,7 @@ class teleinfo extends eqLogic
         }
         log::add('teleinfo', 'info', '----------------------------------------------');
     }
+
 
     public static function calculateOtherStats()
     {
