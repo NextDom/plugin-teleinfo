@@ -60,7 +60,7 @@ if (!isConnect('admin')) {
                 <div class="col-lg-5">
                     <div class="input-group">
                         <?php
-            			$indexConsoTotales = config::byKey('indexConsoGlob', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
+            			$indexConsoTotales = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
                         echo '<input id="indexConsoTotales" type="text" value="'.$indexConsoTotales.'" data-role="tagsinput" />';
               			?>
             		</div>
