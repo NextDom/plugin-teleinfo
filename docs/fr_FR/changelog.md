@@ -12,7 +12,10 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
-## 4.7.3f (09-02-2022) => version bêta
+## 4.7.3g (14-03-2023) => stable
+- correction d'erreurs mineures
+
+## 4.7.3f (09-02-2022)
 - correction de la multiplication par 2 du coût en global pour les compteurs en mode historique avec un abonnement autre que BASE
 - modification du css du panel pour qu'il ne s'applique qu'au panel
 - correction d'un pb d'affichage des index du panel lorsque plusieurs compteurs avec des index différents
