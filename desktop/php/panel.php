@@ -59,8 +59,8 @@ $eqLogics = eqLogic::byType('teleinfo');
 						<th class="teleinfoth">Total</th>
 					</tr>
 					<tr class="teleinfotr" >
-						<th rowspan="14" style="vertical-align: middle" class="teleinfoth index">Conso</th>
-						<th class="teleinfoth TOTAL">Total</th>
+						<th rowspan="14" style="vertical-align: middle" class="teleinfoth conso">Conso</th>
+						<th class="TOTAL teleinfoth">Total</th>
 						<td class="teleinfotd TOTAL">
 							<span class="teleinfoAttr" data-l1key="conso" data-l2key="day" style="font-size: 1em;"></span>
 							{{ kWh}}
@@ -226,7 +226,7 @@ $eqLogics = eqLogic::byType('teleinfo');
 
 <!--- mise en forme du tableau des couts index --->
 					<tr class="teleinfotr" >
-					<th rowspan="12" style="vertical-align: middle" class="teleinfoth couts">Coûts</th>
+						<th rowspan="12" style="vertical-align: middle" class="teleinfoth couts">Coûts</th>
 						<?php
 							foreach($index as $numindex){
 								$tableau2.='<tr class="teleinfotr couts">';
@@ -242,8 +242,8 @@ $eqLogics = eqLogic::byType('teleinfo');
 								$tableau2.='</tr>';
 							}
 						?>
-					</tr>
 						<?php echo $tableau2 ?>
+					</tr>
 <!--- Elaboration du tableau PROD --->
 						<?php
 							$tableau3.='<tr class="PRODUCTION">';
@@ -302,45 +302,45 @@ $eqLogics = eqLogic::byType('teleinfo');
 			<div class="col-sm-12 col-sm-offset-0">
 				<form class="form-horizontal">
 					<fieldset style="border: 1px solid #e5e5e5; border-radius: 5px 5px 5px 5px">
-						<div class="index" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
+						<div class="indexgraph" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
 							<i style="font-size: initial;" class="fas fa-chart-line"></i> {{Puissance instantanée}}
 						</div>
-						<div class="index" id='div_graphGlobalPower'>
+						<div class="indexgraph" id='div_graphGlobalPower'>
 						</div>
-						<div class="couts" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
+						<div class="coutsgraph" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
 							<i style="font-size: initial;" class="fas fa-chart-line"></i> {{Coût instantané}}
 						</div>
-						<div class="couts" id='div_graphGlobalPowerCout'>
+						<div class="coutsgraph" id='div_graphGlobalPowerCout'>
 						</div>
-						<div class="index" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
+						<div class="indexgraph" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
 							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution consommation journalière}}
 						</div>
-						<div class="index" id='div_graphGlobalJournalier'>
+						<div class="indexgraph" id='div_graphGlobalJournalier'>
 						</div>
-						<div class="couts" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
+						<div class="coutsgraph" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
 							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution coûts journaliers}}
 						</div>
-						<div class="couts" id='div_graphGlobalJournalierCout'>
+						<div class="coutsgraph" id='div_graphGlobalJournalierCout'>
 						</div>
-						<div class="index" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
+						<div class="indexgraph" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
 							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution consommation mensuelle}}
 						</div>
-						<div class="index" id='div_graphGlobalIndex'>
+						<div class="indexgraph" id='div_graphGlobalIndex'>
 						</div>
-						<div class="couts" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
+						<div class="coutsgraph" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
 							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution coûts mensuels}}
 						</div>
-						<div class="couts" id='div_graphGlobalIndexCout'>
+						<div class="coutsgraph" id='div_graphGlobalIndexCout'>
 						</div>
-						<div class="index" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
+						<div class="indexgraph" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
 							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution consommation annuelle}}
 						</div>
-						<div class="index" id='div_graphGlobalAnnual'>
+						<div class="indexgraph" id='div_graphGlobalAnnual'>
 						</div>
-						<div class="couts" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
+						<div class="coutsgraph" style="padding-top:10px;padding-left:24px;padding-bottom:25px;font-size: 1.5em;">
 							<i style="font-size: initial;" class="fas fa-chart-bar"></i> {{Evolution coûts annuels}}
 						</div>
-						<div class="couts" id='div_graphGlobalAnnualCout'>
+						<div class="coutsgraph" id='div_graphGlobalAnnualCout'>
 						</div>
 						</br>
 					</fieldset>

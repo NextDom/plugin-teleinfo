@@ -12,41 +12,51 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
-## 4.7.3f (09-02-2022) => version bêta
+## 4.8.0a (xx-03-2023) => version bêta
+- apparition de la possibilité d'utiliser le MQTT pour rapatrier des données de téléinfo déportées => ATTENTION: après l'installation de cette version il est fortement conseillé d'aller dans la page configuration et vérifier que tout est bien configuré
+- personalisation possible des couleurs des courbes affichées dans le panel
+- disparition du mode "débug forcé temporaire", la modification du mode de log dans la configuration du plugin s'applique maintenant à tous les fichiers de log
+- correction qq pb mineurs: [celui-ci](https://community.jeedom.com/t/plugin-teleinfo-actualites/100688/9?u=noyax37) et [celui-là aussi](https://community.jeedom.com/t/plugin-teleinfo-actualites/100688/10?u=noyax37)
+
+
+## 4.7.3g (14-03-2023) => stable
+- correction d'erreurs mineures
+
+## 4.7.3f (09-02-2023)
 - correction de la multiplication par 2 du coût en global pour les compteurs en mode historique avec un abonnement autre que BASE
 - modification du css du panel pour qu'il ne s'applique qu'au panel
 - correction d'un pb d'affichage des index du panel lorsque plusieurs compteurs avec des index différents
 
-## 4.7.3e (08-02-2022)
+## 4.7.3e (08-02-2023)
 - affichage de 2 fois le coût en global sur J-1
 - n'affiche les valeurs = 0 dans les graphiques du panel => necessite une copie des index
 - préparation pour MQTT (téléchargement du module paho-mqtt)
 - correction sur graphique des puissances instantanées qui apparaissaient en kWh au lieu de VA
 - les coûts de l'affichage classique n'étaient pas affichés pour les HP et HC
 
-## 4.7.3d (31-01-2022)
+## 4.7.3d (31-01-2023)
 - modif pour tenir compte des index à 0 sur la journée pour les abonnements autres que BASE
 - modif pour générer les stats globales (somme des index) pour les compteur dont la TIC fonctionne en mode historique.
 - correction d'une erreur d'affichage concernant la partie PROD du tableau du panel quand elle ne doit pas être affichée
 Vous serez sans doute obligé de relancer une copie des index
 
-## 4.7.3c (29-01-2022)
+## 4.7.3c (29-01-2023)
 - correction suite à une erreur de saisie qui faisait planter le plugin.
 
-## 4.7.3b (28-01-2022)
+## 4.7.3b (28-01-2023)
 - correction sur la fonction qui calcule le coût de la journée qui comptait en double uniquement pour un abonnement de base.
 
-## 4.7.3a (27-01-2022)
+## 4.7.3a (27-01-2023)
 - correction sur la fonction "optimize" pour ne pas enregistrer la valeur max du jour actuel à 23h59mn59s alors que la journée n'est pas terminée
 
-## 4.7.3 (26-01-2022)
+## 4.7.3 (26-01-2023)
 - création d'index de 00 à 10 pour suivre tous les tarifs possibles en fonction de vos abonnements. Voir la doc https://noyax.github.io/plugin-teleinfo/fr_FR/index/
 - mise à jour de l'optimisation des données. Maintenant cette fonctionnalité conserve le mini par heure et le maxi de la dernière heure de la journée lorsque le mode d elissage est sur "aucun", la moyenne par heure lorsque le lissage est sur "moyenne" et le max de la journée pour les "STAT_YESTERDAY_***"
 
-## 4.7.2b (24-01-2022) => version stable
+## 4.7.2b (24-01-2023) => version stable
 - pas de nouveauté, juste pour dire que le v 4.7.3 est parue en version béta
 
-## 4.7.2a (14-01-2022)
+## 4.7.2a (14-01-2023)
 - correction manque courbe HC sur graph annuel
 - mise à jour de la documentation
 
