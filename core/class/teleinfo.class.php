@@ -781,7 +781,6 @@ class teleinfo extends eqLogic
     }
 
 
-
     public static function calculateTodayStats()
     {
         $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
@@ -1493,10 +1492,10 @@ class teleinfo extends eqLogic
                     $cmd = cmd::byId(${$d});
                     $$e = floatval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
 					if ($i==0){ 
-                        $statYesterdayTotalIndex00Init = $statYesterdayCoutTotalIndex00;
+                        $statYesterdayTotalIndex00Init = $statYesterdayTotalIndex00;
                         $statYesterdayCoutTotalIndex00Init = $statYesterdayCoutTotalIndex00;
+                        $statYesterdayTotalIndex00 = 0;
                         $statYesterdayCoutTotalIndex00 = 0;
-                        $statYesterdayCoutTotalIndex00Init = 0;
                     }else{
                         $statYesterdayTotalIndex00 += ${$c};
                         $statYesterdayCoutTotalIndex00 += ${$e};
