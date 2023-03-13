@@ -498,10 +498,10 @@ class teleinfo extends eqLogic
 
     public static function calculateTodayStats()
     {
-        $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
-        $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+        $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'EASF01,EASF03,EASF05,HCHC,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
         $indexProduction   = config::byKey('indexProduction', 'teleinfo', 'EAIT');
-        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
+        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
 
 
         log::add('teleinfo', 'info', '----- Calcul des statistiques temps réel -----');
@@ -947,10 +947,10 @@ class teleinfo extends eqLogic
 
     public static function calculateOtherStats()
     {
-        $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
-        $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
-        $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
-        $indexConsoTotales      = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
+        $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'EASF01,EASF03,EASF05,HCHC,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+        $indexProduction   = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
         log::add('teleinfo', 'info', '----- Calcul des statistiques de la journée -----');
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             $startDay            = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
@@ -1133,13 +1133,23 @@ class teleinfo extends eqLogic
 					log::add('teleinfo', 'debug', 'Total Index ' . $i . ' hier --> ' . ${$c});
                     $cmd = cmd::byId(${$d});
                     $$e = floatval($cmd->getStatistique($startDay->format('Y-m-d 00:00:00'), $endDay->format('Y-m-d 23:59:59'))['max']);
-					if ($linky==0 && $i!=0){ 
-                        $statYesterdayTotalIndex00 += ${$c}; 
-                        //$statYesterdayCoutTotalIndex00 += ${$e}; 
+					if ($i==0){ 
+                        $statYesterdayTotalIndex00Init = $statYesterdayTotalIndex00;
+                        $statYesterdayCoutTotalIndex00Init = $statYesterdayCoutTotalIndex00;
+                        $statYesterdayTotalIndex00 = 0;
+                        $statYesterdayCoutTotalIndex00 = 0;
+                    }else{
+                        $statYesterdayTotalIndex00 += ${$c};
+                        $statYesterdayCoutTotalIndex00 += ${$e};
+                        $statYesterdayTotalIndex00Init = 0;
+                        $statYesterdayCoutTotalIndex00Init = 0;
                     }
+
                     log::add('teleinfo', 'debug', 'Total Cout Index ' . $i . ' hier --> ' . ${$e} . ' id numéro: ' . ${$d} . ' Index 00 ' . $statYesterdayTotalIndex00 . ' Coût Index 00 ' . $statYesterdayCoutTotalIndex00);
                 }
 			}
+            $statYesterdayTotalIndex00 += $statYesterdayTotalIndex00Init;
+            $statYesterdayCoutTotalIndex00 += $statYesterdayCoutTotalIndex00Init;
 
             foreach ($statTotalToCumul as $key => $value) {
                 log::add('teleinfo', 'debug', 'Commande Totale N°' . $value);
@@ -1645,10 +1655,10 @@ class teleinfo extends eqLogic
 
     public static function regenerateMonthlyStat(){
         cache::set('teleinfo::regenerateMonthlyStat', '1', 86400);
-        $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
-        $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
-        $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
-        $indexConsoTotales           = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
+        $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'EASF01,EASF03,EASF05,HCHC,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+        $indexProduction   = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
         event::add('jeedom::alert', array(
 				'level' => 'warning',
 				'page' => 'teleinfo',
