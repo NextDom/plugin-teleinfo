@@ -89,7 +89,7 @@ function teleinfo_update() {
     log::add('teleinfo','info','*****************************************************');
     log::add('teleinfo','info','*********** Mise à jour du plugin teleinfo **********');
     log::add('teleinfo','info','*****************************************************');
-    log::add('teleinfo','info','**        Core version    : '. $core_version. '                  **');
+    log::add('teleinfo','info','**        Core version    : '. $core_version. '                **');
     log::add('teleinfo','info','*****************************************************');
 
     $cron = cron::byClassAndFunction('teleinfo', 'CalculateOtherStats');
@@ -100,6 +100,61 @@ function teleinfo_update() {
     if (is_object($crontoday)) {
         $crontoday->remove();
     }
+
+
+// mise à jour stat si elles n'existent pas
+    log::add('teleinfo', 'info', "-------- Commandes des stats si elles n'existent pas ---------");
+
+    $array = array("STAT_TODAY_INDEX00","STAT_TODAY_INDEX00_COUT","STAT_YESTERDAY_INDEX00","STAT_YESTERDAY_INDEX00_COUT",
+                    "STAT_TODAY_INDEX01","STAT_TODAY_INDEX01_COUT","STAT_YESTERDAY_INDEX01","STAT_YESTERDAY_INDEX01_COUT",
+                    "STAT_TODAY_INDEX02","STAT_TODAY_INDEX02_COUT","STAT_YESTERDAY_INDEX02","STAT_YESTERDAY_INDEX02_COUT",
+                    "STAT_TODAY_INDEX03","STAT_TODAY_INDEX03_COUT","STAT_YESTERDAY_INDEX03","STAT_YESTERDAY_INDEX03_COUT",
+                    "STAT_TODAY_INDEX04","STAT_TODAY_INDEX04_COUT","STAT_YESTERDAY_INDEX04","STAT_YESTERDAY_INDEX04_COUT",
+                    "STAT_TODAY_INDEX05","STAT_TODAY_INDEX05_COUT","STAT_YESTERDAY_INDEX05","STAT_YESTERDAY_INDEX05_COUT",
+                    "STAT_TODAY_INDEX06","STAT_TODAY_INDEX06_COUT","STAT_YESTERDAY_INDEX06","STAT_YESTERDAY_INDEX06_COUT",
+                    "STAT_TODAY_INDEX07","STAT_TODAY_INDEX07_COUT","STAT_YESTERDAY_INDEX07","STAT_YESTERDAY_INDEX07_COUT",
+                    "STAT_TODAY_INDEX08","STAT_TODAY_INDEX08_COUT","STAT_YESTERDAY_INDEX08","STAT_YESTERDAY_INDEX08_COUT",
+                    "STAT_TODAY_INDEX09","STAT_TODAY_INDEX09_COUT","STAT_YESTERDAY_INDEX09","STAT_YESTERDAY_INDEX09_COUT",
+                    "STAT_TODAY_INDEX10","STAT_TODAY_INDEX10_COUT","STAT_YESTERDAY_INDEX10","STAT_YESTERDAY_INDEX10_COUT");
+    
+    foreach (eqLogic::byType('teleinfo') as $eqLogic) {
+        foreach ($array as $value){
+            $cmd = $eqLogic->getCmd('info', $value);
+            if (!is_object($cmd)) {
+                log::add('teleinfo', 'info', "Nouvelle STAT => compteur '". $eqLogic->getName() . "' " . $value);
+                if (strpos($value,'COUT')<>0) {
+                    $unite = ('€');
+                }else{
+                    $unite = ('Wh');
+                }
+                $cmd = new teleinfoCmd();
+                $cmd->setName($value);
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId($value);
+                $cmd->setType('info');
+                $cmd->setUnite($unite);
+                $cmd->setConfiguration('info_conso', $value);
+                $cmd->setConfiguration('type', 'stat');
+                $cmd->setConfiguration('historizeMode', 'none');
+                $cmd->setDisplay('generic_type', 'DONT');
+                $cmd->setSubType('numeric');
+                $cmd->setIsHistorized(1);
+                //$cmd->setEventOnly(1);
+                $cmd->setIsVisible(0);
+                $cmd->save();
+                $cmd->refresh();
+            }
+
+        }
+    }
+
+
+    //fin mise à jour stat
+
+
+
+
+
 
     $cron = cron::byClassAndFunction('teleinfo', 'calculateOtherStats');
     if (!is_object($cron)) {

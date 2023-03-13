@@ -60,11 +60,11 @@ class jeedom_com():
 					r = requests.post(self.url + '?apikey=' + self.apikey, json=changes, timeout=(0.5, 120), verify=False)
 					if r.status_code == requests.codes.ok:
 						break
+					else:
+						logging.error('Error on send request to jeedom, return code %s' % (str(r.status_code),))
 				except Exception as error:
 					logging.error('Error on send request to jeedom ' + str(error)+' retry : '+str(i)+'/'+str(self.retry))
 				i = i + 1
-			if r.status_code != requests.codes.ok:
-				logging.error('Error on send request to jeedom, return code %s' % (str(r.status_code),))
 			dt = datetime.datetime.now() - start_time
 			ms = (dt.days * 24 * 60 * 60 + dt.seconds) * 1000 + dt.microseconds / 1000.0
 			timer_duration = self.cycle - ms
