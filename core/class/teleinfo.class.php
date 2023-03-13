@@ -781,6 +781,7 @@ class teleinfo extends eqLogic
     }
 
 
+
     public static function calculateTodayStats()
     {
         $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
@@ -1263,10 +1264,10 @@ class teleinfo extends eqLogic
 
     public static function calculateOtherStats()
     {
-        $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
-        $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
-        $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
-        $indexConsoTotales      = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
+        $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'EASF01,EASF03,EASF05,HCHC,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+        $indexProduction   = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
         log::add('teleinfo', 'info', '----- Calcul des statistiques de la journée -----');
         foreach (eqLogic::byType('teleinfo') as $eqLogic) {
             $startDay            = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
@@ -2014,10 +2015,10 @@ class teleinfo extends eqLogic
 
     public static function regenerateMonthlyStat(){
         cache::set('teleinfo::regenerateMonthlyStat', '1', 86400);
-        $indexConsoHP           = config::byKey('indexConsoHP', 'teleinfo', 'BASE,HCHP,EASF02,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
-        $indexConsoHC           = config::byKey('indexConsoHC', 'teleinfo', 'HCHC,EASF01,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
-        $indexProduction        = config::byKey('indexProduction', 'teleinfo', 'EAIT');
-        $indexConsoTotales           = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST');
+        $indexConsoHP      = config::byKey('indexConsoHP', 'teleinfo', 'EASF02,EASF04,EASF06,HCHP,BBRHPJB,BBRHPJW,BBRHPJR,EJPHPM');
+        $indexConsoHC      = config::byKey('indexConsoHC', 'teleinfo', 'EASF01,EASF03,EASF05,HCHC,BBRHCJB,BBRHCJW,BBRHCJR,EJPHN');
+        $indexProduction   = config::byKey('indexProduction', 'teleinfo', 'EAIT');
+        $indexConsoTotales   = config::byKey('indexConsoTotales', 'teleinfo', 'BASE,EAST,HCHP,HCHC,BBRHPJB,BBRHPJW,BBRHPJR,BBRHCJB,BBRHCJW,BBRHCJR,EJPHPM,EJPHN');
         event::add('jeedom::alert', array(
 				'level' => 'warning',
 				'page' => 'teleinfo',
@@ -2204,7 +2205,7 @@ class teleinfo extends eqLogic
             foreach ($eqLogic->getCmd('info') as $cmd) {
                 if ($cmd->getConfiguration('type') == 'stat') {
                     if ($cmd->getConfiguration('info_conso') == 'PPAP_MANUELLE') {
-                        log::add('teleinfo', 'debug', '----- Calcul de la puissance apparante moyenne -----');
+                        log::add('teleinfo', 'debug', '----- Calcul de la puissance apparente moyenne -----');
                         $cmdPpap = $cmd;
                     }
                 }
