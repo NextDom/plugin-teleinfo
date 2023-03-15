@@ -12,7 +12,11 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
-## 4.8.0a (xx-03-2023) => version bêta
+## 4.8.0b (16-03-2023) => version bêta
+- correction de problèmes user / mot de passe
+- ajout de la compatibilité avec [teleinfo2mqtt](https://fmartinou.github.io/teleinfo2mqtt/#/introduction/)
+
+## 4.8.0a (14-03-2023)
 - apparition de la possibilité d'utiliser le MQTT pour rapatrier des données de téléinfo déportées => ATTENTION: après l'installation de cette version il est fortement conseillé d'aller dans la page configuration et vérifier que tout est bien configuré
 - personalisation possible des couleurs des courbes affichées dans le panel
 - disparition du mode "débug forcé temporaire", la modification du mode de log dans la configuration du plugin s'applique maintenant à tous les fichiers de log

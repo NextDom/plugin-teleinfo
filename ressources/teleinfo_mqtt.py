@@ -59,25 +59,47 @@ def mqtt_on_message(client, userdata, message):
     try:
         x = json.loads(str(y))
         for key in x:
-                for keys in x[key]:
-                    if keys == "ADCO" or keys == "ADSC" or trouveTIC:
-                        if trouveTIC == False:
-                            logging.debug( "------------------------------------") 
-                            device = keys
-                        trouveTIC = True
-                        valeur = str(x[key][keys])
-                        if keys == 'PTEC':
-                            valeur = valeur.replace(".", "")
-                            valeur = valeur.replace(")", "")
-                            data[keys] = valeur
-                        elif keys == 'OPTARIF':
-                            valeur = valeur.replace(".", "")
-                            valeur = valeur.replace(")", "")
-                            data[keys] = valeur
-                        else:
-                            # valeur = valeur.replace(" ", "%20")
-                            data[keys] = valeur
-                        logging.debug( "MQTT------ " + str(keys) + " : " +  valeur)
+                # premier test pour etre compatible avec teleinfo2mqtt
+                if key == "ADCO" or key == "ADSC" or trouveTIC:
+                    if trouveTIC == False:
+                        device = key
+                    trouveTIC = True
+                    for keys in x[key]:
+                        if keys == "raw":
+                            valeur = str(x[key]['raw'])
+                            if key == 'PTEC':
+                                valeur = valeur.replace(".", "")
+                                valeur = valeur.replace(")", "")
+                                data[key] = valeur
+                            elif key == 'OPTARIF':
+                                valeur = valeur.replace(".", "")
+                                valeur = valeur.replace(")", "")
+                                data[key] = valeur
+                            else:
+                                # valeur = valeur.replace(" ", "%20")
+                                data[key] = valeur
+                            logging.debug( "MQTT------ " + str(key) + " : " +  valeur)
+                else:
+                    for keys in x[key]:
+                        # tic teleinfo commune
+                        if keys == "ADCO" or keys == "ADSC" or trouveTIC:
+                            if trouveTIC == False:
+                                logging.debug( "------------------------------------") 
+                                device = keys
+                            trouveTIC = True
+                            valeur = str(x[key][keys])
+                            if keys == 'PTEC':
+                                valeur = valeur.replace(".", "")
+                                valeur = valeur.replace(")", "")
+                                data[keys] = valeur
+                            elif keys == 'OPTARIF':
+                                valeur = valeur.replace(".", "")
+                                valeur = valeur.replace(")", "")
+                                data[keys] = valeur
+                            else:
+                                # valeur = valeur.replace(" ", "%20")
+                                data[keys] = valeur
+                            logging.debug( "MQTT------ " + str(keys) + " : " +  valeur)
     except:
         logging.debug("MQTT------message autre")
     if trouveTIC:
@@ -145,7 +167,8 @@ def listen_mqtt():
     client.on_disconnect = mqtt_on_disconnect
 
     # Connexion broker
-    client.username_pw_set( username=globals.mqtt_username, password=globals.mqtt_username )
+    if globals.mqtt_username != 'aucun_pour_etre_certain':
+        client.username_pw_set( username=globals.mqtt_username , password=globals.mqtt_password )
     client.connect( host=globals.mqtt_broker, port=int(globals.mqtt_port), keepalive=int(globals.mqtt_keepalive))
     client.subscribe(globals.mqtt_topic)
     #client.subscribe("tasmota/teleinfo_full_linky/SENSOR")
