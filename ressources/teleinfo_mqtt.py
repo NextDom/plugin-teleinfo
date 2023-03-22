@@ -42,14 +42,16 @@ def mqtt_on_log( client, userdata, level, buf ):
 def mqtt_on_connect( client, userdata, flags, rc ):
     logging.info( "MQTT------Connexion: code retour = %d" % rc )
     logging.info( "MQTT------Connexion: Statut = %s" % ("OK" if rc==0 else "échec") )
+    client.subscribe(globals.mqtt_topic)
+
 
 def mqtt_on_disconnect(client, userdata, rc):
     logging.info("MQTT------disconnecting reason  "  +str(rc))
     shutdown()
 
 def mqtt_on_message(client, userdata, message):
-    """lecture des trames MQTT"""
-    #logging.info("GLOBAL------Debut reception MQTT...")
+    # lecture des trames MQTT
+    # logging.info("GLOBAL------Debut reception MQTT...")
     data = {}
     _SendData = {}
     y = str(message.payload.decode("utf-8"))
@@ -170,7 +172,6 @@ def listen_mqtt():
     if globals.mqtt_username != 'aucun_pour_etre_certain':
         client.username_pw_set( username=globals.mqtt_username , password=globals.mqtt_password )
     client.connect( host=globals.mqtt_broker, port=int(globals.mqtt_port), keepalive=int(globals.mqtt_keepalive))
-    client.subscribe(globals.mqtt_topic)
     #client.subscribe("tasmota/teleinfo_full_linky/SENSOR")
     #client.subscribe("tasmota/teleinfo_full/SENSOR")
     # Envoi des messages
@@ -256,7 +257,7 @@ logging.info('MQTT------Socket port : ' + str(globals.socketport))
 logging.info('MQTT------Broker : ' + str(globals.mqtt_broker))
 logging.info('MQTT------Broker port : ' + str(globals.mqtt_port))
 logging.info('MQTT------User : ' + str(globals.mqtt_username))
-logging.info('MQTT------pass : ' + '*******')
+logging.info('MQTT------pass : ' + str(globals.mqtt_password))
 logging.info('MQTT------Topic : ' + str(globals.mqtt_topic))
 logging.info('MQTT------Log level : ' + str(globals.log_level))
 
