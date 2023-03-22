@@ -13,8 +13,9 @@ Pour toutes demandes :
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
 ## 4.8.0c (23-03-2023) => version bêta
-- correction de problèmes sur inscription à un topic
-- ajout de la possibilité de faire des pauses dans l'interrogation du serveur ce qui permet d'éviter les erreurs "Too many requests" sur certaines configuration (pour l'instant la pause se paramètre "en dur" dans un des fichiers mais sera implémentée prochainement dans les paramètres du plugin) => si vous avez cette erreur => me demander la procédure
+- MQTT: correction de problèmes sur inscription à un topic
+- Panel: ajout de la possibilité de faire des pauses dans l'interrogation du serveur ce qui permet d'éviter les erreurs "Too many requests" sur certaines configuration (pour l'instant la pause se paramètre "en dur" dans un des fichiers mais sera implémentée prochainement dans les paramètres du plugin) => si vous avez cette erreur => me demander la procédure
+- Equipement: ajout de l'affichage de la valeur des commandes
 
 ## 4.8.0b (16-03-2023) => version bêta
 - correction de problèmes user / mot de passe

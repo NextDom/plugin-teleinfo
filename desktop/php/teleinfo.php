@@ -367,12 +367,13 @@ switch ($controlerState) {
   <table id="table_cmd" class="table table-bordered table-condensed">
       <thead>
           <tr>
-              <th>#</th>
+              <th style="width: 3%">#</th>
               <th style="width: 15%">{{Nom}}</th>
-              <th style="width: 15%;">{{Sous-Type}}</th>
-              <th style="width: 30%;">{{Donnée}}</th>
-              <th style="width: 30%;">{{Paramètres}}</th>
-              <th></th>
+              <th style="width: 5%;">{{Sous-Type}}</th>
+              <th style="width: 25%;">{{Donnée}}</th>
+              <th style="width: 25%;">{{Paramètres}}</th>
+              <th style="width: 5%;">{{Valeur}}</th>
+              <th style="width: 4%"></th>
           </tr>
       </thead>
       <tbody>
