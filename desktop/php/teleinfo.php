@@ -238,6 +238,7 @@ switch ($controlerState) {
                             $indexId=array("EASF01","EASF02","EASF03","EASF04","EASF05","EASF06","EASF07","EASF08","EASF09","EASF10",
                                             "HCHC", "HCHP", "EJPHN", "EJPHPM", "BBRHCJB", "BBRHPJB", "BBRHCJW", "BBRHPJW", "BBRHCJR","BBRHPJR");
                             $color = 0;
+                            $tableau = '';
 							foreach($index as $numindex){
                                 $color += 1;
 								$tableau.='<div class="form-group">';
