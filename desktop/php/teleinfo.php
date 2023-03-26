@@ -371,7 +371,7 @@ switch ($controlerState) {
               <th style="width: 15%">{{Nom}}</th>
               <th style="width: 5%;">{{Sous-Type}}</th>
               <th style="width: 25%;">{{Donnée}}</th>
-              <th style="width: 25%;">{{Paramètres}}</th>
+              <th style="width: 15%;">{{Paramètres}}</th>
               <th style="width: 5%;">{{Valeur}}</th>
               <th style="width: 4%"></th>
           </tr>
