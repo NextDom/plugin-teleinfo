@@ -47,6 +47,9 @@ if (!isConnect('admin')) {
             			<span class="input-group-btn">
             				<a class="btn btn-default btn-sm cursor" id="bt_selectoutsideTemp" title="{{Choisir une commande}}"><i class="fas fa-list-alt"></i></a>
             			</span>
+            			<span class="input-group-btn">
+            				<a class="btn btn-default btn-sm cursor" id="bt_supprTemp" title="{{supprimer}}">suppr</a>
+            			</span>
             		</div>
                 </div>
 
@@ -147,7 +150,7 @@ if (!isConnect('admin')) {
                 <label class="col-lg-2 control-label">{{Prix kWh HP}} :</label>
                 <div class="col-lg-5">
                     <div class="input-group">
-                        <span class="input-group-addon">$</span>
+                        <span class="input-group-addon">€</span>
                         <?php
             			$coutHP = config::byKey('coutHP', 'teleinfo', '0');
                         echo '<input class="form-control" type="number" step="0.001" id="coutHP" type="text" value="'.$coutHP.'" />';
@@ -165,7 +168,7 @@ if (!isConnect('admin')) {
                 <label class="col-lg-2 control-label">{{Prix kWh HC}} :</label>
                 <div class="col-lg-5">
                     <div class="input-group">
-                        <span class="input-group-addon">$</span>
+                        <span class="input-group-addon">€</span>
                         <?php
             			$coutHC = config::byKey('coutHC', 'teleinfo', '0');
                         echo '<input class="form-control" type="number" step="0.001" id="coutHC" type="text" value="'.$coutHC.'" />';
@@ -183,7 +186,7 @@ if (!isConnect('admin')) {
                 <label class="col-lg-2 control-label">{{Prix kWh Prod}} :</label>
                 <div class="col-lg-5">
                     <div class="input-group">
-                        <span class="input-group-addon">$</span>
+                        <span class="input-group-addon">€</span>
                         <?php
             			$coutProd = config::byKey('coutProd', 'teleinfo', '0');
                         echo '<input class="form-control" type="number" step="0.001" id="coutProd" type="text" value="'.$coutProd.'" />';

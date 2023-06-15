@@ -1,7 +1,16 @@
 *.ini
 *.zip
 *.old
+*.pyc
 
 core/class/teleinfo.class - copie.php
 
 ressources/teleinfo - Copie.py
+
+.coveralls.yml
+
+.editorconfig
+
+.project
+
+.travis.yml

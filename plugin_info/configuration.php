@@ -145,7 +145,7 @@ try {
                 <legend><i class="icon fas fa-cog"></i> {{Modem : configuration avancée}} <i class="fas fa-plus-circle" data-toggle="collapse" href="#OptionsCollapse" role="button" aria-expanded="false" aria-controls="OptionsCollapse"></i></legend>
                 <div class="collapse" id="OptionsCollapse">
                     <div class="form-group">
-                        <label class="col-lg-4 control-label">{{Compteur 1 Type Linky}}<sup><i class="fas fa-question-circle tooltips" title="{{Veuillez regarder la documentation pour identifier votre compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                        <label class="col-lg-4 control-label">{{Compteur 1 communiquant en mode STANDARD}}<sup><i class="fas fa-question-circle tooltips" title="{{Veuillez regarder la documentation pour identifier votre compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
                         <div id="div_linky" class="col-lg-4 tooltips" title="{{ Veuillez regarder la documentation pour identifier votre compteur }}">
                             <input type="checkbox" id="linky" class="configKey" data-l1key="linky" placeholder="{{}}"/>
                             <label for="linky">  </label>
@@ -181,7 +181,7 @@ try {
 
 
                     <div class="form-group">
-                        <label class="col-lg-4 control-label">{{Compteur 2 Type Linky}}<sup><i class="fas fa-question-circle tooltips" title="{{Veuillez regarder la documentation pour identifier votre compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                        <label class="col-lg-4 control-label">{{Compteur 2 communiquant en mode STANDARD}}<sup><i class="fas fa-question-circle tooltips" title="{{Veuillez regarder la documentation pour identifier votre compteur}}" style="font-size : 1em;color:grey;"></i></sup></label>
                         <div id="div_linky_prod" class="col-lg-4 tooltips" title="{{ Veuillez regarder la documentation pour identifier votre compteur }}">
                             <input type="checkbox" id="linky_prod" class="configKey" data-l1key="linky_prod" placeholder="{{}}"/>
                             <label for="linky_prod">  </label>
