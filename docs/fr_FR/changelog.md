@@ -12,11 +12,12 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
-## 4.8.1 (..-2023) => version bêta
+## 4.8.1a (16-06-2023) => version bêta
 - Affichage du signe € à la place de $ dans les options du plugin
 - Ajout d'un bouton pour supprimer la température extérieure dans les options du plugin
-- 
-
+- Correction d'une erreur dans la recopie des index lorsque la productions sur une journée = 0 (merci @Bison)
+- correction lorsque la valeur d'un index *HIER* était à 0 cette valeur n'était pas enregistrée et donc on continuait à voir la dernière valeur enregistrée différente de 0 (merci @stouph19)
+- modification du libellé "Compteur 1 Type Linky" qui prétait à confusion
 
 ## 4.8.0c (23-03-2023) => version bêta
 - MQTT: correction de problèmes sur inscription à un topic

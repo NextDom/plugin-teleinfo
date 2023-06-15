@@ -652,9 +652,11 @@ function loadData(){
                                     if (test.includes("COUT")){
                                         coutoui = true;
                                     }
+
                                     commande = datacmd;
                                     commande.name = nomIndex;
-                                    console.log("commande.name " + commande.unite + ' index en cours ' + indexEnCours + ' ' + index[indexEnCours])
+
+                                    console.log("commande.name " + commande.unite + ' index en cours ' + indexEnCours + ' ' + index[indexEnCours]);
                                     if (coutoui){
                                         getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=all]'), 'all' , datacmd, 1);
                                         getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + cout + '][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd, 1);
@@ -669,6 +671,7 @@ function loadData(){
                                         getAnnualHistory('div_graphGlobalAnnualCout',commande, color[indexEnCours], stackGraph, 1000, serie, 'cout');
                                         getMonthlyHistory('div_graphGlobalIndexCout',commande, color[indexEnCours], stackGraph, 1000, serie, 'cout');
                                     }else{
+                                        commande.unite = 'kWh';
                                         getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=all]'), 'all' , datacmd);
                                         getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=monthLastYear]'), 'monthLastYear' , datacmd);
                                         getCommandHistoryValue($('.teleinfoAttr[data-l1key=' + consommation + '][data-l2key=monthLastYearPartial]'), 'monthLastYearPartial' , datacmd);
@@ -1117,7 +1120,7 @@ function getMonthlyHistory(div,  object, color, stackGraph, diviseur, serie, typ
                                     charts: {
                                         plotBackgroundColor: plotBackgroundColor,
                                     },
-                                                option: {
+                                    option: {
                                         name : 'Température ext.',
                                         graphType : 'line',
                                         graphColor: '#87b125',
@@ -1228,7 +1231,7 @@ function getAnnualHistory(div,  object, color, stackGraph, diviseur, serie, type
                                     charts: {
                                         plotBackgroundColor: plotBackgroundColor,
                                     },
-                                                option: {
+                                    option: {
                                         name : 'Température ext.',
                                         graphType : 'line',
                                         graphColor: '#87b125',
@@ -1645,7 +1648,7 @@ function teleinfoDrawChart(_params) {
             type: _params.option.graphType,
             id: _params.cmd_id,
             cursor: 'pointer',
-            name: (isset(_params.option.name)) ? _params.option.name + ' '+ data.result.unite : data.result.history_name+ ' '+ data.result.unite,
+            name: (isset(_params.option.name)) ? _params.option.name + ' ' : data.result.history_name+ ' '+ _params.option.unite,
             data: data.result.data,
             color: _params.option.graphColor,
             stack: _params.option.graphStack,
