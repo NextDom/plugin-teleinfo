@@ -77,6 +77,7 @@ Vous serez sans doute obligé de relancer une copie des index
 - mise à jour de la documentation
 
 ## 4.7.2 (27-12-2022)
+
 Modification du pannel:
 - ajout de la courbe des températures dans tous les graphiques sauf jour courant
 - durée de la courbe des consommations instantanées sur l'intégralité de la période sélectionnée et non plus sur seulement le jour en cours
@@ -104,6 +105,7 @@ ajout du fichier packages.json pour profiter de l'évolution de la gestion des d
 je ne sais plus...
 
 ## 4.6.5b (provisoire 10-01-2023)
+
 Aucune modification apportée sauf la supression de "l'erreur 500". Il s'agit surtout d'un avis pour ceux qui sont encore avec ce plugin en version stable.
 
 La version 4.7.1 n'apporte aucun changement ni dans le traitement des données ni dans le traitement des statistiques juste dans leur affichage.
