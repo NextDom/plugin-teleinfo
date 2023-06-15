@@ -1208,122 +1208,122 @@ class teleinfo extends eqLogic
                             //$history->save();
                             break;
 						case ($test==="STAT_YESTERDAY_INDEX00"):
-                            if ($statYesterdayTotalIndex00 != 0) {
+                            //if ($statYesterdayTotalIndex00 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index00) ==> ' . intval($statYesterdayTotalIndex00));
 								$cmd->event((intval($statYesterdayTotalIndex00)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX01"):
-                            if ($statYesterdayTotalIndex01 != 0) {
+                            //if ($statYesterdayTotalIndex01 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index01) ==> ' . intval($statYesterdayTotalIndex01));
 								$cmd->event((intval($statYesterdayTotalIndex01)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX02"):
-                            if ($statYesterdayTotalIndex02 != 0) {
+                            //if ($statYesterdayTotalIndex02 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index02) ==> ' . intval($statYesterdayTotalIndex02));
 								$cmd->event((intval($statYesterdayTotalIndex02)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX03"):
-                            if ($statYesterdayTotalIndex03 != 0) {
+                            //if ($statYesterdayTotalIndex03 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index03) ==> ' . intval($statYesterdayTotalIndex03));
 								$cmd->event((intval($statYesterdayTotalIndex03)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX04"):
-                            if ($statYesterdayTotalIndex04 != 0) {
+                            //if ($statYesterdayTotalIndex04 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index04) ==> ' . intval($statYesterdayTotalIndex04));
 								$cmd->event((intval($statYesterdayTotalIndex04)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX05"):
-                            if ($statYesterdayTotalIndex05 != 0) {
+                            //if ($statYesterdayTotalIndex05 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index05) ==> ' . intval($statYesterdayTotalIndex05));
 								$cmd->event((intval($statYesterdayTotalIndex05)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX06"):
-                            if ($statYesterdayTotalIndex06 != 0) {
+                            //if ($statYesterdayTotalIndex06 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index06) ==> ' . intval($statYesterdayTotalIndex06));
 								$cmd->event((intval($statYesterdayTotalIndex06)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX07"):
-                            if ($statYesterdayTotalIndex07 != 0) {
+                            //if ($statYesterdayTotalIndex07 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index07) ==> ' . intval($statYesterdayTotalIndex07));
 								$cmd->event((intval($statYesterdayTotalIndex07)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX08"):
-                            if ($statYesterdayTotalIndex08 != 0) {
+                            //if ($statYesterdayTotalIndex08 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index08) ==> ' . intval($statYesterdayTotalIndex08));
 								$cmd->event((intval($statYesterdayTotalIndex08)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX09"):
-                            if ($statYesterdayTotalIndex09 != 0) {
+                            //if ($statYesterdayTotalIndex09 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index09) ==> ' . intval($statYesterdayTotalIndex09));
 								$cmd->event((intval($statYesterdayTotalIndex09)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
 						case ($test==="STAT_YESTERDAY_INDEX10"):
-                            if ($statYesterdayTotalIndex10 != 0) {
+                            //if ($statYesterdayTotalIndex10 != 0) {
 								log::add('teleinfo', 'debug', 'Mise à jour de la statistique hier (Index10) ==> ' . intval($statYesterdayTotalIndex10));
 								$cmd->event((intval($statYesterdayTotalIndex10)), $startDay->format('Y-m-d 00:00:00'));
-							}
+							//}
 							break;
                         
                         case ($test==="STAT_YESTERDAY_PROD_COUT"):
-                            if ($statYesterdayCoutProd != 0) {
+                            //if ($statYesterdayCoutProd != 0) {
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique cout hier (PROD) ==> ' . strval($statYesterdayCoutProd));
                                 $cmd->event((floatval($statYesterdayCoutProd)), $startDay->format('Y-m-d 00:00:00'));
-                            }
+                            //}
                             break;
                         
                         case (strpos($test,'YESTERDAY_INDEX')!=0 && strpos($test,'COUT')!=0):
                             $indexyy = (int)(substr($test,20,2));
-                            if($statYesterdayCoutTotalIndex00 != 0 && $indexyy == 0){
+                            if($indexyy == 0){
                                 $cmd->event((floatval($statYesterdayCoutTotalIndex00)), $startDay->format('Y-m-d 00:00:00'));
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index00) ==> ' . floatval($statYesterdayCoutTotalIndex00));
                             }
-                            if($statYesterdayCoutTotalIndex01 != 0 && $indexyy == 1){
+                            if($indexyy == 1){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index01) ==> ' . floatval($statYesterdayCoutTotalIndex01));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex01)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex02 != 0 && $indexyy == 2){
+                            if($indexyy == 2){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index02) ==> ' . floatval($statYesterdayCoutTotalIndex02));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex02)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex03 != 0 && $indexyy == 3){
+                            if($indexyy == 3){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index03) ==> ' . floatval($statYesterdayCoutTotalIndex03));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex03)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex04 != 0 && $indexyy == 4){
+                            if($indexyy == 4){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index04) ==> ' . floatval($statYesterdayCoutTotalIndex04));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex04)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex05 != 0 && $indexyy == 5){
+                            if($indexyy == 5){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index05) ==> ' . floatval($statYesterdayCoutTotalIndex05));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex05)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex06 != 0 && $indexyy == 6){
+                            if($indexyy == 6){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index06) ==> ' . floatval($statYesterdayCoutTotalIndex06));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex06)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex07 != 0 && $indexyy == 7){
+                            if($indexyy == 7){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index07) ==> ' . floatval($statYesterdayCoutTotalIndex07));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex07)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex08 != 0 && $indexyy == 8){
+                            if($indexyy == 8){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index08) ==> ' . floatval($statYesterdayCoutTotalIndex08));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex08)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex09 != 0 && $indexyy == 9){
+                            if($indexyy == 9){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index09) ==> ' . floatval($statYesterdayCoutTotalIndex09));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex09)), $startDay->format('Y-m-d 00:00:00'));
                             }
-                            if($statYesterdayCoutTotalIndex10 != 0 && $indexyy == 10){
+                            if($indexyy == 10){
                                 log::add('teleinfo', 'debug', 'Mise à jour de la statistique coût hier (Index10) ==> ' . floatval($statYesterdayCoutTotalIndex10));
 								$cmd->event((floatval($statYesterdayCoutTotalIndex10)), $startDay->format('Y-m-d 00:00:00'));
                             }
@@ -1334,7 +1334,6 @@ class teleinfo extends eqLogic
         }
     log::add('teleinfo', 'info', 'other stats -------------------------------------');
 }
-
     public static function copyVersIndex($compteur, $startDate, $endDate,
                                             $indexcopy01,$indexcopy02,$indexcopy03,$indexcopy04,$indexcopy05,$indexcopy06,$indexcopy07,$indexcopy08,$indexcopy09,$indexcopy10,
                                             $coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10,$coutcopyprod){

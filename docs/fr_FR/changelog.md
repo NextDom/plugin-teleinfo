@@ -12,6 +12,9 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
+## 4.7.3h (16-06-2023) => stable
+- correction lorsque la valeur d'un index *HIER* était à 0 cette valeur n'était pas enregistrée et donc on continuait à voir la dernière valeur enregistrée différente de 0 (merci @stouph19)
+
 ## 4.7.3g (14-03-2023) => stable
 - correction d'erreurs mineures
 
