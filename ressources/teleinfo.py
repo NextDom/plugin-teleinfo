@@ -20,7 +20,7 @@ except ImportError as ex:
     sys.exit(1)
 
 import serial
-from datetime import datetime
+from datetime import date, datetime
 
 class error(Exception):
     def __init__(self, value):
@@ -67,6 +67,8 @@ class Teleinfo:
             content = {}
             while not is_ok:
                 try:
+                    while 'VTIC' not in resp:
+                        resp = (globals.TELEINFO_SERIAL.readline().decode("UTF-8"))
                     while 'ADSC' not in resp:
                         if premtrame:
                             premtrame = False
@@ -79,7 +81,7 @@ class Teleinfo:
                             if self._is_valid(resp, checksum):
                                 content[name] = value
                             else:
-                                logging.error("MODEM------ ** DONNEES HS ! ** sur trame : " + resp)
+                                logging.debug("MODEM------ ** DONNEES HS ! ** sur trame : " + resp)
                             logging.debug('MODEM----name : ' + name + ' value : ' + value + ' Horodate : ' + horodate + ' checksum : ' + checksum)
                         else:
                             name, value, checksum = resp.replace('\r', '').replace('\n', '').split('\x09')
@@ -291,7 +293,7 @@ class Teleinfo:
                                     name = 'RELAIS'
                                     
                             else:
-                                logging.error('MODEM------ ** DONNEES HS ! ** sur trame : ' + resp + ' checksum : ' + checksum)
+                                logging.debug('MODEM------ ** DONNEES HS ! ** sur trame : ' + resp + ' checksum : ' + checksum)
                             
                             logging.debug('MODEM------ name : ' + name + ' value : ' + value + ' Horodate : ' + " " + ' checksum : ' + checksum)
                     logging.debug('MODEM------ Content : ' + str(content))
@@ -371,7 +373,7 @@ class Teleinfo:
                 my_sum = my_sum + ord(cks)
             computed_checksum = ((my_sum + 0x09) & int("111111", 2)) + 0x20
             if chr(computed_checksum) != checksum[0:1]:
-                logging.error('MODEM------ checksum non concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(
+                logging.debug('MODEM------ checksum non concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(
                     computed_checksum))
             else:
                 logging.debug('MODEM------ .......... checksum concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
@@ -391,21 +393,20 @@ class Teleinfo:
         """
         data = {}
         data_temp = {}
-        raz_calcul = 0
-        separateur = " "
-        send_data = ""
+        raz_day = 0
+        info_heure_calcul = 0
 
-        # Read a frame
-        raz_time = datetime.now()
+        # Read a frame + RAZ au changement de date
+        raz_day = date.today()
+        info_heure = datetime.now()
         while 1:
-            raz_calcul = datetime.now() - raz_time
-            if raz_calcul.seconds > 60:
-                logging.info("MODEM------ HEARTBEAT")
-                raz_time = datetime.now()
+            if raz_day != date.today():
+                raz_day = date.today()
+                time.sleep(10)
+                logging.info("MODEM------ HEARTBEAT raz le " + str(raz_day))
                 for cle, valeur in list(data.items()):
                     data.pop(cle)
                     data_temp.pop(cle)
-            send_data = ""
             frame_csv = self.read()
             for cle, valeur in frame_csv.items():
                 if cle == 'PTEC':
@@ -424,9 +425,18 @@ class Teleinfo:
             for cle, valeur in data.items():
                 if cle in data_temp:
                     if data[cle] != data_temp[cle]:
-                        _SendData[cle] = valeur
-                        data_temp[cle] = valeur
-                        pending_changes = True
+                        if cle[:3] == 'EAS' or cle[:3] == 'EAI':                     # test si on a affaire à un index commençant par EAI ou EAS (EAIT, EASF??, ...)
+                            if (int(data[cle]) > int(data_temp[cle])) and (int(data[cle]) < (int(data_temp[cle]) + 10000)):    #s i la valeur relevée est plus grande que celle en mémoire et qu'elle n'est pas 10 kwh au dessus c'est ok
+                                _SendData[cle] = valeur
+                                data_temp[cle] = valeur
+                                pending_changes = True
+                            else:                               # sinon on ne la prend pas en compte
+                                logging.error('Valeur incohérente pour l index ' + str(cle) + ' à ' + str(data[cle]))
+                                data_temp[cle] = valeur         # là c'est au cas où la valeur relevée était incohérente mais plus grande que celle en mémoire alors on ne prendrait plus jamais celle relevée
+                        else:
+                            _SendData[cle] = valeur
+                            data_temp[cle] = valeur
+                            pending_changes = True
                 else:
                     _SendData[cle] = valeur
                     data_temp[cle] = valeur
@@ -442,14 +452,19 @@ class Teleinfo:
             except Exception:
                 error_com = "Connection error"
                 logging.error(error_com)
+            info_heure_calcul = datetime.now() - info_heure
+            if info_heure_calcul.seconds > 1800:
+                logging.info('MODEM------ Dernières datas reçues de la TIC : ' + str(data))
+                logging.info('MODEM------ Dernières datas envoyées vers Jeedom : ' + str(_SendData))
+                info_heure = datetime.now()
             logging.debug("MODEM------ START SLEEPING " + str(globals.cycle_sommeil) + " seconds")
             time.sleep(globals.cycle_sommeil)
             logging.debug("MODEM------ WAITING : " + str(
                 globals.TELEINFO_SERIAL.inWaiting()) + " octets dans la file apres sleep ")
             if globals.TELEINFO_SERIAL.inWaiting() > 1500:
                 globals.TELEINFO_SERIAL.flushInput()
-                logging.info("MODEM------ BUFFER OVERFLOW => FLUSH")
-                logging.debug(str(globals.TELEINFO_SERIAL.inWaiting()) + "octets dans la file apres flush ")
+                logging.debug("MODEM------ BUFFER OVERFLOW => FLUSH")
+                logging.debug(str(globals.TELEINFO_SERIAL.inWaiting()) + " octets dans la file apres flush ")
         self.terminate()
 
     @staticmethod

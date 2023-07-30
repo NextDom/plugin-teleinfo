@@ -588,7 +588,7 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'debug', '[TELEINFO_deamon_modem] état : ' . $returnmodem);
         log::add('teleinfo', 'debug', '[TELEINFO_deamon_MQTT] état : ' . $returnmqtt);
         log::add('teleinfo', 'debug', '[TELEINFO_deamon_prod] état : '. $returnprod);
-        log::add('teleinfo', 'info', '[TELEINFO_deamon] état global => retour: ' . $return['state']);
+        log::add('teleinfo', 'debug', '[TELEINFO_deamon] état global => retour: ' . $return['state']);
         return $return;
     }
 
@@ -630,7 +630,7 @@ class teleinfo extends eqLogic
                 //}
                 //message::removeAll('teleinfo', 'noTeleinfoPort');
             } else {
-                log::add('teleinfo', 'info', 'Pas d\'informations sur le port2 USB (Modem série ?) ');
+                log::add('teleinfo', 'info', 'Port2 non configuré ');
             }
         }
         if ($activation_Mqtt == 1){
