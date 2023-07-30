@@ -12,6 +12,10 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
+## 4.8.2a (xx-xx-2023) => version bêta
+- correction afin de faire fonctionner 2 modems en même temps sur les ports 1 et 2 de teleinfo
+- amélioration de la gestion des démons
+
 ## 4.8.1a (16-06-2023) => version bêta
 - Affichage du signe € à la place de $ dans les options du plugin
 - Ajout d'un bouton pour supprimer la température extérieure dans les options du plugin
@@ -34,6 +38,9 @@ Pour toutes demandes :
 - disparition du mode "débug forcé temporaire", la modification du mode de log dans la configuration du plugin s'applique maintenant à tous les fichiers de log
 - correction qq pb mineurs: [celui-ci](https://community.jeedom.com/t/plugin-teleinfo-actualites/100688/9?u=noyax37) et [celui-là aussi](https://community.jeedom.com/t/plugin-teleinfo-actualites/100688/10?u=noyax37)
 
+
+## 4.7.3h (16-06-2023) => stable
+- correction lorsque la valeur d'un index *HIER* était à 0 cette valeur n'était pas enregistrée et donc on continuait à voir la dernière valeur enregistrée différente de 0 (merci @stouph19)
 
 ## 4.7.3g (14-03-2023) => stable
 - correction d'erreurs mineures

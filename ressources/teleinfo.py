@@ -798,6 +798,7 @@ logging.info('MODEM------ Cycle : ' + str(globals.cycle))
 logging.info('MODEM------ Port : ' + str(globals.port))
 logging.info('MODEM------ Type : ' + str(globals.type))
 logging.info('MODEM------ Mode : ' + str(globals.mode))
+logging.info('MODEM------ Pid File : ' + str(globals.pidfile))
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
 if not globals.JEEDOM_COM.test():
