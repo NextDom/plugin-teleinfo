@@ -289,7 +289,7 @@ class teleinfo extends eqLogic
             $activation_Modem = 1;
             log::add('teleinfo', 'info', '---------- Activation Modem 1---------');
         }
-        log::add('teleinfo', 'info', '---------- Activation Modem 2--------- ' . $activation_Modem);
+        log::add('teleinfo', 'info', '[' . $type . '] Démarrage daemon ');
 
         if ($type!='rien'){
             log::add('teleinfo', 'info', '[' . $type . '] Démarrage compteur ');
@@ -307,13 +307,13 @@ class teleinfo extends eqLogic
                         $port = '/dev/ttyUSB1';
                     } else {
                         if (!file_exists($port)) {
-                            log::add('teleinfo', 'error', '[TELEINFO]-----' . $type . '] Le port n\'existe pas');
+                            log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port1 '. $port . ' n\'existe pas');
                             return false;
                         }
                     }
                 }
             }
-            else{
+            if ($type == 'prod') {
                 $twoCptCartelectronic = config::byKey('2cpt_cartelectronic_production', 'teleinfo');
                 $linky                = config::byKey('linky_prod', 'teleinfo');
                 $modemVitesse         = config::byKey('modem_compteur2_vitesse', 'teleinfo');
@@ -326,7 +326,7 @@ class teleinfo extends eqLogic
                         $port = '/dev/ttyUSB1';
                     } else {
                         if (!file_exists($port)) {
-                            log::add('teleinfo', 'error', '[TELEINFO]-----' . $type . '] Le port n\'existe pas');
+                            log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port2 '. $port . ' n\'existe pas');
                             return false;
                         }
                     }
@@ -498,14 +498,25 @@ class teleinfo extends eqLogic
     {
         $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
         $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : config::byKey('activation_Mqtt', 'teleinfo');
-        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : config::byKey('port_modem2', 'teleinfo');
+        $consoPort = (config::byKey('port', 'teleinfo') == "") ? "" : config::byKey('port', 'teleinfo');
+        $productionPort = (config::byKey('port_modem2', 'teleinfo') == "") ? "" : config::byKey('port_modem2', 'teleinfo');
+        if ($productionPort != ""){
+            $productionActivated = 1;
+        } else {
+            $productionActivated = 0;
+        }
+        if ($consoPort != ""){
+            $consoActivated = 1;
+        } else {
+            $consoActivated = 0;
+        }
         $return               = array();
         $return['log']        = 'teleinfo';
         $return['state']      = 'nok';
         $returnmodem = 'sans';
         $returnmqtt = 'sans';
         $returnprod = 'sans';
-        if ($activation_Modem==1){
+        if ($consoActivated == 1 && $activation_Modem==1){
             log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoserial] test pid');
             $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
             if ($twoCptCartelectronic == 1) {
@@ -515,41 +526,42 @@ class teleinfo extends eqLogic
             }
             if (file_exists($pidFile)) {
                 if (posix_getsid(trim(file_get_contents($pidFile)))) {
-                    log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoserial] pidfile = conso ou 2cpt');
+                    log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoserial] démon port modem 1 ou 2cpt => ok');
                     $returnmodem = 'ok';
                 } else {
-                    log::add('teleinfo', 'error', "[TELEINFO_deamon_infoserial] le deamon serial s'est éteint");
+                    log::add('teleinfo', 'error', "[TELEINFO_deamon_infoserial] le deamon port modem 1 s'est éteint");
                     $returnmodem = 'nok';
                     shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
                 }
             }else{
-                log::add('teleinfo', 'error', "[TELEINFO_deamon_infoserial] le deamon serial n'est pas démarré ");
+                log::add('teleinfo', 'error', "[TELEINFO_deamon_infoserial] le deamon port modem 1 n'est pas démarré ");
                 $returnmodem = 'nok';
             }
-            if ($productionActivated == 1){
-                log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoprod] test pid');
-                $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
-                if (file_exists($pidFile)) {
-                    if (posix_getsid(trim(file_get_contents($pidFile)))) {
-                        log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoProd] pidfile = prod');
-                        $returnprod = 'ok';
-                    } else {
-                        log::add('teleinfo', 'error', "[TELEINFO_deamon_infoProd] le deamon prod s'est éteint");
-                        $returnprod = 'nok';
-                        shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
-                    }
-                }else{
-                    log::add('teleinfo', 'error', "[TELEINFO_deamon_infoprod] le deamon Prod n'est pas démarré");
-                    $returnprod = 'nok';
-                }
-                }
         }
+        if ($productionActivated == 1 && $activation_Modem==1){
+            log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoprod] test pid');
+            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
+            if (file_exists($pidFile)) {
+                if (posix_getsid(trim(file_get_contents($pidFile)))) {
+                    log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoserial] démon port modem 2 => ok');
+                    $returnprod = 'ok';
+                } else {
+                    log::add('teleinfo', 'error', "[TELEINFO_deamon_infoserial] le deamon port modem 2 s'est éteint");
+                    $returnprod = 'nok';
+                    shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
+                }
+            }else{
+                log::add('teleinfo', 'error', "[TELEINFO_deamon_infoserial] le deamon port modem 2 n'est pas démarré");
+                $returnprod = 'nok';
+            }
+            }
+
         if ($activation_Mqtt==1){
             $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_Mqtt.pid';
             log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoMqtt] test pid');
             if (file_exists($pidFile)) {
                 if (posix_getsid(trim(file_get_contents($pidFile)))) {
-                    log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoMqtt] pidfile = Mqtt');
+                    log::add('teleinfo', 'debug', '[TELEINFO_deamon_infoMqtt] démon Mqtt => ok');
                     $returnmqtt = 'ok';
                 } else {
                     $returnmqtt = 'nok';
@@ -564,71 +576,22 @@ class teleinfo extends eqLogic
         $return['launchable'] = 'ok';
         if (($returnmodem != 'nok' && $returnmqtt != 'nok' && $returnprod != 'nok')&&($returnmodem != 'sans' || $returnmqtt != 'sans' || $returnprod != 'sans')){
             $return['state'] = 'ok';
+            $return['deamon_modem'] = $returnmodem;
+            $return['deamon_MQTT'] = $returnmqtt;
+            $return['deamon_prod'] = $returnprod;
         }else{
             $return['state'] = 'nok';
+            $return['deamon_modem'] = $returnmodem;
+            $return['deamon_MQTT'] = $returnmqtt;
+            $return['deamon_prod'] = $returnprod;
         }
         log::add('teleinfo', 'debug', '[TELEINFO_deamon_modem] état : ' . $returnmodem);
         log::add('teleinfo', 'debug', '[TELEINFO_deamon_MQTT] état : ' . $returnmqtt);
         log::add('teleinfo', 'debug', '[TELEINFO_deamon_prod] état : '. $returnprod);
-        log::add('teleinfo', 'info', '[TELEINFO_deamon] état global => retour: ' . $return['state']);
+        log::add('teleinfo', 'debug', '[TELEINFO_deamon] état global => retour: ' . $return['state']);
         return $return;
     }
 
-    public static function deamon_infoSerial()
-    {
-        $return               = array();
-        $return['log']        = 'teleinfo';
-        $return['state']      = 'nok';
-        log::add('teleinfo', 'info', '[deamon_infoserial] test pid');
-        $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
-        if ($twoCptCartelectronic == 1) {
-            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo2cpt.pid';
-        } else {
-            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_conso.pid';
-        }
-        if (file_exists($pidFile)) {
-            if (posix_getsid(trim(file_get_contents($pidFile)))) {
-                log::add('teleinfo', 'info', '[deamon_infoserial] pidfile = conso ou 2cpt');
-                $return['state'] = 'ok';
-            } else {
-                shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
-            }
-        }
-        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : 1;
-        //$productionActivated = config::byKey('activation_production', 'teleinfo');
-        if ($productionActivated == 1) {
-            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
-            if (file_exists($pidFile)) {
-                if (posix_getsid(trim(file_get_contents($pidFile)))) {
-                    log::add('teleinfo', 'info', '[deamon_infoserial] pidfile = prod');
-                    $return['state'] = 'ok';
-                } else {
-                    shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
-                }
-            }
-        }
-        $return['launchable'] = 'ok';
-        return $return;
-    }
-
-    public static function deamon_infoMqtt()
-    {
-        $return               = array();
-        $return['log']        = 'teleinfo';
-        $return['state']      = 'nok';
-        $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_Mqtt.pid';
-        log::add('teleinfo', 'info', '[deamon_infoMqtt] test pid');
-        if (file_exists($pidFile)) {
-            if (posix_getsid(trim(file_get_contents($pidFile)))) {
-                log::add('teleinfo', 'info', '[deamon_infoMqtt] pidfile = Mqtt');
-                $return['state'] = 'ok';
-            } else {
-                shell_exec('sudo rm -rf ' . $pidFile . ' 2>&1 > /dev/null;rm -rf ' . $pidFile . ' 2>&1 > /dev/null;');
-            }
-        }
-        $return['launchable'] = 'ok';
-        return $return;
-    }
 
     /**
      * appelé par jeedom pour démarrer le deamon
@@ -637,19 +600,37 @@ class teleinfo extends eqLogic
     {
         $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
         $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : config::byKey('activation_Mqtt', 'teleinfo');
-        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : config::byKey('port_modem2', 'teleinfo');
+        $consoPort = (config::byKey('port', 'teleinfo') == "") ? "" : config::byKey('port', 'teleinfo');
+        $productionPort = (config::byKey('port_modem2', 'teleinfo') == "") ? "" : config::byKey('port_modem2', 'teleinfo');
+        if ($productionPort != ""){
+            $productionActivated = 1;
+        } else {
+            $productionActivated = 0;
+        }
+        if ($consoPort != ""){
+            $consoActivated = 1;
+        } else {
+            $consoActivated = 0;
+        }
         if ($activation_Modem == 1) {
             log::add('teleinfo', 'info', '[deamon_start_modem] Démarrage du service');
-            if (config::byKey('port', 'teleinfo') != "" || config::byKey('2cpt_cartelectronic', 'teleinfo')) {    // Si un port est sélectionné
+            if (config::byKey('port', 'teleinfo') != "" || config::byKey('2cpt_cartelectronic', 'teleinfo') != "") {    // Si un port est sélectionné
                 if (!self::deamonRunning()) {
+                    log::add('teleinfo', 'info', 'Lancement compteur 1');
                     self::runDeamon($debug, 'conso');
-                }
-                if ($productionActivated == 1) {
-                    self::runDeamon($debug, 'prod');
                 }
                 message::removeAll('teleinfo', 'noTeleinfoPort');
             } else {
-                log::add('teleinfo', 'info', 'Pas d\'informations sur le port USB (Modem série ?) ');
+                log::add('teleinfo', 'info', 'Pas d\'informations sur le port1 USB (Modem série ?) ');
+            }
+            if ($productionActivated == 1) {    // Si un port est sélectionné
+                //if (!self::deamonRunning()) {
+                    log::add('teleinfo', 'info', 'Lancement compteur 2');
+                    self::runDeamon($debug, 'prod');
+                //}
+                //message::removeAll('teleinfo', 'noTeleinfoPort');
+            } else {
+                log::add('teleinfo', 'info', 'Port2 non configuré ');
             }
         }
         if ($activation_Mqtt == 1){
@@ -679,44 +660,56 @@ class teleinfo extends eqLogic
     {
         $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
         $activation_Mqtt = (config::byKey('activation_Mqtt', 'teleinfo') == "") ? 0 : config::byKey('activation_Mqtt', 'teleinfo');
-        $productionActivated = (config::byKey('port_modem2', 'teleinfo') == "") ? 0 : config::byKey('port_modem2', 'teleinfo');
+        $consoPort = (config::byKey('port', 'teleinfo') == "") ? "" : config::byKey('port', 'teleinfo');
+        $productionPort = (config::byKey('port_modem2', 'teleinfo') == "") ? "" : config::byKey('port_modem2', 'teleinfo');
+        if ($productionPort != ""){
+            $productionActivated = 1;
+        } else {
+            $productionActivated = 0;
+        }
+        if ($consoPort != ""){
+            $consoActivated = 1;
+        } else {
+            $consoActivated = 0;
+        }
         $deamonKill= false;
-        if ($activation_Modem==1){
-            $deamonInfo = self::deamon_infoSerial();
-            if ($deamonInfo['state'] == 'ok') {
-                log::add('teleinfo', 'info', "[deamon_stop_serial] Tentative d'arrêt du service");
-                $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
-                if ($twoCptCartelectronic == 1) {
-                    $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo2cpt.pid';
+        $deamonInfo = self::deamon_info();
+        // if ($activation_Modem==1){
+        if ($deamonInfo['deamon_modem'] == 'ok' || $deamonInfo['deamon_prod'] == 'ok') {
+            log::add('teleinfo', 'info', "[deamon_stop_serial] Tentative d'arrêt du service");
+            $twoCptCartelectronic = config::byKey('2cpt_cartelectronic', 'teleinfo');
+            if ($twoCptCartelectronic == 1) {
+                $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo2cpt.pid';
+                if (file_exists($pidFile)) {
+                    $pid  = intval(trim(file_get_contents($pidFile)));
+                    $kill = posix_kill($pid, 15);
+                    usleep(1000);
+                    if ($kill) {
+                        $deamonKill= true;
+                        log::add('teleinfo', 'info', "[deamon_stop_serial] arrêt du service 2cpt OK");
+                    } else {
+                        system::kill($pid);
+                    }
+                }
+                //$result = exec("ps aux | grep teleinfo_2_cpt.py | grep -v grep | awk '{print $2}'");
+                //system::kill($result);
+                system::kill('teleinfo_2_cpt.py');
+            } else {
+                if ($deamonInfo['deamon_prod'] == 'ok') {
+                    $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
                     if (file_exists($pidFile)) {
                         $pid  = intval(trim(file_get_contents($pidFile)));
                         $kill = posix_kill($pid, 15);
-                        usleep(1000);
+                        usleep(500);
                         if ($kill) {
-                            $deamonKill= true;
-                            log::add('teleinfo', 'info', "[deamon_stop_serial] arrêt du service 2cpt OK");
-                        } else {
+                            $deamonKill = true;
+                            log::add('teleinfo', 'info', "[deamon_stop_serial] Arrêt du service Prod OK");
+                        }else{
                             system::kill($pid);
                         }
                     }
-                    //$result = exec("ps aux | grep teleinfo_2_cpt.py | grep -v grep | awk '{print $2}'");
-                    //system::kill($result);
-                    system::kill('teleinfo_2_cpt.py');
-                } else {
-                    if ($productionActivated == 1) {
-                        $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_prod.pid';
-                        if (file_exists($pidFile)) {
-                            $pid  = intval(trim(file_get_contents($pidFile)));
-                            $kill = posix_kill($pid, 15);
-                            usleep(500);
-                            if ($kill) {
-                                $deamonKill = true;
-                                log::add('teleinfo', 'info', "[deamon_stop_serial] Arrêt du service Prod OK");
-                            }else{
-                                system::kill($pid);
-                            }
-                        }
-                    }
+                }
+                if ($deamonInfo['deamon_conso'] == 'ok') {
                     $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_conso.pid';
                     if (file_exists($pidFile)) {
                         $pid  = intval(trim(file_get_contents($pidFile)));
@@ -729,19 +722,20 @@ class teleinfo extends eqLogic
                             system::kill($pid);
                         }
                     }
-                    system::kill('teleinfo.py');
-                    $port = config::byKey('port', 'teleinfo');
-                    if ($port != "serie") {
-                        $port = jeedom::getUsbMapping(config::byKey('port', 'teleinfo'));
-                        system::fuserk(jeedom::getUsbMapping($port));
-                        sleep(1);
-                    }
+                }
+                system::kill('teleinfo.py');
+                $port = config::byKey('port', 'teleinfo');
+                if ($port != "serie") {
+                    $port = jeedom::getUsbMapping(config::byKey('port', 'teleinfo'));
+                    system::fuserk(jeedom::getUsbMapping($port));
+                    sleep(1);
                 }
             }
         }
+        //}
 
-        $deamonInfoMqtt = self::deamon_infoMqtt();
-        if ($deamonInfoMqtt['state'] == 'ok') {
+        //$deamonInfoMqtt = self::deamon_infoMqtt();
+        if ($deamonInfo['deamon_MQTT'] == 'ok') {
             log::add('teleinfo', 'info', "[deamon_stop_Mqtt] Tentative d'arrêt du service");
             $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_Mqtt.pid';
             if (file_exists($pidFile)) {
@@ -759,27 +753,6 @@ class teleinfo extends eqLogic
         }
 
         return $deamonKill;
-
-    }
-
-    public static function stop_Mqtt()
-    {
-        $deamonInfoMqtt = self::deamon_infoMqtt();
-        if ($deamonInfoMqtt['state'] == 'ok') {
-            log::add('teleinfo', 'info', '[stopMqtt] Arret de la recherche');
-            $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_Mqtt.pid';
-            if (file_exists($pidFile)) {
-                $pid  = intval(trim(file_get_contents($pidFile)));
-                $kill = posix_kill($pid, 15);
-                usleep(500);
-                if ($kill) {
-                    return true;
-                } else {
-                    system::kill($pid);
-                }
-                system::kill('teleinfo_mqtt.py');
-            }
-        }
 
     }
 

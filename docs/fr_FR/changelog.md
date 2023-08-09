@@ -12,6 +12,14 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
+## 4.8.2a (10-08-2023) => version bêta
+- correction afin de faire fonctionner 2 modems en même temps sur les ports 1 et 2 de teleinfo
+- amélioration de la gestion des démons
+- modification du traitement des trames issues du compteur pour être certain de traiter l'ensemble des données envoyées par la TIC
+- Déplacement du paramètre de configuration du plugin "cycle de sommeil" depuis la partie générale vers la partie modem car cela ne concerne que lui
+- ajout d'un contrôle si la valeur d'un des index "EA*" (EASF.., EAST, EAIT) relevée est inférieure à la valeur relevée précédente, un index ne peut qu'augmenter
+- log info un peu moins verbeux, passage de certains logs de info vers debug. Pour montrer que le log teleinfo_daemon_conso tourne => affichage toutes les 30 minutes de la dernière trame reçue de la TIC et les infos envoyées vers Jeedom (le démon n'envoie pas vers Jeedom des infos qui n'ont pas changées)
+
 ## 4.8.1a (16-06-2023) => version bêta
 - Affichage du signe € à la place de $ dans les options du plugin
 - Ajout d'un bouton pour supprimer la température extérieure dans les options du plugin

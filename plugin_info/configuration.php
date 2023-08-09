@@ -64,6 +64,15 @@ try {
                     <div class="form-group div_local">
                     </div>
                     <legend><i class="icon fas fa-cog"></i> {{Modem : configuration Générale}}</legend>
+                    <div class="form-group div_local">
+                    </div>
+                    <label class="col-lg-4 control-label">{{Cycle sommeil acquisition teleinfo (s)}}<sup><i class="fas fa-question-circle tooltips" title="{{temps entre 2 interrogations de la TIC, limite les données à enregistrer}}" style="font-size : 1em;color:grey;"></i></sup></label>
+                    <div class="col-lg-1">
+                        <input class="configKey form-control" data-l1key="cycle_sommeil" placeholder="{{0.5}}"/>
+                    </div>
+                    <label class="col-sm-4 control-label"> </label>
+                    <div class="form-group div_local">
+                    </div>
                     <label class="col-lg-4 control-label">{{Port du modem 1}}</label>
                     <div class="col-lg-4">
                         <select id="select_port" class="configKey form-control" data-l1key="port">
@@ -311,12 +320,6 @@ try {
                 <label class="col-sm-4 control-label">{{Cycle (s)}}</label>
                 <div class="col-sm-2">
                     <input class="configKey form-control" data-l1key="cycle" placeholder="{{0.3}}"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">{{Cycle sommeil acquisition teleinfo (s)}}</label>
-                <div class="col-sm-2">
-                    <input class="configKey form-control" data-l1key="cycle_sommeil" placeholder="{{0.5}}"/>
                 </div>
             </div>
         </div>
