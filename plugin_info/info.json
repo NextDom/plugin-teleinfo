@@ -3,7 +3,7 @@
 	"name" : "Téléinfo",
 	"description" : "Plugin pour utiliser les modems téléinformation USB / Série. Développé initialement par Cédric Guine (@Ticed35)",
 	"licence" : "AGPL",
-	"author" : "Noyax",
+	"author" : "Cédric GUINE repris par Noyax37",
 	"require" : "4.2",
 	"category" : "automation protocol",
 	"display" : "panel",
