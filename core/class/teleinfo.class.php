@@ -87,6 +87,26 @@ class teleinfo extends eqLogic
     }
 
 	/**
+	 * Test si la version est béta
+	 * @param bool $text
+	 * @return $isBeta
+	 */
+    public static function isBeta($text = false) {
+        $plugin = plugin::byId('teleinfo');
+        $update = $plugin->getUpdate();
+        $isBeta = false;
+        if (is_object($update)) {
+            $version = $update->getConfiguration('version');
+            $isBeta = ($version && $version != 'stable');
+        }
+    
+        if ($text) {
+          return $isBeta ? 'beta' : 'stable';
+        }
+        return $isBeta;
+      }
+    
+	/**
 	 * Creation objet sur reception de trame
 	 * @param string $adco
 	 * @return eqLogic
