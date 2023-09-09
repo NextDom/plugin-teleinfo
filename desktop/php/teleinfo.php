@@ -49,7 +49,6 @@ switch ($controlerState) {
 //$deamonRunning = false;
 //$deamonRunning = teleinfo::deamonRunning();
 
-
 ?>
 
 <div class="row row-overflow">

@@ -87,6 +87,26 @@ class teleinfo extends eqLogic
     }
 
 	/**
+	 * Test si la version est béta
+	 * @param bool $text
+	 * @return $isBeta
+	 */
+    public static function isBeta($text = false) {
+        $plugin = plugin::byId('teleinfo');
+        $update = $plugin->getUpdate();
+        $isBeta = false;
+        if (is_object($update)) {
+            $version = $update->getConfiguration('version');
+            $isBeta = ($version && $version != 'stable');
+        }
+    
+        if ($text) {
+          return $isBeta ? 'beta' : 'stable';
+        }
+        return $isBeta;
+      }
+    
+	/**
 	 * Creation objet sur reception de trame
 	 * @param string $adco
 	 * @return eqLogic
@@ -1669,7 +1689,6 @@ class teleinfo extends eqLogic
         }
     log::add('teleinfo', 'info', 'other stats -------------------------------------');
 }
-
     public static function copyVersIndex($compteur, $startDate, $endDate,
                                             $indexcopy01,$indexcopy02,$indexcopy03,$indexcopy04,$indexcopy05,$indexcopy06,$indexcopy07,$indexcopy08,$indexcopy09,$indexcopy10,
                                             $coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10,$coutcopyprod){

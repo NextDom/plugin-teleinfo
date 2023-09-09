@@ -17,8 +17,11 @@
  */
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
+//$versionIdentique = ' La version stable est identique, vous pouvez basculer dessus sns aucun problème.';
+//global $versionIdentique;
 
 function teleinfo_install() {
+    $versionIdentique = '';
     $core_version = '1.1.1';
     if (!file_exists(dirname(__FILE__) . '/info.json')) {
         log::add('teleinfo','warning','Pas de fichier info.json');
@@ -34,6 +37,26 @@ function teleinfo_install() {
     } catch (\Exception $e) {
 
     }
+
+    try {
+        $changelog = $data['changelog'];
+    } catch (\Exception $e) {
+        log::add('teleinfo','warning','Pas de changelog');
+        goto step2;
+    }
+
+    try {
+        $changelog_beta = $data['changelog_beta'];
+    } catch (\Exception $e) {
+        log::add('teleinfo','warning','Pas de changelog béta');
+        goto step2;
+    }
+
+    if (file_get_contents($changelog) == file_get_contents($changelog_beta)){
+        $versionIdentique = ' Les versions stable et béta sont identiques, si vous avez installé la béta il vaudrait mieux passer en stable cela ne change absolument rien pour vous.';
+    }
+
+
     step2:
     if (teleinfo::deamonRunning()) {
         teleinfo::deamon_stop();
@@ -60,11 +83,12 @@ function teleinfo_install() {
         $crontoday->save();
     }
     message::removeAll('teleinfo');
-    message::add('teleinfo', 'Installation du plugin Téléinfo terminée, vous êtes en version ' . $core_version . '.');
+    message::add('teleinfo', 'Installation du plugin Téléinfo terminée, vous êtes en version ' . $core_version . '.' . $versionIdentique);
     //cache::set('teleinfo::current_core','2.610', 0);
 }
 
 function teleinfo_update() {
+    $versionIdentique = '';
     log::add('teleinfo','debug','teleinfo_update');
     $core_version = '1.1.1';
     if (!file_exists(dirname(__FILE__) . '/info.json')) {
@@ -73,14 +97,40 @@ function teleinfo_update() {
     }
     $data = json_decode(file_get_contents(dirname(__FILE__) . '/info.json'), true);
     if (!is_array($data)) {
-        log::add('teleinfo','warning','Impossible de décoder le fichier info.json');
+        log::add('teleinfo','warning','Impossible de décoder le fichier info.json (non bloquant ici)');
         goto step2;
     }
     try {
         $core_version = $data['pluginVersion'];
     } catch (\Exception $e) {
-        log::add('teleinfo','warning','Pas de version de plugin');
+        log::add('teleinfo','warning','Pas de version de plugin (non bloquant ici)');
+        goto step2;
     }
+    try {
+        $changelog = $data['changelog'];
+    } catch (\Exception $e) {
+        log::add('teleinfo','warning','Pas de changelog (non bloquant ici)');
+        goto step2;
+    }
+
+    try {
+        $changelog_beta = $data['changelog_beta'];
+    } catch (\Exception $e) {
+        log::add('teleinfo','warning','Pas de changelog béta (non bloquant ici)');
+        goto step2;
+    }
+
+
+    try {
+        if (file_get_contents($changelog) == file_get_contents($changelog_beta)){
+            $versionIdentique = ' Les versions STABLE et BETA sont identiques, si vous êtes en BETA il vaudrait mieux passer en STABLE cela ne change absolument rien pour vous sauf si vous voulez continuer à tester de futures évolutions en avant-première.';
+        } 
+    } catch (\Exception $e) {
+        log::add('teleinfo','warning','un des fichiers changelog n existe pas (non bloquant ici)');
+        goto step2;
+    }
+
+
     step2:
     if (teleinfo::deamonRunning()) {
         teleinfo::deamon_stop();
@@ -102,7 +152,7 @@ function teleinfo_update() {
     }
 
 
-// mise à jour stat si elles n'existent pas
+    // mise à jour stat si elles n'existent pas
     log::add('teleinfo', 'info', "-------- Commandes des stats si elles n'existent pas ---------");
 
     $array = array("STAT_TODAY_INDEX00","STAT_TODAY_INDEX00_COUT","STAT_YESTERDAY_INDEX00","STAT_YESTERDAY_INDEX00_COUT",
@@ -184,7 +234,7 @@ function teleinfo_update() {
     }
     $crontoday->stop();
     message::removeAll('teleinfo');
-    message::add('teleinfo', 'Mise à jour du plugin Téléinfo terminée, vous êtes en version ' . $core_version . '.');
+    message::add('teleinfo', 'Mise à jour du plugin Téléinfo terminée, vous êtes en version ' . $core_version . '.' . $versionIdentique);
     teleinfo::cron();
 }
 
