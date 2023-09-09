@@ -35,6 +35,14 @@ try {
             teleinfo::deamon_start();
             ajax::success();
         break;
+        case 'startMqtt':
+            teleinfo::start_Mqtt('', init('socketport'), init('sockethost'), init('modem'), init('mqtt'), init('mqtt_broker'), init('mqtt_port'), init('mqtt_topic'), init('mqtt_username'), init('mqtt_password'));
+            ajax::success();
+        break;
+        case 'stopMqtt':
+            teleinfo::stop_Mqtt();
+            ajax::success();
+        break;
         case 'changeLogLive':
             ajax::success(teleinfo::changeLogLive(init('level')));
         break;
@@ -575,7 +583,7 @@ try {
                 }
                 file_put_contents($monfichier, serialize('||EQLOGIC_END||'), FILE_APPEND | LOCK_EX);
             }
-            $return["files"] = log::getPathToLog('teleinfo'). " " . log::getPathToLog('teleinfo_deamon_conso'). " " . log::getPathToLog('teleinfo_update') . " " . dirname(__FILE__) . '/../../plugin_info/info.json'. " " . $diagnosticFile  . " " . $monfichier;
+            $return["files"] = log::getPathToLog('teleinfo'). " " . log::getPathToLog('teleinfo_deamon_conso') . log::getPathToLog('teleinfo_deamon_mqtt'). " " . log::getPathToLog('teleinfo_mqtt'). " " . log::getPathToLog('teleinfo_update') . " " . dirname(__FILE__) . '/../../plugin_info/info.json'. " " . $diagnosticFile  . " " . $monfichier;
             $return["path"] = jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar';
             exec('rm ' . jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar');
             $return["compress"] = exec('tar -cvf ' . jeedom::getTmpFolder("teleinfo") . '/teleinfolog.tar ' . $return["files"]);

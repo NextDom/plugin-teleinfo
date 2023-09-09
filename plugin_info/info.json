@@ -1,7 +1,7 @@
 {
 	"id" : "teleinfo",
 	"name" : "Téléinfo",
-	"description" : "Plugin pour utiliser les modems téléinformation USB / Série",
+	"description" : "Plugin pour utiliser les modems téléinformation USB / Série. Développé initialement par Cédric Guine (@Ticed35)",
 	"licence" : "AGPL",
 	"author" : "Cédric GUINE repris par Noyax37",
 	"require" : "4.2",
@@ -18,5 +18,5 @@
 	"documentation" : "https://NextDom.github.io/plugin-teleinfo/fr_FR/",
 	"changelog_beta" : "https://Noyax.github.io/plugin-teleinfo/fr_FR/changelog",
 	"documentation_beta" : "https://Noyax.github.io/plugin-teleinfo/fr_FR/",
-	"pluginVersion" : "4.7.3h"
+	"pluginVersion" : "4.8.2b"
 }
