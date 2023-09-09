@@ -5,18 +5,40 @@ $("body").delegate("#bt_selectoutsideTemp", 'click', function() {
      });
 });
 
+$("body").delegate("#bt_supprTemp", 'click', function() {
+  $('#outsideTemp').value('');
+  $('#outsideTemp').attr('cmd','');
+  $('#div_OptionsAlert').showAlert({message: $('#outsideTemp').attr('cmd'), level: 'success'});
+});
+
 
 $('#btOptionsSave').off().on('click', function () {
-    jeedom.config.save({
-      plugin: "teleinfo",
-      configuration: {"outside_temp" : $('#outsideTemp').attr('cmd')},
-		error: function (error) {
-		$('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
-		},
-		success: function (data) {
-            $('#div_OptionsAlert').showAlert({message: 'Sauvegarde effectuée', level: 'success'});
-		}
-    });
+    if ($('#outsideTemp').attr('cmd') != ''){
+      $('#div_OptionsAlert').showAlert({message: 'Sauvegarde ' + $('#outsideTemp').attr('cmd') + ' effectuée', level: 'success'});
+      jeedom.config.save({
+        plugin: "teleinfo",
+        configuration: {"outside_temp" : $('#outsideTemp').attr('cmd')},
+      error: function (error) {
+      $('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
+      },
+      success: function (data) {
+              $('#div_OptionsAlert').showAlert({message: 'Sauvegarde effectuée', level: 'success'});
+      }
+      });
+    }else{
+      jeedom.config.remove({
+        plugin: "teleinfo",
+        configuration: "outside_temp",
+        error: function (error) {
+          $('#div_OptionsAlert').showAlert({message: error.message, level: 'danger'});
+          },
+        success: function (data) {
+                $('#div_OptionsAlert').showAlert({message: 'Sauvegarde test effectuée', level: 'success'});
+        }
+      });
+    }
+
+
 
 console.log($("#indexConsoTotales").val());
     console.log(jeedom.config.save({

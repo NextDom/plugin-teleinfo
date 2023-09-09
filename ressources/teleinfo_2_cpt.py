@@ -103,31 +103,31 @@ class Ftdi(object):
         logging.info("Try to Create ftdi context")
         self.__ftdic = ftdi.ftdi_context()
         if self.__ftdic is None:
-            logging.error("Can't create ftdi context")
+            logging.error("MODEM_2cpt------Can't create ftdi context")
             raise FtdiError("Can't create ftdi context")
 
         # Init ftdi context
         err = ftdi.ftdi_init(self.__ftdic)
         if err < 0:
-            logging.error("Can't init ftdi context (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            logging.error("MODEM_2cpt------Can't init ftdi context (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't init ftdi context (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
 
         # Open port
         logging.info("Try to open ftdi port")
         err = ftdi.ftdi_usb_open(self.__ftdic, usb_vendor, usb_product)
         if err < 0:
-            logging.error("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            logging.error("MODEM_2cpt------Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
 
         err = ftdi.ftdi_set_baudrate(self.__ftdic, baud_rate)
         if err < 0:
-            logging.error("Can't set baudrate (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            logging.error("MODEM_2cpt------Can't set baudrate (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't set baudrate (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
 
         # Because of the usb interface, must use 8 bits transmission data, instead of 7 bits
         err = ftdi.ftdi_set_line_property(self.__ftdic, ftdi.BITS_8, ftdi.EVEN, ftdi.STOP_BIT_1)
         if err < 0:
-            logging.error("Can't set line property (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            logging.error("MODEM_2cpt------Can't set line property (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't set line property (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
 
     def shutdown(self):
@@ -136,7 +136,7 @@ class Ftdi(object):
         logging.info("Try to close ftdi port")
         err = ftdi.ftdi_usb_close(self.__ftdic)
         if err < 0:
-            logging.error("Can't close ftdi com. (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            logging.error("MODEM_2cpt------Can't close ftdi com. (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't close ftdi com. (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
 
         ftdi.ftdi_deinit(self.__ftdic)
@@ -146,7 +146,7 @@ class Ftdi(object):
         """
         err = ftdi.ftdi_set_bitmode(self.__ftdic, port, ftdi.BITMODE_CBUS)
         if err < 0:
-            logging.error("Can't set bitmode (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            logging.error("MODEM_2cpt------Can't set bitmode (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't set bitmode (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
         time.sleep(0.1)
 
@@ -155,7 +155,7 @@ class Ftdi(object):
         """
         err = ftdi.ftdi_usb_purge_buffers(self.__ftdic)
         if err < 0:
-            logging.error("Can't purge buffers (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            logging.error("MODEM_2cpt------Can't purge buffers (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             raise FtdiError("Can't purge buffers (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
 
     def readOne(self):
@@ -164,7 +164,7 @@ class Ftdi(object):
         buf = ' '
         err = ftdi.ftdi_read_data(self.__ftdic, buf, 1)
         if err < 0:
-            logging.error("Can't read data (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+            logging.error("MODEM_2cpt------Can't read data (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             self.shutdown()
             raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
         if err:
@@ -195,8 +195,8 @@ class Teleinfo(object):
     def __init__(self, ftdi_):
         """
         """
-        logging.info("TELEINFO------Initialisation de la teleinfo")
-        logging.info("TELEINFO------FTDI TYPE : " + str(ftdi_type))
+        logging.info("MODEM_2cpt------Initialisation de la teleinfo")
+        logging.info("MODEM_2cpt------MODEM_2cpt------FTDI TYPE : " + str(ftdi_type))
         if ftdi_type == 0:
             globals.ftdi_context = ""
             super(Teleinfo, self).__init__()
@@ -205,7 +205,7 @@ class Teleinfo(object):
             globals.ftdi_context = ftdi.new()
             ret = ftdi.usb_open(globals.ftdi_context, 0x0403, 0x6001)
             if ret < 0:
-                logging.error("Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
+                logging.error("MODEM_2cpt------Can't open usb (%d, %s)" % (err, ftdi.ftdi_get_error_string(self.__ftdic)))
             ftdi.set_baudrate(globals.ftdi_context, int(globals.vitesse))
         if globals.mode == "historique":
             globals.frame_length = 500
@@ -219,7 +219,7 @@ class Teleinfo(object):
         else:
             err = ftdi.set_bitmode(globals.ftdi_context, usb_port[num], ftdi.BITMODE_CBUS)
             if err < 0:
-                logging.error("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
+                logging.error("MODEM_2cpt------Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
                 raise FtdiError("Can't set bitmode (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
             time.sleep(0.1)
 
@@ -228,7 +228,7 @@ class Teleinfo(object):
         """
         err, buf = ftdi.read_data(globals.ftdi_context, 0x1)
         if err < 0:
-            logging.error("Can't read data (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
+            logging.error("MODEM_2cpt------Can't read data (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
             self.close()
             raise FtdiError("Can't read data (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
         if err:
@@ -249,7 +249,7 @@ class Teleinfo(object):
         else:
             err = ftdi.usb_purge_buffers(globals.ftdi_context)
             if err < 0:
-                logging.error("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
+                logging.error("MODEM_2cpt------Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
                 raise FtdiError("Can't purge buffers (%d, %s)" % (err, ftdi.get_error_string(globals.ftdi_context)))
             raw = u""
             while len(raw) < globals.frame_length:
@@ -351,7 +351,7 @@ class Teleinfo(object):
             if raz_time > 1:
                 raz_time = raz_time - 1
             else:
-                logging.info("TELEINFO------HEARTBEAT")
+                logging.info("MODEM_2cpt------HEARTBEAT")
                 raz_time = 600
                 for cle, valeur in list(cpt1_data.items()):
                     cpt1_data.pop(cle)
@@ -429,12 +429,12 @@ class Teleinfo(object):
             except Exception:
                 errorCom = "Connection error"
                 logging.error(errorCom)
-            #logging.debug("TELEINFO------START SLEEPING " + str(globals.cycle_sommeil) + " seconds")
+            #logging.debug("MODEM_2cpt------START SLEEPING " + str(globals.cycle_sommeil) + " seconds")
             time.sleep(globals.cycle_sommeil)
-            #logging.debug("TELEINFO------WAITING : " + str(globals.TELEINFO_SERIAL.inWaiting()) + " octets dans la file apres sleep ")
+            #logging.debug("MODEM_2cpt------WAITING : " + str(globals.TELEINFO_SERIAL.inWaiting()) + " octets dans la file apres sleep ")
             #if globals.TELEINFO_SERIAL.inWaiting() > 1500:
             #    globals.TELEINFO_SERIAL.flushInput()
-            #    logging.info("TELEINFO------BUFFER OVERFLOW => FLUSH")
+            #    logging.info("MODEM_2cpt------BUFFER OVERFLOW => FLUSH")
             #    logging.debug(str(globals.TELEINFO_SERIAL.inWaiting()) + "octets dans la file apres flush ")
             if num_compteur == 1:
                 num_compteur = 2
@@ -459,33 +459,29 @@ class Teleinfo(object):
         #sys.exit()
 
 def read_socket(cycle):
-    while True :
+    while True:
         try:
             global JEEDOM_SOCKET_MESSAGE
             if not JEEDOM_SOCKET_MESSAGE.empty():
                 logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE")
                 message = json.loads(JEEDOM_SOCKET_MESSAGE.get())
+                logging.debug("SOCKET-READ------Message received in socket JEEDOM_SOCKET_MESSAGE " + message['cmd'])
                 if message['apikey'] != globals.apikey:
                     logging.error("SOCKET-READ------Invalid apikey from socket : " + str(message))
                     return
-                logging.debug('SOCKET-READ------Received command from jeedom : '+str(message['cmd']))
+                logging.debug('SOCKET-READ------Received command from jeedom : ' + str(message['cmd']))
                 if message['cmd'] == 'action':
                     logging.debug('SOCKET-READ------Attempt an action on a device')
-                    _thread.start_new_thread( action_handler, (message,))
+                    _thread.start_new_thread(action_handler, (message,))
                     logging.debug('SOCKET-READ------Action Thread Launched')
-                elif message['cmd'] == 'logdebug':
-                    logging.info('SOCKET-READ------Passage du demon en mode debug force')
-                    log = logging.getLogger()
-                    for hdlr in log.handlers[:]:
-                        log.removeHandler(hdlr)
-                    jeedom_utils.set_log_level('debug')
-                    logging.debug('SOCKET-READ------<----- La preuve ;)')
-                elif message['cmd'] == 'lognormal':
-                    logging.info('SOCKET-READ------Passage du demon en mode de log normal')
-                    log = logging.getLogger()
-                    for hdlr in log.handlers[:]:
-                        log.removeHandler(hdlr)
+                elif message['cmd'] == 'changelog':
                     jeedom_utils.set_log_level('info')
+                    logging.info('SOCKET-READ------Passage du demon en mode ' + message['level'])
+                    log = logging.getLogger()
+                    for hdlr in log.handlers[:]:
+                        log.removeHandler(hdlr)
+                    logging.info("SOCKET-READ------------ C'est parti ;)")
+                    jeedom_utils.set_log_level(message['level'])
         except Exception as e:
             logging.error("SOCKET-READ------Exception on socket : %s" % str(e))
             logging.debug(traceback.format_exc())
@@ -494,9 +490,9 @@ def read_socket(cycle):
 def listen():
     globals.PENDING_ACTION=False
     jeedom_socket.open()
-    logging.info("GLOBAL------Start listening...")
+    logging.info("MODEM_2cpt------Start listening...")
     #globals.TELEINFO = Teleinfo()
-    logging.info("GLOBAL------Preparing Teleinfo...")
+    logging.info("MODEM_2cpt------Preparing Teleinfo...")
     _thread.start_new_thread( read_socket, (globals.cycle,))
     logging.debug('GLOBAL------Read Socket Thread Launched')
     while 1:
@@ -507,27 +503,18 @@ def listen():
                 globals.TELEINFO = Teleinfo(ftdi_)
             else:
                 globals.TELEINFO = Teleinfo("")
-            _thread.start_new_thread( log_starting,(globals.cycle,))
             globals.TELEINFO.readMeter()
         except Exception as e:
             print("Error:")
             print(e)
             shutdown()
 
-def log_starting(cycle):
-	time.sleep(30)
-	logging.info('GLOBAL------Passage des logs en normal')
-	log = logging.getLogger()
-	for hdlr in log.handlers[:]:
-		log.removeHandler(hdlr)
-	jeedom_utils.set_log_level('error')
-
 def handler(signum=None, frame=None):
     logging.debug("Signal %i caught, exiting..." % int(signum))
     shutdown()
 
 def shutdown():
-    logging.debug("GLOBAL------Shutdown")
+    logging.debug("MODEM_2cpt------Shutdown")
     #if ftdi_type == 0:
         #ftdi_.shutdown()
     #globals.TELEINFO.close()
@@ -611,7 +598,7 @@ globals.pidfile = "/tmp/jeedom/teleinfo/teleinfo2cpt.pid"
 jeedom_utils.write_pid(str(globals.pidfile))
 globals.JEEDOM_COM = jeedom_com(apikey = globals.apikey,url = globals.callback,cycle=globals.cycle)
 if not globals.JEEDOM_COM.test():
-    logging.error('GLOBAL------Network communication issues. Please fix your Jeedom network configuration.')
+    logging.error('MODEM_2cpt------Network communication issues. Please fix your Jeedom network configuration.')
     shutdown()
 jeedom_socket = jeedom_socket(port=globals.socketport,address=globals.sockethost)
 listen()
