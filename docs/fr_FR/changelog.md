@@ -12,6 +12,9 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
+## 4.8.2c (09-09-2023) => version stable ET bêta
+- Pour les deux versions: résolution d'un problème de redémarrage intempestif du démon 
+
 ## 4.8.2b (09-09-2023) => version stable ET bêta
 - Pour la version béta: pas de changement, cette montée en version n'est là que pour vous prévenir que la version stable rejoint la version béta donc si vous ne voulez pas rester en béta vous pouvez rebasculer en stable
 - pour la version stable: toutes les évolutions depuis la dernières version stable qui était la 4.7.3h

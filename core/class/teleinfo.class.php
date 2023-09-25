@@ -1689,7 +1689,6 @@ class teleinfo extends eqLogic
         }
     log::add('teleinfo', 'info', 'other stats -------------------------------------');
 }
-
     public static function copyVersIndex($compteur, $startDate, $endDate,
                                             $indexcopy01,$indexcopy02,$indexcopy03,$indexcopy04,$indexcopy05,$indexcopy06,$indexcopy07,$indexcopy08,$indexcopy09,$indexcopy10,
                                             $coutcopy00,$coutcopy01,$coutcopy02,$coutcopy03,$coutcopy04,$coutcopy05,$coutcopy06,$coutcopy07,$coutcopy08,$coutcopy09,$coutcopy10,$coutcopyprod){
