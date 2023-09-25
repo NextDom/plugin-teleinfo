@@ -323,8 +323,7 @@ class Teleinfo:
                             logging.debug('MODEM------ name : ' + name + ' value : ' + value)
                         else:
                             name, value, checksum = resp.replace('\r', '').replace('\n', '').split()
-                            logging.debug(
-                                'MODEM------ name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
+                            logging.debug('MODEM------ name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                         if self._is_valid(resp, checksum):
                             content[name] = value
                         else:
@@ -341,8 +340,7 @@ class Teleinfo:
                         checksum = ' '
                         logging.debug('MODEM------ name : ' + name + ' value : ' + value)
                     else:
-                        name, value, checksum = resp.replace('\r', '').replace('\n', '').replace('\x02', '').replace(
-                            '\x03', '').split()
+                        name, value, checksum = resp.replace('\r', '').replace('\n', '').replace('\x02', '').replace('\x03', '').split()
                         logging.debug('MODEM------ name : ' + name + ' value : ' + value + ' checksum : ' + checksum)
                     if self._is_valid(resp, checksum):
                         is_ok = True
@@ -373,10 +371,9 @@ class Teleinfo:
                 my_sum = my_sum + ord(cks)
             computed_checksum = ((my_sum + 0x09) & int("111111", 2)) + 0x20
             if chr(computed_checksum) != checksum[0:1]:
-                logging.debug('MODEM------ checksum non concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(
-                    computed_checksum))
+                logging.debug('MODEM------ checksum non concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
             else:
-                logging.debug('MODEM------ .......... checksum concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
+                logging.debug('MODEM------ checksum concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
         else:
             # print "Check checksum : f = %s, chk = %s" % (frame, checksum)
             datas = ' '.join(frame.split()[0:2])
@@ -384,6 +381,10 @@ class Teleinfo:
             for cks in datas:
                 my_sum = my_sum + ord(cks)
             computed_checksum = (my_sum & int("111111", 2)) + 0x20
+            if chr(computed_checksum) != checksum[0:1]:
+                logging.debug('MODEM------ checksum non concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
+            else:
+                logging.debug('MODEM------ checksum concordant. Checksum reçu : ' + checksum[0:1] + ' Checksum calcul : ' + chr(computed_checksum))
             # print "computed_checksum = %s" % chr(computed_checksum)
         return chr(computed_checksum) == checksum[0:1]
 
@@ -394,9 +395,11 @@ class Teleinfo:
         data = {}
         data_temp = {}
         raz_day = 0
+        raz_time = 0
         info_heure_calcul = 0
 
-        # Read a frame + RAZ au changement de date
+        # Read a frame + RAZ au changement de date + evite le heartbeat du demon
+        raz_time = datetime.now()
         raz_day = date.today()
         info_heure = datetime.now()
         while 1:
@@ -422,9 +425,10 @@ class Teleinfo:
                     data[cle] = valeur
             _SendData = {}
             pending_changes = False
+            raz_calcul = datetime.now() - raz_time
             for cle, valeur in data.items():
                 if cle in data_temp:
-                    if data[cle] != data_temp[cle]:
+                    if ((data[cle] != data_temp[cle]) or (raz_calcul.seconds > 55)):
                         if cle[:3] == 'EAS' or cle[:3] == 'EAI':                     # test si on a affaire à un index commençant par EAI ou EAS (EAIT, EASF??, ...)
                             if (int(data[cle]) > int(data_temp[cle])) and (int(data[cle]) < (int(data_temp[cle]) + 10000)):    #s i la valeur relevée est plus grande que celle en mémoire et qu'elle n'est pas 10 kwh au dessus c'est ok
                                 _SendData[cle] = valeur
@@ -443,6 +447,7 @@ class Teleinfo:
                     pending_changes = True
             try:
                 if pending_changes:
+                    raz_time = datetime.now()
                     if globals.mode == "standard":
                         _SendData["device"] = data["ADSC"]
                         globals.JEEDOM_COM.add_changes('device::' + data["ADSC"], _SendData)
