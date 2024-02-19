@@ -12,6 +12,10 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
+## 4.8.3 (**-**-****)
+- Adapatation du plugin à jeedom V4.4 + Debian 12 + php 8.2.7 (merci @Typher)
+- 
+
 ## 4.8.2c (09-09-2023) => version stable ET bêta
 - Pour les deux versions: résolution d'un problème de redémarrage intempestif du démon 
 

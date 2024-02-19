@@ -326,9 +326,11 @@ class teleinfo extends eqLogic
                     if ($twoCptCartelectronic == 1) {
                         $port = '/dev/ttyUSB1';
                     } else {
-                        if (!file_exists($port)) {
-                            log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port1 '. $port . ' n\'existe pas');
-                            return false;
+                        if (is_string($port)) {
+                            if (!file_exists($port)) {
+                                log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port1 '. $port . ' n\'existe pas');
+                                return false;
+                            }
                         }
                     }
                 }
@@ -345,9 +347,11 @@ class teleinfo extends eqLogic
                     if ($twoCptCartelectronic == 1) {
                         $port = '/dev/ttyUSB1';
                     } else {
-                        if (!file_exists($port)) {
-                            log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port2 '. $port . ' n\'existe pas');
-                            return false;
+                        if (is_string($port)) {
+                            if (!file_exists($port)) {
+                                log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port2 '. $port . ' n\'existe pas');
+                                return false;
+                            }
                         }
                     }
                 }
