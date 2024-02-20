@@ -14,3 +14,5 @@ ressources/teleinfo - Copie.py
 .project
 
 .travis.yml
+
+ressources/venv/

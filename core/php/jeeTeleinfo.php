@@ -174,30 +174,10 @@ if (isset($result['device'])) {
                         }
                     }
                     else{
-
-                        $debkey = substr($key, 0, 2);
-                        if  ($debkey == 'EA' || $key == 'BASE' || $debkey == 'HC' || $debkey == 'BB' || $debkey == 'EJ') {
-                            $startDateYesterday     = (new DateTime())->setTimestamp(mktime(0, 0, 0, date("m"), date("d") - 2, date("Y")));
-                            $endDateYesterday       = (new DateTime())->setTimestamp(mktime(date("H"), date("i"), date("s"), date("m"), date("d") - 2, date("Y")));
-                            //$startDateYesterday = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
-                            //$endDateYesterday   = date("Y-m-d H:i:s", mktime(23, 59, 59, date("m"), date("d") - 1, date("Y")));
-                            $statMaxYesterday = $cmd->getStatistique($startDateYesterday->format('Y-m-d 00:00:00'), $endDateYesterday->format('Y-m-d H:i:s'))['max'];
-                            log::add('teleinfo','debug','This is a message from teleinfo program => max d hier index ' . $key . ' ' . $statMaxYesterday);
-                            if ($value < $statMaxYesterday || $value > ($statMaxYesterday + 100000)){
-                                log::add('teleinfo','info','This is a message from teleinfo program => max d hier index ' . $key . ' n est pas cohérent avec dernière valeur reçue ' . $value);
-                            } else {
-                                $cmd->event($value);
-                                if($healthEnable) {
-                                    $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
-                                    $healthCmd->save();
-                                }
-                            }
-                        } else {
-                            $cmd->event($value);
-                            if($healthEnable) {
-                                $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
-                                $healthCmd->save();
-                            }
+                        $cmd->event($value);
+                        if($healthEnable) {
+                            $healthCmd->setConfiguration($key, array("name" => $key, "value" => $value, "update_time" => date("Y-m-d H:i:s")));
+                            $healthCmd->save();
                         }
                     }
                 }
