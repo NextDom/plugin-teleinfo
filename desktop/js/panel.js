@@ -575,7 +575,7 @@ function loadData(){
                                 if(compteurProd||prodEtConso){
                                     stackGraph = 0
                                     if (datacmd.name == 'STAT_YESTERDAY_PROD'){
-                                        datacmd.name = 'Index Prod';
+                                        datacmd.name = 'Prod ';
                                     }
                                     serie = 14;
                                     console.log("[loadData][STAT_YESTERDAY_PROD] " + datacmd.id);
