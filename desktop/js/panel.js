@@ -1815,11 +1815,6 @@ function teleinfoDrawChart(_params) {
         dailyHistoryChart[_params.el].color = 0;
         }
 
-        var extremes = dailyHistoryChart[_params.el].chart.xAxis[0].getExtremes();
-        var plotband = jeedom.history.generatePlotBand(extremes.min,extremes.max);
-        for(var i in plotband){
-        dailyHistoryChart[_params.el].chart.xAxis[0].addPlotBand(plotband[i]);
-        }
         $.hideLoading();
         if (typeof (init(_params.success)) == 'function') {
         _params.success(data.result);
