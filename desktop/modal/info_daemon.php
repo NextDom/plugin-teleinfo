@@ -13,7 +13,11 @@ if (init('slave_id') == 0) {
 	$jeeNetwork = jeeNetwork::byId(init('slave_id'));
 	//$deamon_info = $jeeNetwork->sendRawRequest('plugin::deamonInfo', array('plugin_id' => init('plugin_id')));
 }
+	// uniquement si on est en version 4.4 ou supérieur
+	$jeedomVersion  = jeedom::version() ?? '0';
+	$displayInfoValue = version_compare($jeedomVersion, '4.4.0', '>=');
 
+sendVarToJS('versionsup', json_encode($displayInfoValue));
 sendVarToJs('logfile', init('plugin_id'));
 sendVarToJs('slave_id', init('slave_id'));
 ?>
@@ -25,21 +29,41 @@ sendVarToJs('slave_id', init('slave_id'));
 <br/><br/><br/>
 <pre id='pre_pluginDeamonLogUpdate' style='overflow: auto; height: 90%;with:90%;'></pre>
 
+
 <script>
-	if(slave_id == 0){
-		jeedom.log.autoupdate({
-			log : logfile,
-			display : $('#pre_pluginDeamonLogUpdate'),
-			search : $('#in_pluginDeamonLogSearch'),
-			control : $('#bt_pluginDeamonLogStopStart'),
-		});
-	}else{
-		jeedom.log.autoupdate({
-			log : logfile,
-			slaveId :slave_id,
-			display : $('#pre_pluginDeamonLogUpdate'),
-			search : $('#in_pluginDeamonLogSearch'),
-			control : $('#bt_pluginDeamonLogStopStart'),
-		});
-	}
+		if (versionsup == "true"){
+			if(slave_id == 0){
+				jeedom.log.autoUpdateDelta({
+					log : logfile,
+					display : $('#pre_pluginDeamonLogUpdate'),
+					search : $('#in_pluginDeamonLogSearch'),
+					control : $('#bt_pluginDeamonLogStopStart'),
+				});
+			}else{
+				jeedom.log.autoUpdateDelta({
+					log : logfile,
+					slaveId :slave_id,
+					display : $('#pre_pluginDeamonLogUpdate'),
+					search : $('#in_pluginDeamonLogSearch'),
+					control : $('#bt_pluginDeamonLogStopStart'),
+				});
+			};
+		} else {
+			if(slave_id == 0){
+				jeedom.log.autoupdate({
+					log : logfile,
+					display : $('#pre_pluginDeamonLogUpdate'),
+					search : $('#in_pluginDeamonLogSearch'),
+					control : $('#bt_pluginDeamonLogStopStart'),
+				});
+			}else{
+				jeedom.log.autoupdate({
+					log : logfile,
+					slaveId :slave_id,
+					display : $('#pre_pluginDeamonLogUpdate'),
+					search : $('#in_pluginDeamonLogSearch'),
+					control : $('#bt_pluginDeamonLogStopStart'),
+				});
+			};
+		};
 </script>

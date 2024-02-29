@@ -46,6 +46,11 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'debug', 'cronhourly ');
     }
 
+    // Fonction pour exclure un sous répertoire de la sauvegarde
+    public static function backupExclude() {
+		return ['ressources/venv'];
+	}
+
     public static function changeLogLive($level)
     {
         $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
@@ -305,6 +310,7 @@ class teleinfo extends eqLogic
     public static function runDeamon($debug = false, $type = 'conso', $mqtt = false)
     {
         $teleinfoPath         	  = realpath(dirname(__FILE__) . '/../../ressources');
+        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
         if ($activation_Modem==''){
             $activation_Modem = 1;
             log::add('teleinfo', 'info', '---------- Activation Modem 1---------');
@@ -735,7 +741,7 @@ class teleinfo extends eqLogic
                         }
                     }
                 }
-                if ($deamonInfo['deamon_conso'] == 'ok') {
+                if ($deamonInfo['deamon_modem'] == 'ok') {
                     $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_conso.pid';
                     if (file_exists($pidFile)) {
                         $pid  = intval(trim(file_get_contents($pidFile)));
