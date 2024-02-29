@@ -46,6 +46,11 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'debug', 'cronhourly ');
     }
 
+    // Fonction pour exclure un sous répertoire de la sauvegarde
+    public static function backupExclude() {
+		return ['ressources/venv'];
+	}
+
     public static function changeLogLive($level)
     {
         $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
@@ -305,6 +310,7 @@ class teleinfo extends eqLogic
     public static function runDeamon($debug = false, $type = 'conso', $mqtt = false)
     {
         $teleinfoPath         	  = realpath(dirname(__FILE__) . '/../../ressources');
+        $activation_Modem = (config::byKey('activation_Modem', 'teleinfo') == "") ? 1 : config::byKey('activation_Modem', 'teleinfo');
         if ($activation_Modem==''){
             $activation_Modem = 1;
             log::add('teleinfo', 'info', '---------- Activation Modem 1---------');
@@ -326,9 +332,11 @@ class teleinfo extends eqLogic
                     if ($twoCptCartelectronic == 1) {
                         $port = '/dev/ttyUSB1';
                     } else {
-                        if (!file_exists($port)) {
-                            log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port1 '. $port . ' n\'existe pas');
-                            return false;
+                        if (is_string($port)) {
+                            if (!file_exists($port)) {
+                                log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port1 '. $port . ' n\'existe pas');
+                                return false;
+                            }
                         }
                     }
                 }
@@ -345,9 +353,11 @@ class teleinfo extends eqLogic
                     if ($twoCptCartelectronic == 1) {
                         $port = '/dev/ttyUSB1';
                     } else {
-                        if (!file_exists($port)) {
-                            log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port2 '. $port . ' n\'existe pas');
-                            return false;
+                        if (is_string($port)) {
+                            if (!file_exists($port)) {
+                                log::add('teleinfo', 'error', '[TELEINFO]-----[' . $type . '] Le port2 '. $port . ' n\'existe pas');
+                                return false;
+                            }
                         }
                     }
                 }
@@ -376,11 +386,13 @@ class teleinfo extends eqLogic
 
             if ($twoCptCartelectronic == 1) {
                 log::add('teleinfo', 'info', '[' . $type . '] Fonctionnement en mode 2 compteur');
-                $cmd          = 'sudo nice -n 19 /usr/bin/python3 ' . $teleinfoPath . '/teleinfo_2_cpt.py';
+                $cmd          = 'sudo nice -n 19 ' . $teleinfoPath . '/venv/bin/python3 ' . $teleinfoPath . '/teleinfo_2_cpt.py';
+                //$cmd          = 'sudo nice -n 19 /usr/bin/python3 ' . $teleinfoPath . '/teleinfo_2_cpt.py';
             }
             else {
                 log::add('teleinfo', 'info', '[' . $type . '] Fonctionnement en mode 1 compteur');
-                $cmd          = 'nice -n 19 /usr/bin/python3 ' . $teleinfoPath . '/teleinfo.py';
+                $cmd          = 'nice -n 19 ' . $teleinfoPath . '/venv/bin/python3 ' . $teleinfoPath . '/teleinfo.py';
+                //$cmd          = 'nice -n 19 /usr/bin/python3 ' . $teleinfoPath . '/teleinfo.py';
                 $cmd         .= ' --type ' . $type;
             }
             $cmd         .= ' --port ' . $port;
@@ -415,7 +427,7 @@ class teleinfo extends eqLogic
     }
     
     public static function runDeamonMqtt($debug = false, $type = 'mqtt'){
-
+  
         $teleinfoPath   = realpath(dirname(__FILE__) . '/../../ressources');
         $socketPort 	= config::byKey('socketport', 'teleinfo', '55062') + 2;
         $socketHost 	= config::byKey('socketHost', 'teleinfo', '127.0.0.1');
@@ -433,7 +445,7 @@ class teleinfo extends eqLogic
         log::add('teleinfo', 'info', "Port du Broker : " . $mqtt_port);
         log::add('teleinfo', 'info', "topic : " . '"' . $mqtt_topic . '"');
         log::add('teleinfo', 'info', '---------------------------------------------');
-        $cmd          = 'nice -n 19 /usr/bin/python3 ' . $teleinfoPath . '/teleinfo_mqtt.py';
+        $cmd          = 'nice -n 19 ' . $teleinfoPath . '/venv/bin/python3 ' . $teleinfoPath . '/teleinfo_mqtt.py';
         $cmd         .= ' --socketport ' . $socketPort;
         $cmd         .= ' --mqtt True';
         $cmd         .= ' --mqtt_broker ' . $mqtt_broker;
@@ -729,7 +741,7 @@ class teleinfo extends eqLogic
                         }
                     }
                 }
-                if ($deamonInfo['deamon_conso'] == 'ok') {
+                if ($deamonInfo['deamon_modem'] == 'ok') {
                     $pidFile = jeedom::getTmpFolder('teleinfo') . '/teleinfo_conso.pid';
                     if (file_exists($pidFile)) {
                         $pid  = intval(trim(file_get_contents($pidFile)));
