@@ -31,9 +31,8 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-venv python3-pip 
 date
 
 echo 25 > ${PROGRESS_FILE}
-sudo -u www-data python3 -m venv $BASEDIR/venv
+sudo -u www-data python3 -m venv $BASEDIR/venv --without-pip --system-site-packages
 date
-
 sudo -u www-data $BASEDIR/venv/bin/python3 -m pip install --upgrade pip wheel
 
 echo 30 > ${PROGRESS_FILE}
