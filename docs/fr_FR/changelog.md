@@ -12,6 +12,9 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
+## 4.8.3a (02-03-2024) => version stable ET bêta
+- correction d'un problème qui pouvait se produire lors de l'install de l'environnement virtuel
+
 ## 4.8.3 (**-**-2024)
 - Adapatation du plugin à jeedom V4.4 + Debian 12 + php 8.2.7 (merci @Typher)
 - Adaptation au passage à paho-mqtt v2 
