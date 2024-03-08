@@ -12,6 +12,9 @@ Pour toutes demandes :
  - [Changelog version stable](https://nextdom.github.io/plugin-teleinfo/fr_FR/changelog.md)
  - [Changelog version bêta](https://noyax.github.io/plugin-teleinfo/fr_FR/changelog.md)
 
+## sans up de version le 08/03/24
+- modification du script d'installation suite https://community.jeedom.com/t/venv-bin-python3-no-such-file-or-directory/122269/24?u=noyax37
+
 ## 4.8.3a (02-03-2024) => version stable ET bêta
 - correction d'un problème qui pouvait se produire lors de l'install de l'environnement virtuel
 
