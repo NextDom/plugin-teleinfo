@@ -14,7 +14,6 @@ BASEDIR=/var/www/html/plugins/teleinfo/ressources
 
 echo 5 > ${PROGRESS_FILE}
 sudo apt-get update
-sudo apt-get upgrade
 date
 #echo 10 > ${PROGRESS_FILE}
 #sudo apt remove -y python3-serial
