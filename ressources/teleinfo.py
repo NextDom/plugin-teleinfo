@@ -454,9 +454,12 @@ class Teleinfo:
                     else:
                         _SendData["device"] = data["ADCO"]
                         globals.JEEDOM_COM.add_changes('device::' + data["ADCO"], _SendData)
-            except Exception:
-                error_com = "Connection error"
-                logging.error(error_com)
+            except KeyError as ex:
+                logging.debug('exception ' + type(ex).__name__ + ' ' + str(ex))
+                logging.info(str(ex) + " not received yet, waiting next frame")
+            except Exception as ex:
+                logging.debug('exception ' + type(ex).__name__ + ' ' + str(ex))
+                logging.error('Connection error')
             info_heure_calcul = datetime.now() - info_heure
             if info_heure_calcul.seconds > 1800:
                 logging.info('MODEM------ Dernières datas reçues de la TIC : ' + str(data))

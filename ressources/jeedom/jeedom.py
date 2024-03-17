@@ -19,7 +19,10 @@ import logging
 import threading
 import requests
 import datetime
-import collections
+try:
+	import collections.abc as collections
+except ImportError:
+	import collections as collections
 import serial
 import os
 from os.path import join
