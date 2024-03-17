@@ -25,26 +25,19 @@ echo 10 > ${PROGRESS_FILE}
 #apt_install python3-pip
 echo "Lancement de l'installation/mise à jour des dépendances Téléinfo"
 echo "Raffraichissement du système"
-sudo apt-get update
+sudo apt update
 echo 20 > ${PROGRESS_FILE}
 echo "Installation de la librairie ftdi pour modem 2 compteurs"
-#sudo apt-get -y install python3-ftdi
-sudo apt-get -y install python3-ftdi1
-#pip_install pyftdi
-pip_install pylibftdi
+sudo apt install -y python3-ftdi1
+sudo apt install -y python3-ftdi
 echo 30 > ${PROGRESS_FILE}
-#pip_install python-ftdi1
-echo 40 > ${PROGRESS_FILE}
 echo "Installation de la librairie serial"
-#pip_install serial
-sudo pip uninstall -y serial
-pip_install six
-#apt_install python-serial
-pip_install pyserial
-pip_install setuptools
-pip_install requests
-pip_install pyudev
-echo 50 > ${PROGRESS_FILE}
+sudo apt install -y python3-six
+sudo apt install -y python3-serial
+sudo apt install -y python3-setuptools
+sudo apt install -y python3-requests
+sudo apt install -y python3-pyudev
+echo 40 > ${PROGRESS_FILE}
 echo "Mise à jour de cmdline ou inittab suivant système"
 if [ -e /dev/ttyAMA0 ];  then
     sed -i 's/console=ttyAMA0,115200//; s/kgdboc=ttyAMA0,115200//' /boot/cmdline.txt
